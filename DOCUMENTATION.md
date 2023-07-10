@@ -35,7 +35,7 @@ This script is used to access vertical profile data for calculations or plotting
   - function used to access model profile data from the ERA5, RAP or RUC
   - ##### PARAMETERS
           name      dtype  required  example         explanation 
-          method:    str,    yes,    'rap'           model data source: 'rap', 'era5' 
+          method:    str,    yes,    'rap'           model data source: 'rap-ruc', 'era5' 
           domain:    str,    no,     'point'         single 'point' or 'map' *under dev.
           latlon:    list,   yes,    [42.3, -97.3]   ordered list of lat, lon points 
           year:      str,    yes,    '2014'          4 digit year (UTC)
@@ -46,8 +46,9 @@ This script is used to access vertical profile data for calculations or plotting
           raw_data: for ERA5, an xarray.Dataset of ERA5 reanalysis data or
           raw_data: for RAP/RUC, a netCDF4._netCDF4.Dataset of RAP/RUC reanalysis data
   - ##### EXAMPLES
-          raw_data = spy.get_obs_data('rap', 'point', [42.3, -97.3], '2014', '06', '16', '18')
-          raw_data = spy.get_obs_data('era5', 'point', [42.3, -97.3], '2014', '06', '16', '18')    
+          raw_data = spy.get_model_data('rap', 'point', [42.3, -97.3], '2014', '06', '16', '18')
+          raw_data = spy.get_model_data('era5', 'point', [42.3, -97.3], '2014', '06', '16', '18')
+    *note: method 'rap-ruc' will try for RAP data first, if the data is not availible, then  it will try for RUC data*
 --------
 - #### `get_obs_data(station, year, month, day, hour)`
   - function used to access *and* parse RAOB profile data
