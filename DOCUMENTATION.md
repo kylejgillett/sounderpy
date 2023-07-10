@@ -1,4 +1,8 @@
-# SOUNDERPY DOCUMENTATION 
+<div align='center'>
+<img src="https://github.com/kylejgillett/sounderpy/assets/100786530/2e9477c9-e36a-4163-accb-fe46780058dd" width="200">
+</div>
+
+# SOUNDERPY DOCUMENTATION
   > LATEST VERSION: v0.0.2  |  RELEASED: July 9, 2023  |  COPYRIGHT Kyle J Gillett, 2023
 <br>
 
