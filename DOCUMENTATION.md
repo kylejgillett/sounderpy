@@ -23,7 +23,16 @@ This script is used to access vertical profile data for calculations or plotting
 -------
 ## How to use SounderPy:
 1. #### Download `sounderpy.py` and add it to your file directory
-2. `import sounderpy as spy`
+2. Make sure your environment has the required dependencies:
+   -  metpy
+   -  xarray
+   -  urllib
+   -  numpy
+   -  siphon
+   -  cartopy
+   -  datetime
+   -  cdsapi
+3. Finally, its fun to run: `import sounderpy as spy`
 ------
 ## Tools included in SounderPy:
 - #### `get_docs()`
