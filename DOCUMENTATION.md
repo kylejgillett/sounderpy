@@ -57,7 +57,7 @@ This script is used to access vertical profile data for calculations or plotting
   - ##### EXAMPLES
           raw_data = spy.get_model_data('rap', 'point', [42.3, -97.3], '2014', '06', '16', '18')
           raw_data = spy.get_model_data('era5', 'point', [42.3, -97.3], '2014', '06', '16', '18')
-    *note: method 'rap-ruc' will try for RAP data first, if the data is not availible, then  it will try for RUC data*
+    *note: method 'rap-ruc' will try for RAP data first, if the data is not available, then  it will try for RUC data*
 --------
 - #### `get_obs_data(station, year, month, day, hour)`
   - function used to access *and* parse RAOB profile data
@@ -73,6 +73,7 @@ This script is used to access vertical profile data for calculations or plotting
           clean_data: a dict of cleaned profile data ready to use for plotting
   - ##### EXAMPLES
           clean_data = spy.get_obs_data('OAX', '2014', '06', '16', '18')
+    *note: this function will first attempt to get data from the UW archive, if it is not available from UW then it will search the ISU IEM archive*
 --------
 - #### `parse_data(raw_data)`
   - function used to parse and clean up raw model data *NOTE: only needed for *model data*
