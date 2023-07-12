@@ -94,12 +94,50 @@ This script is used to access vertical profile data for calculations or plotting
           img: MetPy Sounding Plot
   - ##### EXAMPLES
           spy.metpy_sounding(clean_sounding)
-    
+
+------
+## SounderPy Helper Functions 
+- Several helper functions are included within SounderPy that a user may find useful when working with sounding data
+  - #### `spy.metar_latlon(metar_site)`
+    - ##### PARAMETERS
+            name        dtype    required   example   explanation 
+            metar_site  str      yes        'KMBS'    4 digit METAR site id
+    - ##### RETURNS
+            latlon:     list     lat lon pair for requested METAR site in a list
+    - ##### EXAMPLES
+            latlon = spy.metar_site('KMBS')
+        *note: you can use this lat/lon pair list when calling get_model_data()!*
+      
+  - #### `spy.interp_data(variable, heights, step=100)`
+    - ##### PARAMETERS
+            name        dtype    required   explanation 
+            variable:   array    yes        the data to be interpolated. Must be same length as height array
+            heights:    array    yes        heights corresponding to the vertical profile used to interpolate
+            step:       int      no         resolution of interpolation. Default is 100 (recommended value is 100)
+        
+    - ##### RETURNS
+            varinterp:  array,  array of interpolated data 
+    - ##### EXAMPLES
+            interp_temp = spy.interp_data(temp, heights, step=100)
+
+
+  - #### `find_nearest(array, value)`
+    - ##### PARAMETERS
+            name         dtype                        required    explanation 
+            array        array of ints or floats      yes         the array of data search through to 'find the nearest'
+            value        int or float (same as array) yes         the value used to compare against the array of data
+        
+    - ##### RETURNS
+            nearest_idx:  int,  index of the data array that corresponds with the nearest value to the given value.  
+    - ##### EXAMPLES
+            z_equals_500m = spy.interp_data(z, 500)
+  
 ------
 ## The future of SounderPy
 - Adding more data sources, such as NWP forecasts (HRRR, RAP, NAM, GFS)
 - RAP real-time analysis
 
+-------
 
 
 
