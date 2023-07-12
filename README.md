@@ -42,9 +42,10 @@ Thank you for visiting SounderPy. At this time [7/8/2023] this script is still u
 You can make a quick plot of the data using built-in MetPy plotting functions!, just call...
 `spy.metpy_sounding(clean_data)`
 <div align="center">
-<img src="https://github.com/kylejgillett/sounderpy/assets/100786530/2e9477c9-e36a-4163-accb-fe46780058dd" width="300">
+<img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/example_RAP_0427201122z.png" width="600">
 </div>
-
+<br>
+<br>
 <div align="center">
-<img src="https://github.com/kylejgillett/sounderpy/assets/100786530/2e9477c9-e36a-4163-accb-fe46780058dd" width="300">
+<img src="https://github.com/kylejgillett/sounderpy/assets/100786530/2e9477c9-e36a-4163-accb-fe46780058dd" width="250">
 </div>
