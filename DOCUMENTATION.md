@@ -98,7 +98,7 @@ This script is used to access vertical profile data for calculations or plotting
 ------
 ## SounderPy Helper Functions 
 - Several helper functions are included within SounderPy that a user may find useful when working with sounding data
-  - #### `spy.metar_latlon(metar_site)`
+  - #### `metar_latlon(metar_site)`
     - ##### PARAMETERS
             name        dtype    required   example   explanation 
             metar_site  str      yes        'KMBS'    4 digit METAR site id
@@ -108,7 +108,7 @@ This script is used to access vertical profile data for calculations or plotting
             latlon = spy.metar_site('KMBS')
         *note: you can use this lat/lon pair list when calling get_model_data()!*
       
-  - #### `spy.interp_data(variable, heights, step=100)`
+  - #### `interp_data(variable, heights, step=100)`
     - ##### PARAMETERS
             name        dtype    required   explanation 
             variable:   array    yes        the data to be interpolated. Must be same length as height array
