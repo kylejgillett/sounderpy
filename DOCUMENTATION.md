@@ -40,17 +40,17 @@ This script is used to access vertical profile data for calculations or plotting
     - ##### EXAMPLES
           spy.get_docs()
 -------- 
-- #### `get_model_data(method, domain, latlons, year, month, day, hour)`
+- #### `get_model_data(method, latlons, year, month, day, hour, domain='point')`
   - function used to access model profile data from the ERA5, RAP or RUC
   - ##### PARAMETERS
           name      dtype  required  example         explanation 
           method:    str,    yes,    'rap'           model data source: 'rap-ruc', 'era5' 
-          domain:    str,    no,     'point'         single 'point' or 'map' *under dev.
           latlon:    list,   yes,    [42.3, -97.3]   ordered list of lat, lon points 
           year:      str,    yes,    '2014'          4 digit year (UTC)
           month:     str,    yes,    '06'            2 digit month (UTC)
           day:       str,    yes,    '16'            2 digit day (UTC)
           hour:      str,    yes,    '20'            2 digit hour (UTC)
+          domain:    str,    no,     'point'         default='point', single lat/lon 'point' or 'map' for lat/lon box *under dev*
   - ##### RETURNS
           raw_data: for ERA5, an xarray.Dataset of ERA5 reanalysis data or
           raw_data: for RAP/RUC, a netCDF4._netCDF4.Dataset of RAP/RUC reanalysis data
@@ -105,7 +105,7 @@ This script is used to access vertical profile data for calculations or plotting
     - ##### RETURNS
             latlon:     list     lat lon pair for requested METAR site in a list
     - ##### EXAMPLES
-            latlon = spy.metar_site('KMBS')
+            latlon = spy.metar_latlon('KMBS')
         *note: you can use this lat/lon pair list when calling get_model_data()!*
       
    - #### `raob_latlon(raob_site)`
@@ -115,7 +115,7 @@ This script is used to access vertical profile data for calculations or plotting
       - ##### RETURNS
               latlon:     list     lat lon pair for requested RAOB site in a list
       - ##### EXAMPLES
-              latlon = spy.raob_site('OUN')
+              latlon = spy.raob_latlon('OUN')
           *note: you can use this lat/lon pair list when calling get_model_data()!*
         
     - #### `interp_data(variable, heights, step=100)`
