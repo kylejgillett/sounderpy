@@ -108,6 +108,16 @@ This script is used to access vertical profile data for calculations or plotting
             latlon = spy.metar_site('KMBS')
         *note: you can use this lat/lon pair list when calling get_model_data()!*
       
+ - #### `raob_latlon(raob_site)`
+    - ##### PARAMETERS
+            name        dtype    required   example   explanation 
+            raob_site  str      yes        'DTX'     3-4 digit RAOB site id
+    - ##### RETURNS
+            latlon:     list     lat lon pair for requested RAOB site in a list
+    - ##### EXAMPLES
+            latlon = spy.raob_site('OUN')
+        *note: you can use this lat/lon pair list when calling get_model_data()!*
+      
   - #### `interp_data(variable, heights, step=100)`
     - ##### PARAMETERS
             name        dtype    required   explanation 
