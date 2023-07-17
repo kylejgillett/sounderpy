@@ -3,8 +3,6 @@
 ## WELCOME! thank you for visiting SounderPy!
 This script is used to access vertical profile data for calculations or plotting of a vertical profile (sounding). 
 
-Thank you for visiting SounderPy.
-
 ### Why SounderPy?
 + Sometimes data is tough to find, and often times is even tougher to get in the format you like. SounderPy gets you this data!
 + The code needed for loading and parsing vertical data (especially from models) can be large and messy. SounderPy keeps it hidden away in a separate file -- just import and call sounderPy functions to keep your code clean!
@@ -36,6 +34,7 @@ Thank you for visiting SounderPy.
 2. ```
    pip install sounderpy
    ```
+   Find it at https://pypi.org/project/sounderpy/1.0.0/
 3. ```
    import sounderpy as spy
    ```
