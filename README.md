@@ -9,28 +9,18 @@ Thank you for visiting SounderPy.
 + Sometimes data is tough to find, and often times is even tougher to get in the format you like. SounderPy gets you this data!
 + The code needed for loading and parsing vertical data (especially from models) can be large and messy. SounderPy keeps it hidden away in a separate file -- just import and call sounderPy functions to keep your code clean!
 
-<div align='center'>
-<img src="https://github.com/kylejgillett/sounderpy/assets/100786530/2e9477c9-e36a-4163-accb-fe46780058dd" width="200">
-</div>
-
-# SOUNDERPY DOCUMENTATION
-  > LATEST VERSION: v0.0.2  |  RELEASED: July 9, 2023  |  COPYRIGHT Kyle J Gillett, 2023
-<br>
-
-This script is used to access vertical profile data for calculations or plotting of a vertical profile (sounding). 
+## SounderPy is used for:
+- Accessing and loading raw vertical profile data from the sources listed above
+- Parsing these raw data into a clean & simple-to-use format for calculations and plotting
+- SounderPy offers a built-in quick MetPy plotting function, but sounderPy itself is meant as a source for accessing data -- not for plotting (that may be a future package ;) )
+-------
 
 ## SounderPy is currently capable of accessing and processing data from:
-
 - ECMWF CDS ERA5 reanalysis [1940-present] *note: you must set up an account through the CDS to unlock ERA5 data. (see: https://cds.climate.copernicus.eu/api-how-to)
 - UNIDATA THREDDS TDS RAP reanalysis [2005-present]
 - UNIDATA THREDDS TDS RUC reanalysis [2005-2020]
 - The University of Wyoming RAOB archive [1973-present, depending on station]
 - Iowa State University's RAOB archive [1945-present, depending on station]
-
-## SounderPy is used for:
-- Accessing and loading raw vertical profile data from the sources listed above
-- Parsing these raw data into a clean & simple-to-use format for calculations and plotting
-- SounderPy offers a built-in quick MetPy plotting function, but sounderPy itself is meant as a source for accessing data -- not for plotting (that may be a future package ;) )
 -------
 ## How to use SounderPy:
 1. Make sure your environment has the required dependencies:
