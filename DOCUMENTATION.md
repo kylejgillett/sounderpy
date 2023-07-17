@@ -22,7 +22,10 @@ This script is used to access vertical profile data for calculations or plotting
 - SounderPy offers a built-in quick MetPy plotting function, but sounderPy itself is meant as a source for accessing data -- not for plotting (that may be a future package ;) )
 -------
 ## How to use SounderPy:
-1. #### Download `sounderpy.py` and add it to your file directory
+1. #### sounderpy is available through pip!
+   ```
+   pip install sounderpy
+   ```
 2. Make sure your environment has the required dependencies:
    -  metpy
    -  xarray
