@@ -3,7 +3,7 @@
 </div>
 
 # SOUNDERPY DOCUMENTATION
-  > LATEST VERSION: v0.0.2  |  RELEASED: July 9, 2023  |  COPYRIGHT Kyle J Gillett, 2023
+  > LATEST VERSION: v1.0.0 |  RELEASED: July 17, 2023  |  COPYRIGHT Kyle J Gillett, 2023
 <br>
 
 This script is used to access vertical profile data for calculations or plotting of a vertical profile (sounding). 
