@@ -591,7 +591,7 @@ def parse_data(raw_data):
 #                                                       METPY_SOUNDING() FUNCTION                                                                #
 ##################################################################################################################################################
 
-def metpy_sounding(clean_data):
+def __metpy_sounding(clean_data):
     st = time.time()
     import matplotlib.pyplot as plt
     import metpy.calc as mpcalc
@@ -737,12 +737,16 @@ def metpy_sounding(clean_data):
         h.ax.annotate(str(i),(i,0),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=10,weight='bold',alpha=0.3,zorder=0)
     for i in range(10,120,10):
         h.ax.annotate(str(i),(0,i),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=10,weight='bold',alpha=0.3,zorder=0)
-    # Show the plot
-    plt.show()
     elapsed_time = time.time() - st
     print('RUNTIME:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
+    return plt
     
+
+def metpy_show_sounding(clean_data):
+    __metpy_sounding(clean_data).show()
     
+def metpy_save_sounding(clean_data, file_name):
+    __metpy_sounding(clean_data).savefig(file_name)
     
     
     
