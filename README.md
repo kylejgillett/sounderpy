@@ -64,8 +64,10 @@ This script is used to access vertical profile data for calculations or plotting
 8. U-component Wind 
 9. V-component Wind
 
-You can make a quick plot of the data using built-in MetPy plotting functions!, just call...
-`spy.metpy_sounding(clean_data)`
+You can render a quick plot of the data using built-in MetPy plotting functions!, just call...
+`spy.metpy_show_sounding(clean_data)`
+...or you can save the plot to a file using...
+`spy.metpy_save_sounding(clean_data, file_name)`
 <div align="center">
 <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/example_RAP_0427201122z.png" width="600">
 </div>

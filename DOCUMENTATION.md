@@ -88,15 +88,28 @@ This script is used to access vertical profile data for calculations or plotting
   - ##### EXAMPLES
           clean_data = spy.parse_data(raw_data)
 --------
-- #### `metpy_sounding(clean_data)`
-  - this function inputs cleaned profile data through a slightly modified MetPy sounding plot script. As mentioned above, sounderPy is a tool for accessing and processing sounding data and as such this is only a very simple built-in plotting tool
+- #### `metpy_show_sounding(clean_data)`
+  - this function inputs cleaned profile data through a slightly modified MetPy sounding plot script and renders it in real time. As mentioned above, sounderPy is a tool for accessing and processing sounding data and as such this is only a very simple built-in plotting tool
   - ##### PARAMETERS
           name         dtype    required   example      explanation 
           clean_data:  dict,      yes,    clean_data    a dict of cleaned profile data acquired from the above functions. 
   - ##### RETURNS
-          img: MetPy Sounding Plot
+          img: MetPy Sounding Plot rendered
   - ##### EXAMPLES
-          spy.metpy_sounding(clean_sounding)
+          spy.metpy_show_sounding(clean_sounding)
+--------
+- #### `metpy_save_sounding(clean_data, file_name)`
+  - this function inputs cleaned profile data through a slightly modified MetPy sounding plot script and saves it to a file. As mentioned above, sounderPy is a tool for accessing and processing sounding data and as such this is only a very simple built-in plotting tool
+  - ##### PARAMETERS
+          name         dtype    required   example      explanation 
+          clean_data:  dict,      yes,    clean_data    a dict of cleaned profile data acquired from the above functions. 
+          file_name:   string,    yes,    "image.png"   apath/filename of where you want to store the plot as an image
+  - ##### RETURNS
+          img: MetPy Sounding Plot saved to file
+  - ##### EXAMPLES
+          spy.metpy_save_sounding(clean_sounding, "file.png")
+          spy.metpy_save_sounding(clean_sounding, "path_to_image\file.png")
+          spy.metpy_save_sounding(clean_sounding, "path_to_image\file.jpg")
 
 ------
 ## SounderPy Helper Functions 
