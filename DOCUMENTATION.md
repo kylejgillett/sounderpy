@@ -1,10 +1,6 @@
-<div align='center'>
-<img src="https://github.com/kylejgillett/sounderpy/assets/100786530/2e9477c9-e36a-4163-accb-fe46780058dd" width="200">
-</div>
-
 # SOUNDERPY DOCUMENTATION
   > LATEST VERSION: v1.0.0 |  RELEASED: July 17, 2023  |  COPYRIGHT Kyle J Gillett, 2023
-<br>
+
 
 This script is used to access vertical profile data for calculations or plotting of a vertical profile (sounding). 
 
@@ -58,8 +54,8 @@ This script is used to access vertical profile data for calculations or plotting
           raw_data: for ERA5, an xarray.Dataset of ERA5 reanalysis data or
           raw_data: for RAP/RUC, a netCDF4._netCDF4.Dataset of RAP/RUC reanalysis data
   - ##### EXAMPLES
-          raw_data = spy.get_model_data('rap', 'point', [42.3, -97.3], '2014', '06', '16', '18')
-          raw_data = spy.get_model_data('era5', 'point', [42.3, -97.3], '2014', '06', '16', '18')
+          raw_data = spy.get_model_data('rap', [42.3, -97.3], '2014', '06', '16', '18')
+          raw_data = spy.get_model_data('era5', [42.3, -97.3], '2014', '06', '16', '18')
     *note: method 'rap-ruc' will try for RAP data first, if the data is not available, then  it will try for RUC data*
 --------
 - #### `get_obs_data(station, year, month, day, hour)`
