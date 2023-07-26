@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sounderpy"
+version = "1.0.0"
+authors = [
+  { name="Kyle J Gillett", email="gille3kj@cmich.edu" },
+]
+description = "VERTICAL PROFILE DATA RETRIEVAL TOOL"
+readme = "README.md"
+requires-python = ">=3.10.0"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/kylejgillett/sounderpy/tree/main"
+"Documentation" = "https://github.com/kylejgillett/sounderpy/blob/main/DOCUMENTATION.md"
