@@ -1,0 +1,2382 @@
+      RAOB STATION LISTING 20181221 - MODIFIED BY KYLE J GILLETT
+------------------------------------------------------------------------
+Entries may be added, deleted, or edited, BUT FORMAT MUST BE MAINTAINED.
+------------------------------------------------------------------------
+WMO numbers must be sequential.      Coordinates are in decimal degrees.
+------------------------------------------------------------------------
+
+WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
+
+01001, ENJA, JAN MAYEN,                  NO,    9,  70.93, N,    8.67, W
+01004, ENAS, NY-ALESUND II,              NO,    8,  78.92, N,   11.93, E
+01007, ----, NY-ALESUND,                 NO,   18,  78.92, N,   11.93, E
+01008, ENSB, SVALBARD/LONGYE,            NO,   29,  78.25, N,   15.47, E
+01010, ENAN, ANDOYA,                     NO,   14,  69.30, N,   16.15, E
+01011, ----, KVITOYA,                    NO,   16,  80.10, N,   31.40, E
+01025, ENTC, TROMSOE,                    NO,   10,  69.68, N,   18.92, E
+01028, ENBJ, BJORNOYA ISLAND,            NO,   14,  74.52, N,   19.02, E
+01088, ENVD, VADSO,                      NO,   39,  70.07, N,   29.85, E
+01152, ENBO, BODO VI (CIV/MIL),          NO,   13,  67.25, N,   14.37, E
+01240, ----, HALTEN,                     NO,   16,  64.17, N,    9.42, E
+01241, ENOL, ORLAND III (NOR-AFB),       NO,    7,  63.70, N,    9.60, E
+01384, ENGM, OSLO/GARDERMOEN,            NO,  204,  60.20, N,   11.08, E
+01400, ENEK, EKOFISK,                    NO,   46,  56.53, N,    3.22, E
+01415, ENZV, STAVANGER/SOLA (AFB),       NO,    9,  58.88, N,    5.63, E
+01465, ----, TORUNGEN,                   NO,   15,  58.40, N,    8.80, E
+01492, ----, OSLO/BLINDERN,              NO,   96,  59.57, N,   10.43, E
+02120, ----, KVIKKJOKK,                  SW,  337,  66.95, N,   17.75, E
+02185, ESPA, LULEA/KALLAX (AFB),         SW,   34,  65.55, N,   22.13, E
+02188, ----, RODKALLEN,                  SW,    1,  65.32, N,   22.38, E
+02225, ----, OSTERSUND/FROSON,           SW,  370,  63.18, N,   14.50, E
+02365, ESNN, SUNDSVALL/HARNOSAND,        SW,    6,  62.53, N,   17.47, E
+02527, ESGG, GOTEBORG/LANDVETTER,        SW,  164,  57.67, N,   12.50, E
+02591, ESQV, VISBY AERO STATION,         SW,   47,  57.65, N,   18.35, E
+02836, EFSO, SODANKYLA,                  FI,  179,  67.37, N,   26.65, E
+02935, EFJY, JYVASKYLA (MIL/CIV),        FI,  145,  62.40, N,   25.68, E
+02963, ----, JOKIOINEN,                  FI,  103,  60.82, N,   23.50, E
+02982, ----, RUSSARO,                    FI,   11,  59.77, N,   22.95, E
+03001, ----, MUCKLE FLUGGA (LH),         UK,   53,  60.85, N,    0.88, W
+03005, ----, LERWICK/SHETLAND IS,        UK,   84,  60.13, N,    1.18, W
+03008, ----, FAIR ISLE,                  UK,   59,  59.53, N,    1.63, W
+03023, ----, WEST GEIRINISH,             UK,    3,  57.35, N,    7.37, W
+03026, EGPO, STORNOWAY,                  UK,   13,  58.22, N,    6.32, W
+03066, EGQK, KINLOSS RAF,                UK,    7,  57.65, N,    3.57, W
+03085, ----, INCHMARLO,                  UK,   80,  57.07, N,    2.53, W
+03091, EGPD, ABERDEEN/DYCE,              UK,   65,  57.20, N,    2.22, W
+03121, ----, KILDONAN,                   UK,   18,  55.43, N,    5.10, W
+03130, EGOY, WEST FREUGH,                UK,   16,  54.85, N,    4.95, W
+03170, ----, SHANWELL,                   UK,    5,  56.43, N,    2.87, W
+03171, EGQL, LEUCHARS RAF,               UK,   12,  56.38, N,    2.87, W
+03213, ----, ESKMEALS,                   UK,    9,  54.32, N,    3.40, W
+03238, ----, ALBERMARLE,                 UK,  146,  55.10, N,    1.93, W
+03240, EGQM, BOULMER,                    UK,   23,  55.42, N,    1.60, W
+03241, ----, LONG FRAMLINGTO,            UK,  158,  55.30, N,    1.80, W
+03257, EGXE, LEEMING RAF,                UK,   40,  54.30, N,    1.53, W
+03322, ----, AUGHTON,                    UK,   56,  53.55, N,    2.92, W
+03334, EGCC, MANCHESTER INTL,            UK,   78,  53.34, N,    2.28, W
+03345, ----, EMLEY MOOR,                 UK,  259,  53.62, N,    1.67, W
+03346, EGNM, LEEDS AND BRADFORD,         UK,  208,  53.86, N,    1.65, W
+03354, ----, NOTTINGHAM WX CTR,          UK,  117,  53.00, N,    1.25, W
+03377, EGXW, WADDINGTON RAF,             UK,   70,  53.17, N,    0.52, W
+03414, EGOS, SHAWBURY RAF,               UK,   76,  52.80, N,    2.67, W
+03496, ----, HEMSBY,                     UK,   14,  52.68, N,    1.68, E
+03501, ----, CAPE DEWI,                  UK,   92,  55.42, N,    4.00, W
+03502, EGUC, ABERPORTH,                  UK,  134,  52.13, N,    4.57, W
+03559, ----, CARDINGTON,                 UK,   30,  52.10, N,    0.42, W
+03590, EGUW, WATTISHAM RAF,              UK,   87,  52.12, N,    0.97, E
+03614, ----, CILFYNYDD,                  UK,  194,  51.63, N,    3.30, W
+03649, EGVN, BRIZE NORTON RAF,           UK,   88,  51.75, N,    1.58, W
+03693, ----, SHOEBURYNESS,               UK,    3,  51.55, N,    0.85, E
+03715, EGFF, CARDIFF-WALES,              UK,   67,  51.40, N,    3.35, W
+03743, ----, LARKHILL,                   UK,  133,  51.20, N,    1.80, W
+03774, ----, CRAWLEY,                    UK,  144,  51.08, N,    0.22, W
+03808, ----, CAMBORNE,                   UK,   88,  50.22, N,    5.32, W
+03810, ----, PENDENNIS POINT,            UK,   35,  50.15, N,    5.07, W
+03815, ----, LIZARD LIGHTHOU,            UK,   60,  49.97, N,    5.20, W
+03872, ----, THORNEY ISLAND,             UK,    4,  50.82, N,    0.92, W
+03882, ----, HERSTOMONCEUX WEST,         UK,   54,  50.90, N,    0.32, E
+03894, EGJB, GUERNSEY AIRPORT,           UK,  102,  49.43, N,    2.60, W
+03918, ----, CASTOR BAY,                 UK,   17,  54.50, N,    6.33, W
+03920, ----, HILLSBOROUGH,               UK,   38,  54.80, N,    6.17, W
+03953, ----, VALENTIA OBSERVATORY,       IE,   14,  51.93, N,   10.25, W
+04001, ----, HVALLATUR,                  IL,   17,  65.53, N,   24.47, W
+04018, BIKF, KEFLAVIK,                   IL,   52,  63.97, N,   22.60, W
+04089, BIEG, EGILSSTADIR,                IL,   23,  65.17, N,   14.40, W
+04168, ----, SANDBUDIR,                  GL,  821,  64.93, N,   17.98, W
+04202, BGTL, THULE AB,                   GL,   77,  76.53, N,   68.75, W
+04220, BGEM, EGEDESMINDE/AUSIAT,         GL,   41,  68.70, N,   52.85, W
+04230, BGHB, HOLSTEINSBORG,              GL,    9,  66.92, N,   53.67, W
+04231, BGSF, SONDRESTROM,                GL,   46,  67.00, N,   50.80, W
+04255, BMKA, MARRAK POINT,               GL,   41,  63.43, N,   51.18, W
+04270, BGBW, NARSARSSUAK,                GL,   26,  61.18, N,   45.42, W
+04310, ----, NORD,                       GL,   40,  81.60, N,   16.70, W
+04320, BGDH, DANMARKSHAVN (PORT),        GL,   12,  76.77, N,   18.67, W
+04330, BGDB, DANEBORG (AUT),             GL,   44,  74.30, N,   20.22, W
+04339, BGSC, SCORESBYSUND,               GL,   69,  70.48, N,   21.95, W
+04342, ----, WALRUS BAY,                 GL,    7,  70.50, N,   21.97, W
+04353, BIKA, IKATEQ,                     GL,   56,  65.93, N,   36.68, W
+04360, BGAM, ANGMAGSSALIK,               GL,   52,  65.60, N,   37.63, W
+04417,     , GEOSUMMIT,                  GL, 3255,  72.58, N,   38.46, W
+06010, EKVG, SOERVAAG/VAGAR,             FA,   85,  62.07, N,    7.27, W
+06011, ----, THORSHAVN (PORT),           FA,   39,  62.02, N,    6.77, W
+06030, EKYT, AALBORG,                    DN,    3,  57.10, N,    9.87, E
+06060, ----, KARUP,                      DN,   53,  56.30, N,    9.12, E
+06080, EKEB, ESBJERG,                    DN,   29,  55.52, N,    8.55, E
+06173, ----, STEVNS,                     DN,   40,  55.28, N,   31.40, E
+06181, ----, KOEBENHAVN\JAEGERSBORG,     DN,   40,  55.77, N,   12.53, E
+06210, EHVB, VALKENBURG,                 NL,    2,  52.18, N,    4.42, E
+06235, EHKD, DE KOOY,                    NL,    2,  52.92, N,    4.78, E
+06242, ----, VLIELAND,                   NL,    5,  53.25, N,    4.92, E
+06260, EHDB, DE BILT,                    NL,    4,  52.10, N,    5.18, E
+06320, ----, LE GOEREE,                  NL,   19,  51.93, N,    3.67, E
+06400, EBFN, KOKSIJDE (BEL-AFB),         BX,    9,  51.08, N,    2.65, E
+06447, ----, UCCLE/UKKLE,                BX,  104,  50.80, N,    4.35, E
+06458, EBBE, BEAUVECHAIN,                BX,  127,  50.75, N,    4.77, E
+06463, EBTN, GOETSENHOVEN (MIL),         BX,   81,  50.78, N,    4.95, E
+06476, ESBU, SAINT HUBERT (MIL),         BX,  557,  50.03, N,    5.40, E
+06496, EBLB, ELSENBORN (MIL),            BX,  570,  50.47, N,    6.18, E
+06610, LSMP, PAYERNE (MIL/AUT),          SW,  491,  46.82, N,    6.95, E
+06680, ----, SAENTIS (AUT),              SW, 2500,  47.25, N,    9.35, E
+07010, ----, DUNKERQUE,                  FR,   23,  51.05, N,    2.33, E
+07100, ----, OUESSANT ISLAND,            FR,   32,  48.47, N,    5.13, W
+07107, ----, BRIGNOGAN,                  FR,   22,  48.68, N,    4.33, W
+07110, LFRB, BREST/GUIPAVAS,             FR,  103,  48.45, N,    4.42, W
+07130, LFRN, RENNES/ST. JACQUES,         FR,   37,  48.07, N,    1.73, W
+07139, ----, ALENCON,                    FR,  141,  48.45, N,    0.10, E
+07145, ----, TRAPPES (AUT),              FR,  168,  48.77, N,    2.02, E
+07149, LFPO, PARIS/ORLY,                 FR,   96,  48.73, N,    2.40, E
+07180, LFSN, NANCY/ESSEY,                FR,  217,  48.63, N,    6.22, E
+07210, ----, VANNES (AUT),               FR,   11,  47.63, N,    2.75, W
+07240, LFOT, TOURS/ST. SYMPHO,           FR,  112,  47.45, N,    0.72, E
+07255, ----, BOURGES,                    FR,  162,  47.07, N,    2.37, E
+07280, LFSD, DIJON/LONGVIC,              FR,  227,  47.27, N,    5.08, W
+07412, ----, CONIAC,                     FR,   30,  45.67, N,    0.32, W
+07480, LFLY, LYON/BRON,                  FR,  201,  45.72, N,    4.95, E
+07481, LFLL, LYON/SATOLAS,               FR,  240,  45.73, N,    5.08, E
+07500, ----, CAPE FERRET,                FR,   10,  44.63, N,    1.25, W
+07510, LFBD, BORDEAUX/MERIGNAC,          FR,   61,  44.83, N,    0.70, W
+07579, LFMO, ORANGE/CARITAT,             FR,   55,  44.13, N,    4.83, E
+07645, LFME, NIMES/COURBESSAC,           FR,   62,  43.87, N,    4.40, E
+07690, LFMN, NICE/COTE D'AZUR,           FR,   10,  43.65, N,    7.20, E
+07749, ----, CAPE BEAR,                  FR,   86,  42.52, N,    3.13, E
+07761, LFKJ, AJACCIO/CAMPO ORO,          FR,    9,  41.92, N,    8.80, E
+08001, ----, LA CORUNA CITY,             SP,   67,  43.37, N,    8.42, W
+08002, LECO, LA CORUNA/ALVED,            SP,  103,  43.30, N,    8.38, W
+08023, ----, SANTANDER CITY,             SP,   65,  43.47, N,    3.82, W
+08029, LESO, SAN SEBASTIAN,              SP,    8,  43.35, N,    1.80, W
+08094, ----, HUESCA/MONFLORITE,          SP,  554,  42.08, N,    0.33, W
+08140, LEVD, VALLADOLID (MIL/CIV),       SP,  854,  41.72, N,    4.85, W
+08160, LEZG, ZARAGOZA (MIL/CIV),         SP,  258,  41.67, N,    1.02, W
+08190, LBCN, BARCELONA,                  SP,   98,  41.62, N,    2.20, E
+08221, LEMD, MADRID/BARAJAS,             SP,  582,  40.45, N,    3.55, W
+08222, ----, MADRID,                     SP,  655,  40.42, N,    3.68, W
+08301, ----, PALMA DE MALLORCA,          SP,    6,  39.55, N,    2.62, E
+08302, ----, PALMA/SON BONET,            SP,   41,  39.60, N,    2.70, E
+08383, ----, HUELVA,                     SP,   20,  37.28, N,    6.91, W
+08430, ----, MURCIA CITY,                SP,   62,  38.00, N,    1.17, W
+08431, ----, CASTILLO GALERA,            SP,  217,  37.58, N,    1.00, W
+08449, LERT, ROTA NAS,                   SP,   27,  36.65, N,    6.35, W
+08495, LXGB, GIBRALTAR (CIV/MIL),        GI,    5,  36.15, N,    5.35, W
+08506, ----, HORTA,                      PO,   62,  38.52, N,   28.63, W
+08507, ----, GRACIOSA/AERODROME,         PO,   28,  39.10, N,   28.03, W
+08508, ----, LAJES/SANTA RITA,           PO,  113,  38.75, N,   27.08, W
+08509, LPLA, LAJES AB,                   PO,   55,  38.77, N,   27.10, W
+08521, LPFU, FUNCHAL/MADEIRA,            PO,   55,  32.68, N,   16.77, W
+08522, ----, FUNCHAL,                    PO,   56,  32.63, N,   16.90, W
+08549, ----, COIMBRA,                    PO,  140,  40.20, N,    8.42, W
+08554, ----, FARO,                       PO,    7,  37.02, N,    7.97, W
+08579, ----, LISBON/GAGO COUTINHO,       PO,  105,  38.77, N,    9.13, W
+08589, ----, PRAIA,                      CV,   35,  14.90, N,   23.52, W
+08594, GVAC, SAL ISL/AMILCAR CAB,        CV,   55,  16.73, N,   22.95, W
+10035, ----, SCHLESWIG,                  DL,   48,  54.53, N,    9.55, E
+10044, ----, KIEL,                       DL,   23,  54.50, N,   10.28, E
+10046, ----, KIEL/HOLTENAU,              DL,   32,  54.38, N,   10.15, E
+10113, ----, NORDERNEY,                  DL,   11,  53.71, N,    7.15, E
+10168, ----, GOLDBERT (AUT),             DL,   58,  53.60, N,   12.10, E
+10184, ----, GREIFSWALD,                 DL,    6,  54.10, N,   13.40, E
+10200, EDWE, EMDEN/KOENIGSPOLDER,        DL,    5,  53.38, N,    7.23, E
+10238, ETGB, BERGEN (MIL),               DL,   69,  52.82, N,    9.93, E
+10272, ETGW, WITTSTOCK,                  DL,   74,  53.20, N,   12.52, E
+10304, ETWM, MEPPEN (MIL),               DL,   26,  52.62, N,    7.32, E
+10307, ----, RHEINE,                     DL,   78,  52.27, N,    7.43, E
+10337, ----, HILDESHEIM,                 DL,   88,  52.18, N,    9.95, E
+10338, EDDV, HANNOVER,                   DL,   54,  52.47, N,    9.70, E
+10384, EDDI, BERLIN/TEMPELHOF,           DL,   49,  52.47, N,   13.40, E
+10393, ----, LINDENBERG,                 DL,  112,  52.22, N,   14.12, E
+10410, EDZE, ESSEN/MULHEIM,              DL,  161,  51.40, N,    6.97, E
+10418, ----, LUEDENSCHEID,               DL,  392,  51.25, N,    7.65, E
+10437, ----, FRITZLAR/KASSEL,            DL,  223,  51.13, N,    9.30, E
+10454, ----, WERNIGERODE,                DL,  240,  51.85, N,   10.77, E
+10468, ----, OPPIN,                      DL,  106,  51.33, N,   12.04, E
+10486, ----, WAHNSDORF,                  DL,  232,  51.12, N,   13.68, E
+10513, ----, KOLN/BONN,                  DL,   91,  50.87, N,    7.13, E
+10548, ----, MEININGEN,                  DL,  453,  50.57, N,   10.37, E
+10577, ----, CHEMNITZ,                   DL,  419,  50.80, N,   12.87, E
+10582, ----, ZINNWALD/GEORGE,            DL,  882,  50.73, N,   13.75, E
+10618, ETGI, IDAR-OBERSTEIN (MIL),       DL,  377,  49.70, N,    7.33, E
+10640, ----, OFFENBACH/MAIN,             DL,  112,  50.12, N,    8.73, E
+10642, ----, HANAU,                      DL,  112,  50.17, N,    8.95, E
+10687, ----, GRAFENWOHR,                 DL,  414,  49.70, N,   11.95, E
+10729, ----, MANNHEIN/NEUOSTHEIM,        DL,  100,  49.52, N,    8.55, E
+10735, ----, SINSHEIM (AUT),             DL,  169,  49.25, N,    8.88, E
+10739, ----, STUTTGART/SCHNARRENBERG,    DL,  311,  48.83, N,    9.20, E
+10771, ETGK, KUEMMERSBRUCK,              DL,  418,  49.43, N,   11.90, E
+10775, ETIH, HOHENFELS,                  DL,  442,  49.22, N,   11.83, E
+10777, ----, GELBELSEE,                  DL,  539,  48.95, N,   11.43, E
+10828, ----, SIGMARINGEN,                DL,  646,  48.10, N,    9.25, E
+10860, ETSI, INGOLSTADT,                 DL,  370,  48.72, N,   11.53, E
+10862, ----, SIEGENBERG,                 DL,  404,  48.75, N,   11.80, E
+10868, ----, MUNICH/OBERSCHLEISSHEIM,    DL,  489,  48.25, N,   11.58, E
+10954, ----, ALTENSTADT/SHONGUA,         DL,  738,  47.83, N,   10.87, E
+10962, ----, HOHENPEISSENBERG,           DL,  986,  47.80, N,   11.02, E
+11010, LOWL, LINZ (CIV/MIL),             OS,  313,  48.23, N,   14.20, E
+11011, LOXL, HORSCHING,                  OS,  313,  48.23, N,   14.18, E
+11030, LOXT, LANGENLEBARN,               OS,  176,  48.32, N,   16.23, E
+11035, ----, WIEN/HOHE WARTE,            OS,  200,  48.25, N,   16.37, E
+11078, ----, LILLIENFELD,                OS,  681,  48.03, N,   15.58, E
+11120, LOWI, INNSBRUCK AIRPORT,          OS,  581,  47.27, N,   11.35, E
+11144, ----, ZELL AM SEE,                OS,  763,  47.33, N,   12.80, E
+11152, ----, MATTSEE,                    OS,  502,  47.97, N,   13.10, E
+11240, LOWG, GRAZ (MIL/CIV),             OS,  347,  47.00, N,   15.43, E
+11241, ----, SCHOECKL MOUNTAIN,          OS, 1438,  47.20, N,   15.47, E
+11270, ----, DELLACH IM DRAUTAL,         OS,  630,  46.75, N,   13.08, E
+11280, ----, MURAU,                      OS,  818,  47.12, N,   14.18, E
+11320, ----, INNSBRUCK/UNIVERSITY,       OS,  579,  47.27, N,   11.38, E
+11351, ----, RAMSAU/DACHSTEIN,           OS, 1207,  13.63, N,   13.63, E
+11520, ----, PRAGUE/LIBUS,               CZ,  304,  50.00, N,   14.45, E
+11722, ----, BRNO REBESOVICE,            CZ,  195,  49.08, N,   16.62, E
+11747, ----, PROSTEJOV,                  CZ,  216,  49.45, N,   17.13, E
+11952, ----, POPRAD/GANOVCE,             LO,  706,  49.03, N,   20.32, E
+12105, ----, KOSZALIN,                   PL,   34,  54.20, N,   16.20, E
+12120, ----, LEBA,                       PL,    2,  54.75, N,   17.53, E
+12185, ----, KETRZYN,                    PL,  110,  54.07, N,   21.37, E
+12330, EPPO, POZNAN/LAWICA,              PL,   92,  52.42, N,   16.83, E
+12365, ----, BRWINOW,                    PL,   98,  52.13, N,   20.72, E
+12374, ----, LEGIONOWO,                  PL,   96,  52.40, N,   20.97, E
+12424, EPWR, WROCLAW/STRACHOW,           PL,  121,  51.10, N,   16.87, E
+12425, ----, WROCLAW/MALY GADOW,         PL,  116,  51.13, N,   16.98, E
+12520, ----, KLODZKO,                    PL,  357,  50.43, N,   16.62, E
+12843, ----, BUDAPEST/LORINC,            HU,  139,  47.43, N,   19.18, E
+12982, LHUD, SZEGED (AUT),               HU,   83,  46.25, N,   20.10, E
+13005, ----, BOVEC,                      YG,  452,  46.33, N,   13.57, E
+13275, ----, BEOGRAD KOSUTNJAK,          YG,  203,  44.77, N,   20.42, E
+13279, ----, SMEDEREVSKA,                YG,  122,  44.37, N,   20.95, E
+13334, ----, SPLIT/MARJAN,               YG,  129,  43.52, N,   16.43, E
+13388, LYBM, NIS,                        YG,  203,  43.33, N,   21.90, E
+13586, LWSK, SKOPJE/PETROVAC,            YG,  239,  41.97, N,   21.65, E
+14015, ----, LUUBLUANA/BEZIGRAD,         LJ,  316,  46.07, N,   14.52, E
+14240, LDDD, ZAGREB/MAKSIMIR,            RH,  123,  45.82, N,   16.03, E
+14241, LDZA, ZAGREB/PLESO,               RH,  107,  45.73, N,   16.07, E
+14320, ----, CRIKVENICA,                 RH,    2,  45.17, N,   14.70, E
+14430, LDZD, ZADAR ZEMUNIK,              RH,   82,  44.10, N,   15.35, E
+15001, ----, AVRAMENI,                   RO,  240,  48.02, N,   26.95, E
+15010, ----, SATU MARE,                  RO,  122,  47.78, N,   22.88, E
+15080, ----, ORADEA,                     RO,  136,  47.05, N,   21.93, E
+15090, ----, IASI,                       RO,  102,  47.17, N,   27.60, E
+15120, LRCL, CLUJ-NAPOCA/SOMESEN,        RO,  413,  46.78, N,   23.57, E
+15150, ----, BACAU,                      RO,  182,  46.57, N,   26.98, E
+15189, ----, DUMBRAVENI,                 RO,  318,  46.23, N,   24.57, E
+15200, ----, ARAD,                       RO,  108,  46.17, N,   21.32, E
+15209, ----, BLAJ,                       RO,  334,  46.18, N,   23.92, E
+15310, ----, GALATI,                     RO,   71,  45.50, N,   28.02, E
+15350, ----, BUZAU,                      RO,   97,  45.15, N,   26.82, E
+15360, ----, SULINA,                     RO,    9,  45.15, N,   29.67, E
+15410, ----, TURNU SEVERAN,              RO,   77,  44.63, N,   22.63, E
+15420, LRBS, BUCHAREST/BANEASA,          RO,   91,  44.48, N,   26.18, E
+15425, ----, SOLACOLU,                   RO,   52,  44.38, N,   26.57, E
+15450, ----, CRAIOVA,                    RO,  190,  44.23, N,   23.87, E
+15470, ----, ROSIORI DE VEDE,            RO,  103,  44.12, N,   25.00, E
+15480, ----, CONSTANTA,                  RO,   14,  44.22, N,   28.63, E
+15481, LRCK, KOGALNICEANU,               RO,  102,  44.33, N,   28.43, E
+15490, ----, TURNU MAGURELE,             RO,   31,  43.75, N,   24.88, E
+15614, LBSF, SOFIA (OBSERVATORY),        BU,  595,  42.65, N,   23.38, E
+15615, ----, MUSSALA MTN,                BU, 2927,  42.18, N,   23.58, E
+15730, ----, KARDJALI,                   BU,  336,  41.63, N,   25.40, E
+16008, ----, S. VALENTINO,               IY, 1461,  45.75, N,   10.53, E
+16020, LIPB, BOLZANO,                    IY,  241,  46.47, N,   11.33, E
+16044, LIPD, UDINE/CAMPOFORMIDO,         IY,   92,  46.03, N,   13.18, E
+16045, LIPI, RIVOLTO AFB,                IY,   53,  45.98, N,   13.03, E
+16080, LIML, MILANO/LINATE,              IY,  103,  45.43, N,    9.28, E
+16088, LIPL, GHEDI (IT-AFB),             IY,   92,  45.42, N,   10.28, E
+16113, ----, CUNEO-LEVALDIGI,            IY,  386,  44.53, N,    7.62, E
+16129, LIQP, PALMARIA ISLAND,            IY,  192,  44.03, N,    9.83, E
+16142, ----, RIFREDO MUGELLO,            IY,  887,  44.05, N,   11.38, E
+16144, ----, S. PIETRO CAPOFIUME,        IY,   38,  44.65, N,   11.62, E
+16148, LIPC, CERVIA (IT-AFB),            IY,   10,  44.22, N,   12.30, E
+16170, LIRQ, FIRENZE,                    IY,   38,  43.80, N,   11.20, E
+16242, ----, ROMA/FIUMICINO,             IY,    5,  41.80, N,   12.23, E
+16245, LIRE, PRATICA DI MARE(AB),        IY,   12,  41.65, N,   12.43, E
+16310, LIQK, CAPE PALINURO,              IY,  185,  40.02, N,   15.28, E
+16316, LIBU, LATRONICO,                  IY,  896,  40.08, N,   16.02, E
+16320, LIBR, BRINDISI/CASALE AFB,        IY,   10,  40.65, N,   17.95, E
+16325, LIBH, MARINA DI GINOS,            IY,   12,  40.43, N,   16.88, E
+16350, LIBC, CROTONE,                    IY,  161,  39.00, N,   17.07, E
+16420, LICF, MESSINA,                    IY,   51,  38.20, N,   15.55, E
+16429, LICT, TRAPANI/BIRGI (AFB),        IY,    7,  37.92, N,   12.50, E
+16459, LICZ, SIGONELLA,                  IY,   22,  37.40, N,   14.92, E
+16522, LIEH, CAPE CACCIA,                IY,  205,  40.57, N,    8.17, E
+16546, LIED, DECIMOMANNU,                IY,   30,  39.35, N,    8.97, E
+16560, LIEE, CAGLIARI/ELMAS(AFB),        IY,    1,  39.25, N,    9.05, E
+16597, ----, LUQA,                    MALTA,   91,  35.85, N,   14.48, E
+16610, ----, KOMOTINI,                   GR,   31,  41.12, N,   25.40, E
+16622, LGTS, THESSALONIKI/MIKRA,         GR,    4,  40.52, N,   22.97, E
+16706, LGHI, CHIOS AIRPORT,              GR,    4,  38.22, N,   26.13, E
+16716, LGAT, ATHENS/HELLENKION,          GR,   15,  37.90, N,   23.73, E
+16726, LGKL, KALAMATA,                   GR,    8,  37.07, N,   22.02, E
+16744, ----, THIRA ISLAND,               GR,   36,  36.42, N,   25.43, E
+16754, LGIR, IRAKLION (CIV/AFB),         GR,   39,  35.33, N,   25.18, E
+16759, ----, TYMBAKION,                  GR,    7,  35.00, N,   24.75, E
+16760, ----, KASTELI,                    GR,  360,  35.18, N,   25.32, E
+17030, ----, SAMSUN CITY,                TU,    4,  41.28, N,   36.33, E
+17038, LTCG, TRABZON,                    TU,   30,  41.00, N,   39.72, E
+17042, ----, HOPA,                       TU,   33,  41.38, N,   41.42, E
+17050, ----, EDIRNE,                     TU,   48,  41.67, N,   26.57, E
+17062, ----, ISTANBUL/GOZTEPE,           TU,   33,  40.97, N,   29.08, E
+17064, ----, ISTANBUL/KARTAL,            TU,   18,  40.90, N,   29.15, E
+17067, ----, GOLCUK/DUMLUPINAR,          TU,   18,  40.72, N,   29.82, E
+17068, ----, CENGIZTOPEL,                TU,   70,  40.73, N,   30.08, E
+17095, ----, ERZURUM BOLGE,              TU, 1869,  39.90, N,   41.28, E
+17100, ----, IGDIR,                      TU,  858,  39.93, N,   44.03, E
+17130, ----, ANKARA/CENTRAL,             TU,  894,  39.95, N,   32.88, E
+17160, ----, KIRSEHIR,                   TU,  995,  39.15, N,   34.17, E
+17162, ----, GEMEREK,                    TU, 1171,  39.18, N,   36.07, E
+17196, LTAM, KAISERI CITY,               TU, 1043,  38.72, N,   35.50, E
+17200, LTAT, MALATYA/ERHAC,              TU,  849,  38.43, N,   38.08, E
+17220, ----, IZMIR,                      TU,   29,  38.43, N,   27.17, E
+17240, LTBM, ISPARTA,                    TU,  997,  37.75, N,   30.55, E
+17250, ----, NIGDE,                      TU, 1208,  37.97, N,   34.68, E
+17270, LTCH, SANLIURFA,                  TU,  549,  37.13, N,   38.77, E
+17280, LTCC, DIYARBAKIR(CIV/AFB),        TU,  674,  37.88, N,   40.20, E
+17281, ----, DIYABAKIR-BOLGE,            TU,  675,  37.90, N,   40.20, E
+17300, ----, ANTALYA,                    TU,   43,  36.70, N,   30.73, E
+17350, LTAG, ADANA/INCIRLIK,             TU,   66,  37.00, N,   35.42, E
+17351, ----, ADANA/BOLGE,                TU,   28,  36.98, N,   35.35, E
+17352, LTAF, ADANA/SAKIRPASA,            TU,   20,  36.98, N,   35.30, E
+17600, LCPH, PAPHOS,                     CY,    8,  34.47, N,   32.25, E
+17601, LCRA, AKROTIRI (RAF),             CY,   23,  34.58, N,   32.98, E
+17606, ----, NICOSIA,                    CY,  224,  35.20, N,   33.30, E
+17607, LCNC, NICOSIA/ATHALASSA,          CY,  161,  35.20, N,   33.40, E
+17609, LCLK, LARNACA AIRPORT,            CY,    2,  34.88, N,   33.63, E
+20046, ----, OSTROV KHEISA,           DK RA,   20,  80.62, N,   58.05, E
+20069, ----, OSTROV LIEZ,             DK RA,   12,  79.50, N,   76.98, E
+20107, ----, BARENCBURG,              AR RS,   49,  78.07, N,   14.22, E
+20274, ----, UJEDINENIJA ISLAND,      DK RA,   23,  77.50, N,   82.23, E
+20292, ----, CAPE CELJUSKIN,          DK RA,   13,  77.72, N,  104.30, E
+20353, ----, MYS ZHELANIA,            DK RA,    8,  76.95, N,   68.58, E
+20667, ----, BELY ISLAND,             DK RA,    6,  73.33, N,   70.03, E
+20674, ----, DIKSON ISLAND,           DK RA,   47,  73.53, N,   80.40, E
+20744, ----, MALYE KARMAKULY,         DK RA,   16,  72.38, N,   52.73, E
+20891, ----, HATANGA,                 DK RA,   33,  72.00, N,  102.57, E
+21358, ----, OSTROV ZOHOVA,           TK RA,   14,  76.15, N,  152.83, E
+21432, ----, KOTEL'NYJ ISLAND,        TK RA,   10,  76.00, N,  137.90, E
+21504, ----, PREOBRAZENIJA ISLAND,    TK RA,   57,  74.67, N,  112.93, E
+21647, ----, CAPE SALAUROVA,          TK RA,   22,  73.18, N,  143.93, E
+21824, ----, TIKSI,                   TK RA,    8,  71.58, N,  128.92, E
+21908, ----, DZALINDA,                TK RA,   62,  70.13, N,  113.97, E
+21946, ----, COKURDAH,                TK RA,   61,  70.62, N,  147.90, E
+21965, ----, CHETYREKHSTOLBOVOY,      TK RA,   38,  70.63, N,  162.40, E
+21982, ----, VRANGELJA ISLAND,        TK RA,    3,  70.98, N,  178.48, W
+22008, ULMM, MURMANSK,                AR RS,  121,  68.98, N,   33.12, E
+22113, ULMM, MURMANSK,                AR RS,  121,  68.97, N,   33.05, E
+22114, ----, LOPARSKAYA,              AR RS,  112,  68.63, N,   33.20, E
+22204, ----, KOVDOR,                  AR RS,  247,  67.57, N,   30.40, E
+22213, ----, APATITOVAYA,             AR RS,  135,  67.83, N,   33.75, E
+22217, ----, KANDALAKSA,              AR RS,   26,  67.15, N,   32.35, E
+22271, ----, SOJNA,                   AR RS,   16,  67.88, N,   44.13, E
+22522, ----, KEM (PORT),              LE RS,   10,  64.98, N,   34.80, E
+22543, ----, ARCHANGEL'SK,            AR RS,    6,  64.62, N,   40.51, E
+22550, ULAA, ARCHANGEL'SK,            AR RS,   13,  64.53, N,   40.47, E
+22551, ----, MUD'JUG ISLAND,          AR RS,    3,  64.85, N,   40.28, E
+22802, ----, SORTOVALA,               LE RS,   18,  61.72, N,   30.72, E
+22820, ----, PETROZAVODSK,            LE RS,  112,  61.82, N,   34.27, E
+22845, ----, KARGOPOL',               AR RS,  121,  61.50, N,   38.93, E
+23022, ----, AMDERMA,                 DK RA,   53,  69.77, N,   61.68, E
+23058, ----, ANTIPAJETA,              DK RA,    4,  69.15, N,   77.00, E
+23078, ----, NORILSK,                 DK RA,   62,  69.33, N,   88.10, E
+23146, ----, MYS KAMENNY,             DK RA,    2,  68.47, N,   73.60, E
+23205, ----, NAR'JAN-MAR,             AR RA,    7,  67.65, N,   53.02, E
+23215, ----, HOREJ-VER,               AR RA,   71,  67.43, N,   58.03, E
+23274, ----, YGARKA,                  AR RA,   20,  67.47, N,   86.57, E
+23330, ----, SALEHARD,                NO RA,   16,  66.53, N,   66.53, E
+23415, ----, PECHORA,                 AR RA,   56,  65.12, N,   57.10, E
+23418, ----, PECORA,                  AR RA,   56,  65.12, N,   57.10, E
+23472, ----, TURUHANSK,               NO RA,   32,  65.78, N,   87.95, E
+23552, ----, TARKO-SALE,              NO RA,   27,  64.92, N,   77.82, E
+23802, UUYY, SYKTYVKAR',              AR RA,  116,  61.68, N,   50.78, E
+23804, UUYY, SYKTYVKAR,               AR RA,  119,  61.72, N,   50.83, E
+23884, ----, BOR,                     NO RA,   63,  61.60, N,   90.00, E
+23921, ----, IVDEL',                  SV RA,  101,  60.68, N,   60.43, E
+23927, ----, SEVEROURALSK,            SV RA,  186,  60.15, N,   60.02, E
+23933, USHH, HANTY-MANSIJSK,          NO RA,   40,  60.97, N,   69.07, E
+23955, ----, ALEKSANDROVSKOE,         NO RA,   47,  60.43, N,   77.87, E
+24122, ----, OLENEK,                  HA RA,  220,  68.50, N,  112.43, E
+24125, ----, OLENEK,                  HA RA,  220,  68.50, N,  112.43, E
+24266, ----, VERHOJANSK,              HA RA,  137,  67.55, N,  133.38, E
+24343, ----, ZIGANSK,                 HA RA,   93,  66.77, N,  123.40, E
+24507, ----, TURA,                    NO RA,  186,  64.27, N,  100.23, E
+24641, ----, VILJUJSK,                HA RA,  107,  63.77, N,  121.62, E
+24688, ----, OJMJAKON,                HA RA,  745,  63.27, N,  143.15, E
+24726, UERR, MIRNY,                   HB RA,  347,  62.55, N,  113.88, E
+24790, ----, SUSUMAN,                 HB RA,  649,  62.78, N,  148.13, E
+24817, ----, ERBOGACEN,               IR RA,  291,  61.27, N,  108.02, E
+24908, ----, VANAVARA,                NO RA,  260,  60.33, N,  102.27, E
+24944, ----, OLEKMINSK,               HA RA,  226,  60.40, N,  120.42, E
+24947, ----, OLEKMINSK,               HA RA,  226,  60.37, N,  120.42, E
+24959, UEEE, YAKUTSK AIRPORT,         HA RA,  103,  62.08, N,  129.75, E
+25042, ----, AJON ISLAND,             HB RA,   16,  69.83, N,  168.67, E
+25123, ----, CERSKIJ,                 HA RA,   32,  68.80, N,  161.28, E
+25173, ----, CAPE SMIDTA,             HA RA,    7,  68.92, N,  179.48, E
+25399, ----, CAPE UELEN,              HA RA,    7,  66.17, N,  169.83, W
+25400, ----, ZYRJANKA,                HA RA,   43,  65.73, N,  150.90, E
+25403, ----, ZYRYANKA,                HA RA,   43,  65.73, N,  150.90, E
+25428, ----, OMOLON,                  HA RA,  253,  65.22, N,  160.50, E
+25551, ----, MARKOVO,                 HA RA,   33,  64.68, N,  170.42, E
+25563, UHMA, ANADYR',                 HA RA,   62,  64.78, N,  177.57, E
+25594, ----, BUKHTA PROVIDENCIA,      HA RA,    3,  64.43, N,  173.23, W
+25677, ----, UGOLNAJA,                HA RA,   85,  63.05, N,  179.32, E
+25703, ----, SEJMCAN,                 HA RA,  207,  62.92, N,  152.42, E
+25822, ----, KUSHKA,                  HA RA,   20,  61.95, N,  160.37, E
+25913, UHMM, MAGADAN,                 HA RA,  118,  59.58, N,  150.78, E
+25954, ----, KORF,                    HA RA,    3,  60.35, N,  166.00, E
+26038, ULTT, TALLIN,                  HA RA,   44,  59.45, N,   24.80, E
+26063, ULLI, ST. PETERSBURG,          LE RS,   72,  59.97, N,   30.30, E
+26075, ----, ST. PETERSBURG,          LE RS,   72,  59.95, N,   30.70, E
+26080, ----, MOTOKHOVO,               LE RS,   34,  59.53, N,   32.38, E
+26258, ----, PSKOV,                   LE RS,   42,  57.80, N,   28.42, E
+26291, ----, BOROVICI,                LE RS,   92,  58.42, N,   33.90, E
+26298, ----, BOLOGOE,                 LE RS,  178,  57.90, N,   34.05, E
+26378, ----, HOLM,                    LE RS,   71,  57.15, N,   31.18, E
+26381, ----, DEMJANSK,                LE RS,   48,  57.65, N,   32.47, E
+26406, ----, LIEPAJA,                 LE BY,    7,  56.48, N,   21.02, E
+26422, UMRR, RIGA,                    LE BY,    7,  56.97, N,   24.07, E
+26425, ----, GELGABA,                 LE BY,    9,  56.65, N,   23.73, E
+26429, ----, BAUSKA,                     RA,   33,  56.40, N,   24.22, E
+26435, ----, LVA SKRIVERI,               LE,   83,  56.65, N,   25.13, E
+26441, ----, MADONA,                     BY,  251,  56.88, N,   26.33, E
+26477, ULOL, VELIKIE LUKI,            LE RS,   98,  56.38, N,   30.60, E
+26529, ----, PANEVEZYS,               MI BY,   59,  55.75, N,   24.38, E
+26629, ----, KAUNAS,                  MI BY,   75,  54.88, N,   23.88, E
+26702, ----, KALININGRAD,             MI BY,   27,  54.70, N,   20.62, E
+26781, ----, SMOLENSK,                MI RS,  241,  54.75, N,   32.07, E
+26850, UMMS, MINSK,                   MI BY,  234,  53.87, N,   27.53, E
+26863, ----, MOGILEV,                 MI BY,  193,  53.90, N,   30.32, E
+27037, ULWW, VOLOGDA,                 AR RS,  131,  59.23, N,   39.87, E
+27038, ----, VOLOGDA,                 AR RS,  130,  59.32, N,   39.93, E
+27199, ----, KIROV,                   MS RS,  158,  58.60, N,   49.63, E
+27225, ----, RYBINSK,                 MS RS,  114,  58.00, N,   38.83, E
+27459, ----, NIZNIJ NOVGOROD,         MS RS,  157,  56.27, N,   44.00, E
+27594, ----, KAZAN',                     RS,  127,  55.82, N,   48.52, E
+27595, UWKD, KAZAN',                  MS RS,  116,  55.78, N,   49.18, E
+27611, ----, NARO FOMINSK,            MS RS,  193,  55.38, N,   36.70, E
+27612, ----, MOSCOW,                  MS RS,  200,  55.75, N,   37.95, E
+27618, ----, SERPUHOV,                MS RS,  166,  54.93, N,   37.47, E
+27707, ----, SUHINICI,                MS RS,  239,  54.12, N,   35.33, E
+27713, UUDD, MOSCOW POLGOPRUDNYJ,     MS RS,  179,  55.40, N,   37.90, E
+27730, ----, RJAZAN',                 MS RS,  158,  54.63, N,   39.70, E
+27944, ----, TAMBOV,                  MS RS,  161,  52.72, N,   41.78, E
+27947, ----, TAMBOV,                  MS RS,  139,  52.73, N,   41.47, E
+27962, UWPP, PENZA,                   MS RS,  174,  53.13, N,   45.02, E
+27995, ----, BEZENCUKSKAJA,           MS RS,   45,  52.98, N,   49.43, E
+28225, USPP, PERM,                    SV RA,  170,  57.95, N,   56.20, E
+28275, ----, TOBOLSK,                 NO RA,   44,  58.15, N,   68.18, E
+28440, USSS, SVERDLOVSK,              SV RA,  237,  56.80, N,   60.63, E
+28445, ----, VERHNEE DUBROVO,         SV RA,  290,  56.73, N,   61.07, E
+28598, ----, SARGATSKOE,              NO RA,   87,  55.60, N,   73.48, E
+28601, ----, CISTOPOL,                   RA,  113,  55.35, N,   50.62, E
+28661, ----, KURGAN,                  SV RA,   79,  55.47, N,   65.40, E
+28695, ----, OMSK,                    NO RA,  122,  54.93, N,   73.40, E
+28698, UNDD, OMSK,                    NO RA,  123,  54.93, N,   73.40, E
+28712, ----, TUIMAZY,                 SV RA,  126,  54.58, N,   53.73, E
+28722, UWUU, UFA,                     SV RA,  105,  54.75, N,   56.00, E
+28900, UWWW, SAMARA,                  AL RA,   40,  53.25, N,   50.45, E
+28951, ----, KOSTANAI,                AL RA,  171,  53.23, N,   63.62, E
+28952, ----, KUSTANAJ,                AL RA,  156,  53.22, N,   63.62, E
+29231, ----, KOLPASEV,                NO RA,   76,  58.30, N,   82.90, E
+29263, UNII, YENISEYSK,               NO RA,   78,  58.45, N,   92.15, E
+29282, ----, BOGUCANY,                NO RA,  134,  58.42, N,   97.40, E
+29348, ----, PERVOMAJSKOE,            NO RA,  115,  57.07, N,   86.22, E
+29498, ----, SITKINO,                 NO RA,  221,  56.35, N,   98.37, E
+29563, ----, KACA,                       RA,  479,  56.12, N,   92.20, E
+29572, ----, EMEL'JANOVO,             NO RA,  296,  56.18, N,   92.62, E
+29574, ----, KRASNOJARSK,             NO RA,  206,  56.00, N,   92.88, E
+29612, ----, BARABINSK,               NO RA,  120,  55.37, N,   78.37, E
+29634, UNNT, NOVOSIBIRSK,             NO RA,  177,  55.03, N,   82.90, E
+29636, ----, TOGUCIN,                 NO RA,  171,  55.23, N,   84.40, E
+29698, UINN, NIZNE-UDINSK,            IR RA,  410,  54.88, N,   99.03, E
+29736, ----, MASLJANINO,              NO RA,  198,  54.33, N,   84.22, E
+29838, UNBB, BARNAUL,                 NO RA,  252,  53.40, N,   83.70, E
+29839, ----, BARNAUL,                 NO RA,  159,  53.21, N,   83.49, E
+29862, ----, HAKASSKATA,              NO RA,  256,  53.77, N,   91.32, E
+29999, ----, ORLIK (MTN STN),         IR RA, 1570,  52.50, N,   99.82, E
+30054, ----, VITIM,                   HA RA,  193,  59.45, N,  112.58, E
+30230, UIKK, KIRENSK,                 IR RA,  258,  57.77, N,  108.12, E
+30309, UIBB, BRATSK,                  IR RA,  489,  56.07, N,  101.83, E
+30372, ----, CARA,                    IR RA,  711,  56.92, N,  118.37, E
+30457, ----, BAUNT,                      RA, 1078,  55.27, N,  113.13, E
+30507, ----, IKEJ,                    IR RA,  527,  54.18, N,  100.08, E
+30521, ----, ZIGALOVO,                IR RA,  428,  54.80, N,  105.22, E
+30554, ----, BOGDARIN,                IR RA,  995,  54.62, N,  113.13, E
+30557, ----, BAGDARIN,                IR RA,  995,  54.47, N,  113.58, E
+30565, ----, UST-KARENGA,             IR RA,  686,  54.45, N,  116.52, E
+30635, ----, UST-BARGUZIN,            IR RA,  457,  54.42, N,  109.02, E
+30673, ----, MOGOCA,                  IR RA,  619,  53.73, N,  119.78, E
+30692, ----, SKOVORODINO,             HA RA,  400,  54.00, N,  123.97, E
+30710, ----, IRKUTSK,                 IR RA,  437,  52.40, N,  104.20, E
+30715, ----, ANGARSK,                 IR RA,  450,  52.48, N,  103.85, E
+30758, UIAA, CITA/KADALA,             IR RA,  685,  52.02, N,  113.33, E
+30815, ----, HAMAR-DABAN,             IR RA, 1442,  51.53, N,  103.60, E
+30858, ----, KUROT-DARASUA,           IR RA,  805,  51.20, N,  113.72, E
+30935, ----, KRASNYJ CIKOJ,           IR RA,  770,  50.37, N,  108.75, E
+30965, ----, BORZJA,                  IR RA,  684,  50.38, N,  116.52, E
+31004, ----, ALDAN,                   HA RA,  682,  58.62, N,  125.37, E
+31088, ----, OHOTSK,                  HA RA,    6,  59.37, N,  143.20, E
+31168, ----, AJAN,                    HA RA,    9,  56.45, N,  138.15, E
+31300, ----, ZEJA,                    HA RA,  232,  53.75, N,  127.23, E
+31329, UHBP, EKIMCAN,                 HA RA,  543,  53.07, N,  132.93, E
+31369, UHNN, NIKOLAEVSK,              HA RA,   68,  53.15, N,  140.70, E
+31510, ----, BLAGOVESCENSK,           HA RA,  137,  50.27, N,  127.50, E
+31538, ----, SUTUR,                   HA RA,  349,  50.07, N,  132.13, E
+31561, ----, KOMSOMOLSK,              HB RA,   19,  50.60, N,  137.03, E
+31707, ----, EKATERINO-NIKOL,         HA RA,   74,  47.73, N,  130.97, E
+31735, UHHH, HABAROVSK/NOVY,          HA RA,   72,  48.52, N,  135.17, E
+31736, ----, HABAROVSK,               HA RA,   72,  48.53, N,  135.23, E
+31770, ----, SOVETSKAY GAVAN,         HA RA,   22,  49.00, N,  140.27, E
+31873, ----, DAL'NERECENSK,           HA RA,  107,  45.87, N,  133.73, E
+31909, ----, TERNEJ,                  HA RA,   68,  45.03, N,  136.67, E
+31960, ----, VLADIVOSTOK,             HA RA,   78,  43.12, N,  131.90, E
+31977, ----, SAD-GOROD,               HB RA,   82,  43.27, N,  132.05, E
+32061, ----, ALEKSANDROVSK-SAHALINSKIJ,  RA,   31,  50.90, N,  142.17, E
+32098, ----, PORONAJSK,               HA RA,    4,  49.22, N,  143.10, E
+32099, ----, TERPENIYA,               HA RA,   33,  48.50, N,  144.75, E
+32150, UHSS, JUZNO-SAHALINSK,         HA RA,   31,  46.92, N,  142.73, E
+32165, ----, JUZNO-KURILSK,           HA RA,   40,  44.02, N,  145.87, E
+32186, ----, URUP ISLAND,             HA RA,   70,  46.20, N,  150.50, E
+32215, ----, SEVERO-KURILSK,          HA RA,   23,  50.68, N,  156.13, E
+32217, ----, MYS VASIL'EVA,           HA RA,   23,  50.02, N,  155.40, E
+32389, ----, KLJUCI,                  HA RA,   28,  56.32, N,  160.83, E
+32477, ----, SOBOLEVO,                HA RA,   25,  54.30, N,  155.97, E
+32540, UHPP, PETROPAVLOVSK-KAMCHATSKIJ,  RA,   24,  52.97, N,  158.75, E
+32618, ----, NIKOLSKOE/BERINGA,       HA RA,    6,  55.20, N,  165.98, E
+33008, ----, BREST,                   MI BY,  142,  52.12, N,   23.67, E
+33041, UMGG, GOMEL,                   MI BY,  126,  52.40, N,   30.95, E
+33317, ----, SEPETOVKA,               KI UR,  278,  50.17, N,   27.05, E
+33345, UKKK, KIEV/ZHULYANY,           KI UR,  168,  50.40, N,   30.45, E
+33347, UKBB, BORYSPIL,                KI UR,  122,  50.33, N,   30.97, E
+33393, UKLL, L'VIV,                   KI UR,  325,  49.82, N,   23.95, E
+33631, ----, UZGOROD,                 KI UR,  118,  48.63, N,   22.27, E
+33658, ----, CHERNIVTSI,              KI UR,  246,  48.37, N,   25.90, E
+33663, ----, MOGILEV-PODOL'SKIJ,      KI UR,   79,  48.45, N,   27.78, E
+33791, ----, KRYVYI RIH,              KI UR,  124,  48.03, N,   33.22, E
+33805, ----, NIKOPOL',                KV UR,   56,  47.58, N,   34.40, E
+33815, UKII, KISHINEV,                KI UR,  180,  47.02, N,   28.87, E
+33837, UKOO, ODESSA/TSENTRALNY,       KI UR,   35,  46.43, N,   30.77, E
+33877, ----, NIZNIE SEROGOZY,         KI UR,   54,  46.85, N,   34.40, E
+33945, ----, POCTOVOE,                KI UR,  170,  44.83, N,   33.95, E
+33946, UKFF, SIMFEROPOL',             KI UR,  181,  44.68, N,   34.13, E
+33966, ----, KRYMSKAYA,               KI UR,  183,  45.05, N,   34.60, E
+34009, ----, KURSK,                   MS RS,  247,  51.77, N,   36.17, E
+34072, ----, KARABULAK,               MS RS,  292,  52.33, N,   46.37, E
+34122, UUOO, VORONEZ,                 MS RS,  154,  51.70, N,   39.17, E
+34172, UWSS, SARATOV,                 MS RS,  156,  51.57, N,   46.03, E
+34247, ----, KALAC,                   MS RS,   93,  50.42, N,   41.05, E
+34300, UKHH, KHARKOV,                 KI UR,  155,  49.97, N,   36.13, E
+34467, ----, VOLOGRAD,                TB RS,  141,  48.78, N,   44.33, E
+34560, URWW, VOLGOGRAD,               TB RS,  145,  48.68, N,   44.35, E
+34731, URRR, ROSTOV-NA-DONU,          TB RS,   77,  47.25, N,   39.82, E
+34737, ----, KUSCEVSKAJA,             TB RS,   14,  46.57, N,   39.63, E
+34772, ----, YUSTA,                   TB RS,    2,  47.12, N,   46.30, E
+34838, ----, TIHORECK,                TB RS,   79,  45.85, N,   40.08, E
+34858, ----, DIVNOE,                  TB RS,   77,  46.92, N,   45.35, E
+34880, ----, ASTRAHAN,                TB RS,  -22,  46.27, N,   48.03, E
+34882, ----, ASTRAHAN',               TB RS,  -17,  46.28, N,   47.98, E
+35108, UARR, URALSK,                  AL RA,   36,  51.25, N,   51.40, E
+35121, UWOO, ORENBURG,                AL RA,  109,  51.78, N,   55.22, E
+35225, ----, MARTUK,                  AL RA,  178,  50.75, N,   56.53, E
+35229, UATT, AKTJUBINSK,              AL RA,  227,  50.30, N,   57.23, E
+35361, ----, AMANGELDY,               AL RA,  142,  50.13, N,   65.23, E
+35394, ----, KARAGANDA,               AL RA,  555,  49.80, N,   73.13, E
+35671, ----, DZEZKAZGAN,              AL RA,  345,  47.80, N,   67.72, E
+35700, ----, GUR'EV,                  AL RA,  -15,  47.02, N,   51.85, E
+35746, UATA, ARALSK,                  AL RA,   56,  46.78, N,   61.67, E
+35796, ----, BALHAS,                  AL RA,  352,  46.90, N,   75.00, E
+36003, ----, PAVLODAR,                AL RA,  123,  52.28, N,   76.95, E
+36096, ----, KYZYL,                   NO RA,  629,  51.70, N,   94.45, E
+36177, ----, SEMIPALATINSK,           AL RA,  196,  50.35, N,   80.25, E
+36770, ----, MULALY,                  AL RA,  564,  45.45, N,   78.23, E
+36859, ----, PANFILOV,                AL RA,  640,  44.17, N,   80.07, E
+36870, UAAA, ALMA-ATA,                AL RA,  847,  43.23, N,   76.93, E
+36872, ----, ALMATY,                  AL RA,  662,  43.35, N,   77.00, E
+36974, ----, NARYN (MTN STN),         TA RA, 2041,  41.43, N,   76.00, E
+37011, ----, TUAPSE,                  TB RS,   52,  44.10, N,   39.03, E
+37018, ----, TUAPSE (STREAM),         TB RS,   41,  44.10, N,   39.07, E
+37054, URMM, MINERALYNE VODY,         TB RS,  314,  44.22, N,   43.10, E
+37055, URMM, MINERALYNE VODY',        TB RS,  321,  44.22, N,   43.10, E
+37099, ----, RAZDOL'NOYE SOCI,        TB RS,   57,  43.58, N,   39.76, E
+37259, ----, MAHACHKALA,              TB RS,   19,  43.02, N,   47.48, E
+37260, ----, SUHUMI,                  TB RS,   13,  42.87, N,   41.13, E
+37395, ----, KUTAISI,                 TB RS,  116,  42.27, N,   42.63, E
+37472, ----, MAHACKALA,               TB RS,    6,  43.02, N,   47.43, E
+37484, ----, BATUMI (BAY),            TB RS,    6,  41.65, N,   41.63, E
+37507, ----, ADIGENI,                 TB RS, 1185,  41.70, N,   42.70, E
+37545, ----, TBILISI,                 TB RS,  403,  41.70, N,   44.75, E
+37549, UGGG, TBILISI/NOVOALEXEYE,     TB RS,  467,  41.68, N,   44.95, E
+37750, ----, ISMAILLY,                TB RS,  550,  40.78, N,   48.13, E
+37789, UGEE, YEREVAN/ZVARTNOTS,       TB RS,  890,  40.13, N,   44.47, E
+37860, ----, MASHTAGA,                TB RS,   28,  40.53, N,   50.00, E
+37936, ----, NAKHICHEVAN,             TB RS,  875,  39.20, N,   45.42, E
+37985, ----, LENKORAN',               TB RS,   11,  38.73, N,   48.83, E
+37989, ----, ASTRARA,                 TB RS,   21,  38.45, N,   48.88, E
+38062, UAOO, KZYL-ORDA,               AL RA,  129,  44.77, N,   65.53, E
+38064, ----, KYSYLORDA,               AL RA,  133,  44.77, N,   65.52, E
+38341, ----, DZAMBUL,                 AL RA,  653,  42.85, N,   71.38, E
+38343, ----, LUGOVAJA,                AL RA,  683,  45.95, N,   72.75, E
+38352, ----, BELOVODSKOE,             TA RA,  726,  42.85, N,   74.10, E
+38353, UAFF, FRUNZE,                  TA RA,  760,  42.85, N,   74.53, E
+38358, ----, SUSAMYR,                 TA RA, 2092,  42.15, N,   73.98, E
+38388, ----, EKEDGE,                  TA RA,   62,  41.03, N,   57.77, E
+38392, ----, DASHKHOVUZ,              TA RA,   88,  41.83, N,   59.98, E
+38413, UTSM, TAMDY-BULAK,             TA RA,  238,  41.73, N,   64.62, E
+38457, UTTT, TASKENT/YUZNI,           TA RA,  489,  41.27, N,   69.27, E
+38507, ----, KRASNOVODSK,             TA RA,   89,  40.03, N,   52.98, E
+38606, ----, KOKAND,                  TA RA,  405,  40.55, N,   70.95, E
+38613, ----, DZALAL-ABAD,             TA RA,  765,  40.92, N,   72.95, E
+38687, ----, CARDZOU,                 TA RA,  193,  39.08, N,   63.60, E
+38750, ----, GASAN-KULI,              TA RA,  -23,  37.47, N,   53.97, E
+38755, ----, BYGDAILI,                TA RA,    1,  38.53, N,   54.30, E
+38836, UTDD, DUSANBE,                 TA RA,  803,  38.55, N,   68.78, E
+38878, ----, MURGAB,                  TA RA, 3576,  38.17, N,   73.98, E
+38880, ----, ASHABAD,                 TA RA,  210,  37.97, N,   58.33, E
+38927, UTST, TERMEZ,                  TA RA,  302,  37.23, N,   67.27, E
+38954, ----, KHOROG,                  TA RA, 2080,  37.50, N,   71.50, E
+38989, ----, TAHTA-BAZAR,             TA RA,  349,  35.92, N,   62.92, E
+40007, OSAP, ALEPPO (CIV/MIL),           SY,  393,  36.18, N,   37.22, E
+40039, ----, RAQQA,                      SY,  245,  35.93, N,   39.02, E
+40041, ----, AL-RASTAN,                  SY,  450,  34.93, N,   36.73, E
+40080, OSDI, DAMASCUS (CIV/MIL),         SY,  609,  33.42, N,   36.52, E
+40100, OLBA, BEIRUT (CIV/MIL),           LB,   19,  33.82, N,   35.48, E
+40155, LLHA, HAIFA (ISR-AFB),            IS,    8,  32.47, N,   35.01, E
+40165, ----, HAIFA/R.DAVID,              IS,   51,  32.67, N,   35.18, E
+40179, ----, BET DAGAN,                  IS,   30,  32.00, N,   34.82, E
+40180, LLBG, BEN-GURION (CIV/MIL),       IS,   49,  32.00, N,   34.53, E
+40186, ----, ASHDOD NORTH,               IS,   20,  31.87, N,   34.68, E
+40191, LLBS, BEER-SHEVA/TEYMA,           IS,  200,  31.17, N,   34.43, E
+40198, LLOV, OVDA (ISR-AFB/CIV),         IS,  432,  29.56, N,   34.56, E
+40199, LLET, ELAT/J. HOZMAN,             IS,   12,  29.55, N,   34.95, E
+40265, OJMF, MAFRAQ (JOR-AFB),           JD,  687,  32.37, N,   36.27, E
+40290, LLJR, JERUSALEM/ATAROT,           IS,  759,  31.52, N,   35.13, E
+40373, OEPA, HAFR AL-BATIN ARPT,         SD,  355,  28.33, N,   46.12, E
+40375, OETB, TABUK (SAUD-AFB),           SD,  770,  28.37, N,   36.58, E
+40376, ----, TAYMA (AUT),                SD,  860,  27.60, N,   38.60, E
+40394, OEHL, HAIL,                       SD, 1013,  27.52, N,   41.73, E
+40400, ----, EL WEJH,                    SD,   22,  26.23, N,   36.43, E
+40416, OEDR, DHAHRAN INTL ARPT,          SD,   17,  26.27, N,   50.15, E
+40417, OEDF, KING FAHAD INTERNATIONAL,   SD,   12,  26.45, N,   49.82, E
+40420, OEAH, AL AHSA,                    SD,  172,  25.28, N,   49.48, E
+40421, ----, HUFUF (AUT),                SD,  151,  25.30, N,   49.70, E
+40430, OEMA, MADINAH INTL ARPT,          SD,  631,  24.55, N,   39.72, E
+40435, OEDW, DAWADMI,                    SD,  990,  24.50, N,   44.40, E
+40437, OERK, RIYADH/KING KHALID,         SD,  612,  24.93, N,   46.72, E
+40438, OERY, RIYADH (SAUD-AFB),          SD,  612,  24.72, N,   46.72, E
+40495, ----, SULAYEL/ASSULAYYIL,         SD,  617,  20.47, N,   45.67, E
+40582, OKBK, KUWAIT INTERNATIONAL,       KW,   55,  29.22, N,   47.98, E
+40585, ----, AL SHUAIBA,                 KW,    6,  29.03, N,   48.15, E
+40594, ----, AL-NWAISEEB,                KW,    3,  28.50, N,   48.47, E
+40608, ----, MOSUL,                      IQ,  222,  36.32, N,   43.15, E
+40642, ----, RUTBA,                      IQ,  615,  33.03, N,   40.28, E
+40648, ORBH, HABBANIYA (IRQ-AFB),        IQ,   45,  33.37, N,   43.57, E
+40650, ORBB, BAGDAD/SIRSENK,             IQ,   34,  33.23, N,   44.23, E
+40676, ----, NASIRIYA,                   IQ,    3,  31.08, N,   46.23, E
+40688, ORMS, SHAIBAH/BASRAH,             IQ,   19,  30.42, N,   47.65, E
+40698, ----, BASRA,                      IQ,    2,  30.57, N,   47.78, E
+40701, ----, MAKKO,                      IR, 1470,  39.33, N,   44.43, E
+40706, OITT, TABRIZ(IRAN-AB/CIV),        IR, 1361,  38.08, N,   46.28, E
+40710, ----, SARAB,                      IR, 1500,  37.93, N,   47.53, E
+40745, OIMM, MASHHAD (AFB/CIV),          IR,  980,  36.27, N,   59.63, E
+40747, OICS, SANANDAJ,                   IR, 1373,  35.33, N,   47.00, E
+40754, OIII, TEHRAN/MEHRABAD AFB,        IR, 1191,  35.68, N,   51.35, E
+40765, OICG, GHASRE-SHIRIN,              IR,  378,  34.52, N,   45.58, E
+40766, OICC, KERMANSHAH/BAKTARAN,        IR, 1322,  34.27, N,   47.12, E
+40780, ----, ILAM,                       IR, 1363,  33.63, N,   46.42, E
+40789, ----, KHOR,                       IR,  921,  33.78, N,   55.08, E
+40791, OIMT, TABAS,                      IR,  711,  33.60, N,   56.92, E
+40794, ----, SAFI/ABAD DEZFU,            IR,   82,  32.27, N,   48.43, E
+40795, ----, VAHDATI AFB,                IR,  152,  32.43, N,   48.40, E
+40800, OIFM, ESFAHAN (CIV/AFB),          IR, 1590,  32.62, N,   51.67, E
+40809, OIMB, BIRJAND,                    IR, 1491,  32.87, N,   59.20, E
+40811, OIAW, AHWAZ,                      IR,   22,  31.20, N,   48.40, E
+40821, OIYY, YAZD,                       IR, 1230,  31.90, N,   54.28, E
+40841, OIKK, KERMAN,                     IR, 1754,  30.25, N,   56.97, E
+40848, OISS, SHIRAZ (CIV/AFB),           IR, 1491,  29.53, N,   52.58, E
+40851, ----, SIRJAN,                     IR, 1739,  29.47, N,   55.72, E
+40856, OIZH, ZAHEDAN/INTL,               IR, 1370,  29.47, N,   60.88, E
+40875, OIKB, BANDAR ABBAS INTL,          IR,   10,  27.22, N,   56.37, E
+40879, OIZI, IRANSHAHR,                  IR,  591,  27.20, N,   60.70, E
+40911, ----, MAZAR-I-SHARIF,             AF,  378,  42.70, N,   67.20, E
+40938, ----, HERAT,                      AF,  964,  34.22, N,   62.22, E
+40948, KBLO, KABUL AIRPORT,              AF, 1791,  34.33, N,   69.13, E
+40990, ----, KANDAHAR AIRPORT,           AF, 1010,  31.50, N,   65.85, E
+41014, ----, OBAYLAH (AUT),              SD,  588,  22.22, N,   50.88, E
+41024, OEJN, JEDDAH/ABDUL AZIZ,          SD,   12,  21.67, N,   39.15, E
+41112, OEAB, ABHA,                       SD, 2084,  18.23, N,   42.65, E
+41114, OEKM, KHAMIS MUSHAIT AFB,         SD, 2054,  18.30, N,   42.80, E
+41141, ----, GIZAN (AUT),                SD,    6,  16.90, N,   42.50, E
+41170, OTBD, DOHA INTL AIRPORT,          QT,   10,  25.25, N,   51.57, E
+41181, OMRK, RAS AL KHAIMAH,             ER,   31,  25.62, N,   55.93, E
+41217, OMAA, ABU DHABI INTL,             ER,   27,  24.43, N,   54.65, E
+41218, OMAL, AL AIN INTL AIRPORT,        ER,  262,  24.25, N,   55.60, E
+41254, OOSQ, SAIQ,                       OM, 1755,  23.07, N,   57.65, E
+41256, OOMS, SEEB INTL/MUSCAT,           OM,    8,  23.58, N,   58.28, E
+41288, ----, MASIRAH,                    OM,   21,  20.68, N,   58.90, E
+41316, OOSA, SALALAH,                    OM,   20,  17.03, N,   54.08, E
+41344, ----, SANA'A (CIV/MIL),           YE, 2190,  15.52, N,   44.18, E
+41404, OYSN, SANA'A,                     YE, 2190,  15.38, N,   44.20, E
+41414, ----, THAMUD,                     YE,  610,  17.37, N,   50.95, E
+41416, ----, KAMARAN,                    YE,   15,  15.37, N,    4.42, E
+41437, OYAT, ATAQ,                       DY, 1067,  14.55, N,   46.83, E
+41480, OYAA, ADEN INTL ARPT,             DY,    3,  12.67, N,   45.03, E
+41506, ----, CHITRAL,                    PK, 1494,  35.85, N,   71.83, E
+41508, ----, DIR,                        PK, 1370,  35.20, N,   71.85, E
+41515, ----, DROSH,                      PK, 1480,  35.40, N,   71.78, E
+41529, ----, PESHAWAR,                   PK,  329,  34.03, N,   71.93, E
+41530, OPPS, PESHAWAR (CIV/MIL),         PK,  360,  34.02, N,   71.58, E
+41531, ----, BATTAL,                     PK, 1676,  34.58, N,   73.15, E
+41560, ----, PARACHINAR,                 PK, 1728,  33.87, N,   70.08, E
+41571, ----, CHAKLALA,                   PK,  509,  33.62, N,   73.10, E
+41593, ----, SARGODHA (PAK-AFB),         PK,  187,  32.05, N,   72.67, E
+41594, OPSR, SARGODHA (PAK-AFB),         PK,  188,  32.05, N,   72.67, E
+41598, ----, JHELUM,                     PK,  233,  32.93, N,   73.72, E
+41620, ----, FORT SANDEMAN,              PK, 1405,  31.35, N,   69.47, E
+41624, ----, DERA ISMAIL KHAN,           PK,  174,  31.82, N,   70.92, E
+41640, OPLH, LAHORE/WALTON,              PK,  215,  31.55, N,   74.33, E
+41661, ----, QUETTA BREWERY,             PK, 1621,  30.27, N,   66.92, E
+41675, OPMT, MULTAN,                     PK,  123,  30.20, N,   71.43, E
+41685, ----, BARKHAN,                    PK, 1097,  29.88, N,   69.72, E
+41710, ----, NOKKUNDI,                   PK,  683,  28.82, N,   62.75, E
+41712, ----, DALBANDIN,                  PK,  849,  28.88, N,   64.40, E
+41715, ----, JACOBABAD,                  PK,   56,  28.30, N,   68.47, E
+41718, ----, KHABPUR,                    PK,   87,  28.65, N,   70.68, E
+41739, ----, PANJGUR,                    PK,  981,  26.97, N,   64.10, E
+41744, ----, KHUZDAR,                    PK, 1225,  27.83, N,   66.63, E
+41749, ----, NAWABSHAH,                  PK,   37,  26.25, N,   68.37, E
+41756, ----, JIWANI,                     PK,   57,  25.04, N,   61.48, E
+41768, ----, CHHOR,                      PK,    6,  25.52, N,   69.78, E
+41780, OPKC, KARACHI INTL ARPT,          PK,   22,  24.90, N,   67.13, E
+41859, ----, RANGPUR,                    BW,   34,  25.73, N,   89.23, E
+41883, ----, BOGRA,                      BW,   20,  24.85, N,   89.37, E
+41891, ----, SYLHET,                     BW,   35,  24.90, N,   91.88, E
+41895, VGRJ, RAJSHAHI,                   BW,   20,  24.37, N,   88.70, E
+41907, VGIS, ISHURDI,                    BW,   14,  24.13, N,   89.05, E
+41909, ----, TANGAIL,                    BW,   56,  24.25, N,   89.93, E
+41923, ----, COMILLA,                    BW,    9,  23.43, N,   91.18, E
+41929, ----, FARODPUR,                   BW,    9,  23.60, N,   89.85, E
+41936, ----, JESSORE,                    BW,    7,  23.11, N,   89.10, E
+41943, ----, FENI,                       BW,    8,  23.03, N,   91.42, E
+41950, ----, BARISAL,                    BW,    4,  22.75, N,   90.37, E
+41977, ----, CHITTAGONG/AMBAGAN,         BW,   34,  22.35, N,   91.82, E
+41992, ----, COX'S BAZAR,                BW,    4,  21.43, N,   91.93, E
+42027, ----, SRINAGAR,                   IN, 1587,  34.08, N,   74.83, E
+42056, ----, JAMMU,                      IN,  323,  32.67, N,   74.83, E
+42079, ----, SUNDERNAGAR,                IN,  875,  31.53, N,   76.90, E
+42097, ----, BHATINDA,                   IN,  211,  30.17, N,   74.58, E
+42101, ----, PATIALA,                    IN,  251,  30.33, N,   76.47, E
+42103, ----, AMBALA,                     IN,  272,  30.38, N,   76.77, E
+42107, ----, DHARMPUR,                   IN, 1986,  30.90, N,   77.02, E
+42111, ----, DEHRA DUN,                  IN,  682,  30.32, N,   78.03, E
+42112, ----, MUSSOORIE,                  IN, 2042,  30.45, N,   78.08, E
+42114, ----, TEHRI,                      IN,   29,  30.40, N,   78.48, E
+42117, ----, CHAMOLI,                    IN,   20,  30.40, N,   79.33, E
+42123, ----, GANGANAGAR,                 IN,  177,  29.92, N,   73.92, E
+42131, VIHR, HISSAR,                     IN,  221,  29.17, N,   75.73, E
+42147, ----, MUKTESHWAR KUMA,            IN, 2311,  29.47, N,   79.65, E
+42165, ----, BIKANER,                    IN,  224,  28.00, N,   73.30, E
+42170, ----, CHURU,                      IN,  286,  28.25, N,   74.92, E
+42181, VIDP, INDIRA GANDHI,              IN,  233,  28.57, N,   77.12, E
+42182, VIDD, DELHI/SAFDARJUNG,           IN,  216,  28.58, N,   77.20, E
+42187, ----, MORADABAD,                  IN,  202,  28.83, N,   78.75, E
+42188, ----, RAMPUR,                     IN,  191,  28.75, N,   79.00, E
+42189, ----, BAREILLY,                   IN,  173,  28.36, N,   79.40, E
+42260, ----, AGRA/VIAG,                  IN,  168,  27.16, N,   77.96, E
+42273, ----, BAHRAICH,                   IN,  124,  27.57, N,   81.60, E
+42282, ----, NAUTANWA,                   IN,   98,  27.43, N,   83.42, E
+42299, ----, GANGTOK,                    IN, 1756,  27.33, N,   88.62, E
+42314, VEMN, DIBRUGARH/MOHANBARI,        IN,  111,  27.48, N,   95.02, E
+42328, ----, JAISALMER,                  IN,  257,  26.90, N,   70.92, E
+42339, VIJO, JODHPUR (IN-AFB),           IN,  224,  26.30, N,   73.02, E
+42348, ----, JAIPUR,                     IN,  390,  26.82, N,   75.80, E
+42361, VIGR, GWALIOR (IN-AFB),           IN,  207,  26.23, N,   78.25, E
+42364, ----, ETAWAH,                     IN,  151,  26.45, N,   79.02, E
+42367, VICX, KANPUR/CHAKERI,             IN,  126,  26.40, N,   80.40, E
+42368, ----, LUCKNOW,                    IN,  110,  26.87, N,   80.93, E
+42369, VILK, LUCKNOW/AMAUSI,             IN,  128,  26.75, N,   80.88, E
+42375, ----, SULTANPUR,                  IN,   97,  26.25, N,   82.00, E
+42379, VEGK, GORAKHPUR (IN-AFB),         IN,   77,  26.75, N,   83.37, E
+42393, ----, SUPAUL,                     IN,   50,  26.13, N,   86.58, E
+42397, ----, SILIGURI,                   IN,  123,  26.67, N,   88.37, E
+42398, VEBD, BAGHDOGRA (IN-AFB),         IN,  131,  26.63, N,   88.32, E
+42399, ----, JALPAIGURI,                 IN,   81,  26.53, N,   88.72, E
+42409, ----, TANGLA,                     IN,   65,  26.65, N,   91.92, E
+42410, VEGT, GAUHATI (IN-AFB),           IN,   54,  26.10, N,   91.58, E
+42420, ----, GOLAGHAT,                   IN,   95,  26.52, N,   93.98, E
+42435, ----, BARMER,                     IN,  193,  25.75, N,   71.38, E
+42447, ----, BHILWARA,                   IN,  425,  25.35, N,   74.63, E
+42452, VIKO, KOTA AERODROME,             IN,  274,  25.15, N,   75.85, E
+42474, ----, ALLAHABAD,                  IN,   98,  25.45, N,   81.73, E
+42475, ----, ALLAHABAD/BAMRAULI,         IN,   98,  25.45, N,   81.73, E
+42492, VEPT, PATNA,                      IN,   60,  25.60, N,   85.10, E
+42498, ----, BHAGALPUR,                  IN,   49,  25.23, N,   86.95, E
+42539, ----, DEESA,                      IN,  136,  24.20, N,   72.20, E
+42542, ----, UDAIPUR,                    IN,  514,  24.61, N,   73.88, E
+42543, ----, UDAIPUR,                    IN,  582,  24.58, N,   73.70, E
+42571, VIST, SATNA,                      IN,  317,  24.57, N,   80.83, E
+42591, ----, GAVA,                       IN,  116,  24.75, N,   84.95, E
+42623, ----, IMPHAL,                     IN,  774,  24.67, N,   93.90, E
+42634, ----, BHUJ,                       IN,   80,  23.25, N,   69.67, E
+42647, VAAH, AHMADABAD,                  IN,   55,  23.07, N,   72.63, E
+42667, VABP, BHOPAL/BAIRAGARH,           IN,  523,  23.28, N,   77.35, E
+42675, ----, JABALPUR,                   IN,  393,  23.16, N,   79.95, E
+42701, VERC, RANCHI,                     IN,  652,  23.32, N,   85.32, E
+42706, ----, BANKURA,                    IN,   99,  23.38, N,   87.08, E
+42709, ----, BURDWAN,                    IN,   30,  23.23, N,   87.85, E
+42724, VEAT, AGARTALA,                   IN,   16,  23.88, N,   91.25, E
+42767, ----, PACHMARHI,                  IN, 1061,  22.47, N,   78.43, E
+42798, VEJS, JAMSHEDPUR,                 IN,  142,  22.81, N,   86.18, E
+42805, ----, ULUBERIA,                   IN,   57,  22.50, N,   87.95, E
+42807, ----, CALCUTTA AIRPORT,           IN,    5,  22.53, N,   88.33, E
+42809, VECC, CALCUTTA/DUM DUM,           IN,    6,  22.65, N,   88.45, E
+42830, ----, PORBANDAR,                  IN,    5,  21.65, N,   69.67, E
+42867, VANP, NAGPUR SONEGAON AFB,        IN,  310,  21.10, N,   79.05, E
+42874, ----, PBO RAIPUR,                 IN,  298,  21.22, N,   81.67, E
+42886, ----, JHARSUGUDA,                 IN,  230,  21.91, N,   84.08, E
+42895, ----, BALASORE,                   IN,   20,  21.50, N,   86.93, E
+42909, ----, VERAVAL,                    IN,    8,  20.90, N,   70.37, E
+42931, ----, BULDANA,                    IN,  650,  20.53, N,   76.23, E
+42970, ----, CUTTACK,                    IN,   27,  20.47, N,   85.93, E
+42971, VEBS, BHUBANESWAR,                IN,   46,  20.25, N,   85.83, E
+42977, ----, SANDHEADS,                  IN,   10,  20.85, N,   88.25, E
+43003, VABB, BOMBAY/SANTACRUZ,           IN,   14,  19.12, N,   72.85, E
+43013, ----, AURANGABAD,                 IN,  581,  19.88, N,   75.33, E
+43014, VAAU, AURANGABAD AIRPORT,         IN,  579,  19.85, N,   75.40, E
+43017, ----, PARBHANI,                   IN,  423,  19.27, N,   76.77, E
+43041, ----, JAGDALPUR,                  IN,  553,  19.08, N,   82.03, E
+43049, ----, GOPALPUR,                   IN,   17,  19.26, N,   84.88, E
+43063, ----, POONA,                      IN,  559,  18.53, N,   73.85, E
+43083, ----, MEDAK,                      IN,  472,  18.05, N,   78.27, E
+43110, ----, RATNAGIRI,                  IN,   34,  16.98, N,   73.33, E
+43121, ----, GULBARGA,                   IN,  458,  17.35, N,   76.85, E
+43128, VOHY, HYDERABAD (CIV/MIL),        IN,  545,  17.45, N,   78.47, E
+43150, ----, VISHAKHAPATNAM/WALT,        IN,   66,  17.70, N,   83.30, E
+43158, ----, SANGLI,                     IN,  549,  16.85, N,   74.60, E
+43182, ----, NANDIGAMA,                  IN,   51,  16.78, N,   80.28, E
+43185, ----, MACHILIPATNAM,              IN,    3,  16.20, N,   81.15, E
+43189, ----, KAKINADA,                   IN,    8,  16.95, N,   82.23, E
+43192, ----, GOA/PANJIM,                 IN,   60,  15.48, N,   73.82, E
+43194, ----, GOA/DABOLIM AIRPORT,        IN,   52,  15.38, N,   73.82, E
+43198, VABM, BELGAUM/SAMBRA,             IN,  747,  15.85, N,   74.62, E
+43201, ----, GADAG,                      IN,  650,  15.42, N,   75.63, E
+43205, VOBI, BELLARY,                    IN,  449,  15.15, N,   76.85, E
+43237, ----, ANANTAPUR,                  IN,  350,  14.68, N,   77.62, E
+43257, ----, AGUMBE,                     IN,  659,  13.50, N,   75.08, E
+43275, ----, TIRUPATHI,                  IN,  105,  13.67, N,   79.58, E
+43279, VOMM, MADRAS/MINAMBAKKAM,         IN,   16,  13.00, N,   80.18, E
+43285, ----, MANGALORE/PANAMBUR,         IN,   31,  12.95, N,   74.83, E
+43289, ----, MANDYA,                     IN,  695,  12.50, N,   76.83, E
+43295, ----, BANGALORE,                  IN,  921,  12.97, N,   77.58, E
+43296, ----, BANGALORE AERO,             IN,  897,  12.95, N,   77.63, E
+43299, ----, KOLAR GOLD FIELD,           IN,  882,  12.95, N,   78.30, E
+43310, ----, LONG ISLAND,                IN,   25,  12.42, N,   92.93, E
+43311, ----, AMINI DIVI,                 IN,    4,  11.12, N,   72.73, E
+43312, ----, AGATTI,                     IN,    4,  10.85, N,   72.47, E
+43316, ----, NILAMBUR,                   IN,   31,  11.28, N,   76.23, E
+43319, ----, COIMBATURE,                 IN,  409,  11.00, N,   76.97, E
+43321, VOCB, COIMBATORE/PEEL,            IN,  399,  11.03, N,   77.05, E
+43330, ----, THANJAVUR,                  IN,   68,  10.78, N,   79.13, E
+43333, VEPB, PORT BLAIR,                 IN,   79,  11.67, N,   92.72, E
+43344, ----, TIRUCHIRAPALLI,             IN,   88,  10.76, N,   78.71, E
+43346, ----, KARAIKAL,                   IN,    7,  10.92, N,   79.83, E
+43349, ----, VEDARANNIYAM,               IN,    2,  10.37, N,   79.85, E
+43353, VOCC, COCHIN (IN-NAVY),           IN,    3,   9.95, N,   76.27, E
+43359, ----, MADURAI,                    IN,  132,   9.92, N,   78.12, E
+43368, ----, CAR NICOBAR,                IN,   14,   9.15, N,   92.82, E
+43369, ----, MINICOY ISLAND,             IN,    2,   8.30, N,   73.15, E
+43371, ----, THIRUVANANTHAPURAM,         IN,   64,   8.48, N,   76.95, E
+43377, ----, KANNIYAKUMARI,              IN,   37,   8.08, N,   77.50, E
+43413, ----, MANNAR,                     SB,    3,   8.98, N,   79.92, E
+43418, ----, TRINCOMALEE,                SB,    7,   8.58, N,   81.25, E
+43424, ----, PUTTALAM,                   SB,    2,   8.03, N,   79.83, E
+43466, ----, COLOMBO,                    SB,    7,   6.90, N,   79.87, E
+43497, ----, HAMBANTOTA,                 SB,   20,   6.12, N,   81.13, E
+43555, ----, MALE,                       MD,    2,   4.20, N,   73.53, E
+43599, ----, GAN,                        MD,    2,   0.68, S,   73.15, E
+44212, ----, ULAN-GOM,                   MO,  936,  49.97, N,   92.08, E
+44218, ----, KOHO HOVDO,                 MO, 1406,  48.02, N,   91.65, E
+44231, ----, MUREN,                      MO, 1288,  49.63, N,  100.17, E
+44232, ----, HUTAG,                      MO,  949,  49.38, N,  102.70, E
+44237, ----, ERDENEMANDAL,               MO, 1510,  48.53, N,  101.38, E
+44259, ----, CHOIBALSAN,                 MO,  756,  48.07, N,  114.50, E
+44272, ----, ULAN KOM,                   MO, 1753,  47.75, N,   96.85, E
+44277, ----, ALTAI,                      MO, 2147,  46.40, N,   96.25, E
+44282, ----, TSETSERLEG,                 MO, 1697,  47.45, N,  101.47, E
+44287, ----, BAIANHONGOR,                MO, 1879,  46.13, N,  100.68, E
+44288, ----, ARBAIHER,                   MO, 1832,  46.27, N,  102.78, E
+44292, ----, ULAN-BATOR,                 MO, 1313,  47.93, N,  106.98, E
+44298, ----, CHOIR,                      MO, 1285,  46.45, N,  108.22, E
+44341, ----, MANDALGOVL,                 MO, 1397,  45.77, N,  106.28, E
+44354, ----, SAINSHAND,                  MO,  936,  44.90, N,  110.12, E
+44373, ----, DALANZADGAD,                MO, 1470,  43.58, N,  104.42, E
+44454, VNKT, KATHMANDU INTL,             NP, 1337,  27.70, N,   85.37, E
+45004, ----, KING'S PARK,                HK,   66,  22.32, N,  114.17, E
+46689, ----, MATSU,                      TW,   91,  26.17, N,  119.93, E
+46692, ----, TAIBEI,                     TW,    9,  25.03, N,  121.52, E
+46695, ----, PENGJIA YU,                 TW,  102,  25.63, N,  122.07, E
+46699, ----, HUA-LIEN CITY,              TW,   19,  23.98, N,  121.60, E
+46734, RCQC, MAKUNG AB,                  TW,   31,  23.58, N,  119.62, E
+46736, ----, KINMEN,                     TW,   12,  24.43, N,  118.43, E
+46741, ----, TAINAN,                     TW,   14,  23.00, N,  120.22, E
+46746, ----, CHIA-I,                     TW,   25,  23.47, N,  120.38, E
+46747, RCMJ, DONGGANG,                   TW,    8,  22.47, N,  120.43, E
+46750, ----, PINGTUNG SOUTH,             TW,   24,  22.67, N,  120.45, E
+46757, ----, HSINCHU CITY,               TW,   27,  24.83, N,  120.00, E
+46763, RCYU, JULIEN AB,                  TW,   16,  24.03, N,  121.62, E
+46765, ----, JOYUTANG,                   TW, 1015,  23.88, N,  120.85, E
+46780, ----, LU-TAO,                     TW,  280,  22.68, N,  121.50, E
+46810, RCLM, DONGSHA,                    TW,    6,  20.67, N,  116.72, E
+46902, ----, NENSHA ISLAND,              TW,    5,  10.38, N,  114.37, E
+47022, ----, PUNGSAN,                    KR, 1206,  40.82, N,  128.15, E
+47041, ----, HAMHEUNG,                   KR,   38,  39.93, N,  127.55, E
+47058, ZKPY, PYONGYANG,                  KR,   38,  39.03, N,  125.78, E
+47090, ----, SOKCHO,                     KR,   19,  38.15, N,  128.34, E
+47102, ----, BAENGNYEONGDO,              KO,  158,  37.58, N,  124.38, E
+47103, ----, PAENGNYONG-DO ISLAND,       KO,  177,  37.97, N,  124.67, E
+47104, ----, BUKGANGNEUNG,               KO,   79,  37.83, N,  128.86, E
+47107, ----, KANGNUNG AFB,               KO,    6,  37.75, N,  128.95, E
+47110, ----, SEOUL/KIMPO,                KO,   20,  37.55, N,  126.80, E
+47112, ----, INCHON,                     KO,   70,  37.48, N,  126.63, E
+47114, RKNW, WONJU,                      KO,  150,  37.33, N,  127.95, E
+47118, ----, HOENGSONG AFB,              KO,  101,  37.43, N,  127.95, E
+47122, RKSO, OSAN (US/KOR-AFB),          KO,   12,  37.10, N,  127.03, E
+47129, ----, SOSAN,                      KO,   21,  36.77, N,  126.47, E
+47130, ----, ULCHIN,                     KO,   51,  36.98, N,  129.42, E
+47132, ----, TAEJON AFB,                 KO,   64,  36.33, N,  127.38, E
+47134, ----, YECHON,                     KO,  120,  36.62, N,  128.35, E
+47135, ----, CHUPUNGNYONG,               KO,  249,  36.22, N,  128.00, E
+47138, ----, POHANG,                     KO,    6,  36.03, N,  129.38, E
+47142, ----, TAEGU,                      KO,   35,  35.90, N,  128.65, E
+47144, ----, KUNSAN RADAR,               KO,  215,  36.02, N,  126.78, E
+47153, ----, PUSAN WEST,                 KO,    4,  35.18, N,  128.93, E
+47158, RKJJ, KWANGJU (KOR-AFB),          KO,   13,  35.12, N,  126.82, E
+47161, ----, SACHON,                     KO,    8,  35.08, N,  128.08, E
+47169, ----, HEUKSANDO,                  KO,   15,  34.70, N,  125.40, E
+47170, ----, WANDO ISLAND,               KO,   12,  34.30, N,  126.75, E
+47185, ----, CHEJU,                      KO,   73,  33.28, N,  126.17, E
+47186, ----, NAT TYPHOON CENTER,         KO,  246,  33.33, N,  126.68, E
+47401, ----, WAKKANAI,                   JP,   11,  45.42, N,  141.68, E
+47402, ----, KITAMIESASHI,               JP,    8,  44.93, N,  142.58, E
+47407, ----, ASAHIKAWA,                  JP,  116,  43.77, N,  142.37, E
+47412, ----, SAPPORO,                    JP,   19,  43.05, N,  141.33, E
+47413, ----, IWAMIZAWA,                  JP,   51,  43.22, N,  141.78, E
+47418, RJCS, KUSHIRO/KENEBET,            JP,   37,  42.98, N,  144.40, E
+47420, ----, NEMURO,                     JP,   26,  43.33, N,  145.58, E
+47421, ----, SUTTSU,                     JP,   38,  42.80, N,  140.23, E
+47428, ----, ESASHI,                     JP,   12,  41.87, N,  140.13, E
+47472, ----, RISHIRI AIRPORT,            JP,   33,  45.23, N,  141.20, E
+47481, RJCM, MEMAMBETSU AIRPORT,         JP,   36,  43.90, N,  144.17, E
+47545, RJSK, AKITA AIRPORT,              JP,   96,  39.62, N,  140.22, E
+47549, RJSI, HANAMAKI AIRPORT,           JP,   93,  39.43, N,  141.13, E
+47570, ----, WAKAMATSU,                  JP,  213,  37.48, N,  139.92, E
+47572, ----, NIIGATA/YAHIKOY,            JP,  634,  37.72, N,  138.82, E
+47573, RJSN, NIIGATA,                    JP,    4,  37.95, N,  139.12, E
+47580, RJSM, MISAWA,                     JP,   36,  40.68, N,  141.38, E
+47581, ----, HACHINOHE,                  JP,   28,  40.53, N,  141.53, E
+47582, ----, AKITA,                      JP,   21,  39.72, N,  140.10, E
+47590, ----, SENDAI,                     JP,   43,  38.27, N,  140.90, E
+47591, RJST, MATSUSHIMA,                 JP,    5,  38.40, N,  141.22, E
+47592, ----, ISHINOMAKI,                 JP,   45,  38.43, N,  141.30, E
+47597, ----, SHIRAKAWA,                  JP,  356,  37.12, N,  140.22, E
+47600, ----, WAJIMA,                     JP,   14,  37.38, N,  136.90, E
+47601, ----, HEGURASHIMA,                JP,   14,  37.85, N,  136.92, E
+47604, ----, NIIGATA,                    JP,    7,  37.92, N,  139.05, E
+47615, ----, UTSUNOMIYA,                 JP,  140,  36.55, N,  139.87, E
+47617, ----, TAKAJAMA,                   JP,  561,  36.15, N,  137.25, E
+47618, ----, MATSUMOTO,                  JP,  611,  36.25, N,  137.97, E
+47620, ----, SUWA,                       JP,  762,  36.05, N,  138.12, E
+47622, ----, KARUIZAWA MOUNTAIN,         JP, 1004,  36.33, N,  138.55, E
+47638, ----, KOFU,                       JP,  274,  35.67, N,  138.55, E
+47640, ----, KAWAGUCHIKO,                JP,  861,  35.50, N,  138.77, E
+47641, ----, CHICHIBU,                   JP,  219,  35.98, N,  139.08, E
+47646, ----, TATENO,                     JP,   31,  36.05, N,  140.13, E
+47651, ----, TSU,                        JP,   18,  34.73, N,  136.52, E
+47657, ----, MISHIMA ISLAND,             JP,   22,  35.12, N,  138.93, E
+47670, ----, YOKOHAMA,                   JP,   42,  35.43, N,  139.65, E
+47671, RJTT, TOKYO INTL AIRPORT,         JP,    8,  35.55, N,  139.78, E
+47677, ----, MIYAKEJIMA ISLAND,          JP,   37,  34.12, N,  139.52, E
+47678, ----, HACHIJOJIMA/OMURE,          JP,   80,  33.12, N,  139.78, E
+47680, RJTR, KASTNER,                    JP,  109,  35.52, N,  139.40, E
+47681, RJNH, HAMAMATSU AB,               JP,   48,  34.73, N,  137.67, E
+47686, RJAA, NEW TOKYO INTL AIRPORT,     JP,   44,  35.77, N,  140.38, E
+47688, ----, TATEYAMA AFB,               JP,    5,  34.98, N,  139.83, E
+47707, RJNT, TOYAMA AIRPORT,             JP,   27,  36.65, N,  137.18, E
+47727, ----, SHIMOFUSA AFB,              JP,   33,  35.78, N,  140.02, E
+47738, RJTH, HACHIJOJIMA ISLAND,         JP,   95,  33.12, N,  139.78, E
+47740, ----, SAIGO,                      JP,   31,  36.20, N,  133.33, E
+47741, ----, MATSUE,                     JP,   22,  35.45, N,  133.06, E
+47744, ----, YONAGO,                     JP,    8,  35.43, N,  133.35, E
+47764, ----, IWAKUNI,                    JP,    3,  34.15, N,  132.23, E
+47770, ----, KOBE,                       JP,   59,  34.68, N,  135.18, E
+47771, RJOO, OSAKA INTL AIRPORT,         JP,   15,  34.78, N,  135.45, E
+47772, ----, OSAKA,                      JP,   50,  34.68, N,  135.53, E
+47778, ----, SHIONOMISAKI,               JP,   75,  33.45, N,  135.77, E
+47788, RJOF, HOFU (JASDF),               JP,    5,  34.03, N,  131.55, E
+47807, ----, FUKUOKA,                    JP,   14,  33.58, N,  130.38, E
+47808, RJFF, FUKUOKA/ITAZUKE,            JP,   12,  33.58, N,  130.45, E
+47817, ----, NAGASAKI,                   JP,   35,  32.73, N,  129.87, E
+47821, ----, ASOSAN MOUNTAIN,            JP, 1144,  32.88, N,  131.08, E
+47822, ----, NOBEOKA,                    JP,   21,  32.58, N,  131.67, E
+47827, ----, KAGOSHIMA/YOSHINO,          JP,   31,  31.63, N,  130.58, E
+47855, RJFU, NAGASAKI (CIV/JMSDF),       JP,    5,  32.92, N,  129.92, E
+47858, RJDB, IKI AIRPORT,                JP,   16,  33.75, N,  129.78, E
+47881, RJOS, TOKUSHIMA(JMSDF/CV),        JP,   11,  34.13, N,  134.62, E
+47887, ----, MATSUYAMA,                  JP,   34,  33.83, N,  132.78, E
+47909, ----, NAZE/FUNCHATOGE,            JP,    7,  28.38, N,  129.55, E
+47910, RJKN, TOKUNOSHIMA ISLAND,         JP,    5,  27.83, N,  128.88, E
+47911, ROYN, TONAGUNI AIRPORT,           JP,   17,  24.47, N,  122.98, E
+47917, ----, IRIOMOTEJIMA ISLAND,        JP,    9,  24.38, N,  123.75, E
+47918, ROIG, ISHIGAKIJIMA ISLAND,        JP,    7,  24.33, N,  124.17, E
+47919, ----, ISHIGIKI AIRPORT,           JP,   26,  24.33, N,  125.18, E
+47935, ROHF, HAMBY,                      JP,    6,  26.30, N,  127.77, E
+47936, ----, NAHA AIRPORT,               JP,   53,  26.20, N,  127.68, E
+47945, ROMD, MINAMIDAITOJIMA ISLAND,     JP,   15,  25.83, N,  131.23, E
+47971, RJAO, CHICHIJIMA ISLAND,          JP,    8,  27.08, N,  142.18, E
+47981, RJAW, IWOJIMA (JMSDF),            JP,  116,  24.78, N,  141.33, E
+47991, RJAM, MINAMITORISHIMA,            JP,    9,  24.30, N,  153.97, E
+48008, ----, MYITKYINA,                  BM,  147,  25.37, N,   97.40, E
+48017, ----, PINLEBU,                    BM,  259,  24.08, N,   95.37, E
+48024, ----, KALEMYO,                    BM,  152,  23.20, N,   94.07, E
+48042, VBRM, MANDALAY,                   BM,   76,  21.98, N,   96.10, E
+48053, ----, MEIKTILA,                   BM,  220,  20.88, N,   95.90, E
+48058, ----, LOILEM,                     BM, 1355,  20.92, N,   97.55, E
+48062, ----, AKYAB,                      BM,    5,  20.13, N,   92.88, E
+48080, ----, SANDOWAY,                   BM,   11,  18.47, N,   94.35, E
+48087, ----, HENZADA,                    BM,   26,  17.67, N,   95.42, E
+48097, ----, RANGOON,                    BM,   15,  16.77, N,   96.17, E
+48108, ----, TAVOY,                      BM,   17,  14.10, N,   98.22, E
+48110, ----, MERGUI,                     BM,   37,  12.43, N,   98.60, E
+48112, ----, VICTORIA POINT,             BM,   47,   9.97, N,   98.58, E
+48327, VTCC, CHIANG MAI (CIV/AFB),       TH,  314,  18.78, N,   98.98, E
+48328, VTCL, LAMPANG,                    TH,  242,  18.28, N,   99.52, E
+48353, VTUL, LOEI,                       TH,  254,  17.45, N,  101.73, E
+48354, VTUD, UDON THANI,                 TH,  182,  17.38, N,  102.80, E
+48357, ----, NAKHON PHANOM,              TH,  176,  17.38, N,  104.65, E
+48375, VTPM, MAE SOT/TAK,                TH,  197,  16.67, N,   98.55, E
+48378, VTPS, PHITSANULOK,                TH,   45,  16.82, N,  100.27, E
+48379, ----, PHETCHABUN,                 TH,  114,  16.42, N,  101.13, E
+48407, VTUU, UBON/RATCHATHANI,           TH,  127,  15.25, N,  104.87, E
+48416, ----, THA TUM,                    TH,  129,  15.32, N,  103.68, E
+48429, ----, SUVARNABHUMI INTL AIRPORT,  TH,    6,  13.63, N,  100.77, E
+48430, VTBI, PRACHIN BURI,               TH,    6,  14.05, N,  101.37, E
+48431, VTUN, NAKHON RATCHASIMA,          TH,  181,  14.97, N,  102.83, E
+48453, ----, BANG NA AGROMET,            TH,    3,  13.67, N,  100.60, E
+48455, ----, BANGKOK,                    TH,   20,  13.73, N,  100.50, E
+48456, VTBD, BANGKOK/DON MUA,            TH,   12,  13.92, N,  100.60, E
+48459, VTBS, CHON BURI/SATTA,            TH,    2,  13.37, N,  100.98, E
+48477, STTA, SATTAHIP,                   TH,   18,  12.68, N,  100.98, E
+48478, VTBU, RAYONG,                     TH,    5,  12.63, N,  101.35, E
+48480, VTBC, CHANTHABURI,                TH,    4,  12.60, N,  102.12, E
+48500, VTBP, PRACHUAP KHIRIKHAN,         TH,    5,  11.83, N,   99.83, E
+48551, VTSB, SURAT THANI,                TH,   11,   9.12, N,   99.35, E
+48565, VTSP, PHUKET INTL AIRPORT,        TH,   10,   8.12, N,   98.32, E
+48568, VTSH, SONGKHLA (THAI-NAVY),       TH,    5,   7.20, N,  100.60, E
+48569, VTSS, HAT YAI INTL (AFB),         TH,   35,   6.92, N,  100.43, E
+48580, VTSK, PATTANI,                    TH,    9,   6.78, N,  101.15, E
+48601, WMKP, PENANG/BAYAN LEPAS,         MS,    4,   5.30, N,  100.27, E
+48602, ----, BUTTERWORTH,                MS,    1,   5.47, N,  100.38, E
+48615, WMKC, KOTA BHARU/SULTAN P,        MS,    5,   6.17, N,  102.28, E
+48619, WMKN, KUALA TRENGGANU,            MS,    6,   5.38, N,  103.10, E
+48620, WMBA, SITIAWAN,                   MS,    8,   4.22, N,  100.70, E
+48647, ----, KUALA LUMPUR,               MS,   22,   3.12, N,  101.55, E
+48648, ----, PETALING JAYA,              MS,   57,   3.10, N,  101.65, E
+48650, ----, SEPANG (KUALA LUMPUR),      KL,   16,   2.73, N,  101.70, E
+48657, WMKD, KUANTAN (AFB),              MS,   16,   3.78, N,  103.22, E
+48698, WSSS, SINGAPORE/CHANGI,           SR,   16,   1.37, N,  103.98, E
+48811, VVDB, DIEN BIEN PHU ARPT,         VS,  472,  21.40, N,  103.02, E
+48820, VVNB, HANOI/NOIBAI INTL,          VS,    6,  21.02, N,  105.80, E
+48839, ----, BACH LONGVI,                VS,   60,  20.13, N,  107.72, E
+48845, VVVH, VINH,                       VS,    6,  18.70, N,  105.67, E
+48848, ----, DONG HOI,                   VS,    8,  17.52, N,  106.58, E
+48855, VVDN, DA NANG INTL ARPT,          VS,    7,  16.03, N,  108.18, E
+48870, ----, QUI NHON,                   VS,    5,  13.77, N,  109.22, E
+48873, ----, TUY-HOA,                    VS,   11,  13.08, N,  109.28, E
+48877, VVNT, NHA TRANG,                  VS,   10,  12.15, N,  109.12, E
+48887, ----, PHAN THIET,                 VS,    8,  10.93, N,  108.10, E
+48900, VVTS, HO CHI MINH/TANSONN,        VS,   19,  10.82, N,  106.67, E
+48910, ----, VINH LONG,                  VS,    3,  10.25, N,  105.95, E
+48914, ----, CA MAU (POINT),             VS,    3,   9.17, N,  105.17, E
+48918, ----, CON SON,                    VS,    5,   8.70, N,  106.58, E
+48936, ----, PAKLAY,                     LA,  220,  18.20, N,  101.20, E
+48968, ----, KRAKOR,                     KP,    5,  12.52, N,  104.18, E
+48995, VDKC, KOMPONG-CHAM,               KP,   16,  12.00, N,  105.45, E
+48998, ----, SVAY RIENG,                 KP,    6,  11.08, N,  105.80, E
+50527, ----, HAILAR,                  SY CI,  611,  49.22, N,  119.75, E
+50557, ----, NENJIANG,                SY CI,  243,  49.17, N,  125.23, E
+50603, ----, CHIN-BARAG,              SY CI,  555,  48.67, N,  116.82, E
+50745, ZYQQ, QIQIHAR,                 SY CI,  148,  47.38, N,  123.92, E
+50774, ----, YICHUN,                  SY CI,  232,  47.72, N,  128.90, E
+50834, ----, TE-PO-SU-K,              SY CI,  427,  46.50, N,  121.37, E
+50953, ----, HARBIN,                  SY CI,  143,  45.75, N,  126.77, E
+50963, ----, TONGHE,                  SY CI,  110,  45.97, N,  128.73, E
+50968, ----, SHANGZHI,                SY CI,  191,  45.22, N,  127.97, E
+51076, ----, ALTAY,                   UQ CI,  737,  47.73, N,   88.08, E
+51133, ----, TA CHENG,                UQ CI,  549,  46.73, N,   83.00, E
+51156, ----, HOBOG SAIR,              UQ CI, 1294,  46.78, N,   85.72, E
+51232, ----, BORDER STATION,          UQ CI,  823,  45.97, N,   82.53, E
+51243, ----, KARAMAY,                 UQ CI,  428,  45.60, N,   84.85, E
+51288, ----, BAYTIK SHAN,             UQ CI, 1651,  45.37, N,   90.53, E
+51334, ----, JINGHE,                  UQ CI,  321,  44.62, N,   82.90, E
+51379, ----, CHITAI,                  UQ CI,  797,  44.02, N,   89.57, E
+51431, ZWYN, YINING,                  UQ CI,  663,  43.95, N,   81.33, E
+51437, ----, ZHAOSU/MONGGOLK,         UQ CI, 1830,  43.17, N,   81.12, E
+51463, ----, URUMQI,                  UQ CI,  919,  43.78, N,   87.62, E
+51467, ----, BALGUNTAY,               UQ CI, 1753,  42.67, N,   86.33, E
+51495, ----, CHI CHIA CHIENG,         UQ CI,  874,  43.48, N,   91.63, E
+51567, ----, YANQI,                   UQ CI, 1097,  42.05, N,   86.57, E
+51573, ----, TULUFAN,                 UQ CI,   35,  42.93, N,   89.20, E
+51628, ----, WEN-SU,                  UQ CI, 1286,  41.27, N,   80.23, E
+51633, ----, BAICHENG/BAY,            UQ CI, 1280,  41.77, N,   81.87, E
+51642, ----, LUNTAI/BUGUR,            UQ CI,  883,  41.78, N,   84.17, E
+51644, ----, KUQA,                    UQ CI, 1100,  41.72, N,   82.95, E
+51656, ----, KORLA,                   UQ CI,  933,  41.75, N,   86.13, E
+51701, ----, SAI KO LO TEMA,          UQ CI, 3651,  40.45, N,   75.38, E
+51705, ----, AR-TUX,                  UQ CI, 1494,  39.67, N,   76.17, E
+51709, ZWSH, KASHI,                   UQ CI, 1291,  39.47, N,   75.98, E
+51711, ----, AIT BAI,                 UQ CI, 1986,  40.85, N,   77.93, E
+51716, ----, BACHU,                   UQ CI, 1117,  39.80, N,   78.57, E
+51765, ----, TIKANLIK,                UQ CI,  847,  40.63, N,   87.70, E
+51777, ----, RUOQIANG,                UQ CI,  889,  39.03, N,   88.17, E
+51811, ----, SOCHE,                   UQ CI, 1232,  38.43, N,   77.27, E
+51818, ----, PISHAN,                  UQ CI, 1376,  37.62, N,   78.28, E
+51828, ZWTN, HOTAN,                   UQ CI, 1375,  37.13, N,   79.93, E
+51839, ----, MINFENG/NIYA,            UQ CI, 1410,  37.07, N,   82.77, E
+51848, ----, ANDIR,                   UQ CI, 1264,  37.93, N,   83.65, E
+51855, ----, CHIEMO,                  UQ CI, 1248,  38.15, N,   85.55, E
+51886, ----, MANGNAI,                 LZ CI, 2945,  38.25, N,   90.85, E
+52203, ZWHM, HAMI,                    UQ CI,  739,  42.82, N,   93.52, E
+52267, ----, EJIN QI,                 LZ CI,  941,  41.95, N,  101.07, E
+52323, ----, MAZONG SHAN (MOUNT),     LZ CI, 1770,  41.80, N,   97.03, E
+52378, ----, GUAIZIHU,                LZ CI,  960,  41.37, N,  102.37, E
+52418, ----, DUNHUANG,                LZ CI, 1140,  40.15, N,   94.68, E
+52495, ----, BAYAN MOD,               LZ CI, 1329,  40.75, N,  104.50, E
+52533, ZLJQ, JIUQUAN/SUZHOU,          LZ CI, 1478,  39.77, N,   98.48, E
+52602, ----, LING HU CHEN,            LZ CI, 2734,  38.83, N,   93.38, E
+52652, ----, ZHANGYE,                 LZ CI, 1483,  38.93, N,  100.43, E
+52681, ----, MINQIN,                  LZ CI, 1367,  38.63, N,  103.08, E
+52818, ----, GOLMUD,                  LZ CI, 2809,  36.42, N,   94.90, E
+52833, ----, SERH,                    LZ CI, 2987,  36.95, N,   98.35, E
+52836, ----, DULAN/QAGAN US,          LZ CI, 3192,  36.30, N,   98.10, E
+52856, ----, GONGHE,                  LZ CI, 2743,  36.35, N,  100.78, E
+52866, ZLXN, XINING,                  LZ CI, 2262,  36.62, N,  101.77, E
+52889, ----, LANZHOU,                 LZ CI, 1518,  36.05, N,  103.88, E
+52983, ----, YU ZHONG,                LZ CI, 1875,  35.52, N,  104.09, E
+53068, ----, ERENHOT,                 BJ CI,  966,  43.65, N,  112.00, E
+53336, ----, HALIUT,                  BJ CI, 1290,  41.57, N,  108.52, E
+53463, ZBHH, HOHHOT,                  BJ CI, 1065,  40.82, N,  111.68, E
+53513, ----, LINHE,                   BJ CI, 1041,  40.77, N,  107.40, E
+53543, ----, DONGSHENG,               BJ CI, 1459,  39.83, N,  109.98, E
+53614, ZLIC, YINCHUAN,                LZ CI, 1112,  38.48, N,  106.22, E
+53772, ZBYN, TAIYUAN/WUSU,            BJ CI,  779,  37.78, N,  112.55, E
+53782, ----, YANGQUAN,                BJ CI,  908,  37.82, N,  113.57, E
+53798, ----, ZINGTAI,                 BJ CI,   78,  37.07, N,  114.50, E
+53845, ZLYA, YAN AN,                  LZ CI,  959,  36.60, N,  109.50, E
+53898, ----, ANYANG/ZHANGDE,          BJ CI,   76,  36.12, N,  114.37, E
+53915, ----, PINGLIANG,               LZ CI, 1348,  35.55, N,  106.67, E
+54102, ----, XILIN HOT/ABAGNAR,       BJ CI,  991,  43.95, N,  116.07, E
+54135, ----, TONGLIAO,                SY CI,  180,  43.60, N,  122.27, E
+54161, ZYCC, CHANGCHUN,               SY CI,  238,  43.90, N,  125.22, E
+54208, ----, DUOLUN/DOLONNUR,         BJ CI, 1247,  42.18, N,  116.47, E
+54218, ----, CHIFENG/ULANHAD,         SY CI,  572,  42.27, N,  118.97, E
+54237, ----, FUXIN,                   SY CI,  182,  42.00, N,  121.63, E
+54285, ----, LUSHUIHE,                SY CI,  853,  42.52, N,  127.80, E
+54292, ----, YANJI,                   SY CI,  178,  42.88, N,  129.47, E
+54337, ----, JINZHOU,                 SY CI,   70,  41.12, N,  121.07, E
+54342, ZYYY, SHENYANG/DONGTA,         SY CI,   43,  41.77, N,  123.43, E
+54374, ----, LINJIANG,                SY CI,  333,  41.72, N,  126.92, E
+54401, ----, ZHANGJIAKOU,             BJ CI,  726,  40.78, N,  114.88, E
+54405, ----, HUAILAI/SHACHEN,         BJ CI,  538,  40.40, N,  115.50, E
+54497, ----, DANDONG,                 SY CI,   14,  40.08, N,  124.33, E
+54511, ZBAA, BEIJING/PEKING,          BJ CI,   55,  39.93, N,  116.28, E
+54539, ----, LETING,                  BJ CI,   11,  39.42, N,  118.90, E
+54662, ZYTL, DALIAN/DAIREN/LUDA,      BJ CI,   97,  38.90, N,  121.63, E
+54727, ----, ZHANGQIU,                BJ CI,  123,  36.42, N,  117.33, E
+54776, ----, CHENGSHANTOU,            BJ CI,   47,  37.40, N,  122.68, E
+54823, ZSTN, JINAN/TSINAN,            BJ CI,   58,  36.68, N,  116.98, E
+54826, ----, TAI SHAN (MTNS),         BJ CI, 1536,  36.25, N,  117.10, E
+54857, ZSQD, QINGDAO/TSINGTAO,        BJ CI,   77,  36.07, N,  120.33, E
+55228, ----, KA-ERH,                  CD CI, 4279,  32.12, N,   80.07, E
+55248, ----, LA KAO TSU,              CD CI, 4420,  32.07, N,   84.05, E
+55279, ----, BANGON,                  CD CI, 4701,  31.37, N,   90.02, E
+55299, ----, NAGQU,                   CD CI, 4508,  31.48, N,   92.07, E
+55472, ----, XANZA,                   CD CI, 4671,  30.95, N,   88.63, E
+55578, ----, ZHIKATSE,                CD CI, 3837,  29.22, N,   88.92, E
+55591, ZULS, LHASA,                   CD CI, 3650,  29.67, N,   91.13, E
+55598, ----, NEDONG,                  CD CI, 3657,  29.23, N,   91.77, E
+55664, ----, TINGRI/XEGAR,            CD CI, 4302,  28.63, N,   87.08, E
+55696, ----, LHUNZE,                  CD CI, 3900,  28.42, N,   92.47, E
+55773, ----, PALI MONASTERY,          CD CI, 4301,  27.75, N,   89.17, E
+56004, ----, TUOTUOHE/TANGGU,         LZ CI, 4535,  34.22, N,   92.43, E
+56029, ----, YUSHU,                   LZ CI, 3682,  33.02, N,   97.02, E
+56046, ----, DARLAG,                  LZ CI, 3968,  33.75, N,   99.65, E
+56067, ----, JIGZHI,                  LZ CI, 3350,  33.47, N,  101.48, E
+56080, ----, HEZUO,                   LZ CI, 2910,  34.97, N,  102.90, E
+56096, ----, WUDU,                    LZ CI, 1079,  33.40, N,  104.92, E
+56106, ----, SO TSIAN,                CD CI, 3951,  31.87, N,   93.77, E
+56116, ----, DENG CHEN,               CD CI, 3874,  31.42, N,   95.60, E
+56137, ----, QAMDO,                   CD CI, 3307,  31.15, N,   97.17, E
+56144, ----, DEGE,                    CD CI, 3185,  31.80, N,   98.58, E
+56146, ----, GARZE,                   CD CI, 3394,  31.62, N,  100.00, E
+56173, ----, MA-TANG,                 CD CI, 3422,  31.85, N,  102.70, E
+56178, ----, ZIAO-JIN,                CD CI, 2426,  31.02, N,  102.37, E
+56187, ----, WENJIANG,                CD CI,  540,  30.70, N,  103.83, E
+56188, ----, WENCHUAN,                CD CI, 2042,  31.48, N,  103.58, E
+56247, ----, BATANG,                  CD CI, 2589,  30.00, N,   99.10, E
+56294, ZUUU, CHENGDU,                 CD CI,  508,  30.67, N,  104.02, E
+56312, ----, NYINGCHI,                CD CI, 3001,  29.57, N,   94.47, E
+56374, ----, KANGDING/DARDO,          CD CI, 2617,  30.05, N,  101.97, E
+56462, ----, JIULONG/GYAISI,          CD CI, 2994,  29.00, N,  101.50, E
+56492, ----, YIBIN,                   CD CI,  342,  28.80, N,  104.60, E
+56571, ----, XICHANG,                 CD CI, 1599,  27.90, N,  102.27, E
+56651, ----, LIJING,                  CD CI, 2394,  26.83, N,  100.47, E
+56671, ----, HUILI,                   CD CI, 1788,  26.65, N,  102.25, E
+56691, ----, WEINING,                 CD CI, 2236,  26.87, N,  104.28, E
+56739, ----, TENGCHONG,               CD CI, 1649,  25.03, N,   98.48, E
+56778, ZPPP, KUNMING/WUJIABA,         CD CI, 1892,  25.02, N,  102.68, E
+56946, ----, GENGMA,                  CD CI, 1104,  23.55, N,   99.40, E
+56964, ----, SIMAO,                   CD CI, 1303,  22.77, N,  100.98, E
+56985, ----, MENGZI,                  CD CI, 1302,  23.38, N,  103.38, E
+56989, ----, HE KOU,                  CD CI,  142,  22.50, N,  104.00, E
+57034, ----, QIAN-ZIAN,               LZ CI,  335,  34.53, N,  108.23, E
+57036, ZLXY, XI'AN,                   LZ CI,  398,  34.30, N,  108.93, E
+57067, ----, LU SHIH,                 LZ CI,  569,  34.00, N,  111.02, E
+57083, ZHCC, ZHENGZHOU,               BJ CI,  111,  34.72, N,  113.65, E
+57127, ----, HANZHONG,                LZ CI,  509,  33.07, N,  107.03, E
+57131, ----, JINGHE,                     CI,  411,  34.43, N,  108.97, E
+57178, ----, NANYANG,                 BJ CI,  131,  33.02, N,  112.53, E
+57245, ----, ANKANG,                  LZ CI,  291,  32.72, N,  109.03, E
+57290, ----, ZHUMADIAN,               BJ CI,   83,  33.00, N,  114.02, E
+57328, ----, DA ZIAN,                 CD CI,  311,  31.20, N,  107.50, E
+57411, ----, NANCHONG,                CD CI,  310,  30.80, N,  106.08, E
+57447, ----, ENSHI,                   HK CI,  458,  30.28, N,  109.47, E
+57461, ----, YICHANG,                 HK CI,  134,  30.70, N,  111.28, E
+57494, ZHHH, WUHAN/NANHU,             HK CI,   23,  30.62, N,  114.13, E
+57516, ZUCK, CHONGQING/CHUNGKING,     CD CI,  351,  29.52, N,  106.48, E
+57606, ----, CH'IH-SHUI HO,           CD CI,  977,  28.48, N,  105.93, E
+57679, ZGCS, CHANGSHA/DATUOPU,        HK CI,   46,  28.20, N,  113.08, E
+57687, ----, CHANGSHA,                   CI,  120,  28.12, N,  112.78, E
+57745, ----, ZHIJIANG,                HK CI,  273,  27.45, N,  109.68, E
+57749, ----, HUAIHUA,                 HK CI,  261,  27.57, N,  110.00, E
+57816, ZUGY, GUIYANG,                 CD CI, 1074,  26.58, N,  106.72, E
+57866, ----, LINGLING,                HK CI,  174,  26.23, N,  111.62, E
+57916, ----, LUODIAN,                 CD CI,  441,  25.43, N,  106.77, E
+57957, ZGKL, GUILIN,                  GZ CI,  166,  25.33, N,  110.30, E
+57972, ----, CHENZHOU,                HK CI,  185,  25.82, N,  113.02, E
+57993, ZSGZ, GANZHOU,                 HK CI,  125,  25.85, N,  114.95, E
+58027, ----, XUZHOU,                  SH CI,   42,  34.28, N,  117.15, E
+58150, ----, SHEYANG/HEDE,            SH CI,    7,  33.77, N,  120.25, E
+58203, ----, FUYANG,                  HK CI,   39,  32.93, N,  115.83, E
+58238, ZSNJ, NANJING/NANKING,         SH CI,   12,  32.00, N,  118.80, E
+58321, ----, HO FEI,                  SH CI,   36,  31.87, N,  117.23, E
+58362, ----, SHANGHAI,                SH CI,    4,  31.40, N,  121.47, E
+58367, ----, SHANGHAI,                SH CI,    5,  31.17, N,  121.43, E
+58424, ----, ANQING,                  HK CI,   20,  30.52, N,  117.03, E
+58457, ZSHC, HANGZHOU/JIANQIAO,       SH CI,   43,  30.23, N,  120.17, E
+58506, ----, LU SHAN MOUNTAIN,        HK CI, 1165,  29.58, N,  115.98, E
+58527, ----, JINGDEZHEN,              HK CI,   60,  29.30, N,  117.20, E
+58606, ZSCN, NANCHANG,                HK CI,   50,  28.60, N,  115.92, E
+58608, ----, QINGJIANG/ZHANG,         HK CI,   40,  28.05, N,  115.53, E
+58633, ----, QU XIAN,                 SH CI,   71,  28.97, N,  118.87, E
+58646, ----, LISHUI,                  SH CI,   62,  28.45, N,  119.92, E
+58665, ----, LUQIAO,                  SH CI,    9,  28.65, N,  120.08, E
+58666, ----, DACHEN DAO,              SH CI,   84,  28.45, N,  121.88, E
+58725, ----, SHAOWU,                  SH CI,  192,  27.33, N,  117.43, E
+58765, ----, NANJI SHAN,              SH CI,    2,  27.47, N,  121.05, E
+58847, ZSFZ, FUZHOU,                  SH CI,   85,  26.08, N,  119.28, E
+58968, ----, TAIBEI,                  SH CI,    9,  25.03, N,  121.53, E
+59023, ----, HECHI/JNCHENGJI,         GZ CI,  214,  24.70, N,  108.05, E
+59096, ----, LIANGPING,               GZ CI,  214,  24.37, N,  114.48, E
+59134, ZSAM, XIAMEN,                  SH CI,  139,  24.48, N,  118.08, E
+59158, ----, TAIZHONG,                   CI,   78,  24.15, N,  120.70, E
+59211, ----, BOSE,                    GZ CI,  242,  23.92, N,  106.62, E
+59265, ----, WUZHOU,                  GZ CI,  120,  23.48, N,  111.30, E
+59280, ----, PING YUAN,                  CI,   19,  23.67, N,  113.05, E
+59287, ZGGG, GUANGZHOU/BAIYU,         GZ CI,    8,  23.13, N,  113.32, E
+59293, ----, HEYUAN,                     CI,   61,  23.80, N,  114.73, E
+59316, ZGOW, SHANTOU,                 GZ CI,    3,  23.40, N,  116.68, E
+59358, ----, TAINAN,                     CI,   14,  23.00, N,  120.23, E
+59362, ----, HUALIAN,                    CI,   14,  24.02, N,  121.62, E
+59431, ZGNN, NANNING/WUXU,            GZ CI,   73,  22.82, N,  108.35, E
+59644, ----, BEIHAI,                  GZ CI,   16,  21.48, N,  109.10, E
+59663, ----, YANGJIANG,               GZ CI,   22,  21.87, N,  111.97, E
+59758, ZGHK, HAIKOU,                  GZ CI,   15,  20.03, N,  110.35, E
+59792, ----, DONGSHA,                 GZ CI,    6,  20.67, N,  116.73, E
+59948, ----, YAXIAN/SANYA,            GZ CI,    7,  18.23, N,  109.52, E
+59981, ----, XISHA ISLAND,            GZ CI,    5,  16.83, N,  112.33, E
+60010, ----, IZANA MOUNTAIN,             CR, 2368,  28.30, N,   16.50, W
+60018, ----, TENERIFE-GUIMAR,            CR,  111,  28.32, N,   16.38, W
+60020, ----, SANTA CRUZ TENERIFE,        CR,   46,  28.47, N,   16.25, W
+60096, GSVO, VILLA CISNEROS MIL/DAKHLA,  MC,    9,  23.71, N,   15.93, W
+60115, ----, OUJDA,                      MC,  468,  34.78, N,    1.95, W
+60120, GMMY, KENITRA,                    MC,   14,  34.30, N,    6.60, W
+60155, GMMC, CASABLANCA/ANFA,            MC,   62,  33.57, N,    7.67, W
+60191, ----, BENI-MELLAL,                MC,  468,  32.37, N,    6.40, W
+60252, GMAD, AL MASSIRA MC,              MC,   74,  30.33, N,    9.42, W
+60265, ----, OUARZAZATE,                 MC, 1131,  30.93, N,    6.90, W
+60360, DABB, ANNABA,                     AL,    4,  36.50, N,    7.49, E
+60390, DAAG, DAR-EL-BEIDA/HOUARI,        AL,   29,  36.68, N,    3.22, E
+60419, DABC, CONSTANTINE/EL,             AL,  694,  36.28, N,    6.62, E
+60430, ----, MILIANA,                    AL,  715,  36.30, N,    2.23, E
+60461, ----, ORAN PORT,                  AL,   22,  35.70, N,    0.65, W
+60490, DAOO, ORAN/ES SENIA,              AL,   90,  35.63, N,    0.60, W
+60520, ----, SIDI BEL ABBES,             AL,  450,  35.18, N,    2.62, W
+60525, DAUB, BISKRA,                     AL,   87,  34.80, N,    5.73, E
+60549, DAAY, MECHERIA,                   AL, 1149,  34.58, N,    0.28, W
+60550, ----, EL BAYADH,                  AL, 1341,  33.67, N,    1.00, E
+60559, DAUO, EL OUED/GUEMER,             AL,   63,  33.50, N,    6.12, E
+60566, DAUG, GHARDAIA/NOUMER,            AL,  450,  32.38, N,    3.82, E
+60571, DAOR, BECHAR/OUAKDA,              AL,  773,  31.62, N,    2.23, W
+60580, DAUU, OUARGLA,                    AL,  141,  31.92, N,    5.40, E
+60581, DAUH, HASSI-MESSAOUD,             AL,  142,  31.67, N,    6.15, E
+60590, DAUE, EL GOLEA,                   AL,  397,  30.57, N,    2.87, E
+60611, ----, IN AMENAS,                  AL,  562,  28.05, N,    9.63, E
+60620, DAUA, ADRAR/TOUAT,                AL,  263,  27.88, N,    0.28, W
+60630, ----, IN SALAH,                   AL,  293,  27.20, N,    2.47, E
+60640, DAAP, ILLIZI/ILLIRANE,            AL,  558,  26.50, N,    8.42, E
+60656, DAOF, TINDOUF,                    AL,  431,  27.67, N,    8.13, W
+60670, ----, DJANET,                     AL, 1054,  24.55, N,    9.47, E
+60680, ----, TAMANRASSET,                AL, 1378,  22.78, N,    5.52, E
+60710, DTKA, TABARKA,                    TS,   21,  36.95, N,    8.75, E
+60714, ----, BIZERTE,                    TS,    2,  37.23, N,    9.82, E
+60715, DTTA, TUNIS/CARTHAGE,             TS,    4,  36.83, N,   10.23, E
+60720, ----, KELIBIA,                    TS,    4,  37.07, N,   11.03, E
+60725, ----, SOUK EL ARBA/JENDOUBA,      TS,  144,  36.48, N,    8.80, E
+60735, ----, KAIROUAN,                   TS,   68,  35.67, N,   10.10, E
+60740, DTTM, MONASTIR-SKANES,            TS,    3,  35.67, N,   10.75, E
+60745, ----, GAFSA,                      TS,  314,  34.42, N,    8.82, E
+60750, DTTX, SFAX/EL-MAOU,               TS,   23,  34.72, N,   10.68, E
+60760, DTTZ, TOZEUR/NEFTA,               TS,   93,  33.92, N,    8.10, E
+60765, ----, GABES,                      TS,    2,  33.88, N,   10.10, E
+60769, DTTJ, DJERBA MELLITA,             TS,    4,  33.87, N,   10.77, E
+60775, ----, REMADA,                     TS,  301,  32.32, N,   10.40, E
+61017, ----, BILMA,                      NR,  357,  18.68, N,   12.92, E
+61024, DRZA, AGADEZ SOUTH (MIL),         NR,  502,  16.97, N,    7.98, E
+61052, DRRR, NIAMEY-AERO,                NR,  234,  13.48, N,    2.17, E
+61075, ----, BIRNI-N'KONIA,              NR,  274,  13.80, N,    5.25, E
+61080, ----, MARADI,                     NR,  369,  13.47, N,    7.08, E
+61090, ----, ZINDER,                     NR,  460,  13.78, N,    8.98, E
+61202, GATS, TESSALIT,                   MI,  491,  20.20, N,    0.98, E
+61214, GAKL, KIDAL,                      MI,  459,  18.43, N,    1.35, E
+61223, GATB, TOMBOUCTOU/TIMBUKTU,        MI,  264,  16.72, N,    3.00, W
+61226, GAGO, GAO,                        MI,  260,  16.27, N,    0.05, W
+61233, GANK, NARA/KEIBANE,               MI,  265,  15.17, N,    7.28, W
+61257, GAKY, KAYES,                      MI,   47,  14.43, N,   11.43, W
+61265, GAMB, MOPTI/BARBE,                MI,  272,  14.52, N,    4.10, W
+61272, GASG, SEGOU,                      MI,  289,  13.40, N,    6.15, W
+61291, GABS, BAMAKO/SENOU (MIL),         MI,  381,  12.53, N,    7.95, W
+61297, GASK, SIKASSO,                    MI,  375,  11.35, N,    5.68, W
+61401, ----, BIR MOGHREIN,               MT,  360,  25.23, N,   11.62, W
+61404, ----, ZOUERATE,                   MT,  343,  22.75, N,   12.48, W
+61415, GQPP, NOUADHIBOU,                 MT,    3,  20.93, N,   17.03, W
+61421, ----, ATAR,                       MT,  226,  20.52, N,   13.07, W
+61442, GQNN, NOUAKCHOTT,                 MT,    3,  18.10, N,   15.95, W
+61497, ----, NEMA,                       MT,  246,  16.60, N,    7.27, W
+61498, ----, KIFFA,                      MT,  115,  16.63, N,   11.40, W
+61520, ----, BASSIKOUNOU,                MT,  261,  15.87, N,    5.93, W
+61600, GOSS, SAINT LOUIS,                SG,    4,  16.05, N,   16.45, W
+61641, GOOY, DAKAR/YOFF,                 SG,   24,  14.73, N,   17.50, W
+61660, ----, DAKAR-DIASS-AIBD,           SG,   86,  14.67, N,   17.07, W
+61687, GOTT, TAMBACOUNDA,                SG,   50,  13.77, N,   13.68, W
+61695, GOGG, ZIGUINCHOR,                 SG,   23,  12.55, N,   16.27, W
+61831, ----, CONAKRY,                GUINEA,   49,   9.57, N,   13.62, W
+61901, ----, ST. HELENA ISLAND,          HE,  436,  15.93, S,    5.67, W
+61902, FHAW, WIDE AWAKE FIELD,           HE,   79,   7.97, S,   14.40, W
+61931, ----, SAO TOME,             PRINCIPE,   10,   0.38, N,    6.72, E
+61967, FJDG, DIEGO GARCIA,               BT,    2,   7.30, S,   72.40, E
+61968, ----, ILES GLORIEUSES,            RE,    3,  11.55, S,   47.28, E
+61970, ----, ILE JUAN DE NOVA,           RE,   10,  17.05, S,   42.72, E
+61972, ----, ILE EUROPA,                 RE,   12,  22.35, S,   40.35, E
+61974, ----, AGALEGA,                    RE,    3,  10.43, S,   56.75, E
+61976, ----, SERGE-FROLOW/TROMELIN,      RE,   13,  15.88, S,   54.52, E
+61980, FMEE, ST. DENIS/GILLO,            RE,   25,  20.88, S,   55.52, E
+61986, ----, ST. BRANDON ISLAND,         RE,    4,  16.45, S,   59.62, E
+61988, FIMR, RODRIGUES,                  RE,   59,  19.41, S,   63.25, E
+61995, ----, VACOAS,                     MA,  425,  20.30, S,   57.50, E
+61996, ----, MARTIN DE VIVIES,           FR,   29,  37.80, S,   77.53, E
+61997, ----, ALFRED FAURE/CROZET,        FR,  146,  46.43, S,   51.87, E
+61998, ----, PORT-AUX-FRANCAIS,          FR,   30,  49.35, S,   70.25, E
+62010, HLLT, TRIPOLI INTL ARPT,          LY,   81,  32.67, N,   13.15, E
+62019, ----, SIRTE,                      LY,   13,  31.20, N,   16.58, E
+62053, HLLB, BENINA/BENGHAZI,            LY,  132,  32.08, N,   20.27, E
+62055, ----, AGEDABIA,                   LY,    6,  30.72, N,   20.17, E
+62059, ----, DERNA,                      LY,    9,  32.73, N,   22.63, E
+62062, ----, TOBRUK,                     LY,   50,  32.10, N,   23.92, E
+62103, HLTD, GHADAMES,                   LY,  357,  30.13, N,    9.50, E
+62120, ----, GARIAT EL SHARGHIA,         LY,  501,  30.38, N,   13.58, E
+62124, HLLS, SEBHA (AUT),                LY,  432,  27.02, N,   14.43, E
+62271, ----, KUFRA,                      LY,  407,  24.22, N,   23.30, E
+62301, ----, SIDI BARRANI,               EG,   24,  31.62, N,   25.90, E
+62305, ----, SALLOUM PLATEAU,            EG,  179,  31.57, N,   25.30, E
+62306, HEMM, MERSA MATRUH (MIL),         EG,   30,  31.33, N,   27.22, E
+62309, ----, DABAA,                      EG,   18,  30.93, N,   28.47, E
+62318, HEAX, ALEXANDRIA,                 EG,    7,  31.20, N,   29.95, E
+62333, HEPS, PORT SAID,                  EG,    6,  31.27, N,   32.30, E
+62337, HEAR, EL ARISH,                   EG,   32,  31.08, N,   33.83, E
+62338, ----, GHAZZA,                     EG,   16,  31.50, N,   34.45, E
+62371, ----, CAIRO HQ,                   EG,   26,  30.08, N,   31.28, E
+62378, ----, HELWAN,                     EG,  141,  29.87, N,   31.33, E
+62387, ----, MINYA,                      EG,   40,  28.08, N,   30.73, E
+62397, ----, SOHAG,                      EG,   61,  26.57, N,   37.70, E
+62403, ----, SOUTH OF VALLEY UNIV.,      EG,   96,  26.20, N,   32.75, E
+62405, ----, LUXOR,                      EG,   95,  25.67, N,   32.70, E
+62414, HESN, ASWAN (CIV/MIL),            EG,  194,  23.97, N,   32.78, E
+62416, ----, SIWA,                       EG,    3,  29.25, N,   25.52, E
+62417, ----, SIWA,                       EG,  -15,  29.20, N,   25.48, E
+62420, ----, BAHARIA,                    EG,  128,  28.33, N,   28.90, E
+62423, ----, FARAFRA,                    EG,   92,  27.05, N,   27.97, E
+62425, ----, SHARK EL QUINAT,            EG,  275,  22.47, N,   28.70, E
+62432, ----, DAKHLA,                     EG,  111,  25.48, N,   29.00, E
+62435, ----, KHARGA,                     EG,   78,  25.45, N,   30.53, E
+62450, ----, EL-SUEZ,                    EG,    4,  29.87, N,   32.47, E
+62600, ----, WADI HALFA,                 SU,  150,  21.92, N,   31.35, E
+62640, ----, ABU HAMED,                  SU,  312,  19.53, N,   33.32, E
+62641, ----, PORT SUDAN,                 SU,    3,  19.58, N,   37.22, E
+62650, ----, DONGOLA,                    SU,  226,  19.17, N,   30.48, E
+62721, HSSS, KHARTOUM (CIV/MIL),         SU,  380,  15.60, N,   32.55, E
+62730, ----, KASSALA,                    SU,  500,  15.47, N,   36.40, E
+62760, ----, EL FASHER,                  SU,  733,  13.62, N,   25.33, E
+62771, ----, EL OBEID,                   SU,  574,  13.17, N,   30.23, E
+62772, ----, KOSTI,                      SU,  381,  13.17, N,   32.67, E
+62805, ----, DAMAZINE,                   SU,  474,  11.78, N,   34.38, E
+62840, ----, MALAKAL,                    SU,  387,   9.55, N,   31.65, E
+62880, ----, WAU,                        SU,  438,   7.70, N,   28.02, E
+63021, ----, ASMARA,                ERITREA, 2325,  15.28, N,   38.92, E
+63125, ----, DJIBOUTI CITY,              DJ,   19,  11.55, N,   43.15, E
+63450, HAAB, ADDIS ABABA/BOLE,           ET, 2355,   8.98, N,   38.80, E
+63478, ----, GODE,                       ET,  320,   5.10, N,   44.58, E
+63533, HANG, NEGHELLI (MIL),             ET, 1455,   5.28, N,   39.75, E
+63602, HUAR, ARUA,                       UG, 1211,   3.05, N,   30.92, E
+63612, HKLO, LODWAR,                     KN,  515,   3.12, N,   35.62, E
+63624, ----, MANDERA,                    KN,  230,   3.93, N,   41.87, E
+63674, HUKS, KASESE,                     UG,  961,   0.18, N,   30.10, E
+63705, HUEN, ENTEBBE INTL ARPT,          UG, 1155,   0.05, N,   32.45, E
+63710, HKKR, KERICHO,                    KN, 2184,   0.37, S,   35.35, E
+63714, ----, NAKURU,                     KN, 1871,   0.27, S,   36.07, E
+63723, HKGA, GARISSA,                    KN,  147,   0.47, S,   39.63, E
+63741, HKNC, NAIROBI/DAGORETTI,          KN, 1798,   1.30, S,   36.75, E
+63756, ----, MWANZA,                     KN, 1139,   2.47, S,   32.92, E
+63766, ----, MAKINDU,                    KN,  998,   2.28, S,   37.83, E
+63793, ----, VOI,                        KN,  560,   3.40, S,   38.57, E
+63799, ----, MALINDI,                    KN,   24,   3.23, S,   40.10, E
+63801, ----, KIGOMA,                     KN,  882,   4.88, S,   29.63, E
+63832, ----, TABORA,                     KN, 1181,   5.07, S,   32.83, E
+63862, ----, DODOMA,                     KN, 1120,   6.17, S,   35.77, E
+63894, ----, DAR ES SALAAM,              KN,   55,   6.88, S,   39.20, E
+63932, ----, MBEYA,                      KN, 1704,   8.93, S,   33.47, E
+63985, FSSS, SEYCHELLES INTL,            SC,    4,   4.68, S,   55.53, E
+64210, ----, KINSHASA/N'DJILI,        ZAIRE,  309,   4.38, S,   15.43, E
+64387, ----, KIGALI,                 RWANDA, 1483,   1.97, S,   30.12, E
+64400, FCPP, POINTE-NOIRE,               CG,   17,   4.82, S,   11.90, E
+64401, ----, DOLISIE,                    CG,  329,   4.22, S,   12.70, E
+64450, FCBB, BRAZZAVILLE/MAYA-MAYA,      CG,  316,   4.25, S,   15.25, E
+64453, ----, DJAMBALA,                   CG,  791,   2.53, S,   14.77, E
+64458, FCOU, OUESSO,                     CG,  352,   1.62, N,   16.05, E
+64459, ----, IMPFONDO,                   CG,  335,   1.62, N,   18.07, E
+64500, FOOL, LIBREVILLE/LEON MBA,        GO,   15,   0.45, N,    9.42, E
+64501, ----, PORT GENTIL,                GO,    4,   0.70, S,    8.75, E
+64510, ----, BITAM,                      GO,  600,   2.08, N,   11.48, E
+64565, ----, MOANDA,                     GO,  571,   1.53, S,   13.27, E
+64600, ----, BERBERATI,                  CE,  584,   4.22, N,   15.78, E
+64601, ----, BOUAR,                      CE, 1024,   5.97, N,   15.63, E
+64610, ----, BOSSANGOA,                  CE,  499,   6.48, N,   17.43, E
+64650, FEFF, BANGUI/M'POKO (MIL),        CE,  366,   4.40, N,   18.52, E
+64654, ----, N'DELE,                     CE,  510,   8.40, N,   20.65, E
+64656, ----, BANGASSOU,                  CE,  500,   4.73, N,   22.83, E
+64700, FTTJ, NDJAMENA,                   CD,  295,  12.13, N,   15.03, E
+64705, FTTS, BOUSSO,                     CD,  336,  10.48, N,   16.72, E
+64750, FTTA, SARH,                       CD,  365,   9.15, N,   18.38, E
+64756, ----, ABECHER,                    CD,  545,  13.85, N,   20.85, E
+64860, ----, GARDOUA,                    CM,  241,   9.33, N,   13.38, E
+64870, ----, NGAOUNDERE,                 CM, 1114,   7.35, N,   13.57, E
+64893, ----, KOUNDJA,                    CM, 1208,   5.65, N,   10.75, E
+64900, ----, YOKO,                       CM, 1027,   5.55, N,   12.32, E
+64910, FKKD, DOUALA (CIV/MIL),           CM,    9,   4.00, N,    9.73, E
+64931, ----, BATOURI,                    CM,  655,   4.47, N,   14.37, E
+64950, ----, YAOUNDE,                    CM,  751,   3.83, N,   11.52, E
+65046, ----, KANO,                  NIGERIA,  476,  12.05, N,    8.53, E
+65082, ----, MAIDUGURI,             NIGERIA,  354,  11.85, N,   13.08, E
+65123, ----, MINNA,                 NIGERIA,  260,   9.62, N,    6.53, E
+65202, ----, LAGOS/OSHODI,          NIGERIA,   14,   6.55, N,    3.35, E
+65306, ----, KANDI,                   BENIN,  292,  11.13, N,    2.93, E
+65330, ----, PARAKOU,                 BENIN,  393,   9.35, N,    2.62, E
+65344, ----, COTONOU,                 BENIN,    6,   6.35, N,    2.38, E
+65361, ----, SOKODE,                   TOGO,  403,   8.98, N,    1.13, E
+65387, ----, LOME,                     TOGO,   21,   6.17, N,    1.25, E
+65418, ----, TAMALE,                  GHANA,  173,   9.50, N,    0.85, W
+65467, ----, TAKORADI,                GHANA,    5,   4.88, N,    1.77, W
+65472, ----, ACCRA,                   GHANA,   65,   5.60, N,    0.17, W
+65503, DHHH, OUAGADOUGOU,                HV,  306,  12.35, N,    1.52, W
+65510, ----, BOBO-DIOULASSO,             HV,  460,  11.17, N,    4.30, W
+65528, ----, ODIENNE,                    IV,  433,   9.50, N,    7.57, W
+65536, DIKO, KORHOGO,                    IV,  381,   9.42, N,    5.62, W
+65548, DIMN, MAN,                        IV,  340,   7.38, N,    7.52, W
+65555, DIBK, BOUAKE,                     IV,  376,   7.73, N,    5.07, W
+65578, DIAP, ABIDJAN/PORT BOUET,         IV,    8,   5.25, N,    3.93, W
+65592, DITB, TABOU,                      IV,   21,   4.42, N,    7.37, W
+65660, ----, ROBERTS FIELD,         LIBERIA,    9,   6.25, N,   10.35, W
+66152, ----, DUNDO,                  ANGOLA,  762,   7.37, S,   20.80, E
+66160, ----, LUANDA,                 ANGOLA,   84,   8.85, S,   13.23, E
+66422, ----, MOCAMEDES,              ANGOLA,   52,  15.20, S,   12.15, E
+67001, ----, MORONI,                COMOROS,    6,  11.70, S,   43.23, E
+67002, ----, HAHAYA AIRPORT,        COMOROS,   29,  11.53, S,   43.27, E
+67005, ----, DZAOUDZI,              MAYOTTE,    7,  12.80, S,   45.28, E
+67009, FMNA, DIEGO-SUAREZ,               MG,  105,  12.35, S,   49.30, E
+67012, ----, FASCENE,                    MG,   10,  13.32, S,   48.32, E
+67017, ----, VOHMAR,                     MG,    6,  13.37, S,   50.00, E
+67023, ----, SAMBAVA,                    MG,    7,  14.28, S,   50.17, E
+67025, FMNH, ANTALAHA,                   MG,   88,  14.88, S,   50.25, E
+67027, FMNM, MAJUNGA/MAHAJAN,            MG,   18,  15.67, S,   46.35, E
+67073, FMMO, MAINTIRANO,                 MG,   23,  18.05, S,   44.03, E
+67083, FMMI, ANTANANARIVO/IVATO,         MG, 1276,  18.80, S,   47.48, E
+67095, FMMT, TAMATAVE/TOAMAS,            MG,    6,  18.12, S,   49.40, E
+67113, FMMH, MAHANORO,                   MG,    5,  19.83, S,   48.80, E
+67117, ----, MORONDAVA,                  MG,    8,  20.28, S,   44.32, E
+67131, ----, MOROMBE,                    MG,    5,  21.75, S,   43.37, E
+67157, FMSG, FARAFANGANA,                MG,    6,  22.80, S,   47.83, E
+67161, ----, TULEAR,                     MG,    8,  23.38, S,   43.73, E
+67197, FMSD, FT. DAUPHIN/TOLAGNA,        MG,    9,  25.03, S,   46.95, E
+67215, ----, PORTO AMELIA,               MZ,   50,  12.97, S,   40.50, E
+67231, FQCB, CUAMBA,                     MZ,  607,  14.82, S,   36.53, E
+67237, FQNP, NAMPULA,                    MZ,  441,  15.10, S,   39.28, E
+67283, ----, QUELIMANE,                  MZ,   11,  17.88, S,   36.88, E
+67297, ----, BEIRA,                      MZ,    8,  19.80, S,   34.90, E
+67323, ----, INHAMBANE,                  MZ,   15,  23.87, S,   35.38, E
+67341, FQMA, MAPUTO/MAVALANE,            MZ,   44,  25.92, S,   32.57, E
+67424, ----, BOLERO,                     MW, 1100,  10.97, S,   33.73, E
+67441, ----, MWINILUNGA,                 ZB, 1362,  11.75, S,   24.43, E
+67475, ----, KASAMA,                     ZB, 1384,  10.22, S,   31.13, E
+67489, ----, MZUZU,                      MW, 1253,  11.45, S,   34.02, E
+67586, FWKI, KAMUZU INTL AIRPORT,        MW, 1229,  13.78, S,   33.77, E
+67588, ----, N.R.C.,                     MW, 1100,  14.17, S,   33.67, E
+67633, ----, MONGU,                      ZB, 1052,  15.25, S,   23.15, E
+67666, FLLC, LUSAKA CITY AIRPORT,        ZB, 1280,  15.42, S,   28.32, E
+67693, ----, CHILEKA,                    ZB,  767,  15.68, S,   34.97, E
+67741, FLSS, SESHEKE,                    ZB,  951,  17.47, S,   24.30, E
+67761, ----, KARIBA,                     ZW,  510,  16.52, S,   28.77, E
+67774, ----, HARARE/BELVEDERE,           ZW, 1472,  17.83, S,   31.02, E
+67775, ----, HARARE AIRPORT,             ZW, 1479,  17.93, S,   31.10, E
+67781, ----, MTOKO,                      ZW, 1259,  17.42, S,   32.22, E
+67797, ----, MAKANGA,                    MW,   58,  16.52, S,   35.15, E
+67843, ----, VICTORIA FALLS,             ZW, 1062,  18.10, S,   25.85, E
+67853, ----, DETT,                       ZW, 1094,  18.63, S,   26.85, E
+67861, ----, GOKWE,                      ZW, 1282,  18.22, S,   28.93, E
+67867, ----, GWELO,                      ZW, 1429,  19.45, S,   29.85, E
+67869, ----, KADOMA,                     ZW, 1157,  18.32, S,   29.88, E
+67881, ----, RUSAPE,                     ZW, 1430,  18.53, S,   32.13, E
+67964, ----, BULAWAYO/GOETZ,             ZW, 1344,  20.15, S,   28.62, E
+67975, ----, FORT VICTORIA,              ZW, 1097,  20.07, S,   30.87, E
+67977, ----, BUFFALO RNAGE,              ZW,  429,  21.02, S,   31.58, E
+67991, ----, BEITBRIDGE,                 ZW,  456,  22.22, S,   30.00, E
+68010, ----, OKAUKUEJO,                  NM, 1100,  19.18, S,   15.92, E
+68014, ----, GROOTFONTEIN,               NM, 1411,  19.60, S,   18.12, E
+68016, ----, MOWE,                       NM,    0,  19.33, S,   12.72, E
+68024, ----, GHANZI,                     BC, 1131,  21.70, S,   21.65, E
+68032, FBMN, MAUN,                       BC,  900,  19.98, S,   23.42, E
+68040, FBLT, LETLHAKANE,                 BC,  985,  21.42, S,   25.60, E
+68054, ----, FRANCISTOWN,                BC,  991,  21.22, S,   27.50, E
+68098, ----, WALVIS BAY AIRPORT,         BC,  150,  22.96, S,   14.66, E
+68110, FYWW, WINDHOEK/EROS(SAAF),        NM, 1725,  22.57, S,   17.10, E
+68112, ----, STRIJDOM AIRPORT,           NM, 1715,  22.48, S,   17.47, E
+68155, FAER, ELLISRAS,                   ZA,  839,  23.68, S,   27.70, E
+68174, FAPB, PIETERSBURG (SAAF),         ZA, 1222,  23.87, S,   29.45, E
+68240, FBSK, SIR SERETSE KHAMA,          BC, 1005,  24.22, S,   25.92, E
+68242, FAMM, MMABATHO INTL AIRPORT,      ZA, 1277,  25.78, S,   25.53, E
+68244, ----, GABERONES,                  ZA,  983,  24.67, S,   25.92, E
+68252, ----, RUSTENBURG,                 ZA, 1200,  25.72, S,   27.30, E
+68263, FAIR, PRETORIA/IRENE,             ZA, 1500,  25.92, S,   28.22, E
+68312, ----, KEETMENSHOOP,               NM, 1073,  26.53, S,   18.12, E
+68328, FBTS, TSABONG,                    BC, 1000,  26.05, S,   22.45, E
+68406, ----, KORT DORN,                  ZA,   27,  28.57, S,   16.53, E
+68424, FAUP, UPINGTON/PIERRE,            ZA,  836,  28.40, S,   21.27, E
+68438, ----, KIMBERLEY,                  ZA, 1204,  28.80, S,   24.77, E
+68442, FABL, BLOEMFONTEIN/HERTZOG,       ZA, 1348,  29.10, S,   26.30, E
+68461, FABM, BETHLEHEM AIRPORT,          ZA, 1682,  28.25, S,   28.33, E
+68512, FASB, SPRINGBOK,                  ZA,  990,  29.67, S,   17.87, E
+68530, ----, DOUGLAS,                    ZA, 1000,  29.07, S,   23.75, E
+68538, FADY, DEAAR(UA),                  ZA, 1287,  30.67, S,   24.02, E
+68580, ----, CEDARA,                     ZA, 1100,  29.53, S,   30.28, E
+68588, FADN, DURBAN/LOUIS BOTHA,         ZA,    8,  29.97, S,   30.95, E
+68592, FALE, KING SHAKA INTL AIRPORT,    ZA,  109,  29.61, S,   31.12, E
+68715, ----, MALMEBURY,                  ZA,  102,  33.47, S,   18.72, E
+68816, FACT, CAPETOWN/DF MALAN,          ZA,   42,  33.98, S,   18.60, E
+68828, ----, GEORGE,                     ZA,  218,  33.97, S,   22.42, E
+68842, FAPE, PORT ELIZABETH,             ZA,   60,  33.98, S,   23.60, E
+68858, ----, EAST LONDON,                ZA,  130,  33.03, S,   27.83, E
+68906, FAGE, GOUGH ISLAND,               ZA,    0,  40.35, S,    9.88, W
+68916, ----, CAPE POINT,                 ZA,  226,  34.35, S,   18.50, E
+68994, FAME, MARION ISLAND,              ZA,   22,  46.88, S,   37.87, E
+69002, KHGT, JOLON/HUNTER LIGGETT MIL,CA US,  317,  36.00, N,  121.23, W
+69003, ----, WEST VERTICLE,           UT US, 1400,  40.20, N,  111.22, W
+69007, KOAR, FORT ORD/FRITZS,         CA US,   41,  36.68, N,  121.77, W
+69008, KSYL, CAMP ROBERTS,            CA US,  220,  35.75, N,  120.70, W
+69014, KNZJ, EL TORO/MCAS,               US,  116,  33.67, N,  117.73, W
+69016, KNTK, TUSTIN/MCAF,                US,   17,  33.68, N,  117.80, W
+69055, KQCA, GLOGOVAC,               KOSOVO,  609,  42.37, N,   20.55, E
+69061, KQDI, DAKOVICA NEW AIRPORT,   KOSOVO,  399,  42.25, N,   20.26, E
+69066, KQDN, ORAHOVAC,               KOSOVO,  375,  42.18, N,   20.36, E
+69089, KQHD, FARKE,                 ALBANIA,  258,  41.32, N,   19.87, E
+69110, KQAA, PRIZREN,                KOSOVO,  460,  42.13, N,   20.45, E
+69111, KQAB, TOPLICANE,              KOSOVO,  366,  42.30, N,   20.80, E
+69145, KQDF, TIRANA USAFE,          ALBANIA,   89,  41.42, N,   19.72, E
+69149, KQKB, TASZAR USAREUR FWD,         HU,  160,  46.42, N,   17.92, E
+69154, KQKH, KAPOSJULAK USAREUR FWD,     HU,  145,  46.37, N,   17.82, E
+69167, KQKU, CAMP ZENICA,                BH,  316,  44.13, N,   17.55, E
+69170, KQKX, PRILEP MMU,          MACEDONIA,  640,  41.22, N,   21.43, E
+69189, KQLP, PLANA,                  KOSOVO,  529,  42.51, N,   20.56, E
+69198, KQLY, HQ KFOR PRISTINA,       KOSOVO,  576,  42.40, N,   21.09, E
+69312, KQHL, CAMP DOAH,                  KW,   12,  29.37, N,   47.80, E
+69635, KQOI, TOMISLAV GRAD,              BH,  903,  43.43, N,   17.15, E
+69637, KQOK, GARADZE,                    BH,  343,  43.40, N,   18.59, E
+69638, KQOL, KUPRES,                     BH, 1183,  44.00, N,   17.17, E
+69640, KQON, STOLAC,                     BH,   64,  43.05, N,   17.58, E
+69641, KQOO, JUBUSKI,                    BH,   98,  42.13, N,   17.32, E
+69663, KQQK, DOBOJ OJG,                  BH,  182,  44.44, N,   18.06, E
+69665, KQQM, CAMP MCGOVERN,              BH,   90,  44.53, N,   18.41, E
+69666, KQQN, COMMANCHE BASE,             BH,  228,  44.28, N,   18.40, E
+69679, KQUA, RAJILOVAK,                  BH,  493,  43.52, N,   18.18, E
+69683, KQUE, CAMP COLT,                  BH,   93,  45.01, N,   18.19, E
+69686, KQUH, CAMP ABLE SENTRY,    MACEDONIA,  238,  41.58, N,   21.38, E
+69704, KQUZ, AL KHARJI,                  SD,  497,  24.13, N,   47.93, E
+69756, KQIZ, AL JABER,                   KW,  157,  28.93, N,   47.78, E
+70026, PBRW, BARROW/POST-ROG,         AK US,    3,  71.30, N,  156.78, W
+70086, PBTI, BARTER ISLAND,           AK US,   15,  70.13, N,  143.63, W
+70117, PATC, TIN CITY AFS,            AK US,   83,  65.57, N,  167.92, W
+70133, POTZ, KOTZEBUE,                AK US,    6,  66.87, N,  162.63, W
+70200, POME, NOME,                    AK US,    6,  64.50, N,  165.43, W
+70219, PBET, BETHEL ARPT,             AK US,   45,  60.78, N,  161.80, W
+70231, PMCG, MCGRATH,                 AK US,  103,  62.97, N,  155.62, W
+70261, PFAI, FAIRBANKS,               AK US,  138,  64.82, N,  147.87, W
+70266, PABG, FORT GREELY,             AK US,  398,  63.97, N,  145.70, W
+70270, PAFR, FORT RICHARDSON,         AK US,  115,  61.27, N,  149.65, W
+70273, PANC, ANCHORAGE INTL,          AK US,   40,  61.17, N,  150.02, W
+70308, PSNP, SAINT PAUL IS.,          AK US,    8,  57.15, N,  170.22, W
+70316, PCDB, COLD BAY,                AK US,   31,  55.20, N,  162.72, W
+70326, PAKN, KING SALMON,             AK US,   14,  58.68, N,  156.65, W
+70350, PADQ, KODIAK,                  AK US,   33,  57.73, N,  152.52, W
+70361, PYAK, YAKUTAT,                 AK US,    9,  59.50, N,  139.68, W
+70398, PANN, ANNETTE ISLAND,          AK US,   33,  55.03, N,  131.57, W
+70414, PASY, SHEMYA AFB,              AK US,   30,  52.72, N,  174.12, W
+70454, PADK, ADAK NS.,                AK US,    6,  51.88, N,  176.65, W
+71043, CYVQ, NORMAN WELLS,            NT CN,   73,  65.28, N,  126.80, W
+71069, CYZH, SLAVE LAKE,              AB CN,  583,  55.28, N,  114.77, W
+71072, CYMD, MOULD BAY,               NT CN,   12,  76.23, N,  119.33, W
+71078, CYYL, LYNN LAKE AIRPORT,       MB CN,  357,  56.87, N,  101.08, W
+71079, CYTH, THOMPSON AIRPORT,        MB CN,  218,  55.80, N,   97.87, W
+71081, CYUX, HALL BEACH,              NT CN,    8,  68.78, N,   81.25, W
+71082, CWLT, ALERT BAY,               NT CN,   63,  82.50, N,   62.33, W
+71109, CYZT, PORT HARDY,              BC CN,   22,  50.68, N,  127.37, W
+71115, CWJV, VERNON,                  BC CN,  555,  50.23, N,  119.28, W
+71119, CWSE, EDMONTON,                AB CN,  766,  53.55, N,  114.10, W
+71120, CYOD, COLD LAKE,               AB CN,  544,  54.42, N,  110.28, W
+71121, CYED, EDMONTON,                AB CN,  688,  53.67, N,  113.45, W
+71124, CWIQ, PRIMROSE LAKE,           AB CN,  702,  54.75, N,  110.05, W
+71126, CZED, STONY PLAIN,             AB CN,  766,  53.05, N,  113.11, W
+71129, CYKY, KINDERSLEY,              SK CN,  694,  51.52, N,  109.17, W
+71135, CWKO, ROCKGLEN (MARS),         SA CN,  917,  49.17, N,  105.98, W
+71145, CYIV, ISLAND LAKE,             MN CN,  236,  53.85, N,   94.65, W
+71146, CWLZ, CANDLE LAKE,             SA CN,  503,  53.73, N,  105.27, W
+71197, CWZB, PORT BASQUES,            NF CN,   40,  47.57, N,   59.18, W
+71203, CYLW, KELOWA,                  BC CN,  430,  49.97, N,  119.38, W
+71399, CWOS, SHELBURNE,               NS CN,   30,  43.72, N,   65.25, W
+71431, CWNC, COBOURG,                 ON CN,   78,  43.95, N,   78.17, W
+71486, CWJW, JASPER WARDEN,           AB CN, 1020,  52.93, N,  118.32, W
+71488, CYKJ, KEY LAKE,                SA CN,  509,  57.25, N,  105.62, W
+71569, CXBK, BRATT'S LAKE,            SA CN,  580,  50.20, N,  104.70, W
+71600, CWSA, SABLE ISLAND,            NS CN,    4,  43.93, N,   60.02, W
+71603, CWQI, YARMOUTH,                NS CN,   41,  43.83, N,   66.08, W
+71621, CYTR, TRENTON,                 ON CN,   86,  44.12, N,   77.53, W
+71625, CYWA, PETAWAWA,                ON CN,  130,  45.95, N,   77.32, W
+71627, CYUL, MONTREAL,                QB CN,   36,  45.47, N,   73.73, W
+71634, CYZR, SARNIA,                     CN,  181,  43.00, N,   82.30, W
+71638, CWTO, TORONTO AES HQ,          ON CN,  187,  43.78, N,   79.47, W
+71701, CYCX, GAGETOWN,                NB CN,   51,  45.83, N,   66.43, W
+71712, CWBZ, ST ANICET,               QB CN,   49,  45.12, N,   74.28, W
+71716, CYOY, VALCARTIER,              QB CN,  168,  46.90, N,   71.50, W
+71722, CWMW, MANIWAKI,                QB CN,  170,  46.38, N,   75.97, W
+71799, CYYJ, VICTORIA INTL AIRPORT,   BC CN,   19,  48.65, N,  123.43, W
+71800, CWRA, CAPE RACE (MARS),        NF CN,   28,  46.65, N,   53.07, W
+71801, CYYT, SAINT JOHN'S,            NF CN,  140,  47.62, N,   52.73, W
+71802, CWDS, ST LAWRENCE,             NF CN,   49,  46.92, N,   55.38, W
+71811, CYZV, SEPT-ILES,               QB CN,   55,  50.22, N,   66.27, W
+71815, CYJT, STEPHENVILLE,            NF CN,   26,  48.53, N,   58.55, W
+71816, CYYR, GOOSE BAY,               NF CN,   44,  53.30, N,   60.37, W
+71823, CZAG, LA GRANDE,               QB CN,  313,  53.75, N,   73.67, W
+71826, CWXP, NITCHEQUON,              QB CN,  539,  53.20, N,   70.90, W
+71836, CWZC, MOOSONEE,                ON CN,   10,  51.27, N,   80.65, W
+71843, ----, WINNIPEG UA,             MB CN,  251,  49.88, N,   97.13, W
+71845, CYPL, PICKLE LAKE,             ON CN,  373,  51.47, N,   90.20, W
+71848, CWTL, BIG TROUT LAKE,          ON CN,  222,  53.83, N,   89.87, W
+71851, CYPG, PORTAGE SOUTPORT,        MN CN,  269,  49.90, N,   98.27, W
+71852, CYWG, WINNIPEG INTL AIRPORT,   MB CN,  239,  49.90, N,   97.23, W
+71853, CWLO, SHILO,                   MN CN,  382,  49.78, N,   99.63, W
+71855, CYDN, DAUPHIN LAKE,            MN CN,  304,  51.10, N,  100.05, W
+71861, CWIK, BROADVIEW,               SA CN,  602,  50.38, N,  102.68, W
+71863, CYQR, REGINA,                  SK CN,  577,  50.42, N,  104.67, W
+71866, CYXE, SASKATOON,               AB CN,  504,  52.17, N,  106.70, W
+71867, CYQD, THE PAS,                 MN CN,  271,  53.97, N,  101.10, W
+71869, CYPA, PRINCE ALBERT,           MN CN,  428,  53.22, N,  105.68, W
+71874, CYQL, LETHBRIDGE,              AB CN,  929,  49.62, N,  112.80, W
+71876, CYOW, N BATTLEFORD,            SA CN,  548,  52.77, N,  108.25, W
+71877, CYYC, CALGARY,                 AB CN, 1084,  51.12, N,  114.02, W
+71878, CYQF, RED DEER AIRPORT,        AB CN,  905,  52.18, N,  113.90, W
+71892, CYVR, VANCOUVER,               BC CN,    3,  49.18, N,  123.18, W
+71893, CYQQ, COMOX,                   BC CN,   26,  49.72, N,  124.90, W
+71896, CYXS, PRINCE GEORGE,           BC CN,  691,  53.88, N,  122.67, W
+71906, CYVP, KUUJJUAQ,                QB CN,   37,  58.10, N,   68.42, W
+71907, CWPH, INUKJUAK,                QB CN,    3,  58.45, N,   78.12, W
+71908, CZXS, PRINCE GEORGE,              CN,  601,  53.90, N,  122.80, W
+71909, CYFB, FROBISHER BAY/IQALUIT,   NT CN,   34,  63.75, N,   68.53, W
+71913, CYYQ, CHURCHILL,               MN CN,   29,  58.75, N,   94.07, W
+71915, CYZS, CORAL HARBOUR,           NT CN,   64,  64.20, N,   83.37, W
+71917, CWEU, EUREKA,                  NT CN,   10,  79.98, N,   85.93, W
+71920, CWFN, CREE LAKE,               SK CN,  499,  57.35, N,  107.13, W
+71924, CYRB, RESOLUTE BAY,            NT CN,   67,  74.72, N,   94.98, W
+71925, CYCB, CAMBRIDGE BAY,           NT CN,   27,  69.10, N,  105.12, W
+71926, CYBK, BAKER LAKE,              NT CN,   18,  64.30, N,   96.08, W
+71932, CYMM, FORT MCMURRAY,           AB CN,  369,  56.65, N,  111.22, W
+71934, CYSM, FORT SMITH,              NT CN,  203,  60.02, N,  111.95, W
+71945, CYYE, FORT NELSON,             BC CN,  382,  58.83, N,  122.60, W
+71954, CYUB, TUKTOYAKTUK,             NT CN,    5,  69.45, N,  133.02, W
+71957, CYEV, INUVIK,                  NT CN,   68,  68.30, N,  133.48, W
+71964, CYXY, WHITEHORSE,              YK CN,  703,  60.72, N,  135.07, W
+72201, KEYW, KEY WEST INTL,           FL US,    6,  24.55, N,   81.75, W
+72202, KMIA, MIAMI INTL,              FL US,    4,  25.82, N,   80.28, W
+72203, KPBI, WEST PALM BEACH,         FL US,    6,  26.68, N,   80.12, W
+72206, KJAX, JACKSONVILLE,            FL US,    9,  30.43, N,   81.62, W
+72207, KGRF, FORT LEWIS,              WA US,   92,  47.12, N,  122.55, W
+72208, KCHS, CHARLESTON,              SC US,   14,  32.90, N,   80.03, W
+72210, KTBW, TAMPA BAY,               FL US,   13,  27.70, N,   82.40, W
+72213, KAYS, WAYCROSS,                GA US,   46,  31.25, N,   82.40, W
+72214, KTLH, TALLAHASSEE,             FL US,   18,  30.40, N,   84.35, W
+72215, KFFC, ATLANTA/PEACHTREE CITY,  GA US,  264,  33.37, N,   84.57, W
+72220, KAQQ, APALACHICOLA,            FL US,    6,  29.73, N,   85.03, W
+72221, KVPS, EGLIN AFB/VALPARAISO,    FL US,   26,  30.48, N,   86.53, W
+72225, KLSF, FORT BENNING,            GA US,  130,  32.33, N,   84.83, W
+72228, KTCL, TUSCALOOSA/MUNICIPAL,    AL US,   49,  33.22, N,   87.62, W
+72229, KCKL, CENTREVILLE,             AL US,  140,  32.90, N,   87.25, W
+72230, KBMX, BIRMINGHAM/SHELBY CO.,   AL US,  178,  33.17, N,   86.77, W
+72232, KBVE, BOOTHVILLE,              LA US,    0,  29.33, N,   89.40, W
+72233, KSIL, SLIDELL,                 LA US,    3,  30.25, N,   89.77, W
+72235, KJAN, JACKSON,                 MS US,  101,  32.32, N,   90.08, W
+72239, KPOE, FORT POLK,               LA US,  100,  31.05, N,   93.20, W
+72240, KLCH, LAKE CHARLES,            LA US,   10,  30.12, N,   93.22, W
+72247, KGGG, LONGVIEW,                TX US,  124,  32.35, N,   94.65, W
+72248, KSHV, SHREVEPORT WSO,          LA US,   84,  32.45, N,   93.47, W
+72249, KFWD, FORT WORTH,              TX US,  196,  32.80, N,   97.30, W
+72250, KBRO, BROWNSVILLE,             TX US,    6,  25.90, N,   97.43, W
+72251, KCRP, CORPUS CHRISTI,          TX US,   13,  27.77, N,   97.50, W
+72255, KVCT, VICTORIA,                TX US,   36,  28.85, N,   96.92, W
+72257, KHLR, FT HOOD AAF/KIL,         TX US,  286,  31.15, N,   97.72, W
+72260, KSEP, STEPHENVILLE,            TX US,  402,  32.22, N,   98.18, W
+72261, KDRT, DEL RIO,                 TX US,  313,  29.37, N,  100.92, W
+72265, KMAF, MIDLAND REGIONAL,        TX US,  872,  31.95, N,  102.18, W
+72269, K2C2, WHITE SANDS,             AZ US, 1207,  32.24, N,  106.22, W
+72270, KELP, EL PASO,                 TX US, 1194,  31.80, N,  106.40, W
+72273, KFHU, FORT HUACHUCA,           AZ US, 1438,  31.60, N,  110.35, W
+72274, KTUS, TUCSON,                  AZ US,  779,  32.12, N,  110.93, W
+72280, KNYL, YUMA,                    AZ US,   50,  32.65, N,  114.62, W
+72286, KRIV, RIVERSIDE (MARCH),       CA US,  469,  33.88, N,  117.27, W
+72290, KNKX, MIRAMAR NAS,             CA US,    9,  32.73, N,  117.17, W
+72291, KNSI, SAN NICOLAS IS.,         CA US,  154,  33.25, N,  119.45, W
+72293, KMYF, SAN DIEGO,               CA US,  124,  32.82, N,  117.13, W
+72295, KLAX, LOS ANGELES,             CA US,   34,  33.93, N,  118.40, W
+72304, KHAT, CAPE HATTERAS,           NC US,    3,  35.27, N,   75.55, W
+72305, KMHX, MOREHEAD/NEWPORT,        NC US,   11,  34.70, N,   76.80, W
+72309, KNKT, CHERRY POINT,            NC US,    9,  34.90, N,   76.88, W
+72311, KAHN, ATHENS,                  GA US,  247,  33.95, N,   83.32, W
+72317, KGSO, GREENSBORO-HIGH,         NC US,  270,  36.08, N,   79.95, W
+72318, KRNK, ROANOKE,                 VA US,  648,  37.20, N,   80.42, W
+72327, KBNA, NASHVILLE,               TN US,  180,  36.12, N,   86.68, W
+72340, KLZK, LITTLE ROCK,             AR US,  165,  34.13, N,   92.25, W
+72349, KUMN, MONETT,                  MO US,  437,  36.88, N,   93.90, W
+72353, KOKC, OKLAHOMA CITY,           OK US,  397,  35.40, N,   97.60, W
+72355, KFSI, FORT SILL,               OK US,  362,  34.65, N,   98.40, W
+72357, KOUN, NORMAN,                  OK US,  362,  35.23, N,   97.47, W
+72363, KAMA, AMARILLO,                TX US, 1099,  35.23, N,  101.70, W
+72364, KEPZ, EL PASO,                 TX US, 1377,  31.90, N,  106.70, W
+72365, KABQ, ALBUQUERQUE,             NM US, 1613,  35.05, N,  106.60, W
+72374, KINW, WINSLOW,                 AZ US, 1488,  35.02, N,  110.73, W
+72376, KFSX, FLAGSTAFF,               AZ US, 2192,  35.23, N,  111.82, W
+72381, KEDW, EDWARDS AFB,             CA US,  702,  34.90, N,  117.88, W
+72382, KPMD, PALMDALE,                CA US,  774,  34.63, N,  118.08, W
+72383, KSDB, SANDBERG,                CA US, 1379,  34.75, N,  118.73, W
+72387, KDRA, MERCURY/DESERT ROCK,     NV US, 1009,  36.62, N,  116.02, W
+72388, KVEF, LAS VEGAS,               NV US,  697,  36.05, N,  115.18, W
+72389, KFAT, FRESNO/AIR TE,           NV US,  100,  36.77, N,  119.72, W
+72391, KNTD, POINT MAGU,              CA US,    4,  34.12, N,  119.12, W
+72393, KVBG, VANDENBERG AFB,          CA US,  112,  34.73, N,  120.58, W
+72394, KSMX, SANTA MARIA,             CA US,   73,  34.90, N,  120.45, W
+72402, KWAL, WALLOPS ISLAND,          VA US,    3,  37.85, N,   75.48, W
+72403, KIAD, WASHINGTON/DULLES,       VA US,   98,  38.95, N,   77.45, W
+72405, KDCA, WASHINGTON/NA,           VA US,   23,  38.85, N,   77.03, W
+72407, KACY, ATLANTIC CITY,           NJ US,   20,  39.45, N,   74.57, W
+72408, KPHL, PHILADELPHIA,            PA US,    5,  39.92, N,   75.18, W
+72424, KFTK, FORT KNOX/GODMA,         KY US,  230,  37.90, N,   85.97, W
+72425, KHTS, HUNTINGTON,              WV US,  255,  38.37, N,   82.55, W
+72426, KILN, WILMINGTON,              OH US,  307,  39.42, N,   83.82, W
+72429, KDAY, DAYTON,                  OH US,  306,  39.90, N,   84.20, W
+72433, KSLO, SALEM-LECKRONE,          IL US,  177,  38.65, N,   88.97, W
+72435, KPAH, PADUCAH,                 KY US,  125,  37.07, N,   88.77, W
+72440, KSGF, SPRINGFIELD,             MO US,  392,  37.23, N,   93.40, W
+72451, KDDC, DODGE CITY,              KS US,  790,  37.77, N,   99.97, W
+72455, KFRI, FORT RILEY,              KS US,  325,  39.05, N,   96.77, W
+72456, KTOP, TOPEKA/BILLARD,          KS US,  270,  39.07, N,   95.62, W
+72468, KFCS, FORT CARSON,             CO US, 1790,  38.68, N,  104.77, W
+72469, KDNR, DENVER,                  CO US, 1625,  39.75, N,  104.87, W
+72475, KCDC, CEDAR CITY,              UT US, 1714,  37.70, N,  113.10, W
+72476, KGJT, GRAND JUNCTION,          CO US, 1475,  39.12, N,  108.53, W
+72483, KSAC, SACRAMENTO,              CA US,    8,  38.52, N,  121.50, W
+72486, KELY, ELY/YELLAND FIELD,       NV US, 1909,  39.28, N,  114.85, W
+72489, KREV, RENO,                    NV US, 1515,  39.57, N,  119.78, W
+72492, KSCK, STOCKTON,                CA US,    8,  37.90, N,  121.25, W
+72493, KOAK, OAKLAND,                 CA US,    3,  37.73, N,  122.22, W
+72494, KSFO, SAN FRANCISCO,           CA US,    5,  37.62, N,  122.38, W
+72501, KOKX, BROOKHAVEN,              NY US,   20,  40.87, N,   72.87, W
+72518, KALB, ALBANY,                  NY US,   89,  42.75, N,   73.80, W
+72520, KPIT, PITTSBURGH,              PA US,  373,  40.50, N,   80.22, W
+72528, KBUF, BUFFALO,                 NY US,  215,  42.93, N,   78.73, W
+72532, KPIA, PEORIA,                  IL US,  202,  40.67, N,   89.68, W
+72553, KOVN, NORTH OMAHA,             NE US,  406,  41.37, N,   96.02, W
+72558, KOAX, OMAHA VALLEY,            NE US,  350,  41.32, N,   96.37, W
+72562, KLBF, NORTH PLATTE,            NE US,  849,  41.13, N,  100.68, W
+72572, KSLC, SALT LAKE CITY,          UT US, 1288,  40.78, N,  111.97, W
+72576, KLND, LANDER/HUNT FIELD,       WY US, 1694,  42.82, N,  108.73, W
+72579, KRXE, IPCO/REXBURG,            ID US, 1514,  43.90, N,  111.68, W
+72582, KEKO, ELKO,                    NV US, 1367,  40.87, N,  115.73, W
+72583, KWMC, WINNEMUCCA MUNICIPAL,    NV US, 1322,  40.90, N,  117.80, W
+72591, KRBL, RED BLUFF,               CA US,  108,  40.15, N,  122.25, W
+72592, KRDD, REDDING,                 CA US,  153,  40.50, N,  122.30, W
+72597, KMFR, MEDFORD,                 OR US,  405,  42.37, N,  122.87, W
+72606, KPWM, PORTLAND INTL,           ME US,   19,  43.65, N,   70.32, W
+72632, KDTX, DETROIT,                 MI US,  329,  42.68, N,   83.47, W
+72634, KAPX, GAYLORD,                 MI US,  446,  44.92, N,   84.72, W
+72637, KFNT, FLINT/BISHOP,            MI US,  233,  42.97, N,   83.75, W
+72645, KGRB, GREEN BAY,               WI US,  214,  44.48, N,   88.13, W
+72649, KMPX, CHANHASSEN,              MN US,  287,  44.85, N,   93.57, W
+72654, KHON, HURON REGIONAL,          SD US,  393,  44.38, N,   98.22, W
+72655, KSTC, ST CLOUD,                MN US,  312,  45.55, N,   94.07, W
+72659, KABR, ABERDEEN,                SD US,  397,  45.45, N,   98.42, W
+72662, KRAP, RAPID CITY REGIONAL,     SD US,  966,  44.05, N,  103.07, W
+72672, KRIW, RIVERTON,                WY US, 1688,  43.00, N,  108.50, W
+72681, KBOI, BOISE MUNICIPAL,         ID US,  874,  43.57, N,  116.22, W
+72682, KGVL, IPCO/CROUCH,             ID US, 1088,  44.14, N,  115.99, W
+72694, KSLE, SALEM/McNARY,            OR US,   61,  44.92, N,  123.00, W
+72698, KPDX, PORTLAND/INT.,           OR US,    8,  45.58, N,  122.60, W
+72712, KCAR, CARIBOU MUNICIPAL,       ME US,  190,  46.87, N,   68.02, W
+72734, KSSM, SAULT STE MARIE,         MI US,  221,  46.47, N,   84.37, W
+72747, KINL, INTERNATIONAL FALLS,     MN US,  361,  48.57, N,   93.38, W
+72764, KBIS, BISMARCK,                ND US,  506,  46.77, N,  100.75, W
+72768, KGGW, GLASGOW,                 MT US,  700,  48.22, N,  106.62, W
+72775, KGTF, GREAT FALLS,             MT US, 1115,  47.48, N,  111.37, W
+72776, KTFX, GREAT FALLS,             MT US, 1130,  47.45, N,  111.38, W
+72785, KGEG, SPOKANE INTL,            WA US,  721,  47.63, N,  117.53, W
+72786, KGEG, SPOKANE INTL,            WA US,  728,  47.68, N,  117.63, W
+72793, KSEA, SEATTLE,                 WA US,  130,  47.45, N,  122.30, W
+72797, KUIL, QUILLAYUTE,              WA US,   62,  47.95, N,  124.55, W
+72816, CYYR, GOOSE BAY,               NF CN,   44,  53.30, N,   60.37, W
+72924, CYRB, RESOLUTE,                NT CN,   67,  74.72, N,   94.98, W
+72938, ----, COPPERMINE,              NT CN,    9,  67.82, N,  115.08, W
+73033, CWVK, VERNON BRIDGE,           BC CN,  555,  50.22, N,  119.27, W
+74001, ----, REDSTONE ARSENAL,        AL US,  209,  34.68, N,   86.68, W
+74002, KAPG, ABERDEEN PROVING,        MD US,   18,  39.47, N,   76.17, W
+74003, KDPG, DUGWAY PROVING GROUND,   UT US, 1325,  40.18, N,  112.92, W
+74004, K1YZ, YUMA,                    AZ US,   98,  32.85, N,  114.40, W
+74005, K1Y8, YUMA PG SITE 2,          AZ US,  231,  32.86, N,  114.03, W
+74006, K1Y9, YUMA PG SITE 3,          AZ US,  145,  32.92, N,  113.80, W
+74051, ----, SACHS HARBOUR,           BC CN,   83,  71.98, N,  125.28, W
+74074, ----, ISACHSEN,                BC CN,   31,  78.78, N,  103.53, W
+74090, ----, CLYLDE,                  BC CN,   16,  70.45, N,   68.55, W
+74109, CYZT, PORT HARDY,              BC CN,   22,  50.68, N,  127.37, W
+74207, KGRF, FT LEWIS,                WA US,   92,  47.08, N,  122.57, W
+74370, KGTB, FT DRUM,                 NY US,  210,  44.05, N,   75.72, W
+74389, KGYX, GRAY,                    ME US,  125,  43.88, N,   70.25, W
+74455, KDVN, DAVENPORT/QUAD CITIES,   IA US,  229,  41.62, N,   90.57, W
+74486, KJFK, NEW YORK/KENNEDY,        NY US,    8,  40.78, N,   73.77, W
+74494, KCHH, CHATHAM,                 MA US,   16,  41.67, N,   69.97, W
+74504, ----, PILAR POINT AFS,         CA US,   49,  37.50, N,  122.50, W
+74505, KSJC, SAN JOSE,                CA US,   17,  37.37, N,  121.93, W
+74516, KSUU, FAIRFIELD,               CA US,   19,  38.27, N,  121.93, W
+74530, ----, GRANADA,                 CO US, 1575,  39.78, N,  104.98, W
+74531, KAAF, U.S. AIR FORCE ACADEMY,  CO US, 1999,  38.97, N,  104.82, W
+74547, KHBK, HILLSBORO (ARM),         KS US,  446,  38.30, N,   97.30, W
+74560, KILX, LINCOLN,                 IL US,  178,  40.15, N,   89.33, W
+74606, KVBG, VANDENBERG AFB,          CA US,  112,  34.65, N,  120.57, W
+74611, KBYS, BARSTOW,                 CA US,  771,  35.28, N,  116.62, W
+74612, KNID, CHINA LAKE NAF,          CA US,  696,  35.68, N,  117.68, W
+74619, K4SU, SUPERIOR VALLEY,         CA US, 1035,  36.33, N,  117.10, W
+74626, ----, WFO PHOENIX,             AZ US,  384,  33.45, N,  111.95, W
+74641, KVCI, VICI (ARM),              OK US,  621,  36.07, N,   99.20, W
+74646, KLMN, LAMONT (ARM-CART),       OK US,  317,  36.62, N,   97.48, W
+74650, KMRS, MORRIS (ARM),            OK US,  216,  35.67, N,   95.85, W
+74651, KPRC, PURCELL (ARM),           OK US,  343,  34.97, N,   97.42, W
+74671, KHOP, FORT CAMPBELL,           KY US,  174,  36.67, N,   87.50, W
+74693, KFBG, FORT BRAGG,              NC US,   74,  35.13, N,   78.93, W
+74702, KNLC, LEMOORE NAS,             CA US,   71,  36.33, N,  119.95, W
+74724, KGBN, GILA BEND AFB,           AZ US,  281,  32.43, N,  112.68, W
+74732, KHMN, ALAMOGORDO/HOLLMAN AFB,  NM US, 1258,  32.85, N,  106.10, W
+74777, KHRT, HURLBURT FIELD,          FL US,   12,  30.43, N,   86.68, W
+74780, ----, FORT STEWART RE,         GA US,   27,  31.90, N,   81.63, W
+74794, KXMR, CAPE CANAVERAL,          FL US,    3,  28.47, N,   80.55, W
+76151, KGUD, ISLA GUADALUPE,             MX,   25,  29.17, N,  118.32, W
+76225, MMCU, CHIHUAHUA,                  MX, 1435,  28.63, N,  106.08, W
+76256, MGYM, EMPALME,                    MX,   11,  27.92, N,  110.90, W
+76382, MMTC, TORREJON,                   MX, 1124,  25.53, N,  103.45, W
+76390, MMIO, SALTILLO,                   MX, 1790,  25.45, N,  100.98, W
+76393, ----, MONTERREY CITY,             MX,  512,  25.87, N,  100.20, W
+76394, MMAN, MONTERREY INTL AIRPORT,     MX,  448,  25.87, N,  100.23, W
+76405, MMLP, LA PAZ,                     MX,   27,  24.13, N,  110.42, W
+76458, MMMZ, MAZATLAN,                   MX,    4,  23.20, N,  106.42, W
+76526, MZAC, ZACATECAS,                  MX, 2265,  22.75, N,  102.50, W
+76595, MCUN, CANCUN,                     MX,   10,  21.03, N,   87.02, W
+76612, MMGL, GUADALAJARA,                MX, 1551,  20.67, N,  103.38, W
+76642, ----, TRIANGULOS,                 MX,    2,  20.97, N,   92.32, W
+76644, MMMD, MERIDA,                     MX,    9,  20.98, N,   89.65, W
+76654, MMZO, MANZANILLO,                 MX,    3,  19.05, N,  104.33, W
+76679, MMMX, MEXICO CITY,                MX, 2234,  19.43, N,   99.08, W
+76680, ----, MEXICO CITY,                MX, 2237,  19.43, N,   99.13, W
+76692, MMVR, VERACRUZ,                   MX,   35,  19.15, N,   96.12, W
+76723, KSOC, ISLA SOCORRO,               MX,   35,  18.72, N,  110.95, W
+76726, MMCB, CUERNAVACA,                 MX, 1560,  18.92, N,   99.25, W
+76743, ----, VILLAHERMOSA,               MX,    6,  17.98, N,   92.92, W
+76805, MMAA, ACAPULCO,                   MX,   28,  16.83, N,   99.93, W
+76904, ----, PUERTO MADERO TAPACHULA,    MX,    3,  14.70, N,   92.40, W
+78016, TXKF, BERMUDA NAS,                BE,   13,  32.27, N,   64.85, W
+78062, MYGF, FREEPORT INTL AIRPORT,      BA,   11,  26.55, N,   78.70, W
+78073, MYNN, NASSAU,                     BH,    7,  25.05, N,   77.47, W
+78118, ----, TURKS ISLAND,               TU,    9,  21.45, N,   71.15, W
+78325, ----, HAVANA,                     CU,   50,  23.17, N,   82.35, W
+78355, MCAM, CAMAGUEY,                   CU,  122,  21.40, N,   77.92, W
+78359, ----, MANSANILLO,                 CU,   10,  20.33, N,   77.13, W
+78367, MUGT, GUANTANAMO BAY,             CU,   17,  19.90, N,   75.15, W
+78384, MWCR, OWEN ROBERTS,               CI,    3,  19.28, N,   81.35, W
+78397, MKJP, KINGSTON,                   JM,   14,  17.93, N,   76.78, W
+78486, MDSD, SANTO DOMINGO,              DR,   14,  18.43, N,   69.88, W
+78501, ----, SWAN ISLAND,                HO,   10,  17.40, N,   83.93, W
+78526, TJSJ, SAN JUAN INTL,              PR,    3,  18.43, N,   66.00, W
+78583, MZBZ, BELIZE,                     BE,    5,  17.53, N,   88.30, W
+78641, MGGT, GUATEMALA,                  GU, 1489,  14.58, N,   90.52, W
+78701, MHNJ, GUANAJA,                    HO,    2,  16.47, N,   85.92, W
+78718, MHSC, SOTO CANO AB,               HO,  626,  14.38, N,   87.62, W
+78720, MHTG, TEGUCIGALPA,                HO, 1007,  14.05, N,   87.22, W
+78730, ----, PUERTO CABEZAS,             NI,   15,  14.03, N,   83.40, W
+78762, MROC, JUAN SANTAMARIA,            CR,  939,  10.00, N,   84.22, W
+78806, MPHO, HOWARD AFB,                 PN,   16,   8.92, N,   79.60, W
+78807, MPCZ, HOWARD AFB,                 PN,   19,   8.98, N,   79.58, W
+78808, ----, COROZL (ALBROOK),           PN,    8,   8.98, N,   79.58, W
+78861, ----, COOLIDGE FIELD,             AN,   22,  17.12, N,   61.78, W
+78866, TNCM, PHILIPSBURG,                CA,    9,  18.05, N,   63.12, W
+78894, TFFJ, SAINT BARTHELEMY,           CA,   15,  17.90, N,   62.85, W
+78897, TFFR, LE RAIZET,                  CA,    8,  16.27, N,   61.52, W
+78925, TFFF, LE LAMENTIN,                MA,    5,  14.58, N,   61.00, W
+78954, TBPB, GRANTLY ADAMS,              BA,   56,  13.07, N,   59.48, W
+78955, ----, CARRIBEAN METEORO INSTITUTE,BA,  113,  13.15, N,   59.62, W
+78956, MKPE, PEARLS AIRPORT,             GD,    6,  12.15, N,   61.62, W
+78970, TTPP, PIARCO,                     TR,   15,  10.62, N,   61.35, W
+78988, TNCC, CURACAO HATO,               AC,   67,  12.20, N,   68.97, W
+80001, SKSP, SAN ANDRES ISLAND,          CO,    1,  12.58, N,   81.72, W
+80002, ----, PROVIDENCIA ISLAND,         CO,    6,  13.37, N,   81.35, W
+80028, SKBQ, BARRANQUILLA/ERNESTO C.,    CO,   30,  10.88, N,   74.78, W
+80035, SKRH, RIOHACHA/ALMIRANTE,         CO,    4,  11.53, N,   72.93, W
+80094, SKBG, BUCARAMANGA/PALONEGRO,      CO, 1189,   7.10, N,   73.20, W
+80222, SKBO, BOGOTA/ELDORADO,            CO, 2548,   4.70, N,   74.13, W
+80241, ----, GAVIOTAS,                   CO,  167,   4.55, N,   70.92, W
+80259, SKCL, CALI/ALFONSO BONILLA ARAGON,CO,  969,   3.55, N,   76.38, W
+80300, ----, GUAPI,                      CO,   54,   2.58, N,   77.90, W
+80398, SKLT, LETICIA/VASQUEZ COBO,       CO,   84,   4.17, S,   69.95, W
+80407, ----, MARACAIBO,                  VN,   66,  10.57, N,   71.73, W
+80410, SVBM, BARQUISIMETO,               VN,  614,  10.07, N,   69.32, W
+80413, SVBS, MARISCAL SUCRE,             VN,  437,  10.25, N,   67.65, W
+80415, ----, MARIPASOULA,                VN,  106,   3.63, N,   54.03, W
+80444, SVCB, CIUDAD BOLIVAR,             VN,   48,   8.15, N,   63.55, W
+80447, ----, SAN ANTONIO DE TACHIRA,     VN,  405,   7.85, N,   72.45, W
+80450, SVSR, SAN FERNANDO APURE,         VN,   48,   7.90, N,   67.42, W
+80462, ----, SANTA ELENA,                VN,  896,   4.68, N,   61.18, W
+81001, SYGT, GEORGETOWN,                 GY,    2,   6.80, N,   58.15, W
+81401, ----, ST. LAURENT DU MARONI,      FG,    4,   5.50, N,   54.03, W
+81405, SOCA, CAYENNE/ROCHAMBEAU,         FG,    9,   4.83, N,   52.37, W
+81408, ----, ST. GEORGES,                FG,    7,   3.88, N,   51.80, W
+81415, ----, MARIPASSOULA,               FG,  106,   3.63, N,   54.03, W
+82022, SBBV, BOA VISTA/AIRPORT,          BZ,  140,   2.83, N,   60.70, W
+82026, ----, TIRIOS,                     BZ,  326,   2.48, N,   55.98, W
+82099, ----, MACAPA AIRPORT,             BZ,   17,   3.05, N,   51.07, W
+82107, ----, SAO GABRIEL DA CACHOEIRA,   BZ,   79,   0.12, S,   66.97, W
+82193, SBBE, BELEM/VAL DE CAES,          BZ,   16,   1.38, S,   48.48, W
+82244, SBSN, SANTAREM/INTL,              BZ,   72,   2.43, S,   54.72, W
+82280, ----, SAO LUIZ,                   BZ,   51,   2.53, S,   44.28, W
+82281, SBSL, SAO LUIS/MARECHAL,          BZ,   53,   2.60, S,   44.23, W
+82332, SBMN, MANAUS/PONTA PELADA,        BZ,   84,   3.15, S,   59.98, W
+82397, ----, FORTALEZA,                  BZ,   19,   3.73, S,   38.55, W
+82400, SBFN, FERNANDO DE NORONHA,        BZ,   56,   3.85, S,   32.42, W
+82411, SBTT, TABATINGA/INTL,             BZ,   85,   3.67, S,   69.67, W
+82532, ----, MANICORE (AERO),            BZ,   53,   5.82, S,   61.28, W
+82599, SBNT, NATAL/AUGUSTO SEVER,        BZ,   52,   5.92, S,   35.25, W
+82640, ----, JACAREACANGA,               BZ,   98,   6.27, S,   57.73, W
+82678, ----, FLORIANO,                   BZ,  138,   6.77, S,   43.02, W
+82705, ----, CRUZEIRO DO SUL (AERO),     BZ,  199,   7.58, S,   72.76, W
+82765, ----, CAROLINA,                   BZ,  212,   7.33, S,   47.47, W
+82824, SBPV, PORTO VELHO (CV/MIL),       BZ,   88,   8.77, S,   63.92, W
+82900, ----, RECIFE/CURADO,              BZ,    7,   8.05, S,   34.92, W
+82917, SBRB, RIO BRANCO/MEDICI,          BZ,  143,  10.00, S,   67.80, W
+82965, SBAT, ALTA FLORESTA,              BZ,  288,   9.87, S,   56.10, W
+82983, ----, PETROLINA,                  BZ,  370,   9.38, S,   40.48, W
+83063, ----, PORTO NACIONAL,             BZ,  290,  10.70, S,   48.42, W
+83096, ----, ARACAJU,                    BZ,    6,  10.92, S,   37.05, W
+83208, SBVH, VILHENA,                    BZ,  652,  12.73, S,   60.13, W
+83229, ----, SALVADOR,                   BZ,   51,  13.02, S,   38.52, W
+83288, SBLP, BOM JESUS DA LAPA,          BZ,  458,  13.27, S,   43.42, W
+83361, ----, CUIABA,                     BZ,  179,  15.55, S,   56.12, W
+83362, SBCY, CUIABA/MARECHAL,            BZ,  182,  15.65, S,   56.10, W
+83378, SBBR, BRASILIA (CIV/MIL),         BZ, 1061,  15.87, S,   47.93, W
+83424, SBGO, GOIANIA,                    BZ,  747,  16.63, S,   49.22, W
+83498, ----, CARAVELAS,                  BZ,    3,  17.73, S,   39.25, W
+83525, SBUL, UBERLANDIA,                 BZ,  943,  18.88, S,   48.23, W
+83554, SBCR, CORUMBA,                    BZ,  142,  19.00, S,   57.67, W
+83566, ----, CONFIS INTNL ARPT,          BZ,  827,  19.62, S,   43.57, W
+83576, ----, UBERABA,                    BZ,  809,  19.77, S,   47.95, W
+83612, SBCG, CAMPO GRANDE INTL,          BZ,  556,  20.47, S,   54.67, W
+83649, SBVT, VITORIA/GOIABEIRAS,         BZ,    4,  20.27, S,   40.28, W
+83650, ----, TRINDADE ISLAND,            BZ,    5,  20.50, S,   29.32, W
+83746, SBGL, GALEAO/RIO(CIV/MIL),        BZ,    6,  22.82, S,   43.25, W
+83768, SBLO, LONDRINA AIRPORT,           BZ,  570,  23.33, S,   51.13, W
+83779, ----, MARTE APRT,                 BZ,  722,  23.50, S,   46.60, W
+83780, SBSP, SAO PAULO/CONGONHAS,        BZ,  803,  23.62, S,   46.65, W
+83827, SBFI, FOZ DO IGUACU ARPT,         BZ,  243,  25.52, S,   54.58, W
+83840, SBCT, CURITIBA/AFONSO PEN,        BZ,  908,  25.52, S,   49.17, W
+83899, SBFL, FLORIANOPOLIS ARPT,         BZ,    5,  27.67, S,   48.55, W
+83928, SBUG, URUGUAIANA/RUBEM,           BZ,   74,  29.78, S,   57.03, W
+83937, SBSM, SANTA MARIA/AIRPORT,        BZ,   85,  29.72, S,   53.70, W
+83971, SBPA, PORTO ALEGRE/SALGAD,        BZ,    3,  30.00, S,   51.18, W
+83981, ----, BAGE,                       BZ,  180,  31.35, S,   54.12, W
+84008, SEST, SAN CRISTOBAL ISL,          EQ,    6,   0.90, S,   89.60, W
+84135, ----, PORTO VIEJ,                 EQ,   26,   1.03, S,   80.43, W
+84202, ----, MILAGRO,                    EQ,   36,   2.12, S,   79.60, W
+84203, ----, GUAYAQUIL,                  EQ,  100,   2.15, S,   79.88, W
+84378, ----, MORONA,                     PR,  117,   3.73, S,   73.25, W
+84452, ----, CHICLAYO,                   PR,   31,   6.78, S,   79.83, W
+84628, SPIM, LIMA/JORGE CHAVEZ,          PR,   13,  12.00, S,   77.12, W
+84629, ----, LAS PALMAS,                 PR,   80,  12.15, S,   77.00, W
+84752, ----, AREQUIPA,                   PR, 2525,  16.32, S,   71.55, W
+85201, SLLP, LA PAZ,                     BO, 4014,  16.52, S,   68.18, W
+85223, SLCB, COCHABAMAB,                 BO, 2531,  17.45, S,   66.10, W
+85364, SLTJ, TARIJA,                     BO, 1858,  21.53, S,   64.72, W
+85394, ----, BERMEJO,                    BO,  381,  22.77, S,   64.32, W
+85418, SCDA, IQUIQUE,                    CH,   52,  20.53, S,   70.18, W
+85442, SCFA, ANTOFAGASTA/CERRO,          CH,  120,  23.43, S,   70.43, W
+85460, SCRA, CHANARAL,                   CH,   30,  26.32, S,   70.62, W
+85469, SCIP, EASTER ISLAND,              CH,   47,  27.15, S,  109.42, W
+85470, SCHA, COPIAPO,                    CH,  291,  27.30, S,   70.42, W
+85543, SCER, QUINTERO (MIL),             CH,    8,  32.78, S,   71.52, W
+85574, SCEL, PUDAHUEL/ARTURO,            CH,  476,  33.38, S,   70.78, W
+85577, ----, SANTIAGO Q. NORMAL,         CH,  520,  33.43, S,   70.68, W
+85586, SCSN, SANTO DOMINGO,              CH,   75,  33.65, S,   71.62, W
+85799, SCTE, PUERTO MONTT/TEPUAL,        CH,   86,  41.42, S,   73.08, W
+85834, ----, ISLA HUAFO,                 CH,  140,  43.57, S,   74.83, W
+85934, SCCI, PUNTA ARENAS,               CH,   37,  53.00, S,   70.85, W
+86218, SGAS, ASUNCION,                   PY,  101,  25.27, S,   57.63, W
+86294, ----, CAP.MIRANDA,                PY,   16,  27.28, S,   58.27, W
+86560, SUCA, COLONIA,                    UY,   23,  34.45, S,   57.83, W
+87047, SASA, SALTA AIRPORT,              AG, 1216,  24.85, S,   65.48, W
+87155, SARE, RESISTENCIA AIRPORT,        AG,   52,  27.45, S,   59.05, W
+87178, SARP, POSADAS AIRPORT,            AG,  125,  27.37, S,   55.97, W
+87344, SACO, CORDOBA AIRPORT,            AG,  474,  31.32, S,   64.22, W
+87418, SAME, MENDOZA/EL PLUMERIL,        AG,  704,  32.83, S,   68.78, W
+87576, SAEZ, BUENOS AIRES/EZEIZA,        AG,   20,  34.82, S,   58.53, W
+87623, SAZR, SANTA ROSA AIRPORT,         AG,  191,  36.57, S,   64.27, W
+87715, SAZN, NEUQUEN AIRPORT,            AG,  271,  38.95, S,   68.13, W
+87748, ----, B.A. COMANDANTE ESPORA,     AG,   75,  38.73, S,   62.17, W
+87860, SAVC, COMODORO RIVADAVIA,         AG,   46,  45.78, S,   67.50, W
+88889, EGYP, MOUNT PLEASANT ARPT,        FK,   73,  51.82, S,   58.45, W
+88903, ----, GRYTVIKEN,                  FK,    3,  54.27, S,   36.50, W
+88968, ----, ISLAS ORCADAS,              AG,    6,  60.75, S,   44.72, W
+89001, ----, SANAE SAF-BASE,             ZA,   62,  70.30, S,    2.35, W
+89002, ----, VON-NEUMAYER G-BASE,        DL,   40,  70.67, S,    8.25, W
+89009, NZSP, AMUNDSEN-SCOTT,             US, 2830,  90.00, S,    0.00, E
+89022, ----, HALLEY BRI-BASE,            UK,   30,  75.50, S,   26.65, W
+89050, ----, BELLINGSHAUSEN,             RA,   16,  62.20, S,   58.93, W
+89055, ----, VICECOMODORO MARAM,         AG,  198,  64.23, S,   56.72, W
+89062, ----, ROTHERA PT BRI-BASE,        UK,   16,  67.57, S,   68.13, W
+89512, ----, NOVOLAZAREVSKAJA,           RA,  102,  70.77, S,   11.83, E
+89532, ----, SYOWA JAPAN-BASE,           JP,   21,  69.00, S,   39.58, E
+89542, ----, MOLODEZNAJA,                RA,   40,  67.67, S,   45.85, E
+89564, ----, MAWSON AUS-BASE,            AU,   16,  68.60, S,   62.87, E
+89571, ----, DAVIS AUS-BASE,             AU,   13,  68.57, S,   77.95, E
+89577, ----, DAVIS,                      AU, 2356,  75.85, S,   71.48, E
+89592, ----, MIRNYJ SOVIET-BASE,         RA,   30,  66.55, S,   93.02, E
+89606, ----, VOSTOK SOVIET-BASE,         RA, 3420,  78.45, S,  106.87, E
+89611, ----, CASEY AUS-BASE,             AU,   41,  66.28, S,  110.52, E
+89625, ----, CONCORDIA/ANTARTIKA,        IY, 3234,  75.17, S,  123.69, E
+89642, ----, DUMONT D'URVILLE,           FR,   43,  66.67, S,  140.02, E
+89662, ----, BAIA TERRA NOVA,            IY,   80,  74.70, S,  164.10, E
+89663, ----, LAKE VANDA,                 NZ,   15,  77.53, S,  161.67, E
+89664, ----, MCMURDO USA-BASE,           US,   34,  77.85, S,  166.67, E
+89671, ----, HALLETT,                 US/NZ,    5,  72.30, S,  170.30, E
+91066, PMDY, MIDWAY ISLAND,              HI,    9,  28.22, N,  177.35, W
+91115, KFFS, FRENCH FRIGATE SHOAL,       US,    6,  23.87, N,  166.28, W
+91162, KBKH, BARKING SANDS,              US,    5,  22.03, N,  159.78, W
+91163, ----, PORT ALLEN AIRPORT,      HI US,    7,  21.90, N,  159.60, W
+91165, PLIH, LIHUE-ON-KAUAI,          HI US,   45,  21.98, N,  159.35, W
+91168, ----, KAPAA/KAUIAI,            HI US,  162,  22.07, N,  159.40, W
+91169, ----, WAIALEE,                 HI US,   10,  21.68, N,  158.03, W
+91170, PHHI, WHEELER AFB,             HI US,  255,  21.48, N,  158.03, W
+91176, KHNG, KANEOHE BAY MCAS,           US,    3,  21.45, N,  157.78, W
+91182, KHIK, HONOLULU/(HICKAM FLD),      US,    8,  21.33, N,  157.95, W
+91190, ----, PUUNENE,                    US,   20,  20.90, N,  156.43, W
+91199, KNPS, PEARL HARBOR,               US,    7,  21.35, N,  157.95, W
+91212, PGUM, AGANA (NWS),                MY,   91,  13.48, N,  144.80, E
+91217, PGAC, GUAM MARIANA ISLAND,        MY,  111,  13.55, N,  144.83, E
+91232, PGSN, SAIPAN,                     MY,   65,  15.12, N,  145.73, E
+91245, PWAK, WAKE ISLAND,                WK,    4,  12.28, N,  166.65, E
+91275, PJON, JOHNSTON ISLAND,            PN,    5,  16.73, N,  169.52, W
+91285, PHTO, HILO/LYMAN,              HI US,   11,  19.72, N,  155.07, W
+91287, ----, CAPE KUMUKAHI,           HI US,   49,  19.52, N,  154.82, W
+91289, ----, HALEMAUMAU,              HI US, 1112,  19.40, N,  155.28, W
+91328, ----, ULUI ATOLL,                 KA,    2,   8.70, N,  149.70, E
+91334, PTKK, CHUUK/EAST CAROLINE IS,     KA,    3,   7.45, N,  151.83, E
+91347, ----, POHNPEI,                    KA,   37,   6.97, N,  158.23, E
+91348, PTPN, PONAPE/EAST CAROLINE IS,    KA,   39,   6.97, N,  158.22, E
+91364, ----, ROI NAMUR,                  PN,    4,   9.40, N,  167.47, E
+91366, PKWA, KWAJALEIN ISLAND,           MH,    8,   8.73, N,  167.73, E
+91368, ----, AILINGLAPALAP,              MH,    2,   7.28, N,  168.85, E
+91376, PKMJ, MARSHALL ISLANDS,           MM,    3,   7.08, N,  171.38, E
+91378, ----, MILI ATOLL,                 MH,    4,   6.08, N,  171.73, E
+91385, ----, PALMYRA ISLAND,             PN,    2,   5.88, N,  162.05, W
+91408, PTRO, PALAU/WEST CAROLINE IS,     KA,   33,   7.33, N,  134.48, E
+91413, PTYA, LUWEECH/WEST CAROLINE IS,   KA,   17,   9.48, N,  138.08, E
+91434, ----, KAPINGAMARANGI,             KA,    3,   1.08, N,  154.77, E
+91492, ----, CHRISTMAS ISLAND,           KA,    3,   2.00, N,  157.40, W
+91517, ----, HONIARA,                    SO,   56,   9.42, S,  159.97, E
+91532, ----, NAURU ARC-2,            SW-PAC,    7,   0.52, S,  166.92, E
+91557, NVVV, BAUERFIELD,                 NH,   21,  17.70, S,  168.30, E
+91577, NWWK, KOUMAC,                     NC,   18,  20.57, S,  164.28, E
+91582, ----, OUANAHAM,                   NC,   29,  20.77, S,  167.23, E
+91592, NWWN, NOUMEA,                     NC,   72,  22.27, S,  166.45, E
+91610, NGTA, TARAWA/BONRIKI INTL,        KB,    4,   1.35, N,  172.92, E
+91643, NGFU, FUNAFUTI INTL ARPT,         TV,    2,   8.52, S,  179.22, E
+91644, ----, FUNAFUTI,                   TV,    0,   8.52, S,  179.23, E
+91650, NFNR, ROTUMA ISLAND,              FJ,   26,  12.50, S,  177.05, E
+91680, NFFN, NANDI/NADI INTL,            FJ,   18,  17.75, S,  177.45, E
+91700, KCIS, CANTON ISLAND,              CT,    4,   2.77, S,  171.72, W
+91701, KCIS, CANTON ISLAND,              CT,    4,   2.77, S,  171.72, W
+91727, ----, FENUAFALA,                  NZ,    4,   9.38, S,  171.27, W
+91765, NSTU, PAGO PAGO,                  ZM,    3,  14.33, S,  170.72, W
+91788, ----, NUKUALDFA,                  TO,    3,  21.13, S,  175.18, W
+91792, NFTF, FUA'AMOTU,                  TO,   41,  21.23, S,  175.15, W
+91801, ----, PENRHYN ISLAND,             KU,    1,   9.00, S,  158.05, W
+91809, ----, MANIHIKI AWS,               KU,    2,  10.43, S,  161.02, W
+91811, ----, PUKAPUKA ATOLL,             KU,    3,  10.88, S,  165.82, W
+91830, ----, AITUTAKI,                   KU,    6,  18.83, S,  159.77, W
+91843, NCRG, AVARUA/RAROTONGA IL,        KU,    7,  21.20, S,  159.82, W
+91848, ----, MANGAIA AWS,                KU,   41,  21.92, S,  157.95, W
+91925, ----, ATUONA,                     PF,   52,   9.80, S,  139.03, W
+91929, ----, BORA BORA,                  PF,    3,  16.45, S,  151.75, W
+91938, NTAA, TAHITI ISLAND/FAAA,         PF,    2,  17.55, S,  149.62, W
+91943, ----, TAKAROA ATOLL,              PF,    3,  14.48, S,  145.03, W
+91944, NTTO, HAO/TUAMOTO,                PF,    3,  18.07, S,  140.95, W
+91945, ----, HEREHERETUE ISLAND,         PF,    3,  19.87, S,  145.00, W
+91948, ----, RIKITEA,                    PF,   89,  23.13, S,  134.97, W
+91952, NTTX, MUROROA ATOLL,              PF,    3,  21.82, S,  138.80, W
+91954, NTAT, TUBUAI ISLAND,              PF,    3,  23.35, S,  149.48, W
+91958, ----, RAPA ISLAND,                PF,    2,  27.62, S,  144.33, W
+92014, AYMD, MADANG W.O.,                NG,    4,   5.22, S,  145.78, E
+92035, AYPY, PORT MORESBY,               NG,   58,   9.38, S,  147.22, E
+92044, ----, MOMOTE W.O.,                NG,    5,   2.07, S,  147.43, E
+92076, ----, KAVIENG W.O.,               NG,    4,   2.58, S,  150.80, E
+92087, ----, MISIMA W.O.,                NG,    6,  10.68, S,  152.83, E
+93072, ----, MT. TAMAHUNGA,              NZ,  452,  36.30, S,  174.70, E
+93112, NZWP, WHENUAPAI (NZ-AFB),         NZ,   27,  36.78, S,  174.63, E
+93185, ----, TAURANGA AERO,              NZ,    5,  37.67, S,  176.20, E
+93291, NZGS, GISBORNE AERO,              NZ,    8,  38.67, S,  177.98, E
+93308, NZNP, NEW PLYMOUTH AERO,          NZ,   36,  39.02, S,  174.18, E
+93336, ----, WAIOURU AERO,               NZ,  823,  39.45, S,  175.67, E
+93417, NZPP, PARAPARAUMU AERO,           NZ,   12,  40.90, S,  174.98, E
+93431, ----, OUTLOOK HILL,               NZ,  548,  41.30, S,  174.63, E
+93515, ----, WESTPORT AERO,              NZ,   18,  41.73, S,  171.57, E
+93577, ----, BLENHEIM AERO,              NZ,   32,  41.52, S,  173.87, E
+93614, NZHK, HOKITIKA,                   NZ,   40,  42.72, S,  170.98, E
+93769, ----, RAKAIA,                     NZ,  124,  43.78, S,  172.02, E
+93772, ----, TIMARU AERO,                NZ,   27,  44.30, S,  171.22, E
+93780, NZCH, CHRISTCHURCH,               NZ,   34,  43.48, S,  172.55, E
+93844, NZNV, INVERCARGILL AERO,          NZ,    1,  46.42, S,  168.33, E
+93845, ----, INVERCARGILL,               NZ,    2,  46.42, S,  168.33, E
+93944, ----, CAMPBELL ISLAND,            NZ,   15,  52.55, S,  169.15, E
+93986, NZCI, CHATHAM ISL/TUUTA,          NZ,   48,  43.95, S,  176.57, W
+93997, NZRN, RAOUL ISL/KERMADEC,         NZ,   49,  29.25, S,  177.92, W
+94014, ----, MADANG,                     AU,    6,   5.22, S,  145.80, E
+94085, ----, RABAUL,                     AU,    6,   4.22, S,  152.18, E
+94102, ----, TROUGHTON ISLAND,        WE AU,    8,  13.75, S,  126.13, E
+94120, YPDN, DARWIN (CIV/MIL),        NT AU,   30,  12.40, S,  130.87, E
+94135, ----, MC CLER ISLAND,          NT AU,    5,  11.07, S,  132.98, E
+94150, YDGV, GOVE AIRPORT,            NT AU,   54,  12.27, S,  136.82, E
+94170, YBWP, WEIPA AERO,              QU AU,    0,  12.63, S,  141.90, E
+94175, ----, THURSDAY,                QU AU,   61,  10.58, S,  142.22, E
+94203, YBRM, BROOME AIRPORT,          WE AU,    9,  17.95, S,  122.22, E
+94212, YHLC, HALLS CREEK AMO,         WE AU,  422,  18.23, S,  127.67, E
+94218, ----, INVERWAY,                NT AU,  403,  17.85, S,  129.63, E
+94237, ----, LARRIMAH,                NT AU,  181,  15.58, S,  133.22, E
+94238, YTNK, TENNANT CREEK,           NT AU,  375,  19.63, S,  134.18, E
+94287, YBCS, CAIRNS AIRPORT,          QU AU,    7,  16.88, S,  145.75, E
+94292, ----, CARDWELL,                QU AU,    7,  18.25, S,  146.02, E
+94294, YBTL, TOWNSVILLE(CIV/MIL),     QU AU,    6,  19.25, S,  146.75, E
+94299, ----, WILLIS ISLAND,           QU AU,    9,  16.30, S,  149.98, E
+94300, YCAR, CARNARVON AIRPORT,       WE AU,    4,  24.88, S,  113.67, E
+94302, YPLM, LEARMONTH,               WE AU,    6,  22.23, S,  114.08, E
+94312, YPPD, PORT HEDLAND ARRT,       WE AU,    6,  20.37, S,  118.62, E
+94326, YBAS, ALICE SPRINGS ARPT,      NT AU,  541,  23.80, S,  133.90, E
+94332, YBMA, MOUNT ISA AIRPORT,       QU AU,  344,  20.67, S,  139.48, E
+94337, ----, JULIA CREEK,             QU AU,  124,  20.65, S,  141.73, E
+94346, YBLR, LONGREACH AIRPORT,       QU AU,  193,  23.43, S,  144.27, E
+94367, YBMK, MACKAY,                  QU AU,   33,  21.12, S,  149.22, E
+94374, YBRK, ROCKHAMPTON AIRPORT,     QU AU,   14,  23.38, S,  150.47, E
+94380, YBGL, GLADSTONE,               QU AU,   75,  23.85, S,  151.25, E
+94401, ----, KALBARRI,                WE AU,    9,  27.72, S,  114.17, E
+94403, YPGN, GERALDTON AIRPORT,       WE AU,   34,  28.78, S,  114.70, E
+94430, YPMR, MEEKATHARRA AIRPORT,     WE AU,  518,  26.60, S,  118.53, E
+94461, YGLS, GILES MET STATION,       WE AU,  599,  25.03, S,  128.28, E
+94510, YBCV, CHARLEVILLE ARPT,        QU AU,  304,  26.40, S,  146.27, E
+94511, ----, INJUNE,                  QU AU,  389,  25.85, S,  148.57, E
+94527, ----, MOREE,                   NW AU,  212,  29.47, S,  149.85, E
+94578, YBBN, BRISBANE INTL ARPT,      QU AU,    5,  27.38, S,  153.10, E
+94610, YPPH, PERTH INTL/BELMONT,      WE AU,   29,  31.93, S,  115.95, E
+94637, YPKG, KALGOORLIE/BOULDER,      WE AU,  360,  30.77, S,  121.45, E
+94638, YESP, ESPERANCE,               WE AU,   26,  33.82, S,  121.88, E
+94646, ----, FORREST,                 WE AU,  156,  30.83, S,  128.10, E
+94647, ----, EUCLA,                   WE AU,   99,  31.67, S,  128.88, E
+94653, YPCD, CEDUNA AIRPORT,          SA AU,   17,  32.12, S,  133.70, E
+94659, YPWR, WOOMERA (AUS-AFB),       SA AU,  167,  31.13, S,  136.82, E
+94662, ----, WHYALLA AIRPORT,         SA AU,   11,  33.05, S,  137.50, E
+94672, YPAD, ADELAIDE INTL ARPT,      SA AU,    4,  34.93, S,  138.52, E
+94693, YMMI, MILDURA AIRPORT,         VC AU,   50,  34.23, S,  142.08, E
+94711, YCBA, COBAR,                   NW AU,  265,  31.48, S,  145.82, E
+94750, YSNW, NOWRA(AUS-NAVY),         NW AU,  110,  34.95, S,  150.53, E
+94767, YSSY, SYDNEY INTL AIRPORT,     NW AU,    3,  33.95, S,  151.18, E
+94776, YSWM, WILLIAMTOWN(AUS-AB),     NW AU,    8,  32.78, S,  151.82, E
+94791, YSCH, COFFS HARBOUR AIRPORT,   NW AU,    5,  30.32, S,  153.12, E
+94802, YPAL, ALBANY AIRPORT,          WE AU,   69,  34.93, S,  117.80, E
+94821, YMMG, MOUNT GAMBIER ARPT,      SA AU,   69,  37.73, S,  140.78, E
+94827, ----, NHILL,                   VC AU,  130,  36.35, S,  141.65, E
+94857, ----, GEELONG ARPT,            VC AU,   35,  38.23, S,  144.33, E
+94865, YMLV, LAVERTON AERO,           VC AU,   21,  37.85, S,  144.73, E
+94866, YMML, MELBOURNE INTL ARPT,     VC AU,  141,  37.67, S,  144.83, E
+94907, YMES, EAST SALE,               VC AU,    8,  38.10, S,  147.13, E
+94910, YSWG, WAGGA WAGGA(CV/MIL),     NW AU,  212,  35.17, S,  147.45, E
+94911, ----, OMEO,                    VC AU,  679,  37.08, S,  147.60, E
+94922, ----, TIDBINBILLA,             NW AU,  226,  35.45, S,  148.93, E
+94926, YSCB, CANBERRA,                CT AU,  580,  35.30, S,  149.20, E
+94968, YMLT, LAUNCESTON AIRPORT,      TA AU,  178,  41.53, S,  147.20, E
+94975, YMHB, HOBART AIRPORT,          TA AU,   27,  42.83, S,  147.48, E
+94995, YLHI, LORD HOWE ISLAND,           AU,    6,  31.53, S,  159.07, E
+94996, YSNF, NORFOLK ISLAND ARPT,        AU,  109,  29.03, S,  167.93, E
+94998, YMMQ, MACQUARIE ISLAND,           AU,    6,  54.48, S,  158.93, E
+95308, ----, KARRATHA,                WE AU,   16,  20.62, S,  116.75, E
+95527, YMOR, MOREE AMO,               NW AU,  214,  29.50, S,  149.83, E
+95591, ----, IPSWICH,                 QU AU,   40,  27.62, S,  152.75, E
+95605, ----, FREMANTLE,               WE AU,    4,  32.05, S,  115.77, E
+95610, ----, KALAMUNDA,               WE AU,  384,  32.02, S,  116.13, E
+96009, WITM, LHOKSEUMAWE/MALIKUSSALEH,   ID,   87,   5.23, N,   97.20, E
+96011, WITT, BANDA ACEH/BLANGBINTANG,    ID,   21,   5.52, N,   95.42, E
+96015, WITC, MEULABOH/CUT NYAK,          ID,   90,   4.25, N,   96.12, E
+96033, ----, BELAWAN,                    ID,    3,   3.80, N,   98.70, E
+96035, WIMM, MEDAN/POLONIA (MIL),        ID,   25,   3.57, N,   98.68, E
+96039, ----, TEBINGTINGGI,               ID,    7,   3.37, N,   99.12, E
+96073, WIMS, SIBOLGA/PINANGS,            ID,    3,   1.55, N,   98.88, E
+96075, WIMB, GUNUNG SITOLI/BINAKA,       ID,    6,   1.50, N,   97.63, E
+96091, WIKN, TANJUNGPINANG,              ID,   18,   0.92, N,  104.53, E
+96109, WIBB, PAKANBARU,                  ID,   31,   0.47, N,  101.45, E
+96145, ----, TAREMPA,                    ID,    3,   3.20, N,  106.25, E
+96147, WION, RANAI (MIL/CIV),            ID,    2,   3.95, N,  108.38, E
+96163, WIMG, PADANG/TABING,              ID,    3,   0.88, S,  100.35, E
+96171, ----, RENGAT,                     ID,   46,   0.50, N,  102.30, E
+96179, WIKS, SINGKEP/DABO,               ID,   31,   0.48, S,  104.58, E
+96195, WIPA, JAMBI/SULTAN,               ID,   25,   1.63, S,  103.65, E
+96207, ----, KERINCI/DEPATI PARBO,       ID,  782,   2.46, S,  101.22, E
+96221, WIPP, PALEMBANG/ST.N.BADARUDIN,   ID,   10,   2.90, S,  104.70, E
+96237, WIKK, PANGKAL-PINANG,             ID,   33,   2.17, S,  106.13, E
+96249, WIKD, TANJUNG PANDAN,             ID,   44,   2.75, S,  107.75, E
+96253, WIPL, BENGKULA/PADANG,            ID,   16,   3.88, S,  102.33, E
+96295, ----, TAJUNG KARANG/RADIN,        ID,   96,   5.01, S,  115.18, E
+96315, WBSB, BRUNEI AIRPORT,             BF,   15,   4.93, N,  114.93, E
+96323, ----, KUALA BELAIT,               ID,    3,   4.58, N,  114.20, E
+96413, WBGG, KUCHING (CIV/MIL),          MS,   27,   1.48, N,  110.33, E
+96421, WBGS, SIBU,                       MS,    8,   2.33, N,  111.83, E
+96441, WBGB, BINTULU/KALIMANTAN,         MS,    5,   3.20, N,  113.03, E
+96471, WBKK, KOTA KINABALU INTL,         MS,    3,   5.93, N,  116.05, E
+96481, WBKW, TAWAU/KALIMANTAN IL,        MS,   20,   4.27, N,  117.88, E
+96491, WBKS, SANDAKAN/KALIMANTAN,        MS,   13,   5.90, N,  118.07, E
+96509, WRLR, TARAKAN/JUWATA,             ID,    6,   3.33, N,  117.57, E
+96529, WRLK, TANJUNG REDEP/BERAU,        ID,   26,   2.12, N,  117.45, E
+96535, WIOH, PALOH,                      ID,   15,   1.70, N,  109.30, E
+96565, ----, PUTUSIBAU,                  ID,   17,   0.88, N,  112.93, E
+96581, WIOO, PONTIANAK,                  ID,    3,   0.15, S,  109.40, E
+96595, ----, MUARATEWE,                  ID,   60,   0.95, S,  114.90, E
+96607, ----, SAMARINDA,                  ID,  230,   0.62, S,  117.15, E
+96633, WRLL, BALIKPAPAN/SEPINGGAN,       ID,    3,   1.27, S,  116.90, E
+96645, WRBI, PANGKALAN,                  ID,   25,   2.70, S,  111.70, E
+96651, ----, SAMPIT/HAJI,                ID,   27,   2.52, S,  112.95, E
+96655, WRBP, PANARUNG,                   ID,   27,   1.00, S,  114.00, E
+96685, WRBB, BANJARMASIN NOOR,           ID,   20,   3.43, S,  114.75, E
+96737, ----, SERANG,                     ID,   40,   6.12, S,  106.13, E
+96739, WIIA, CURUG/BUDIARTO,             ID,   46,   6.23, S,  106.65, E
+96749, WIII, SOEKARNO-HATTA INTL,        ID,    8,   6.12, S,  106.65, E
+96781, ----, BANDUNG/HUSEIN,             ID,  740,   6.54, S,  107.35, E
+96791, ----, CIREBON/JATIWANGI,          ID,   50,   6.45, S,  108.16, E
+96797, ----, TEGAL,                      ID,   10,   6.51, S,  109.09, E
+96801, WIAM, CIBEUREM,                   ID,  335,   7.33, S,  108.25, E
+96805, WIIL, CILACAP,                    ID,    6,   7.73, S,  109.02, E
+96839, WIIS, SEMARANG/AHMAD YANI,        ID,    3,   6.98, S,  110.38, E
+96845, ----, SURAKARTA PANASAN,          ID,  104,   7.87, S,  110.92, E
+96925, ----, SANGKAPURA/BAWEAN IS.,      ID,    3,   5.80, S,  112.60, E
+96933, ----, SUBABAJA/PERAK,             ID,    3,   7.22, S,  112.72, E
+96935, WRSJ, SURABAYA/JUANDA MIL,        ID,    3,   7.37, S,  112.77, E
+96973, ----, KALIANGET (MADURA IS.),     ID,    3,   7.05, S,  113.97, E
+96987, ----, BANYUWANGI,                 ID,    5,   8.37, S,  114.63, E
+96996, YPCC, COCOS ISL INTL ARPT,        AU,    3,  12.18, S,   96.82, E
+97008, WAMH, NAHA/TAHUNA,                ID,   38,   3.58, N,   12.47, E
+97014, WAMM, MENADO/SAM RATULANG,        ID,   80,   1.53, N,  124.92, E
+97028, WAMI, TOLI-TOLI/LALOS,            ID,    2,   1.02, N,  120.80, E
+97048, WAMG, GORONTALO/JALALUDDIN,       ID,    2,   0.52, N,  123.07, E
+97072, WAML, PALU/MUTIARA,               ID,    6,   0.68, S,  119.73, E
+97086, WAMW, LUWUK/BUBUNG,               ID,    2,   0.90, S,  122.78, E
+97096, WAMP, POSO,                       ID,    2,   1.38, S,  120.73, E
+97100, ----, KOLONDALE,                  ID,    2,   2.00, S,  121.32, E
+97120, ----, MAJENE,                     ID,    8,   2.50, S,  119.00, E
+97146, ----, KENDARI,                    ID,   50,   4.10, S,  122.43, E
+97180, WAAA, HASANUDDIN/UJUNG,           ID,   14,   5.07, S,  119.55, E
+97182, ----, UJANG PANDANG,              ID,   14,   5.07, S,  119.57, E
+97192, WAAB, BAU-BAU/BETO AMBIRI,        ID,    2,   5.47, S,  122.62, E
+97230, WRRR, DENPASAR/NGURAH RAI,        ID,    1,   8.45, S,  115.10, E
+97240, ----, MATARAM/SELAPARANG,         ID,    3,   8.88, S,  116.12, E
+97260, WRRS, SUMBAWA BESAR/BRAGBIJI,     ID,    3,   8.43, S,  117.42, E
+97270, WRRB, BIMA/M.SALAHUDDIN,          ID,    2,   8.55, S,  118.70, E
+97300, WRKC, MAUMERE/WAI,                ID,    3,   8.63, S,  122.25, E
+97310, WRKL, LARANTUKA,                  ID,    9,   8.27, S,  122.97, E
+97340, WRRW, WAINGAPU/MAU-HAU,           ID,   12,   9.67, S,  120.33, E
+97372, WRKK, KUPANG/EL TARI,             ID,  108,  10.17, S,  123.67, E
+97390, ----, DILI,                       ID,    4,   8.57, S,  125.57, E
+97430, WAMT, TERNATE/BABULIAH,           ID,   23,   0.78, N,  127.38, E
+97460, ----, LABUHA/OESMAN SADIK,        ID,    3,   0.63, S,  127.50, E
+97502, WASS, SORONG/JEFMAN,              ID,    3,   0.93, S,  131.12, E
+97530, WASR, MANOKWARI,                  ID,    3,   0.88, S,  134.05, E
+97560, WABB, BIAK/FRANS KAISIEPO,        ID,   11,   1.18, S,  136.12, E
+97580, WAJI, SARMI/ORAI,                 ID,    3,   1.83, S,  138.72, E
+97600, WAPN, SANANA,                     ID,    2,   2.08, S,  126.00, E
+97686, WAJW, WAMENA,                     ID, 1660,   4.07, S,  138.95, E
+97690, WAJJ, JAYAPURA/SENTANI,           ID,   99,   2.57, S,  140.48, E
+97724, WAPP, AMBON/PATTIMURA,            ID,   12,   3.70, S,  128.08, E
+97748, ----, GESER,                      ID,    3,   3.80, S,  130.83, E
+97760, WASK, KAIMANA,                    ID,    3,   3.67, S,  133.75, E
+97810, ----, TUAL/DUMATUBUN,             ID,   12,   5.68, S,  132.75, E
+97876, WAKT, TANAH MERAH,                ID,   16,   6.10, S,  140.30, E
+97900, WAPI, SAUMLAKI/OLILIT,            ID,   24,   7.98, S,  131.30, E
+97980, WAKK, MERAUKE/MOPAH,              ID,    3,   8.47, S,  140.38, E
+98223, RPLI, LAOAG INTL(PH-ARMY),        PH,    5,  18.18, N,  120.53, E
+98233, RPUT, TUGUEGARAO,                 PH,   62,  17.64, N,  121.75, E
+98327, RPMK, CLARK AB,                   PH,   17,  14.80, N,  120.27, E
+98328, RPUB, BAGUIO,                     PH, 1501,  16.42, N,  120.60, E
+98426, RPLB, OLONGAPO,                   PH,   17,  14.80, N,  120.27, E
+98433, ----, TANAY,                      PH,  614,  14.57, N,  121.37, E
+98444, RPMP, LEGAZPI/LUZON ISL,          PH,   17,  13.13, N,  123.73, E
+98618, ----, PUERTO PRINCESA,            PH,   15,   9.75, N,  118.73, E
+98630, ----, CUYO,                       PH,    4,  10.85, N,  121.03, E
+98646, RPMT, MACTAN INTL(CIV/AF),        PH,   24,  10.30, N,  123.97, E
+98653, ----, SURIGAO,                    PH,   22,   9.80, N,  125.50, E
+98747, ----, LUMBIA AIRPORT,             PH,  188,   8.41, N,  124.61, E
+98753, ----, DAVAO AIRPORT,              PH,   18,   7.12, N,  125.65, E
+98836, ----, ZAMBOANGA MINDANAO,         PH,    6,   6.90, N,  122.07, E
+99017,  C7L, SHIP LIMA,                  UK,    0,  57.00, N,   20.00, W
+99018, LDWR, SHIP MIKE,                  NO,    0,  66.00, N,    2.00, E
+99023, GACA, SHIP ROMEO,                 FR,    0,  47.00, N,   17.00, E
+99999
