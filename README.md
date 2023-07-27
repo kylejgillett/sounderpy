@@ -57,15 +57,18 @@ This script is used to access vertical profile data for calculations or plotting
 -------
 ## How to use SounderPy:
 1. Make sure your environment has the required dependencies:
-   -  metpy
-   -  xarray
-   -  urllib
-   -  numpy
-   -  siphon
-   -  cartopy
-   -  datetime
-   -  cdsapi
-   -  pandas
+   - cdsapi>=0.6.1
+   - matplotlib>=3.3.0, <=3.7.1
+   - metpy>=1.5.1
+   - netcdf4>=1.6.4
+   - numpy>=1.20.0
+   - pandas>=1.2.0
+   - siphon>=0.9
+   - scipy>= 1.10.1
+   - xarray>=0.18.0
+
+*note: you can download `requirements.txt` and run `pip install -r /your-file-path/requirements.txt` in your conda environment to make sure you have the correct dependencies, its available here: [SounderPy Requirements](https://github.com/kylejgillett/sounderpy/blob/main/requirements.txt)*
+
 2. ```
    pip install sounderpy
    ```
