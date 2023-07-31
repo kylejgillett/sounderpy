@@ -5,7 +5,7 @@ Entries may be added, deleted, or edited, BUT FORMAT MUST BE MAINTAINED.
 NUM numbers must be sequential.      Coordinates are in decimal degrees.
 ------------------------------------------------------------------------
 
-NUM,LAT,LON,ID,NAME,LOC,EL(M),NOTE
+NUM,LAT,LON,ID,NAME,LOC,EL(m),NOTE
 
 000001,   69.58,  -140.18,  YAJ , KOMAKUK                          , YT,       19  ,0 MAGS 9-95
 000002,   69.90,  -128.97,  WRP , NICHOLSON                        , NT,       15  ,0 MAGS 9-95
