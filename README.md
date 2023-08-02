@@ -1,10 +1,8 @@
 <div align="center">
 <img src="https://github.com/kylejgillett/sounderpy/assets/100786530/2e9477c9-e36a-4163-accb-fe46780058dd" width="250">
-</div>
 
 # sounderpy
 
-------
 [![PyPI Package](https://img.shields.io/pypi/v/sounderpy.svg)](https://pypi.python.org/pypi/sounderpy/)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/sounderpy.svg)](https://pypi.python.org/pypi/sounderpy/)
 [![PyPI license](https://img.shields.io/pypi/l/ansicolortags.svg)](https://github.com/kylejgillett/sounderpy/blob/main/LICENSE.txt)
@@ -17,8 +15,12 @@
 
 
 ## WELCOME! thank you for visiting SounderPy!
+### [VISIT SOUNDERPY DOCUMENTATION HERE](https://github.com/kylejgillett/sounderpy/wiki)
 This script is used to access vertical profile data for calculations or plotting of a vertical profile (sounding). 
 
+</div>
+
+-----
 ## SounderPy News
 ### A new release of SounderPy will be out soon! (Early August)
 #### Here is a look at what's coming to SounderPy v1.1.0:
