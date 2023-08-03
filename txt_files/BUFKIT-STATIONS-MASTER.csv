@@ -1,4 +1,12 @@
-,NUM,LAT,LON,ID,NAME,LOC,EL(m),NOTE
+  ISU IEM BUFKIT STATION LISTING 20230730 - MODIFIED BY KYLE J GILLETT
+------------------------------------------------------------------------
+Entries may be added, deleted, or edited, BUT FORMAT MUST BE MAINTAINED.
+------------------------------------------------------------------------
+NUM numbers must be sequential.      Coordinates are in decimal degrees.
+------------------------------------------------------------------------
+
+IDX,NUM,LAT,LON,ID,NAME,LOC,EL(m),NOTE
+
 0,1,69.58,-140.18,YAJ ,KOMAKUK                         ,YT,19,MAGS 9-95
 1,2,69.9,-128.97,WRP ,NICHOLSON                       ,NT,15,MAGS 9-95
 2,3,69.58,-120.75,WXK ,CLINTON POINT                   ,NT,27,MAGS 9-95
