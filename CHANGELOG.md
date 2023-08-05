@@ -15,6 +15,7 @@ SounderPy v2.0.0 will feature a number of new tools, improvements to existing fu
 - Ability to save plots to a file -- `metpy_sounding(clean_data, 'save')`
 - Ability to save parsed data as a csv -- `to_csv(clean_data)`
 - Ability to save parsed data to CM1 input file -- `to_cm1(clean_data)`
+- Ability to plot profile data on a MetPy Hodograph! `metpy_hodograph(clean_data, 'show')`
 - GitHub Wiki Documentation
 
  
