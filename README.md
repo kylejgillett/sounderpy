@@ -59,7 +59,7 @@ This script is used to access vertical profile data for calculations or plotting
 2. ```
    pip install sounderpy
    ```
-   Find it at https://pypi.org/project/sounderpy/2.0.0/
+   Find it at https://pypi.org/project/sounderpy/
 3. ```
    import sounderpy as spy
    ```
