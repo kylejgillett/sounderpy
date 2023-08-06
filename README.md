@@ -6,6 +6,7 @@
 
 ## WELCOME! thank you for visiting SounderPy!
 ### [VISIT SOUNDERPY DOCUMENTATION HERE](https://github.com/kylejgillett/sounderpy/wiki)
+#### [CHECK OUT AN EXAMPLE NOTEBOOK](https://github.com/kylejgillett/sounderpy/blob/main/sounderpy_tutorial.ipynb)
 This script is used to access vertical profile data for calculations or plotting of a vertical profile (sounding). 
 
 [![PyPI Package](https://img.shields.io/pypi/v/sounderpy.svg)](https://pypi.python.org/pypi/sounderpy/)
