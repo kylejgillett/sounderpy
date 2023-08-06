@@ -1,5 +1,5 @@
 # SOUNDERPY DOCUMENTATION 
-  > LATEST VERSION: v2.0.0 |  RELEASED: August 6, 2023  |  COPYRIGHT Kyle J Gillett, 2023
+  > LATEST VERSION: v2.0.4 |  RELEASED: August 6, 2023  |  COPYRIGHT Kyle J Gillett, 2023
 
 <div align="center">
 <img src="https://github.com/kylejgillett/sounderpy/assets/100786530/2e9477c9-e36a-4163-accb-fe46780058dd" width="250">
