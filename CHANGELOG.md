@@ -38,7 +38,7 @@ The initial release of SounderPy
  
 
 ## All Releases
-- [sounderpy-1.1.0]()
+- [sounderpy-2.0.4](https://pypi.org/project/sounderpy/2.0.4/)
   Major: new functions, improved existing functionality, repaired minor bugs
 - [sounderpy-1.0.0](https://pypi.org/project/sounderpy/1.0.0/)
   Initial release
