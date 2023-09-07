@@ -94,3 +94,8 @@ You can make a quick plot of the data using built-in MetPy plotting functions!, 
 <div align="center">
 <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/example_RAP_0427201122z.png" width="600">
 </div>
+
+
+## CONTRIBUTORS
+### AUTHOR: Kyle J Gillett 
+#### CONTRIBUTOR: Scott Thomas 
