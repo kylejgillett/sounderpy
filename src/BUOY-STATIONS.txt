@@ -8,356 +8,356 @@ WMO numbers must be sequential.      Coordinates are in decimal degrees.
 
 ID,LOC,LAT,A,LON,B,TYPE
 
-41001*,    E HATTERAS,               34.70, N,    72.73, W, BUOY,
-41002*,    S HATTERAS,               32.38, N,    75.41, W, BUOY,
-41004*,    EDISTO,                   32.50, N,    79.10, W, BUOY,
-41008*,    GRAYS REEF,               31.40, N,    80.87, W, BUOY,
-41009*,    W CANAVERAL,              28.52, N,    80.17, W, BUOY,
-41010*,    E CANAVERAL,              28.91, N,    78.47, W, BUOY,
-41012*,    ST AUGUSTINE,             30.04, N,    80.53, W, BUOY,
-41013*,    FRYING PAN SHLS,          33.44, N,    77.74, W, BUOY,
-41025*,    DIAMOND SHLS,             35.01, N,    75.40, W, BUOY,
-41035*,    ONSLOW BAY,               34.48, N,    77.28, W, BUOY,
-41036*,    UNWC,                     34.21, N,    76.95, W, BUOY,
-41040*,    W ATLANTIC,               14.48, N,    53.01, W, BUOY,
-41041*,    M ATLANTIC,               14.36, N,    46.01, W, BUOY,
-41043*,    S ATLANTIC 1,             20.99, N,    65.01, W, BUOY,
-41044*,    S ATLANTIC 2,             21.65, N,    58.70, W, BUOY,
-41046*,    E BAHAMAS,                23.87, N,    70.87, W, BUOY,
-41047*,    NE BAHAMAS,               27.47, N,    71.49, W, BUOY,
-41048*,    W BERMUDA,                31.98, N,    69.65, W, BUOY,
-41049*,    S ATLANTIC,               27.50, N,    63.00, W, BUOY,
-42001*,    M GULF MEXICO,            25.90, N,    89.67, W, BUOY,
-42002*,    W GULF MEXICO,            25.79, N,    93.67, W, BUOY,
-42003*,    E GULF MEXICO,            25.97, N,    85.59, W, BUOY,
-42007*,    BILOXI,                   30.09, N,    88.77, W, BUOY,
-42012*,    ORANGE BCH,               30.07, N,    87.55, W, BUOY,
-42019*,    LANEILLE,                 27.90, N,    95.39, W, BUOY,
-42020*,    EILEEN,                   26.97, N,    96.70, W, BUOY,
-42035*,    GALVESTON,                29.23, N,    94.41, W, BUOY,
-42036*,    W TAMPA,                  28.50, N,    84.52, W, BUOY,
-42039*,    S PENSACOLA,              28.79, N,    86.01, W, BUOY,
-42040*,    S MOBILE,                 29.21, N,    88.21, W, BUOY,
-42055*,    BAY CAMPECHE,             22.02, N,    94.05, W, BUOY,
-42056*,    YUCATAN CHNL,             19.87, N,    85.06, W, BUOY,
-42057*,    W CARIBBEAN,              16.83, N,    81.50, W, BUOY,
-42058*,    C CARIBBEAN,              15.09, N,    75.06, W, BUOY,
-42059*,    E CARIBBEAN,              15.01, N,    67.50, W, BUOY,
-42060*,    E CARIBBEAN,              16.50, N,    63.50, W, BUOY,
-42080*,    SAND KEY,                 24.40, N,    81.93, W, BUOY,
-44005*,    GULF OF MAINE,            43.19, N,    69.14, W, BUOY,
-44007*,    PORTLAND,                 43.53, N,    70.14, W, BUOY,
-44008*,    NANTUCKET,                40.50, N,    69.25, W, BUOY,
-44009*,    DELAWARE BAY,             38.46, N,    74.70, W, BUOY,
-44011*,    GEORGES BNK,              41.11, N,    66.58, W, BUOY,
-44013*,    BOSTON,                   42.35, N,    70.65, W, BUOY,
-44014*,    VIRGINIA BCH,             36.61, N,    74.84, W, BUOY,
-44017*,    MONTAUK PT,               40.69, N,    72.05, W, BUOY,
-44018*,    SE CAPE COD,              41.26, N,    69.31, W, BUOY,
-44020*,    NANTUCKET SND,            41.44, N,    70.19, W, BUOY,
-44025*,    LONG ISLAND,              40.25, N,    73.17, W, BUOY,
-44027*,    JONESPORT,                44.27, N,    67.31, W, BUOY,
-44065*,    NYC ENTR,                 40.37, N,    73.70, W, BUOY,
-44066*,    TEXAS TOWER #4,           39.58, N,    72.60, W, BUOY,
-45001*,    M LK SUPERIOR,            48.06, N,    87.79, W, BUOY,
-45002*,    N LK MICHIGAN,            45.34, N,    86.41, W, BUOY,
-45003*,    N LK HURON,               45.35, N,    82.84, W, BUOY,
-45004*,    E LK SUPERIOR,            47.58, N,    86.59, W, BUOY,
-45005*,    W LK ERIE,                41.68, N,    82.40, W, BUOY,
-45006*,    W LK SUPERIOR,            47.33, N,    89.79, W, BUOY,
-45007*,    S LK MICHIGAN,            42.67, N,    87.03, W, BUOY,
-45008*,    S LK HURON,               44.28, N,    82.42, W, BUOY,
-45012*,    LK ONTARIO,               43.62, N,    77.41, W, BUOY,
-45013*,    ATWATER PK,               43.10, N,    87.85, W, BUOY,
-45014*,    SOUTH GREEN BAY,          45.40, N,    85.09, W, BUOY,
-45015*,    CALUMET BEACH,            41.71, N,    87.52, W, BUOY,
-45016*,    6TH 3RD ST BCH,           41.78, N,    87.57, W, BUOY,
-45017*,    OAK ST BEACH              41.90, N,    87.62, W, BUOY,
-45018*,    MONTROSE AVE BCH,         41.96, N,    87.38, W, BUOY,
-45019*,    FOSTER AVE BEACH,         41.98, N,    87.65, W, BUOY,
-45020*,    GRAND TRAVERSE S,         44.79, N,    85.60, W, BUOY,
-45021*,    TRAVERSE BAY 3,           44.05, N,    85.49, W, BUOY,
-45022*,    LITTLE TRAVERSE,          45.40, N,    85.09, W, BUOY,
-45023*,    NORTH KEWEENAW,           47.27, N,    88.61, W, BUOY,
-45024*,    LUDINGTON,                43.97, N,    86.55, W, BUOY,
-45025*,    S kEWEENAW,               46.97, N,    88.40, W, BUOY,
-45026*,    COOK NUKE PLANT,          41.98, N,    86.62, W, BUOY,
-45027*,    MCQUADE HARBOR,           46.86, N,    91.93, W, BUOY,
-45028*,    W LK SUPERIOR,            46.81, N,    91.83, W, BUOY,
-45029*,    HOLLAND,                  42.90, N,    86.27, W, BUOY,
-45132*,    PORT STANLEY,             42.46, N,    81.22, W, BUOY,
-45135*,    PRINCE EDWARD PT,         43.78, N,    76.87, W, BUOY,
-45136*,    SLATE ISLAND,             48.54, N,    86.95, W, BUOY,
-45137*,    GEORGIAN BAY,             45.54, N,    81.02, W, BUOY,
-45138*,    MONT LOUIS,               49.54, N,    65.71, W, BUOY,
-45139*,    W LK ONTARIO,             43.25, N,    79.53, W, BUOY,
-45140*,    LAKE WINNEPEG S,          50.80, N,    96.73, W, BUOY,
-45141*,    GREAT SLAVE LAKE,         61.18, N,    115.3, W, BUOY,
-45142*,    PORT COLBORNE,            42.74, N,    79.29, W, BUOY,
-45143*,    S GEORGIAN BAY,           44.94, N,    80.63, W, BUOY,
-45144*,    LK WINNEPEG N,            53.23, N,    98.29, W, BUOY,
-45145*,    LK WINNEPEG NAR,          51.87, N,    96.97, W, BUOY,
-45147*,    LK ST CLAIR,              42.43, N,    82.68, W, BUOY,
-45148*,    LK OF THE WOODS,          49.65, N,    94.50, W, BUOY,
-45149*,    ECC S LK HURON,           44.28, N,    82.42, W, BUOY,
-45151*,    LAKE SIMCOE,              44.50, N,    79.37, W, BUOY,
-45152*,    LAKE NIPISSING,           46.23, N,    79.72, W, BUOY,
-45154*,    N CHANNEL E,              46.05, N,    82.64, W, BUOY,
-45155*,    PAN AM GAMES,             43.59, N,    79.39, W, BUOY,
-45158*,    HUDSON BAY,               59.00, N,    94.00, W, BUOY,
-45159*,    NW LK ONTARIO,            43.77, N,    78.98, W, BUOY,
-45160*,    16 MILE CREEK,            43.41, N,    79.63, W, BUOY,
-45161*,    MUSKEGON,                 42.90, N,    86.27, W, BUOY,
-45162*,    THUNDER BAY,              44.99, N,    83.27, W, BUOY,
-45163*,    SAGINAW BAY,              43.98, N,    83.60, W, BUOY,
-45164*,    CLEVELAND,                41.75, N,    81.70, W, BUOY,
-45165*,    TOLEDO,                   41.70, N,    83.26, W, BUOY,
-45166*,    LK CHAMPLAIN INL,         44.79, N,    73.26, W, BUOY,
-45167*,    ERIE NEARSHORE,           42.19, N,    80.14, W, BUOY,
-45168*,    SOUTH HAVEN,              43.54, N,    82.08, W, BUOY,
-45169*,    LAKEWOOD,                 41.62, N,    81.82, W, BUOY,
-45170*,    MICHIGAN CITY,            41.76, N,    86.97, W, BUOY,
-45171*,    GRANITE ISLAND,           76.72, N,    87.41, W, BUOY,
-45172*,    GRAND MARIAS,             46.74, N,    85.98, W, BUOY,
-45173*,    MUNISING,                 46.57, N,    86.57, W, BUOY,
-45174*,    WILMETTE,                 42.14, N,    87.66, W, BUOY,
-45175*,    MACKINAC W,               45.83, N,    84.77, W, BUOY,
-45176*,    CLEVELAND INTAKE,         41.55, N,    81.77, W, BUOY,
-45177*,    OHIO ST BEACH,            41.89, N,    87.61, W, BUOY,
-45178*,    VALCOUR ISLAND,           44.60, N,    73.39, W, BUOY,
-45179*,    STANNARD ISL W,           47.20, N,    87.22, W, BUOY,
-45180*,    ISLE OF ROYALE E,         48.03, N,    87.73, W, BUOY,
-45183*,    SLEEPING BEAR,            43.97, N,    86.55, W, BUOY,
-45184*,    GREEN BAY EAST,           44.55, N,    87.96, W, BUOY,
-45185*,    GREEN BAY WEST,           44.58, N,    87.99, W, BUOY,
-45186*,    WAUKEGAN,                 42.37, N,    87.80, W, BUOY,
-45187*,    WINTHROP HARBOR,          42.49, N,    87.78, W, BUOY,
-45188*,    CHAMPLAIN BRIDGE,         44.09, N,    73.42, W, BUOY,
-45194*,    MCGULPIN PT,              45.80, N,    84.79, W, BUOY,
-45196*,    ROCKY RIVER,              41.52, N,    81.88, W, BUOY,
-45197*,    EUCLID,                   41.62, N,    81.62, W, BUOY,
-45198*,    CHICAGO,                  41.89, N,    87.56, W, BUOY,
-45199*,    SALMON UNLIMITED,         42.70, N,    87.65, W, BUOY,
-45200*,    MAUMEE BAY,               41.72, N,    83.37, W, BUOY,
-45201*,    ERIE ISLANDS,             41.60, N,    82.78, W, BUOY,
-45202*,    PORT CLINTON,             41.53, N,    82.94, W, BUOY,
-45203*,    HURON,                    41.39, N,    82.51, W, BUOY,
-45204*,    SHEFFIELD,                41.51, N,    82.12, W, BUOY,
-45205*,    EDGEWATER BEACH,          41.50, N,    81.75, W, BUOY,
-45206*,    EUCLID BEACH,             41.59, N,    81.58, W, BUOY,
-45207*,    FAIRPORT HARBOR,          41.73, N,    81.37, W, BUOY,
-45208*,    ASHTABULA,                41.91, N,    80.81, W, BUOY,
-45209*,    SARNIA,                   43.13, N,    82.39, W, BUOY,
-45210*,    M LK MICHIGAN,            44.06, N,    87.05, W, BUOY,
-45211*,    GRAND ISLAND N,           46.97, N,    86.57, W, BUOY,
-46001*,    GULF OF ALASKA,           56.30, N,    148.0, W, BUOY,
-46002*,    W OREGON,                 42.57, N,    130.4, W, BUOY,
-46005*,    W ASTORIA,                46.01, N,    130.9, W, BUOY,
-46006*,    SW ASTORIA,               40.89, N,    137.4, W, BUOY,
-46011*,    STA MARIA,                34.87, N,    120.8, W, BUOY,
-46012*,    HALF MOON BAY,            37.36, N,    122.8, W, BUOY,
-46013*,    BODEGA BAY,               38.24, N,    123.3, W, BUOY,
-46014*,    PT ARENA,                 39.20, N,    123.9, W, BUOY,
-46015*,    PT ORFORD,                42.75, N,    124.8, W, BUOY,
-46022*,    EEL RIVER,                40.75, N,    124.5, W, BUOY,
-46023*,    PT ARGUELLO,              34.70, N,    120.9, W, BUOY,
-46025*,    STA MONICA,               33.74, N,    119.0, W, BUOY,
-46026*,    SAN FRANCISCO,            37.76, N,    122.8, W, BUOY,
-46027*,    ST GEORGES,               41.85, N,    124.3, W, BUOY,
-46028*,    SAN MARTIN,               35.74, N,    121.8, W, BUOY,
-46029*,    COL RIVER BAR,            46.14, N,    124.5, W, BUOY,
-46035*,    BERING SEA,               57.07, N,    177.7, W, BUOY,
-46041*,    CP ELIZABETH,             47.35, N,    124.7, W, BUOY,
-46042*,    MONTEREY BAY,             36.79, N,    122.4, W, BUOY,
-46047*,    TANNER BNK,               32.43, N,    119.5, W, BUOY,
-46050*,    STONEWALL BNK,            44.64, N,    124.5, W, BUOY,
-46053*,    E STA BARBARA,            34.25, N,    119.8, W, BUOY,
-46054*,    W STA BARBARA,            34.27, N,    120.4, W, BUOY,
-46059*,    CALIFORNIA,               38.03, N,    130.0, W, BUOY,
-46060*,    W ORCA BAY,               60.60, N,    146.8, W, BUOY,
-46061*,    SEAL ROCKS,               60.23, N,    146.8, W, BUOY,
-46066*,    KODIAK,                   52.74, N,    154.9, W, BUOY,
-46069*,    S STA ROSA,               33.67, N,    120.2, W, BUOY,
-46070*,    SW BERING SEA,            55.00, N,    175.2, E, BUOY,
-46071*,    AMCHITKA,                 51.15, N,    179.0, E, BUOY,
-46072*,    S ALEUTIANS,              51.63, N,    172.1, W, BUOY,
-46073*,    SE BERING,                55.01, N,    171.9, W, BUOY,
-46075*,    SHUMAGIN ISLAN,           53.93, N,    160.8, W, BUOY,
-46076*,    CAPE CLEARE,              59.50, N,    147.9, W, BUOY,
-46077*,    SHELIKOF STR,             57.92, N,    154.2, W, BUOY,
-46078*,    ALBATROSS BNK,            56.07, N,    152.5, W, BUOY,
-46080*,    KENNEDY ENTR,             58.04, N,    149.9, W, BUOY,
-46081*,    W PWS,                    60.79, N,    148.2, W, BUOY,
-46082*,    CP SUCKLING,              59.69, N,    143.4, W, BUOY,
-46083*,    FAIRWEATHER,              58.25, N,    137.9, W, BUOY,
-46084*,    SITKA SND,                56.63, N,    136.1, W, BUOY,
-46085*,    C GULF ALASKA,            55.85, N,    142.5, W, BUOY,
-46086*,    SAN CLEMENTE,             32.49, N,    118.0, W, BUOY,
-46087*,    NEAH BAY,                 48.49, N,    124.7, W, BUOY,
-46088*,    NEW DUNGENESS,            48.33, N,    123.1, W, BUOY,
-46089*,    TILLAMOOK,                45.89, N,    125.8, W, BUOY,
-46105*,    S COOK INL,               59.05, N,    152.2, W, BUOY,
-46106*,    C COOK INL,               59.76, N,    152.0, W, BUOY,
-46107*,    MONTAGUE STR,             59.93, N,    147.9, W, BUOY,
-51000*,    N HAWAII,                 23.55, N,    154.0, W, BUOY,
-51001*,    NW HAWAII,                23.45, N,    162.2, W, BUOY,
-51002*,    SW HAWAII,                17.09, N,    157.8, W, BUOY,
-51003*,    W HAWAII,                 19.09, N,    160.6, W, BUOY,
-51004*,    SE HAWAII,                17.53, N,    152.3, W, BUOY,
-51100*,    N HAWAII,                 23.56, N,    153.9, W, BUOY,
-51101*,    NW HAWAII,                24.32, N,    162.0, W, BUOY,
-0Y2W3*,    STURGEON BAY CG,          44.79, N,    87.31, W, LAND,
-18CI3*,    MICHIGAN CITY CG,         41.73, N,    86.91, W, LAND,
-18CY3*,    Michigan CITY CR,         41.73, N,    86.91, W, LAND,
-20CM4*,    ST JOSEPH CG,             42.09, N,    86.49, W, LAND,
-ABAN6 ,    ALEXANDRIA BAY NY    ,    44.33, N,    75.93, W, LAND,
-AGCM4*,    ALGONAC,                  42.62, N,    82.53, W, LAND,
-AGMW3*,    ALGOMA CITY MARINA,       44.61, N,    87.43, W, LAND,
-AMAA2*,    EAST AMATULI ISLAND L,    58.92, N,    151.9, W, LAND,
-APNM4*,    ALPENA,                   45.06, N,    83.42, W, LAND,
-ASBO1*,    ASHTABULA,                41.92,N,     80.8,  W, LAND,
-AUGA2*,    AUGUSTINE ISLAND AK  ,    59.38, N,    153.3, W, LAND,
-ALXN6*,    ALEXANDRIA BAY,           44.33, N,    75.93, W, LAND,
-BARN6*,    BARCELONA HARBOR,         42.35, N,    79.60, W, LAND,
-BHRI3*,    BURNS HARBOR,             41.64, N,    87.14, W, LAND,
-BLIA2*,    BLIGH REEF LIGHT AK  ,    60.84, N,    146.8, W, LAND,
-BIGM4*,    BIG BAY,                  46.83, N,    87.73, W, LAND,
-BSBM4*,    BIG SABLE POINT,          44.06, N,    86.51, W, LAND,
-BUFN6*,     BUFFALO,                 42.88, N,    78.89, W, LAND,
-BURL1*,    SOUTHWEST PASS LA    ,    28.91, N,    89.43, W, LAND,
-BUZM3*,    BUZZARDS BAY MA      ,    41.40, N,    71.03, W, LAND,
-CARO3*,    CAPE ARAGO OR        ,    43.34, N,    124.3, W, LAND,
-CBLO1*,    CONNEAUT BREAKWATER,      41.98, N,    80.56, W, LAND,
-CBRW3*,    CHAMBERS ISLAND,          45.20, N,    87.36, W, LAND,
-CDRF1*,    CEDAR KEY FL         ,    29.14, N,    83.03, W, LAND,
-CHII2*,    HARRISON DEVER CRIB,      41.92, N,    87.57, W, LAND,
-CHLV2*,    CHESAPEAKE LIGHT VA  ,    36.91, N,    75.71, W, LAND,
-CLKN7*,    CAPE LOOKOUT NC      ,    34.62, N,    76.53, W, LAND,
-CLSM4*,    ST CLAIR SHORES,          42.47, N,    82.88, W, LAND,
-CMPO1*,    CAMP PERRY,               41.55, N,    83.02, W, LAND,
-CMTI2*,    CALUMET HARBOR,           41.73, N,    87.54, W, LAND,
-CNDO1*,    CLEVELAND,                41.54, N,    81.64, W, LAND,
-CNII2*,    NORTHERLY ISLE,           41.86, N,    87.61, W, LAND,
-CWCI*,     CARIBOU ISLAND,           47.33, N,    85.83, W, LAND,
-CYGM4*,    CHEBOYGAN MARINA,         45.66, N,    84.46, W, LAND,
-DBLN6*,    DUNKIRK NY           ,    42.49, N,    79.35, W, LAND,
-DESW1*,    DESTRUCTION ISLAND WA,    47.68, N,    124.4, W, LAND,
-DISW3*,    DEVILS ISLAND WI     ,    47.08, N,    90.73, W, LAND,
-DPIA1*,    DAUPHIN ISLAND AL    ,    30.25, N,    88.07, W, LAND,
-DRFA2*,    DRIFT RIVER TERMINAL ,    60.55, N,    152.1, W, LAND,
-DTLM4*,    DE TOUR VILLAGE,          45.99, N,    83.90, W, LAND,
-DULM5*,    DULUTH,                   46.78, N,    92.09, W, LAND,
-EREP1*,    ERIE,                     42.17, N,    80.10, W, LAND,
-FAIO1*,    FAIRPORT,                 41.76, N,    81.28, W, LAND,
-FBIS1*,    FOLLY ISLAND SC      ,    32.69, N,    79.89, W, LAND,
-FFIA2*,    FIVE FINGERS AK      ,    57.27, N,    133.6, W, LAND,
-FILA2*,    FLAT ISLAND LIGHT    ,    59.33, N,    152.0, W, LAND,
-FPTM4*,    FAIRPORT,                 45.61, N,    86.66, W, LAND,
-FSTI2*,    FOSTER AVE,               41.98, N,    87.65, W, LAND,
-FTGM4*,    FORT GRATIOT,             43.00, N,    82.42, W, LAND,
-FWYF1*,    FOWEY ROCK FL        ,    25.59, N,    80.10, W, LAND,
-GBLW3*,    GREEN BAY ENTERANCE,      44.65, N,    87.90, W, LAND,
-GBWW3*,    GREEN BAY WEST,           44.54, N,    88.00, W, LAND,
-GDMM5*,    GRAND MARIAS,             47.75, N,    90.34, W, LAND,
-GELO1*,    GENEVA ON THE LAKE,       41.86, N,    80.98, W, LAND,
-GRMM4*,    GRAND MARIAS NWSCR,       46.68, N,    85.97, W, LAND,
-GSLM4*,    GRAVELLY SHOAL LIGHT,     44.02, N,    83.54, W, LAND,
-GTLM4*,    GRAND TRAVERSE LIGHT,     45.21, N,    85.55, W, LAND,
-GTRM4*,    SUPERIOR GRAND TRAVERSE,  47.18, N,    88.24, W, LAND,
-HHLO1*,    HURON HARBOR LIGHT,       41.40, N,    82.55, W, LAND,
-HLNM4*,    HOLLAND,                  42.77, N,    86.21, W, LAND,
-HRBM4*,    HARBOR BEACH,             43.85, N,    82.64, W, LAND,
-IOSN3*,    ISLE OF SHOALS NH    ,    42.97, N,    70.62, W, LAND,
-JAKI2*,    63RD STREET,              41.78, N,    87.57, W, LAND,
-KGNA*,     BAY OF GRAND MARIAS,      47.75, N,    90.35, W, LAND,
-KNSW3*,    KENOSHA LIGHT,            42.59, N,    87.81, W, LAND,
-KP53*,     MUNISING LAKESHORE,       46.42, N,    86.65, W, LAND,
-KP58*,     PORT HOPE,                44.02, N,    82.80, W, LAND,
-KP59*,     COPPER HARBOR,            47.47, N,    87.88, W, LAND,
-KWNW3*,    KEWAUNEE MET,             44.47, N,    87.50, W, LAND,
-KTNF1*,    KEATON BEACH FL      ,    29.82, N,    83.59, W, LAND,
-LDTM4*,    LUDINGTON,                43.95, N,    86.44, W, LAND,
-LKWF1*,    LAKEWORTH FL         ,    26.61, N,    80.03, W, LAND,
-LONF1*,    LONG KEY FL          ,    24.84, N,    80.86, W, LAND,
-LORO1*,    LORAIN HARBOR,            41.48, N,    82.20, W, LAND,
-LPNM4*,    ALPENA,                   45.06, N,    83.43, W, LAND.
-LSCM4 ,    LAKE ST. CLAIR       ,    42.47, N,    82.76, W, LAND,
-LTRM4*,    LITTLE RAPIDS,            46.49, N,    84.30, W, LAND,
-MACM4*,    MACKINAC CITY,            45.78, N,    84.72, W, LAND,
-MBRM4*,    MOUTH OF THE BLACK RIVER, 42.98, N,    82.42, W, LAND,
-MCGM4*,    MARQUETTE,                46.55, N,    87.38, W, LAND,
-MCYI3*,    MICHIGAN CITY,            41.73, N,    86.91, W, LAND,
-MDRM1*,    MT DESERT ROCK ME    ,    43.97, N,    68.13, W, LAND,
-MEEM4*,    MANISTEE HARBOR,          44.25, N,    86.34, W, LAND,
-MISM1*,    MATINICUS ROCK ME    ,    43.78, N,    68.86, W, LAND,
-MKGM4*,    MUSKEGON,                 43.23, N,    86.34, W, LAND,
-MLRF1*,    MOLASSES REEF FL     ,    25.01, N,    80.38, W, LAND,
-MLWW3*,    PORT OF MILWAUKEE,        43.01, N,    87.88, W, LAND,
-MNMM4*,    MENOMINEE,                45.10, N,    87.59, W, LAND,
-MRHO1*,    MARBLEHEAD,               41.54, N,    82.73, W, LAND,
-MRKA2*,    MIDDLE ROCK LIGHT AK ,    61.08, N,    146.6, W, LAND,
-NABM4*,    NAUBINWAY,                46.09, N,    85.44, W, LAND,
-NIAN6*,    NIAGARA INTAKE,           43.08, N,    79.01, W, LAND,
-NPDW3*,    NORTHPORT PIER,           45.29, N,    86.98, W, LAND,
-NREP1*,    NORTHEAST MARINA,         42.26, N,    79.79, W, LAND,
-NWPO3*,    NEWPORT OR           ,    44.61, N,    124.0, W, LAND,
-OBGN6*,    OGDENSBURG,               44.70, N,    75.49, W, LAND,
-OKSI2*,    OAK STREET,               41.91, N,    87.62, W, LAND,
-OLCN6*,    OLCOTT HARBOR,            43.34, N,    78.72, W, LAND,
-OSGN6*,    OSWEGO,                   43.46, N,    76.51, W, LAND,
-OTNM4*,    ONTONAGON,                46.87, N,    89.33, W, LAND,
-PBWM4*,    PT HURON BLUE WTR BRDG,   43.00, N,    82.42, W, LAND,
-PCLM4*,    PORTAGE CANAL,            47.28, N,    88.53, W, LAND,
-PILA2*,    PILOT ROCK AK        ,    59.74, N,    149.4, W, LAND,
-PILM4*,    PASSAGE ISLAND MI    ,    48.22, N,    88.37, W, LAND,
-PLSF1*,    POLASKI SHOALS FL    ,    24.69, N,    82.77, W, LAND,
-PNLM4*,    PORT INLAND,              45.97, N,    85.87, W, LAND,
-POTA2*,    POTATO POINT AK      ,    61.06, N,    146.7, W, LAND,
-PRIM4*,    PRESQUE ISLE,             45.36, N,    83.49, W, LAND,
-PSCM4*,    PORT SANILAC,             43.42, N,    82.54, W, LAND,
-PSTN6*,     STURGEON POINT,           42.69, N,    79.05, W, LAND,
-PTAC1*,    POINT ARENA CA       ,    38.96, N,    123.7, W, LAND,
-PTAT2*,    PORT ARANSAS TX      ,    27.83, N,    97.05, W, LAND,
-PTGC1*,    POINT ARGUELLO CA    ,    34.58, N,    120.6, W, LAND,
-PTIM4*,    POINT IROQUOIS,           46.49, N,    84.63, W, LAND,
-PWAW3*,    PORT WASHINGTON,          43.39, N,    87.87, W, LAND,
-RCKM4*,    ROCK CUT,                 46.26, N,    84.19, W, LAND,
-RCRN6*,    ROCHESTER,                43.27, N,    77.63, W, LAND,
-ROAM4*,    ROCK OF AGES MI      ,    47.87, N,    89.31, W, LAND,
-RPRN6*,    ROCHESTER CG,             43.26, N,    77.60, W, LAND,
-SANF1*,    SAND KEY FL          ,    24.45, N,    81.88, W, LAND,
-SAUF1*,    ST. AUGUSTINE FL     ,    29.86, N,    81.27, W, LAND,
-SBIO1*,    SOUTH BASS ISLAND OH ,    41.63, N,    82.84, W, LAND,
-SBLM4*,    SAGINAW BAY LIGHT,        43.81, N,    83.72, W, LAND,
-SGNW3*,    SHEBOYGAN WI         ,    43.75, N,    87.69, W, LAND,
-SGOF1*,    ST. GEORGE OFFSHORE  ,    29.41, N,    84.86, W, LAND,
-SISW1*,    SMITH ISLAND WA      ,    48.32, N,    122.8, W, LAND,
-SJOM4*,    ST JOSEPH,                42.10, N,    86.49, W, LAND,
-SLVM5*,    SILVER BAY,               47.28, N,    91.27, N, LAND,
-SMKF1*,    SOMBRERO KEY FL      ,    24.63, N,    81.11, W, LAND,
-SPTM4*,    STURGEON POINT NWSCR,     44.71, N,    83.27, W, LAND,
-SPGF1*,    SETTLEMENT PT GBI    ,    26.70, N,    78.99, W, LAND,
-SRLM4*,    SPECTACLE REEF,           45.77, N,    84.14, W, LAND,
-SRST2*,    SABINE TX            ,    29.68, N,    94.03, W, LAND,
-STDM4*,    STANNARD ROCK MI     ,    47.18, N,    87.23, W, LAND,
-SUPN6 ,    SUPERIOR SHOALS NY   ,    44.47, N,    75.80, W, LAND,
-SVNM4*,    SOUTH HAVEN,              42.40, N,    86.29, W, LAND,
-SWPM4*,    SOUTHWEST PIER,           46.50, N,    84.37, W, LAND,
-SXHW3*,    SAXON HARBOR,             46.56, N,    90.43, W, LAND,
-TAWM4*,    TAWAS POINT,              44.25, N,    83.45, W, LAND,
-TBIM4*,    THUNDER BAY ISLAND,       45.04, N,    83.19, W, LAND,
-SYWW3*,    YACHT WORKS SISTER BAY,   45.20, N,    87.12, W, LAND,
-THIN6 ,    THOUSAND ISL. NY     ,    44.30, N,    75.98, W, LAND,
-THLO1*,    TOLEDO LIGHT 2,           41.83, N,    83.19, W, LAND,
-THRO1*,    TOLEDO,                   41.69, N,    83.47, W, LAND,
-TPLM2*,    THOMAS POINT MD      ,    38.90, N,    76.44, W, LAND,
-TTIW1*,    TATOOSH ISLAND WA    ,    48.39, N,    124.7, W, LAND,
-TWC01*,    TOLEDO CRIB,              41.70, N,    83.26, W, LAND,
-VENF1*,    VENICE FL            ,    27.07, N,    82.45, W, LAND,
-VRMO1*,    VERMILLION RIVER,         41.43, N,    82.36, W, LAND,
-WCRP1*,    WALNUT CREEK MARINA,      42.08, N,    80.24, W, LAND,
-WFPM4*,    WHITEFISH POINT,          46.76, N,    84.97, W, LAND,
-WHRI2*,    WAUKEGAN HARBOR,          42.36, N,    87.81, W, LAND,
-WPOW1*,    WEST POINT WA        ,    47.66, N,    122.4, W, LAND,
-WSLM4*,    WHITE SHOAL LIGHT,        45.84, N,    85.14, W, LAND,
-YGNN6*,    NIAGARA CG STATION,       43.26, N,    79.06, W, LAND,
+41001*,    E HATTERAS,               34.70, N,    72.73, W, BUOY
+41002*,    S HATTERAS,               32.38, N,    75.41, W, BUOY
+41004*,    EDISTO,                   32.50, N,    79.10, W, BUOY
+41008*,    GRAYS REEF,               31.40, N,    80.87, W, BUOY
+41009*,    W CANAVERAL,              28.52, N,    80.17, W, BUOY
+41010*,    E CANAVERAL,              28.91, N,    78.47, W, BUOY
+41012*,    ST AUGUSTINE,             30.04, N,    80.53, W, BUOY
+41013*,    FRYING PAN SHLS,          33.44, N,    77.74, W, BUOY
+41025*,    DIAMOND SHLS,             35.01, N,    75.40, W, BUOY
+41035*,    ONSLOW BAY,               34.48, N,    77.28, W, BUOY
+41036*,    UNWC,                     34.21, N,    76.95, W, BUOY
+41040*,    W ATLANTIC,               14.48, N,    53.01, W, BUOY
+41041*,    M ATLANTIC,               14.36, N,    46.01, W, BUOY
+41043*,    S ATLANTIC 1,             20.99, N,    65.01, W, BUOY
+41044*,    S ATLANTIC 2,             21.65, N,    58.70, W, BUOY
+41046*,    E BAHAMAS,                23.87, N,    70.87, W, BUOY
+41047*,    NE BAHAMAS,               27.47, N,    71.49, W, BUOY
+41048*,    W BERMUDA,                31.98, N,    69.65, W, BUOY
+41049*,    S ATLANTIC,               27.50, N,    63.00, W, BUOY
+42001*,    M GULF MEXICO,            25.90, N,    89.67, W, BUOY
+42002*,    W GULF MEXICO,            25.79, N,    93.67, W, BUOY
+42003*,    E GULF MEXICO,            25.97, N,    85.59, W, BUOY
+42007*,    BILOXI,                   30.09, N,    88.77, W, BUOY
+42012*,    ORANGE BCH,               30.07, N,    87.55, W, BUOY
+42019*,    LANEILLE,                 27.90, N,    95.39, W, BUOY
+42020*,    EILEEN,                   26.97, N,    96.70, W, BUOY
+42035*,    GALVESTON,                29.23, N,    94.41, W, BUOY
+42036*,    W TAMPA,                  28.50, N,    84.52, W, BUOY
+42039*,    S PENSACOLA,              28.79, N,    86.01, W, BUOY
+42040*,    S MOBILE,                 29.21, N,    88.21, W, BUOY
+42055*,    BAY CAMPECHE,             22.02, N,    94.05, W, BUOY
+42056*,    YUCATAN CHNL,             19.87, N,    85.06, W, BUOY
+42057*,    W CARIBBEAN,              16.83, N,    81.50, W, BUOY
+42058*,    C CARIBBEAN,              15.09, N,    75.06, W, BUOY
+42059*,    E CARIBBEAN,              15.01, N,    67.50, W, BUOY
+42060*,    E CARIBBEAN,              16.50, N,    63.50, W, BUOY
+42080*,    SAND KEY,                 24.40, N,    81.93, W, BUOY
+44005*,    GULF OF MAINE,            43.19, N,    69.14, W, BUOY
+44007*,    PORTLAND,                 43.53, N,    70.14, W, BUOY
+44008*,    NANTUCKET,                40.50, N,    69.25, W, BUOY
+44009*,    DELAWARE BAY,             38.46, N,    74.70, W, BUOY
+44011*,    GEORGES BNK,              41.11, N,    66.58, W, BUOY
+44013*,    BOSTON,                   42.35, N,    70.65, W, BUOY
+44014*,    VIRGINIA BCH,             36.61, N,    74.84, W, BUOY
+44017*,    MONTAUK PT,               40.69, N,    72.05, W, BUOY
+44018*,    SE CAPE COD,              41.26, N,    69.31, W, BUOY
+44020*,    NANTUCKET SND,            41.44, N,    70.19, W, BUOY
+44025*,    LONG ISLAND,              40.25, N,    73.17, W, BUOY
+44027*,    JONESPORT,                44.27, N,    67.31, W, BUOY
+44065*,    NYC ENTR,                 40.37, N,    73.70, W, BUOY
+44066*,    TEXAS TOWER #4,           39.58, N,    72.60, W, BUOY
+45001*,    M LK SUPERIOR,            48.06, N,    87.79, W, BUOY
+45002*,    N LK MICHIGAN,            45.34, N,    86.41, W, BUOY
+45003*,    N LK HURON,               45.35, N,    82.84, W, BUOY
+45004*,    E LK SUPERIOR,            47.58, N,    86.59, W, BUOY
+45005*,    W LK ERIE,                41.68, N,    82.40, W, BUOY
+45006*,    W LK SUPERIOR,            47.33, N,    89.79, W, BUOY
+45007*,    S LK MICHIGAN,            42.67, N,    87.03, W, BUOY
+45008*,    S LK HURON,               44.28, N,    82.42, W, BUOY
+45012*,    LK ONTARIO,               43.62, N,    77.41, W, BUOY
+45013*,    ATWATER PK,               43.10, N,    87.85, W, BUOY
+45014*,    SOUTH GREEN BAY,          45.40, N,    85.09, W, BUOY
+45015*,    CALUMET BEACH,            41.71, N,    87.52, W, BUOY
+45016*,    6TH 3RD ST BCH,           41.78, N,    87.57, W, BUOY
+45017*,    OAK ST BEACH              41.90, N,    87.62, W, BUOY
+45018*,    MONTROSE AVE BCH,         41.96, N,    87.38, W, BUOY
+45019*,    FOSTER AVE BEACH,         41.98, N,    87.65, W, BUOY
+45020*,    GRAND TRAVERSE S,         44.79, N,    85.60, W, BUOY
+45021*,    TRAVERSE BAY 3,           44.05, N,    85.49, W, BUOY
+45022*,    LITTLE TRAVERSE,          45.40, N,    85.09, W, BUOY
+45023*,    NORTH KEWEENAW,           47.27, N,    88.61, W, BUOY
+45024*,    LUDINGTON,                43.97, N,    86.55, W, BUOY
+45025*,    S kEWEENAW,               46.97, N,    88.40, W, BUOY
+45026*,    COOK NUKE PLANT,          41.98, N,    86.62, W, BUOY
+45027*,    MCQUADE HARBOR,           46.86, N,    91.93, W, BUOY
+45028*,    W LK SUPERIOR,            46.81, N,    91.83, W, BUOY
+45029*,    HOLLAND,                  42.90, N,    86.27, W, BUOY
+45132*,    PORT STANLEY,             42.46, N,    81.22, W, BUOY
+45135*,    PRINCE EDWARD PT,         43.78, N,    76.87, W, BUOY
+45136*,    SLATE ISLAND,             48.54, N,    86.95, W, BUOY
+45137*,    GEORGIAN BAY,             45.54, N,    81.02, W, BUOY
+45138*,    MONT LOUIS,               49.54, N,    65.71, W, BUOY
+45139*,    W LK ONTARIO,             43.25, N,    79.53, W, BUOY
+45140*,    LAKE WINNEPEG S,          50.80, N,    96.73, W, BUOY
+45141*,    GREAT SLAVE LAKE,         61.18, N,    115.3, W, BUOY
+45142*,    PORT COLBORNE,            42.74, N,    79.29, W, BUOY
+45143*,    S GEORGIAN BAY,           44.94, N,    80.63, W, BUOY
+45144*,    LK WINNEPEG N,            53.23, N,    98.29, W, BUOY
+45145*,    LK WINNEPEG NAR,          51.87, N,    96.97, W, BUOY
+45147*,    LK ST CLAIR,              42.43, N,    82.68, W, BUOY
+45148*,    LK OF THE WOODS,          49.65, N,    94.50, W, BUOY
+45149*,    ECC S LK HURON,           44.28, N,    82.42, W, BUOY
+45151*,    LAKE SIMCOE,              44.50, N,    79.37, W, BUOY
+45152*,    LAKE NIPISSING,           46.23, N,    79.72, W, BUOY
+45154*,    N CHANNEL E,              46.05, N,    82.64, W, BUOY
+45155*,    PAN AM GAMES,             43.59, N,    79.39, W, BUOY
+45158*,    HUDSON BAY,               59.00, N,    94.00, W, BUOY
+45159*,    NW LK ONTARIO,            43.77, N,    78.98, W, BUOY
+45160*,    16 MILE CREEK,            43.41, N,    79.63, W, BUOY
+45161*,    MUSKEGON,                 42.90, N,    86.27, W, BUOY
+45162*,    THUNDER BAY,              44.99, N,    83.27, W, BUOY
+45163*,    SAGINAW BAY,              43.98, N,    83.60, W, BUOY
+45164*,    CLEVELAND,                41.75, N,    81.70, W, BUOY
+45165*,    TOLEDO,                   41.70, N,    83.26, W, BUOY
+45166*,    LK CHAMPLAIN INL,         44.79, N,    73.26, W, BUOY
+45167*,    ERIE NEARSHORE,           42.19, N,    80.14, W, BUOY
+45168*,    SOUTH HAVEN,              43.54, N,    82.08, W, BUOY
+45169*,    LAKEWOOD,                 41.62, N,    81.82, W, BUOY
+45170*,    MICHIGAN CITY,            41.76, N,    86.97, W, BUOY
+45171*,    GRANITE ISLAND,           76.72, N,    87.41, W, BUOY
+45172*,    GRAND MARIAS,             46.74, N,    85.98, W, BUOY
+45173*,    MUNISING,                 46.57, N,    86.57, W, BUOY
+45174*,    WILMETTE,                 42.14, N,    87.66, W, BUOY
+45175*,    MACKINAC W,               45.83, N,    84.77, W, BUOY
+45176*,    CLEVELAND INTAKE,         41.55, N,    81.77, W, BUOY
+45177*,    OHIO ST BEACH,            41.89, N,    87.61, W, BUOY
+45178*,    VALCOUR ISLAND,           44.60, N,    73.39, W, BUOY
+45179*,    STANNARD ISL W,           47.20, N,    87.22, W, BUOY
+45180*,    ISLE OF ROYALE E,         48.03, N,    87.73, W, BUOY
+45183*,    SLEEPING BEAR,            43.97, N,    86.55, W, BUOY
+45184*,    GREEN BAY EAST,           44.55, N,    87.96, W, BUOY
+45185*,    GREEN BAY WEST,           44.58, N,    87.99, W, BUOY
+45186*,    WAUKEGAN,                 42.37, N,    87.80, W, BUOY
+45187*,    WINTHROP HARBOR,          42.49, N,    87.78, W, BUOY
+45188*,    CHAMPLAIN BRIDGE,         44.09, N,    73.42, W, BUOY
+45194*,    MCGULPIN PT,              45.80, N,    84.79, W, BUOY
+45196*,    ROCKY RIVER,              41.52, N,    81.88, W, BUOY
+45197*,    EUCLID,                   41.62, N,    81.62, W, BUOY
+45198*,    CHICAGO,                  41.89, N,    87.56, W, BUOY
+45199*,    SALMON UNLIMITED,         42.70, N,    87.65, W, BUOY
+45200*,    MAUMEE BAY,               41.72, N,    83.37, W, BUOY
+45201*,    ERIE ISLANDS,             41.60, N,    82.78, W, BUOY
+45202*,    PORT CLINTON,             41.53, N,    82.94, W, BUOY
+45203*,    HURON,                    41.39, N,    82.51, W, BUOY
+45204*,    SHEFFIELD,                41.51, N,    82.12, W, BUOY
+45205*,    EDGEWATER BEACH,          41.50, N,    81.75, W, BUOY
+45206*,    EUCLID BEACH,             41.59, N,    81.58, W, BUOY
+45207*,    FAIRPORT HARBOR,          41.73, N,    81.37, W, BUOY
+45208*,    ASHTABULA,                41.91, N,    80.81, W, BUOY
+45209*,    SARNIA,                   43.13, N,    82.39, W, BUOY
+45210*,    M LK MICHIGAN,            44.06, N,    87.05, W, BUOY
+45211*,    GRAND ISLAND N,           46.97, N,    86.57, W, BUOY
+46001*,    GULF OF ALASKA,           56.30, N,    148.0, W, BUOY
+46002*,    W OREGON,                 42.57, N,    130.4, W, BUOY
+46005*,    W ASTORIA,                46.01, N,    130.9, W, BUOY
+46006*,    SW ASTORIA,               40.89, N,    137.4, W, BUOY
+46011*,    STA MARIA,                34.87, N,    120.8, W, BUOY
+46012*,    HALF MOON BAY,            37.36, N,    122.8, W, BUOY
+46013*,    BODEGA BAY,               38.24, N,    123.3, W, BUOY
+46014*,    PT ARENA,                 39.20, N,    123.9, W, BUOY
+46015*,    PT ORFORD,                42.75, N,    124.8, W, BUOY
+46022*,    EEL RIVER,                40.75, N,    124.5, W, BUOY
+46023*,    PT ARGUELLO,              34.70, N,    120.9, W, BUOY
+46025*,    STA MONICA,               33.74, N,    119.0, W, BUOY
+46026*,    SAN FRANCISCO,            37.76, N,    122.8, W, BUOY
+46027*,    ST GEORGES,               41.85, N,    124.3, W, BUOY
+46028*,    SAN MARTIN,               35.74, N,    121.8, W, BUOY
+46029*,    COL RIVER BAR,            46.14, N,    124.5, W, BUOY
+46035*,    BERING SEA,               57.07, N,    177.7, W, BUOY
+46041*,    CP ELIZABETH,             47.35, N,    124.7, W, BUOY
+46042*,    MONTEREY BAY,             36.79, N,    122.4, W, BUOY
+46047*,    TANNER BNK,               32.43, N,    119.5, W, BUOY
+46050*,    STONEWALL BNK,            44.64, N,    124.5, W, BUOY
+46053*,    E STA BARBARA,            34.25, N,    119.8, W, BUOY
+46054*,    W STA BARBARA,            34.27, N,    120.4, W, BUOY
+46059*,    CALIFORNIA,               38.03, N,    130.0, W, BUOY
+46060*,    W ORCA BAY,               60.60, N,    146.8, W, BUOY
+46061*,    SEAL ROCKS,               60.23, N,    146.8, W, BUOY
+46066*,    KODIAK,                   52.74, N,    154.9, W, BUOY
+46069*,    S STA ROSA,               33.67, N,    120.2, W, BUOY
+46070*,    SW BERING SEA,            55.00, N,    175.2, E, BUOY
+46071*,    AMCHITKA,                 51.15, N,    179.0, E, BUOY
+46072*,    S ALEUTIANS,              51.63, N,    172.1, W, BUOY
+46073*,    SE BERING,                55.01, N,    171.9, W, BUOY
+46075*,    SHUMAGIN ISLAN,           53.93, N,    160.8, W, BUOY
+46076*,    CAPE CLEARE,              59.50, N,    147.9, W, BUOY
+46077*,    SHELIKOF STR,             57.92, N,    154.2, W, BUOY
+46078*,    ALBATROSS BNK,            56.07, N,    152.5, W, BUOY
+46080*,    KENNEDY ENTR,             58.04, N,    149.9, W, BUOY
+46081*,    W PWS,                    60.79, N,    148.2, W, BUOY
+46082*,    CP SUCKLING,              59.69, N,    143.4, W, BUOY
+46083*,    FAIRWEATHER,              58.25, N,    137.9, W, BUOY
+46084*,    SITKA SND,                56.63, N,    136.1, W, BUOY
+46085*,    C GULF ALASKA,            55.85, N,    142.5, W, BUOY
+46086*,    SAN CLEMENTE,             32.49, N,    118.0, W, BUOY
+46087*,    NEAH BAY,                 48.49, N,    124.7, W, BUOY
+46088*,    NEW DUNGENESS,            48.33, N,    123.1, W, BUOY
+46089*,    TILLAMOOK,                45.89, N,    125.8, W, BUOY
+46105*,    S COOK INL,               59.05, N,    152.2, W, BUOY
+46106*,    C COOK INL,               59.76, N,    152.0, W, BUOY
+46107*,    MONTAGUE STR,             59.93, N,    147.9, W, BUOY
+51000*,    N HAWAII,                 23.55, N,    154.0, W, BUOY
+51001*,    NW HAWAII,                23.45, N,    162.2, W, BUOY
+51002*,    SW HAWAII,                17.09, N,    157.8, W, BUOY
+51003*,    W HAWAII,                 19.09, N,    160.6, W, BUOY
+51004*,    SE HAWAII,                17.53, N,    152.3, W, BUOY
+51100*,    N HAWAII,                 23.56, N,    153.9, W, BUOY
+51101*,    NW HAWAII,                24.32, N,    162.0, W, BUOY
+0Y2W3*,    STURGEON BAY CG,          44.79, N,    87.31, W, LAND
+18CI3*,    MICHIGAN CITY CG,         41.73, N,    86.91, W, LAND
+18CY3*,    Michigan CITY CR,         41.73, N,    86.91, W, LAND
+20CM4*,    ST JOSEPH CG,             42.09, N,    86.49, W, LAND
+ABAN6 ,    ALEXANDRIA BAY NY    ,    44.33, N,    75.93, W, LAND
+AGCM4*,    ALGONAC,                  42.62, N,    82.53, W, LAND
+AGMW3*,    ALGOMA CITY MARINA,       44.61, N,    87.43, W, LAND
+AMAA2*,    EAST AMATULI ISLAND L,    58.92, N,    151.9, W, LAND
+APNM4*,    ALPENA,                   45.06, N,    83.42, W, LAND
+ASBO1*,    ASHTABULA,                41.92,N,     80.8,  W, LAND
+AUGA2*,    AUGUSTINE ISLAND AK  ,    59.38, N,    153.3, W, LAND
+ALXN6*,    ALEXANDRIA BAY,           44.33, N,    75.93, W, LAND
+BARN6*,    BARCELONA HARBOR,         42.35, N,    79.60, W, LAND
+BHRI3*,    BURNS HARBOR,             41.64, N,    87.14, W, LAND
+BLIA2*,    BLIGH REEF LIGHT AK  ,    60.84, N,    146.8, W, LAND
+BIGM4*,    BIG BAY,                  46.83, N,    87.73, W, LAND
+BSBM4*,    BIG SABLE POINT,          44.06, N,    86.51, W, LAND
+BUFN6*,     BUFFALO,                 42.88, N,    78.89, W, LAND
+BURL1*,    SOUTHWEST PASS LA    ,    28.91, N,    89.43, W, LAND
+BUZM3*,    BUZZARDS BAY MA      ,    41.40, N,    71.03, W, LAND
+CARO3*,    CAPE ARAGO OR        ,    43.34, N,    124.3, W, LAND
+CBLO1*,    CONNEAUT BREAKWATER,      41.98, N,    80.56, W, LAND
+CBRW3*,    CHAMBERS ISLAND,          45.20, N,    87.36, W, LAND
+CDRF1*,    CEDAR KEY FL         ,    29.14, N,    83.03, W, LAND
+CHII2*,    HARRISON DEVER CRIB,      41.92, N,    87.57, W, LAND
+CHLV2*,    CHESAPEAKE LIGHT VA  ,    36.91, N,    75.71, W, LAND
+CLKN7*,    CAPE LOOKOUT NC      ,    34.62, N,    76.53, W, LAND
+CLSM4*,    ST CLAIR SHORES,          42.47, N,    82.88, W, LAND
+CMPO1*,    CAMP PERRY,               41.55, N,    83.02, W, LAND
+CMTI2*,    CALUMET HARBOR,           41.73, N,    87.54, W, LAND
+CNDO1*,    CLEVELAND,                41.54, N,    81.64, W, LAND
+CNII2*,    NORTHERLY ISLE,           41.86, N,    87.61, W, LAND
+CWCI*,     CARIBOU ISLAND,           47.33, N,    85.83, W, LAND
+CYGM4*,    CHEBOYGAN MARINA,         45.66, N,    84.46, W, LAND
+DBLN6*,    DUNKIRK NY           ,    42.49, N,    79.35, W, LAND
+DESW1*,    DESTRUCTION ISLAND WA,    47.68, N,    124.4, W, LAND
+DISW3*,    DEVILS ISLAND WI     ,    47.08, N,    90.73, W, LAND
+DPIA1*,    DAUPHIN ISLAND AL    ,    30.25, N,    88.07, W, LAND
+DRFA2*,    DRIFT RIVER TERMINAL ,    60.55, N,    152.1, W, LAND
+DTLM4*,    DE TOUR VILLAGE,          45.99, N,    83.90, W, LAND
+DULM5*,    DULUTH,                   46.78, N,    92.09, W, LAND
+EREP1*,    ERIE,                     42.17, N,    80.10, W, LAND
+FAIO1*,    FAIRPORT,                 41.76, N,    81.28, W, LAND
+FBIS1*,    FOLLY ISLAND SC      ,    32.69, N,    79.89, W, LAND
+FFIA2*,    FIVE FINGERS AK      ,    57.27, N,    133.6, W, LAND
+FILA2*,    FLAT ISLAND LIGHT    ,    59.33, N,    152.0, W, LAND
+FPTM4*,    FAIRPORT,                 45.61, N,    86.66, W, LAND
+FSTI2*,    FOSTER AVE,               41.98, N,    87.65, W, LAND
+FTGM4*,    FORT GRATIOT,             43.00, N,    82.42, W, LAND
+FWYF1*,    FOWEY ROCK FL        ,    25.59, N,    80.10, W, LAND
+GBLW3*,    GREEN BAY ENTERANCE,      44.65, N,    87.90, W, LAND
+GBWW3*,    GREEN BAY WEST,           44.54, N,    88.00, W, LAND
+GDMM5*,    GRAND MARIAS,             47.75, N,    90.34, W, LAND
+GELO1*,    GENEVA ON THE LAKE,       41.86, N,    80.98, W, LAND
+GRMM4*,    GRAND MARIAS NWSCR,       46.68, N,    85.97, W, LAND
+GSLM4*,    GRAVELLY SHOAL LIGHT,     44.02, N,    83.54, W, LAND
+GTLM4*,    GRAND TRAVERSE LIGHT,     45.21, N,    85.55, W, LAND
+GTRM4*,    SUPERIOR GRAND TRAVERSE,  47.18, N,    88.24, W, LAND
+HHLO1*,    HURON HARBOR LIGHT,       41.40, N,    82.55, W, LAND
+HLNM4*,    HOLLAND,                  42.77, N,    86.21, W, LAND
+HRBM4*,    HARBOR BEACH,             43.85, N,    82.64, W, LAND
+IOSN3*,    ISLE OF SHOALS NH    ,    42.97, N,    70.62, W, LAND
+JAKI2*,    63RD STREET,              41.78, N,    87.57, W, LAND
+KGNA*,     BAY OF GRAND MARIAS,      47.75, N,    90.35, W, LAND
+KNSW3*,    KENOSHA LIGHT,            42.59, N,    87.81, W, LAND
+KP53*,     MUNISING LAKESHORE,       46.42, N,    86.65, W, LAND
+KP58*,     PORT HOPE,                44.02, N,    82.80, W, LAND
+KP59*,     COPPER HARBOR,            47.47, N,    87.88, W, LAND
+KWNW3*,    KEWAUNEE MET,             44.47, N,    87.50, W, LAND
+KTNF1*,    KEATON BEACH FL      ,    29.82, N,    83.59, W, LAND
+LDTM4*,    LUDINGTON,                43.95, N,    86.44, W, LAND
+LKWF1*,    LAKEWORTH FL         ,    26.61, N,    80.03, W, LAND
+LONF1*,    LONG KEY FL          ,    24.84, N,    80.86, W, LAND
+LORO1*,    LORAIN HARBOR,            41.48, N,    82.20, W, LAND
+LPNM4*,    ALPENA,                   45.06, N,    83.43, W, LAND
+LSCM4 ,    LAKE ST. CLAIR       ,    42.47, N,    82.76, W, LAND
+LTRM4*,    LITTLE RAPIDS,            46.49, N,    84.30, W, LAND
+MACM4*,    MACKINAC CITY,            45.78, N,    84.72, W, LAND
+MBRM4*,    MOUTH OF THE BLACK RIVER, 42.98, N,    82.42, W, LAND
+MCGM4*,    MARQUETTE,                46.55, N,    87.38, W, LAND
+MCYI3*,    MICHIGAN CITY,            41.73, N,    86.91, W, LAND
+MDRM1*,    MT DESERT ROCK ME    ,    43.97, N,    68.13, W, LAND
+MEEM4*,    MANISTEE HARBOR,          44.25, N,    86.34, W, LAND
+MISM1*,    MATINICUS ROCK ME    ,    43.78, N,    68.86, W, LAND
+MKGM4*,    MUSKEGON,                 43.23, N,    86.34, W, LAND
+MLRF1*,    MOLASSES REEF FL     ,    25.01, N,    80.38, W, LAND
+MLWW3*,    PORT OF MILWAUKEE,        43.01, N,    87.88, W, LAND
+MNMM4*,    MENOMINEE,                45.10, N,    87.59, W, LAND
+MRHO1*,    MARBLEHEAD,               41.54, N,    82.73, W, LAND
+MRKA2*,    MIDDLE ROCK LIGHT AK ,    61.08, N,    146.6, W, LAND
+NABM4*,    NAUBINWAY,                46.09, N,    85.44, W, LAND
+NIAN6*,    NIAGARA INTAKE,           43.08, N,    79.01, W, LAND
+NPDW3*,    NORTHPORT PIER,           45.29, N,    86.98, W, LAND
+NREP1*,    NORTHEAST MARINA,         42.26, N,    79.79, W, LAND
+NWPO3*,    NEWPORT OR           ,    44.61, N,    124.0, W, LAND
+OBGN6*,    OGDENSBURG,               44.70, N,    75.49, W, LAND
+OKSI2*,    OAK STREET,               41.91, N,    87.62, W, LAND
+OLCN6*,    OLCOTT HARBOR,            43.34, N,    78.72, W, LAND
+OSGN6*,    OSWEGO,                   43.46, N,    76.51, W, LAND
+OTNM4*,    ONTONAGON,                46.87, N,    89.33, W, LAND
+PBWM4*,    PT HURON BLUE WTR BRDG,   43.00, N,    82.42, W, LAND
+PCLM4*,    PORTAGE CANAL,            47.28, N,    88.53, W, LAND
+PILA2*,    PILOT ROCK AK        ,    59.74, N,    149.4, W, LAND
+PILM4*,    PASSAGE ISLAND MI    ,    48.22, N,    88.37, W, LAND
+PLSF1*,    POLASKI SHOALS FL    ,    24.69, N,    82.77, W, LAND
+PNLM4*,    PORT INLAND,              45.97, N,    85.87, W, LAND
+POTA2*,    POTATO POINT AK      ,    61.06, N,    146.7, W, LAND
+PRIM4*,    PRESQUE ISLE,             45.36, N,    83.49, W, LAND
+PSCM4*,    PORT SANILAC,             43.42, N,    82.54, W, LAND
+PSTN6*,     STURGEON POINT,           42.69, N,    79.05, W, LAN
+PTAC1*,    POINT ARENA CA       ,    38.96, N,    123.7, W, LAND
+PTAT2*,    PORT ARANSAS TX      ,    27.83, N,    97.05, W, LAND
+PTGC1*,    POINT ARGUELLO CA    ,    34.58, N,    120.6, W, LAND
+PTIM4*,    POINT IROQUOIS,           46.49, N,    84.63, W, LAND
+PWAW3*,    PORT WASHINGTON,          43.39, N,    87.87, W, LAND
+RCKM4*,    ROCK CUT,                 46.26, N,    84.19, W, LAND
+RCRN6*,    ROCHESTER,                43.27, N,    77.63, W, LAND
+ROAM4*,    ROCK OF AGES MI      ,    47.87, N,    89.31, W, LAND
+RPRN6*,    ROCHESTER CG,             43.26, N,    77.60, W, LAND
+SANF1*,    SAND KEY FL          ,    24.45, N,    81.88, W, LAND
+SAUF1*,    ST. AUGUSTINE FL     ,    29.86, N,    81.27, W, LAND
+SBIO1*,    SOUTH BASS ISLAND OH ,    41.63, N,    82.84, W, LAND
+SBLM4*,    SAGINAW BAY LIGHT,        43.81, N,    83.72, W, LAND
+SGNW3*,    SHEBOYGAN WI         ,    43.75, N,    87.69, W, LAND
+SGOF1*,    ST. GEORGE OFFSHORE  ,    29.41, N,    84.86, W, LAND
+SISW1*,    SMITH ISLAND WA      ,    48.32, N,    122.8, W, LAND
+SJOM4*,    ST JOSEPH,                42.10, N,    86.49, W, LAND
+SLVM5*,    SILVER BAY,               47.28, N,    91.27, N, LAND
+SMKF1*,    SOMBRERO KEY FL      ,    24.63, N,    81.11, W, LAND
+SPTM4*,    STURGEON POINT NWSCR,     44.71, N,    83.27, W, LAND
+SPGF1*,    SETTLEMENT PT GBI    ,    26.70, N,    78.99, W, LAND
+SRLM4*,    SPECTACLE REEF,           45.77, N,    84.14, W, LAND
+SRST2*,    SABINE TX            ,    29.68, N,    94.03, W, LAND
+STDM4*,    STANNARD ROCK MI     ,    47.18, N,    87.23, W, LAND
+SUPN6 ,    SUPERIOR SHOALS NY   ,    44.47, N,    75.80, W, LAND
+SVNM4*,    SOUTH HAVEN,              42.40, N,    86.29, W, LAND
+SWPM4*,    SOUTHWEST PIER,           46.50, N,    84.37, W, LAND
+SXHW3*,    SAXON HARBOR,             46.56, N,    90.43, W, LAND
+TAWM4*,    TAWAS POINT,              44.25, N,    83.45, W, LAND
+TBIM4*,    THUNDER BAY ISLAND,       45.04, N,    83.19, W, LAND
+SYWW3*,    YACHT WORKS SISTER BAY,   45.20, N,    87.12, W, LAND
+THIN6 ,    THOUSAND ISL. NY     ,    44.30, N,    75.98, W, LAND
+THLO1*,    TOLEDO LIGHT 2,           41.83, N,    83.19, W, LAND
+THRO1*,    TOLEDO,                   41.69, N,    83.47, W, LAND
+TPLM2*,    THOMAS POINT MD      ,    38.90, N,    76.44, W, LAND
+TTIW1*,    TATOOSH ISLAND WA    ,    48.39, N,    124.7, W, LAND
+TWC01*,    TOLEDO CRIB,              41.70, N,    83.26, W, LAND
+VENF1*,    VENICE FL            ,    27.07, N,    82.45, W, LAND
+VRMO1*,    VERMILLION RIVER,         41.43, N,    82.36, W, LAND
+WCRP1*,    WALNUT CREEK MARINA,      42.08, N,    80.24, W, LAND
+WFPM4*,    WHITEFISH POINT,          46.76, N,    84.97, W, LAND
+WHRI2*,    WAUKEGAN HARBOR,          42.36, N,    87.81, W, LAND
+WPOW1*,    WEST POINT WA        ,    47.66, N,    122.4, W, LAND
+WSLM4*,    WHITE SHOAL LIGHT,        45.84, N,    85.14, W, LAND
+YGNN6*,    NIAGARA CG STATION,       43.26, N,    79.06, W, LAND
