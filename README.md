@@ -120,7 +120,8 @@ or for a hodograph-only plot...
 ## CITING SOUNDERPY
 in AMS format:
 
-- Kyle J. Gillett, 2023: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 2.1.0). Py-Pi, https://pypi.org/project/sounderpy/
+- Gillett, K., 2023: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 2.1.0). Py-Pi, https://pypi.org/project/sounderpy/
+
 ------
 
 
