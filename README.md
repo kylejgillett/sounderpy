@@ -1,4 +1,4 @@
-# SOUNDERPY DOCUMENTATION 
+# SOUNDERPY | Vertical Profile Data Retrieval and Analysis Tool For Python
   > LATEST VERSION: v2.0.4 |  RELEASED: August 6, 2023  |  COPYRIGHT Kyle J Gillett, 2023
 
 <div align="center">
