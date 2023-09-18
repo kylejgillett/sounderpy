@@ -1,10 +1,8 @@
-# SOUNDERPY | Vertical Profile Data Retrieval and Analysis Tool For Python
-  > LATEST VERSION: v2.0.4 |  RELEASED: August 6, 2023  |  COPYRIGHT Kyle J Gillett, 2023
-
 <div align="center">
 <img src="https://github.com/kylejgillett/sounderpy/assets/100786530/2e9477c9-e36a-4163-accb-fe46780058dd" width="250">
 
-## WELCOME! thank you for visiting SounderPy!
+# SOUNDERPY | Vertical Profile Data Retrieval and Analysis Tool For Python
+LATEST VERSION: v2.0.4 |  RELEASED: August 6, 2023  |  COPYRIGHT Kyle J Gillett, 2023
 ### [VISIT SOUNDERPY DOCUMENTATION HERE](https://github.com/kylejgillett/sounderpy/wiki)
 #### [CHECK OUT AN EXAMPLE NOTEBOOK](https://github.com/kylejgillett/sounderpy/blob/main/examples/sounderpy_tutorial.ipynb)
 This script is used to access vertical profile data for calculations or plotting of a vertical profile (sounding). 
