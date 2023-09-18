@@ -35,8 +35,11 @@ This script is used to access vertical profile data for calculations or plotting
 - Iowa State University's RAOB archive [1945-present, depending on station]
 - The IGRAv2 Observed profile archive [1905-present, depending on station]
 - Iowa State University's BUFKIT archive [2011-present, depending on station & model]
-- Penn State University's BUFKIT archive [most-recent run, depending on station & model]
+- Penn State University's BUFKIT archive [most recent run, depending on station & model]
 - UNIDATA THREDDS TDS RAP-most-recent-analysis [now, most recent analysis only]
+- OU Aircraft Communications, Addressing and Reporting System (ACARS) [2019-present]
+- NCEP FNL 0.25deg Gridded Reanalysis Dataset [2021-present]
+
 
 ## Why SounderPy?
 - Sometimes data is tough to find, and often times is even tougher to get it in the format you like. SounderPy gets you this data!
@@ -47,6 +50,7 @@ This script is used to access vertical profile data for calculations or plotting
 ## How to use SounderPy:
 1. Make sure your environment has the required dependencies:
    - cdsapi>=0.6.1
+   - ecape>0.0.0
    - matplotlib>=3.3.0, <=3.7.1
    - metpy>=1.5.1
    - netcdf4>=1.6.4
@@ -64,12 +68,12 @@ This script is used to access vertical profile data for calculations or plotting
    import sounderpy as spy
    ```
 4. ```
-   year  = '2011'
+   year  = '2011' 
    month = '04'
    day   = '27'
    hour  = '22'
    latlon = [33.19, -87.46]
-   method = 'rap'
+   method = 'rap' 
    ```
 5. ```
    raw_data = spy.get_model_data(method, latlon, year, month, day, hour)
@@ -78,29 +82,50 @@ This script is used to access vertical profile data for calculations or plotting
    clean_data = spy.parse_data(raw_data)
    ```
 ------
-  and boom! Now you have a callable dictionary of vertical profile data including... 
+  and boom! Now you have a callable dictionary of vertical profile reanalysis data including... 
+  
 1. Temperature
 2. Dewpoint
 3. Relative Humidity
 4. Pressure
 5. Height 
-6. Height AGL
-7. Vertical Velocity
-8. U-component Wind 
-9. V-component Wind
+6. Vertical Velocity
+7. U-component Wind 
+8. V-component Wind
 
-You can make a quick plot of the data using built-in MetPy plotting functions!, just call...
+
+You can make a quick sounding plot of the data using built-in MetPy plotting functions! Just call...
 `spy.metpy_sounding(clean_data)`
 <div align="center">
-<img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/example_RAP_0427201122z.png" width="600">
+<img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_v2-1-0_example-sounding.png" width="600">
 </div>
+
+
+or for a hodograph-only plot...
+
+`spy.metpy_hodograph(clean_data)`
+
+
+<div align="center">
+<img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_v2-1-0_example-hodograph.png" width="600">
+</div>
+
 
 
 ## AUTHORS AND CONTRIBUTORS
 ### AUTHOR: Kyle J Gillett 
 ##### CONTRIBUTOR: Scott Thomas 
-
 ------
+
+
+
+## CITING SOUNDERPY
+in AMS format:
+
+- Kyle J. Gillett, 2023: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 2.1.0). Py-Pi, https://pypi.org/project/sounderpy/
+------
+
+
 
 ## REFERENCES
 - Harris, C.R., Millman, K.J., van der Walt, S.J. et al. Array programming with NumPy. Nature 585, 357–362 (2020). DOI: 10.1038/s41586-020-2649-2.
