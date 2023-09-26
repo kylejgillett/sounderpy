@@ -5,7 +5,7 @@
 LATEST VERSION: v2.0.4 |  RELEASED: August 6, 2023  |  COPYRIGHT Kyle J Gillett, 2023
 ### [VISIT SOUNDERPY DOCUMENTATION HERE](https://github.com/kylejgillett/sounderpy/wiki)
 #### [CHECK OUT AN EXAMPLE NOTEBOOK](https://github.com/kylejgillett/sounderpy/blob/main/examples/sounderpy_tutorial.ipynb)
-This script is used to access vertical profile data for calculations or plotting of a vertical profile (sounding). 
+A python package that helps you to access and plot vertical profile data for meteorological analysis 
 
 [![PyPI Package](https://img.shields.io/pypi/v/sounderpy.svg)](https://pypi.python.org/pypi/sounderpy/)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/sounderpy.svg)](https://pypi.python.org/pypi/sounderpy/)
