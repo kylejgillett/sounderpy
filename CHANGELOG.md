@@ -2,9 +2,9 @@
 # SounderPy Change Log
 All notable changes to this project will be documented in this file.
 
-## [2.1.0] - UPCOMING RELEASE | 2023-09-29 - Release #3
+## [2.0.5] - LATEST RELEASE | 2023-09-29 - Release #3
  
-SounderPy v2.1.0 will feature a number of new tools, improvements to existing functionality, and a few bug fixes from v2.0.4. 
+SounderPy v2.0.5 will feature a number of new tools, improvements to existing functionality, and a few bug fixes from v2.0.4. 
  
 ### New Features
 - Access to Aircraft Communications, Addressing and Reporting System (ACARS) vertical profile data with `acars_data()`
@@ -66,6 +66,8 @@ The initial release of SounderPy
  
 
 ## All Releases
+- [sounderpy-2.0.5](https://pypi.org/project/sounderpy/2.0.5/)
+  Major: new functions, improved existing functionality, repaired minor bugs
 - [sounderpy-2.0.4](https://pypi.org/project/sounderpy/2.0.4/)
   Major: new functions, improved existing functionality, repaired minor bugs
 - [sounderpy-1.0.0](https://pypi.org/project/sounderpy/1.0.0/)
