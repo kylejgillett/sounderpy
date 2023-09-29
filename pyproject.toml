@@ -4,12 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sounderpy"
-version = "2.0.4"
+version = "2.0.5"
 authors = [
-  { name="Kyle J Gillett", email="gille3kj@cmich.edu" },
+  { name="Kyle J Gillett, Central Michigan University", email="kjgillett10@gmail.com" },
 ]
-description = "VERTICAL PROFILE DATA RETRIEVAL TOOL"
+description = "VERTICAL PROFILE DATA RETRIEVAL TOOL FOR PYTHON"
 readme = "README.md"
+keywords = ["meteorology", "science", "data-analysis", "weather", "forecasting"]
 requires-python = ">=3.1"
 classifiers = [
     "Programming Language :: Python",
@@ -23,6 +24,7 @@ classifiers = [
 ]
 dependencies = [
 	"cdsapi>=0.6.1",
+	"ecape>=0.1.1",
 	"matplotlib>=3.3.0, <=3.7.1",
 	"metpy>=1.5.1",
 	"netcdf4>=1.6.4",
@@ -31,9 +33,9 @@ dependencies = [
 	"siphon>=0.9",
 	"scipy>= 1.10.1",
 	"xarray>=0.18.0",
-
 ]
 
 [project.urls]
 "Homepage" = "https://github.com/kylejgillett/sounderpy/tree/main"
 "Documentation" = "https://github.com/kylejgillett/sounderpy/wiki"
+"My Website" = "https://kylegillettwx.wordpress.com/"
