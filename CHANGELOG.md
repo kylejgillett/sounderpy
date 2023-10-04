@@ -2,7 +2,19 @@
 # SounderPy Change Log
 All notable changes to this project will be documented in this file.
 
-## [2.0.5] - LATEST RELEASE | 2023-09-29 - Release #3
+## [2.0.6] - LATEST RELEASE | 2023-10-04 - Release #4
+ 
+SounderPy v2.0.6 will feature a few bug fixes to the plotting functions from v2.0.5. 
+ 
+### Fixed
+  - Erroneous dewpoint data from the NCEP-FNL and BUFKIT archived forecasts have been removed. I.e., bad data (considered less than -130C in this case) are set to nans to improve calculations.
+  - MetPy CAPE/CIN calculations were changed from MetPy's `surface_based_cape_cin()` to MetPy's `cape_cin()` which seems to both perform better and handle possibly erroneous data better. This was done for SB, ML & MU CAPE/CIN.
+  - An improved way to set the temperature axis bounds was created to ensure that the profile plots somewhat in the 'middle' of the skew-t for the best possible readability.
+
+-----
+
+
+## [2.0.5] - 2023-09-29 - Release #3
  
 SounderPy v2.0.5 will feature a number of new tools, improvements to existing functionality, and a few bug fixes from v2.0.4. 
  
@@ -66,6 +78,8 @@ The initial release of SounderPy
  
 
 ## All Releases
+- [sounderpy-2.0.6](https://pypi.org/project/sounderpy/2.0.6/)
+  Minor: bug fixes to plotting functions from v2.0.5
 - [sounderpy-2.0.5](https://pypi.org/project/sounderpy/2.0.5/)
   Major: new functions, improved existing functionality, repaired minor bugs
 - [sounderpy-2.0.4](https://pypi.org/project/sounderpy/2.0.4/)
