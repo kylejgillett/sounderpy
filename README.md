@@ -87,15 +87,14 @@ A Python package that helps you to access and plot vertical profile data for met
 3. Relative Humidity
 4. Pressure
 5. Height 
-6. Vertical Velocity
-7. U-component Wind 
-8. V-component Wind
+6. U-component Wind 
+7. V-component Wind
 
 
 You can make a quick sounding plot of the data using built-in MetPy plotting functions! Just call...
 `spy.metpy_sounding(clean_data)`
 <div align="center">
-<img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_v2-1-0_example-sounding.png" width="600">
+<img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_v2-0-6_example-sounding.png" width="600">
 </div>
 
 
@@ -105,7 +104,7 @@ or for a hodograph-only plot...
 
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_v2-1-0_example-hodograph.png" width="600">
+<img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_v2-0-6_example-hodograph.png" width="600">
 </div>
 
 ------
