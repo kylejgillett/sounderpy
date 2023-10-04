@@ -49,7 +49,7 @@ from siphon.simplewebservice.igra2 import IGRAUpperAir
         
         RELEASE
         -------
-        Version: 2.0.5 | Sept. 29th, 2023
+        Version: 2.0.6 | Oct. 4, 2023
         
         DOCUMENTATION
         -------
@@ -65,9 +65,9 @@ from siphon.simplewebservice.igra2 import IGRAUpperAir
 
 citation_text = f"""
 ## ------------------ VERTICAL PROFILE DATA RETRIEVAL TOOL ------------------------ ##
-##                   v2.0.5 | Sept 2023 | By Kyle J Gillett                         ##
+##                    v2.0.6 | Oct 2023 | By Kyle J Gillett                         ##
 ##        RAOB, IGRA, RAP, RUC, NCEP, ERA5, RAP-ANALYSIS, BUFKIT & ACARS DATA       ##
-## -------------------- THANK YOU FOR USING THIS PACKAGE -------------------------- ##
+## -------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------- ##
 """
 print(citation_text)
 
@@ -1294,6 +1294,11 @@ class acars_data:
 
 
 
+
+
+
+
+
 ### METPY_SOUNDING() FUNCTION ###                                                            
 #########################################################################################################
 
@@ -1311,6 +1316,13 @@ def __metpy_sounding(clean_data):
 
     print(f'> SOUNDING PLOTTER FUNCTION --\n---------------------------------')
     
+    # DEFINE find_nearest FUNCTION ----------------------------------------------- 
+    def find_nearest(array, value):
+        array = np.asarray(array)
+        nearest_idx = (np.abs(array - value)).argmin()
+        return nearest_idx
+    
+    
     # declare basic variables
     p = clean_data['p']
     T = clean_data['T']
@@ -1318,7 +1330,9 @@ def __metpy_sounding(clean_data):
     z = clean_data['z']
     u = clean_data['u']
     v = clean_data['v'] 
-
+    
+    Td[Td < -120*units.degC] = np.nan
+    
     # ADD A SIMPLE PLOT TITLE---------------------------------------------------
     top_title = f"{clean_data['site_info']['source']}"
 
@@ -1341,25 +1355,22 @@ def __metpy_sounding(clean_data):
         right_title = f"{clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]}" 
 
 
-
-    # DEFINE find_nearest FUNCTION ----------------------------------------------- 
-    def find_nearest(array, value):
-        array = np.asarray(array)
-        nearest_idx = (np.abs(array - value)).argmin()
-        return nearest_idx
-
     # CREATE THE METPY SKEWT FIGURE ----------------------------------------------- 
     fig = plt.figure(figsize=(18,12))                             
-    skew = SkewT(fig, rotation=45, rect=(0.05, 0.05, 0.50, 0.90)) 
+    skew = SkewT(fig, rotation=43, rect=(0, 0, 0.6, 1)) 
     # Change to adjust data limits and give it a semblance of what we want
+    skew.ax.set_box_aspect(1)
     skew.ax.set_adjustable('datalim')
-    skew.ax.set_ylim(1050, 100)
-    # set temperature limits based on the temperature 
-    mean_T = np.mean(T.m[0:find_nearest(p.m, 150)])
-    if mean_T >= 10:
-        skew.ax.set_xlim(mean_T - 35, mean_T + 35)
+    skew.ax.set_ylim(1050, 100)    
+    if T[0].m <= -10:
+        bounds = [-42, 42]
+        if T[0].m <= -20:
+            bounds = [-52, 32]
+    elif T[0].m >= 20:
+        bounds = [-22, 62]
     else: 
-        skew.ax.set_xlim(mean_T - 15, mean_T + 55)
+        bounds = [-32, 52]
+    skew.ax.set_xlim(bounds[0], bounds[1])    
     # Set some better labels than the default to increase readability
     skew.ax.set_xlabel(str.upper(f'Temperature ({T.units:~P})'), weight='bold')
     skew.ax.set_ylabel(str.upper(f'Pressure ({p.units:~P})'), weight='bold')
@@ -1370,7 +1381,7 @@ def __metpy_sounding(clean_data):
     # shaded isotherm pattern. 
     x1 = np.linspace(-100, 40, 8)                                                          
     x2 = np.linspace(-90, 50, 8)                                                         
-    y = [1500, 50]                                                                      
+    y = [1100, 50]                                                                      
     for i in range(0, 8):              
         skew.shade_area(y=y, x1=x1[i], x2=x2[i], color='gray', alpha=0.02, zorder=1)   
 
@@ -1415,19 +1426,19 @@ def __metpy_sounding(clean_data):
     # PARCEL PROPERTIES --------------------------------------------------------------
     # Calculate full parcel profile and add to plot as black line
     # mixed layer parcel properties!
-    ml_t, ml_td = mpcalc.mixed_layer(p, T, Td, depth=100 * units.hPa)
-    ml_p, _, _ = mpcalc.mixed_parcel(p, T, Td, depth=100 * units.hPa)
+    ml_t, ml_td = mpcalc.mixed_layer(p, T, Td)
+    ml_p, _, _ = mpcalc.mixed_parcel(p, T, Td)
     # most unstable parcel properties!
-    mu_p, mu_t, mu_td, _ = mpcalc.most_unstable_parcel(p, T, Td, depth=100 * units.hPa)
+    mu_p, mu_t, mu_td, _ = mpcalc.most_unstable_parcel(p, T, Td)
     # Compute parcel profiles
     sb_prof = mpcalc.parcel_profile(p, T[0], Td[0]).to('degC')
     mu_prof = mpcalc.parcel_profile(p, mu_t, mu_td).to('degC')
     ml_prof = mpcalc.parcel_profile(p, ml_t, ml_td).to('degC')
     # compute CAPE & CIN
-    mucape, mucin = mpcalc.most_unstable_cape_cin(p, T, Td, depth=50 * units.hPa)
-    mlcape, mlcin = mpcalc.mixed_layer_cape_cin(p, T, ml_prof, depth=100 * units.hPa)
-    sbcape, sbcin = mpcalc.surface_based_cape_cin(p, T, Td)
-
+    mlcape, mlcin = mpcalc.cape_cin(p, T, Td, ml_prof, which_lfc='bottom', which_el='top')
+    mucape, mucin = mpcalc.cape_cin(p, T, Td, mu_prof, which_lfc='bottom', which_el='top')
+    sbcape, sbcin = mpcalc.cape_cin(p, T, Td, sb_prof, which_lfc='bottom', which_el='top')
+    
     try: 
         q = mpcalc.specific_humidity_from_dewpoint(p, Td)
         ecape = int(calc_ecape(z, p, T, q, u, v, 'most_unstable').m)
@@ -1451,15 +1462,15 @@ def __metpy_sounding(clean_data):
 
     # PLOT PARCEL-RELATED 'LEVELS' & SHADE CAPE/CIN ---------------------------------
     # always plot LCL
-    plt.text((0.87), (lcl_pressure), "←LCL", weight='bold',color='gray',             
-             alpha=0.9, fontsize=11, transform=skew.ax.get_yaxis_transform())
+    plt.text((0.84), (lcl_pressure), "←LCL", weight='bold',color='gray',             
+             alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform())
 
     # only plot LFC, EL, SB trace, & CAPE shade when SBCAPE is > 10
     if sbcape.m > 10:
-        plt.text((0.87), (lfc_pressure), "←LFC", weight='bold',color='gray',          
-                 alpha=0.9, fontsize=11, transform=skew.ax.get_yaxis_transform())
-        plt.text((0.87), (el_pressure), "←EL", weight='bold',color='gray',             
-                 alpha=0.9, fontsize=11, transform=skew.ax.get_yaxis_transform())
+        plt.text((0.84), (lfc_pressure), "←LFC", weight='bold',color='gray',          
+                 alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform())
+        plt.text((0.84), (el_pressure), "←EL", weight='bold',color='gray',             
+                 alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform())
         skew.plot(p, sb_prof, 'red', linewidth=2, ls='--', alpha=0.6, label='SB PARCEL PATH')
         # Shade areas of CAPE and CIN
         skew.shade_cin(p, T, sb_prof, Td, alpha=0.2, label='SBCIN')
@@ -1484,11 +1495,11 @@ def __metpy_sounding(clean_data):
     T_degF = np.round(T.to(units.degF), 1)
     T_degF_label = '{}°F'.format(int(T_degF[0].magnitude))                             
     plt.annotate(T_degF_label, (T[0], p[0]), textcoords="offset points", xytext=(16,-15),
-                     fontsize=11, color='red', weight='bold', alpha=0.7, ha='center')   
+                     fontsize=15, color='red', weight='bold', alpha=0.7, ha='center')   
     Td_degF = np.round(Td.to(units.degF), 1) 
     Td_degF_label = '{}°F'.format(int(Td_degF[0].magnitude))                             
     plt.annotate(Td_degF_label,(Td[0], p[0]),textcoords="offset points",xytext=(-16,-15), 
-                     fontsize=11, color='green', weight='bold', alpha=0.7, ha='center') 
+                     fontsize=15, color='green', weight='bold', alpha=0.7, ha='center') 
 
 
     # FREEZING POINT ANNOTATION -----------------------------------------------------
@@ -1499,8 +1510,8 @@ def __metpy_sounding(clean_data):
         frz_pt_p = p[frz_pt_index]     
         frz_pt_z = z[frz_pt_index]  
         if frz_pt_z >= 50*units.m:                                                       
-            plt.text((0.87), (frz_pt_p), "←FRZ", weight='bold',color='blue',           
-                     alpha=0.3, fontsize=11, transform=skew.ax.get_yaxis_transform())
+            plt.text((0.84), (frz_pt_p), "←FRZ", weight='bold',color='blue',           
+                     alpha=0.3, fontsize=15, transform=skew.ax.get_yaxis_transform())
     except:
         pass
 
@@ -1549,8 +1560,8 @@ def __metpy_sounding(clean_data):
        
 
     # then we can create the metpy Hodograph
-    hodo_ax = plt.axes((0.48, 0.45, 0.5, 0.5))
-    h = Hodograph(hodo_ax, component_range=80.)
+    hodo_ax = plt.axes((0.52, 0.45, 0.5, 0.5))
+    h = Hodograph(hodo_ax, component_range=160.)
 
     # Add two seperate grid increments for a cooler look. This also
     # helps to increase readability
@@ -1581,20 +1592,20 @@ def __metpy_sounding(clean_data):
     # of the hodograph plot to increase readability! 
     plt.xticks(np.arange(0,0,1))
     plt.yticks(np.arange(0,0,1))
-    for i in range(10,120,10):
-        h.ax.annotate(str(i),(i,0),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=10,weight='bold',alpha=0.3,zorder=0)
-    for i in range(10,120,10):
-        h.ax.annotate(str(i),(0,i),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=10,weight='bold',alpha=0.3,zorder=0)
-    for i in range(10,120,10):
-        h.ax.annotate(str(i),(-i,0),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=10,weight='bold',alpha=0.3,zorder=0)
-    for i in range(10,120,10):
-        h.ax.annotate(str(i),(0,-i),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=10,weight='bold',alpha=0.3,zorder=0)
+    for i in range(10,130,10):
+        h.ax.annotate(str(i),(i,0),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0)
+    for i in range(10,130,10):
+        h.ax.annotate(str(i),(0,i),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0)
+    for i in range(10,130,10):
+        h.ax.annotate(str(i),(-i,0),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0)
+    for i in range(10,130,10):
+        h.ax.annotate(str(i),(0,-i),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0)
 
 
-    every = int(len(z)/2)
+    every = int(len(z)/3)
     for zi, ui, vi in zip(z_hodo[2 :: every], u_hodo[2 :: every], v_hodo[2 :: every]): 
         h.plot(ui,vi, marker='.', color='white', alpha=0.8, markersize=30)
-        h.ax.annotate(str(int(zi.m)),(ui,vi), weight='bold', fontsize=11, color='black',xytext=(0,-3.2),textcoords='offset pixels',horizontalalignment='center',clip_on=True) 
+        h.ax.annotate(str(int(zi.m)),(ui,vi), weight='bold', fontsize=13, color='black',xytext=(0,-3.2),textcoords='offset pixels',horizontalalignment='center',clip_on=True) 
 
 
     # plot the hodograph itself, using plot_colormapped, colored
@@ -1604,9 +1615,9 @@ def __metpy_sounding(clean_data):
     try:
         # compute Bunkers storm motion so we can plot it on the hodograph! 
         RM, LM, MW = mpcalc.bunkers_storm_motion(p, u, v, z)
-        h.ax.text((RM[0].m), (RM[1].m), 'RM', weight='bold', ha='center', fontsize=13, alpha=0.6) 
-        h.ax.text((LM[0].m), (LM[1].m), 'LM', weight='bold', ha='center', fontsize=13, alpha=0.6) 
-        h.ax.text((MW[0].m), (MW[1].m), 'MW', weight='bold', ha='center', fontsize=13, alpha=0.6) 
+        h.ax.text((RM[0].m), (RM[1].m), 'RM', weight='bold', ha='center', fontsize=15, alpha=0.5) 
+        h.ax.text((LM[0].m), (LM[1].m), 'LM', weight='bold', ha='center', fontsize=15, alpha=0.5) 
+        h.ax.text((MW[0].m), (MW[1].m), 'MW', weight='bold', ha='center', fontsize=15, alpha=0.5) 
         h.ax.arrow(0,0,RM[0].m, RM[1].m, linewidth=2, color='black', alpha=0.2, label='Bunkers RM Vector', 
                    length_includes_head=True, head_width=1)
 
@@ -1628,7 +1639,7 @@ def __metpy_sounding(clean_data):
     # to do this, lets first add a simple rectangle using matplotlib's 'patches' 
     # fucntionality to add some simple layout for plotting calculated parameters 
     #                                  xloc   yloc   xsize  ysize
-    fig.patches.extend([plt.Rectangle((0.563, 0.05), 0.334, 0.37,
+    fig.patches.extend([plt.Rectangle((0.603, 0.05), 0.334, 0.37,
                                       edgecolor='black', facecolor='white', linewidth=1, alpha=1,
                                       transform=fig.transFigure, figure=fig)])
 
@@ -1700,43 +1711,43 @@ def __metpy_sounding(clean_data):
     # PRINT VALUES OF PARAMETERS TO THE PLOT ------------------------------------------------
     # there is a lot we can do with this data operationally, so lets plot some of
     # these values right on the plot, in the box we made
-    # first lets plot some thermodynamic parameters
-    plt.figtext( 0.58, 0.37,  f'SBCAPE: ', weight='bold', fontsize=15, color='black', ha='left')
-    plt.figtext( 0.71, 0.37,  f'{mag_int(sbcape)} J/kg', weight='bold', fontsize=15, color='orangered', ha='right')
-    plt.figtext( 0.58, 0.34,  f'SBCIN: ', weight='bold', fontsize=15, color='black', ha='left')
-    plt.figtext( 0.71, 0.34,  f'{mag_int(sbcin)} J/kg', weight='bold', fontsize=15, color='lightblue', ha='right')
-    plt.figtext( 0.58, 0.29,  f'MLCAPE: ', weight='bold', fontsize=15, color='black', ha='left')
-    plt.figtext( 0.71, 0.29,  f'{mag_int(mlcape)} J/kg', weight='bold', fontsize=15, color='orangered', ha='right')
-    plt.figtext( 0.58, 0.26,  f'MLCIN: ', weight='bold', fontsize=15, color='black', ha='left')
-    plt.figtext( 0.71, 0.26,  f'{mag_int(mlcin)} J/kg', weight='bold', fontsize=15, color='lightblue', ha='right')
-    plt.figtext( 0.58, 0.21,  f'MUCAPE: ', weight='bold', fontsize=15, color='black', ha='left')
-    plt.figtext( 0.71, 0.21,  f'{mag_int(mucape)} J/kg', weight='bold', fontsize=15, color='orangered', ha='right')
-    plt.figtext( 0.58, 0.18,  f'MUCIN: ', weight='bold', fontsize=15, color='black', ha='left')
-    plt.figtext( 0.71, 0.18,  f'{mag_int(mucin)} J/kg', weight='bold', fontsize=15, color='lightblue', ha='right')
-    plt.figtext( 0.58, 0.13,  f'TT-INDEX: ', weight='bold', fontsize=15, color='black', ha='left')
-    plt.figtext( 0.71, 0.13,  f'{mag_int(total_totals)} Δ°C', weight='bold', fontsize=15, color='orangered', ha='right')
-    plt.figtext( 0.58, 0.10,  f'K-INDEX: ', weight='bold', fontsize=15, color='black', ha='left')
-    plt.figtext( 0.71, 0.10,  f'{mag_int(kindex)} °C', weight='bold', fontsize=15, color='orangered', ha='right')
+    # first lets plo5 some thermodynamic parameters
+    plt.figtext( 0.62, 0.37,  f'SBCAPE: ', weight='bold', fontsize=15, color='black', ha='left')
+    plt.figtext( 0.75, 0.37,  f'{mag_int(sbcape)} J/kg', weight='bold', fontsize=15, color='orangered', ha='right')
+    plt.figtext( 0.62, 0.34,  f'SBCIN: ', weight='bold', fontsize=15, color='black', ha='left')
+    plt.figtext( 0.75, 0.34,  f'{mag_int(sbcin)} J/kg', weight='bold', fontsize=15, color='lightblue', ha='right')
+    plt.figtext( 0.62, 0.29,  f'MLCAPE: ', weight='bold', fontsize=15, color='black', ha='left')
+    plt.figtext( 0.75, 0.29,  f'{mag_int(mlcape)} J/kg', weight='bold', fontsize=15, color='orangered', ha='right')
+    plt.figtext( 0.62, 0.26,  f'MLCIN: ', weight='bold', fontsize=15, color='black', ha='left')
+    plt.figtext( 0.75, 0.26,  f'{mag_int(mlcin)} J/kg', weight='bold', fontsize=15, color='lightblue', ha='right')
+    plt.figtext( 0.62, 0.21,  f'MUCAPE: ', weight='bold', fontsize=15, color='black', ha='left')
+    plt.figtext( 0.75, 0.21,  f'{mag_int(mucape)} J/kg', weight='bold', fontsize=15, color='orangered', ha='right')
+    plt.figtext( 0.62, 0.18,  f'MUCIN: ', weight='bold', fontsize=15, color='black', ha='left')
+    plt.figtext( 0.75, 0.18,  f'{mag_int(mucin)} J/kg', weight='bold', fontsize=15, color='lightblue', ha='right')
+    plt.figtext( 0.62, 0.13,  f'TT-INDEX: ', weight='bold', fontsize=15, color='black', ha='left')
+    plt.figtext( 0.75, 0.13,  f'{mag_int(total_totals)} Δ°C', weight='bold', fontsize=15, color='orangered', ha='right')
+    plt.figtext( 0.62, 0.10,  f'K-INDEX: ', weight='bold', fontsize=15, color='black', ha='left')
+    plt.figtext( 0.75, 0.10,  f'{mag_int(kindex)} °C', weight='bold', fontsize=15, color='orangered', ha='right')
     # now some kinematic parameters
     met_per_sec = (units.m*units.m)/(units.sec*units.sec)
-    plt.figtext( 0.73, 0.37,  f'0-1km SRH: ', weight='bold', fontsize=15, color='black', ha='left')
-    plt.figtext( 0.88, 0.37,  f'{mag_int(total_helicity1)* met_per_sec:~P}', weight='bold', fontsize=15, color='navy', ha='right')
-    plt.figtext( 0.73, 0.34,  f'0-1km SHEAR: ', weight='bold', fontsize=15, color='black', ha='left')
-    plt.figtext( 0.88, 0.34,  f'{mag_int(bshear1)} kts', weight='bold', fontsize=15, color='blue', ha='right')
-    plt.figtext( 0.73, 0.29,  f'0-3km SRH: ', weight='bold', fontsize=15, color='black', ha='left')
-    plt.figtext( 0.88, 0.29,  f'{mag_int(total_helicity3)* met_per_sec:~P}', weight='bold', fontsize=15, color='navy', ha='right')
-    plt.figtext( 0.73, 0.26,  f'0-3km SHEAR: ', weight='bold', fontsize=15, color='black', ha='left')
-    plt.figtext( 0.88, 0.26,  f'{mag_int(bshear3)} kts', weight='bold', fontsize=15, color='blue', ha='right')
-    plt.figtext( 0.73, 0.21,  f'0-6km SRH: ', weight='bold', fontsize=15, color='black', ha='left')
-    plt.figtext( 0.88, 0.21,  f'{mag_int(total_helicity6)* met_per_sec:~P}', weight='bold', fontsize=15, color='navy', ha='right')
-    plt.figtext( 0.73, 0.18,  f'0-6km SHEAR: ', weight='bold', fontsize=15, color='black', ha='left')
-    plt.figtext( 0.88, 0.18,  f'{mag_int(bshear6)} kts', weight='bold', fontsize=15, color='blue', ha='right')
-    plt.figtext( 0.73, 0.13,  f'SIG TORNADO: ', weight='bold', fontsize=15, color='black', ha='left')
-    plt.figtext( 0.88, 0.13,  f'{mag_int(sig_tor)}', weight='bold', fontsize=15, color='orangered', ha='right')
-    plt.figtext( 0.73, 0.10,  f'SUPERCELL COMP: ', weight='bold', fontsize=15, color='black', ha='left')
-    plt.figtext( 0.88, 0.10,  f'{mag_int(super_comp)}', weight='bold', fontsize=15, color='orangered', ha='right')
-    plt.figtext( 0.723, 0.065,  f'ECAPE: ', weight='bold', fontsize=15, color='black', ha='right')
-    plt.figtext( 0.727, 0.065,  f'{mag_int(ecape)} J/kg', weight='bold', fontsize=15, color='orangered', ha='left')
+    plt.figtext( 0.77, 0.37,  f'0-1km SRH: ', weight='bold', fontsize=15, color='black', ha='left')
+    plt.figtext( 0.92, 0.37,  f'{mag_int(total_helicity1)* met_per_sec:~P}', weight='bold', fontsize=15, color='navy', ha='right')
+    plt.figtext( 0.77, 0.34,  f'0-1km SHEAR: ', weight='bold', fontsize=15, color='black', ha='left')
+    plt.figtext( 0.92, 0.34,  f'{mag_int(bshear1)} kts', weight='bold', fontsize=15, color='blue', ha='right')
+    plt.figtext( 0.77, 0.29,  f'0-3km SRH: ', weight='bold', fontsize=15, color='black', ha='left')
+    plt.figtext( 0.92, 0.29,  f'{mag_int(total_helicity3)* met_per_sec:~P}', weight='bold', fontsize=15, color='navy', ha='right')
+    plt.figtext( 0.77, 0.26,  f'0-3km SHEAR: ', weight='bold', fontsize=15, color='black', ha='left')
+    plt.figtext( 0.92, 0.26,  f'{mag_int(bshear3)} kts', weight='bold', fontsize=15, color='blue', ha='right')
+    plt.figtext( 0.77, 0.21,  f'0-6km SRH: ', weight='bold', fontsize=15, color='black', ha='left')
+    plt.figtext( 0.92, 0.21,  f'{mag_int(total_helicity6)* met_per_sec:~P}', weight='bold', fontsize=15, color='navy', ha='right')
+    plt.figtext( 0.77, 0.18,  f'0-6km SHEAR: ', weight='bold', fontsize=15, color='black', ha='left')
+    plt.figtext( 0.92, 0.18,  f'{mag_int(bshear6)} kts', weight='bold', fontsize=15, color='blue', ha='right')
+    plt.figtext( 0.77, 0.13,  f'SIG TORNADO: ', weight='bold', fontsize=15, color='black', ha='left')
+    plt.figtext( 0.92, 0.13,  f'{mag_int(sig_tor)}', weight='bold', fontsize=15, color='orangered', ha='right')
+    plt.figtext( 0.77, 0.10,  f'SUPERCELL COMP: ', weight='bold', fontsize=15, color='black', ha='left')
+    plt.figtext( 0.92, 0.10,  f'{mag_int(super_comp)}', weight='bold', fontsize=15, color='orangered', ha='right')
+    plt.figtext( 0.763, 0.065,  f'ECAPE: ', weight='bold', fontsize=15, color='black', ha='right')
+    plt.figtext( 0.767, 0.065,  f'{mag_int(ecape)} J/kg', weight='bold', fontsize=15, color='orangered', ha='left')
 
 
     # LEGEND --------------------------------------------------------------------------------------
@@ -1745,20 +1756,23 @@ def __metpy_sounding(clean_data):
 
 
     # PLOT TITLES ----------------------------------------------------------------------------------
-    plt.figtext( 0.050, 0.96, left_title, ha='left', weight='bold', fontsize=16)
-    plt.figtext( 0.91, 0.96, f'{right_title}     ', ha='right', weight='bold', fontsize=16)
-    plt.figtext( 0.050, 0.98, top_title, ha='left', weight='bold', fontsize=22) 
-    plt.figtext( 0.91, 0.03,  f'POWERED BY METPY & SOUNDERPY | (@WXKYLEGILLETT)     ', ha='right', color='blue', alpha=0.4, weight='bold', fontsize=12)
+    plt.figtext( 0.00, 0.96, left_title, ha='left', weight='bold', fontsize=20)
+    plt.figtext( 0.96, 0.96, f'{right_title}     ', ha='right', weight='bold', fontsize=20)
+    plt.figtext( 0.00, 0.986, top_title, ha='left', weight='bold', fontsize=27) 
+    plt.figtext( 0.955, 0.03,  f'POWERED BY METPY & SOUNDERPY | (@WXKYLEGILLETT)     ', ha='right', color='blue', alpha=0.4, weight='bold', fontsize=12)
 
     img = Image.open(urlopen('https://user-images.githubusercontent.com/100786530/251580013-2e9477c9-e36a-4163-accb-fe46780058dd.png'))
     #                  side-side  up-down  size   size
-    imgax = fig.add_axes([0.04, 0.06, 0.1, 0.1], anchor='SE')
+    imgax = fig.add_axes([-0.01, 0.84, 0.1, 0.1], anchor='SE')
     imgax.imshow(img)
     imgax.axis('off')
     
     print('> COMPLETE --------')
     elapsed_time = time.time() - st
     print('> RUNTIME:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
+    
+    plt.tight_layout()
+    
     return plt
 
 
@@ -1771,15 +1785,17 @@ def metpy_sounding(clean_data, method='show', filename='sounderpy_sounding'):
         __metpy_sounding(clean_data).savefig(filename, bbox_inches='tight')
     
 #########################################################################################################    
+    
+    
+    
+    
+    
+    
 
     
     
     
     
-    
-    
-    
-
 ### METPY_HODOGRAPH() FUNCTION ###   
 #########################################################################################################
 
@@ -1805,8 +1821,7 @@ def __metpy_hodograph(clean_data):
         nearest_idx = (np.abs(array - value)).argmin()
         return nearest_idx
 
-    
-    # set up basic variables 
+    # declare basic variables
     p = clean_data['p']
     T = clean_data['T']
     Td = clean_data['Td']
@@ -1814,6 +1829,7 @@ def __metpy_hodograph(clean_data):
     u = clean_data['u']
     v = clean_data['v'] 
     
+    Td[Td < -120*units.degC] = np.nan
     
     # Create a hodograph
     fig = plt.figure(figsize=(16, 12), edgecolor="#04253a")
@@ -2002,9 +2018,10 @@ def __metpy_hodograph(clean_data):
     mu_prof = mpcalc.parcel_profile(p, mu_t, mu_td).to('degC')
     ml_prof = mpcalc.parcel_profile(p, ml_t, ml_td).to('degC')
     # compute CAPE & CIN
-    mucape, mucin = mpcalc.most_unstable_cape_cin(p, T, Td, depth=50 * units.hPa)
-    mlcape, mlcin = mpcalc.mixed_layer_cape_cin(p, T, ml_prof, depth=100 * units.hPa)
-    sbcape, sbcin = mpcalc.surface_based_cape_cin(p, T, Td)
+    # compute CAPE & CIN
+    mlcape, mlcin = mpcalc.cape_cin(p, T, Td, ml_prof, which_lfc='bottom', which_el='top')
+    mucape, mucin = mpcalc.cape_cin(p, T, Td, mu_prof, which_lfc='bottom', which_el='top')
+    sbcape, sbcin = mpcalc.cape_cin(p, T, Td, sb_prof, which_lfc='bottom', which_el='top')
 
     lcl_pressure, lcl_temperature = mpcalc.lcl(p[0], T[0], Td[0])
     lfc_pressure, lfc_temperature = mpcalc.lfc(p, T, Td, which='most_cape')
@@ -2119,9 +2136,12 @@ def metpy_hodograph(clean_data, method='show', filename='sounderpy_hodograph'):
     
 #########################################################################################################    
     
-
-
     
+
+
+
+
+
     
 
     
@@ -2522,4 +2542,4 @@ def get_latlon(station_type, id):
         sys.exit("ERROR: you may have passed an incorrect station_type. Valid station_types are 'metar', 'raob', 'igra', 'bufkit', 'buoy'")  
         
         
-########################################################################################################################################## 
+##########################################################################################################################################    
