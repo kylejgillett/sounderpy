@@ -109,6 +109,15 @@ or for a hodograph-only plot...
 
 ------
 
+or a looping GIF using this tutorial: *[SounderPy Looping GIF Tutorial](https://github.com/kylejgillett/sounderpy/blob/main/examples/sounderpy-gif_tutorial.ipynb)*
+
+
+<div align="center">
+<img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounding-loop_04192023_12zhrrr.gif" width="600">
+</div>
+
+------
+
 ## AUTHORS AND CONTRIBUTORS
 ### **AUTHOR: Kyle J Gillett, Central Michigan University** 
 #### CONTRIBUTOR: Scott Thomas, NWS Grand Rapids 
