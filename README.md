@@ -4,7 +4,7 @@
 # SOUNDERPY | Vertical Profile Data Retrieval and Analysis Tool For Python
 LATEST VERSION: v2.0.6 |  RELEASED: October 4th, 2023  |  COPYRIGHT Kyle J Gillett, 2023
 ### [VISIT SOUNDERPY DOCUMENTATION HERE](https://github.com/kylejgillett/sounderpy/wiki)
-#### [CHECK OUT AN EXAMPLE NOTEBOOK](https://github.com/kylejgillett/sounderpy/blob/main/examples/sounderpy_tutorial.ipynb)
+#### [CHECK OUT AN EXAMPLES & TUTORIALS](https://github.com/kylejgillett/sounderpy/blob/main/examples)
 A Python package that helps you to access and plot vertical profile data for meteorological analysis 
 
 [![PyPI Package](https://img.shields.io/pypi/v/sounderpy.svg)](https://pypi.python.org/pypi/sounderpy/)
