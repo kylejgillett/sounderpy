@@ -14,6 +14,7 @@ A Python package that helps you to access and plot vertical profile data for met
 [![GitHub commits](https://badgen.net/github/commits/kylejgillett/sounderpy)](https://GitHub.com/kylejgillett/sounderpy/commit/)
 [![Maintainer](https://img.shields.io/badge/maintainer-kylejgillett-blue)](https://github.com/kylejgillett)
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10011852.svg)](https://doi.org/10.5281/zenodo.10011852)
 
 </div>
 
@@ -126,6 +127,8 @@ or a looping GIF using this tutorial: *[SounderPy Looping GIF Tutorial](https://
 
 
 ## CITING SOUNDERPY
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10011852.svg)](https://doi.org/10.5281/zenodo.10011852)
+
 in AMS format:
 
 - Gillett, K., 2023: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 2.0.6). Py-Pi, https://pypi.org/project/sounderpy/
