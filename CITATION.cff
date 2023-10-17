@@ -17,6 +17,12 @@ identifiers:
 repository-code: 'https://github.com/kylejgillett/sounderpy'
 url: 'https://kylegillettwx.wordpress.com/'
 repository: 'https://pypi.org/project/sounderpy/'
+doi: "10.5281/zenodo.10011851"
+keywords:
+  - meteorology
+  - science
+  - python
+  - atmospheric science
 abstract: >-
   A python package that helps you to access and plot
   vertical profile data for meteorological analysis 
