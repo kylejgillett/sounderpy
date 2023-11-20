@@ -1750,7 +1750,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 72229, KCKL, CENTREVILLE,             AL US,  140,  32.90, N,   87.25, W
 72230, KBMX, BIRMINGHAM/SHELBY CO.,   AL US,  178,  33.17, N,   86.77, W
 72232, KBVE, BOOTHVILLE,              LA US,    0,  29.33, N,   89.40, W
-72233, KSIL, SLIDELL,                 LA US,    3,  30.25, N,   89.77, W
+72233, KLIX, SLIDELL,                 LA US,    3,  30.25, N,   89.77, W
 72235, KJAN, JACKSON,                 MS US,  101,  32.32, N,   90.08, W
 72239, KPOE, FORT POLK,               LA US,  100,  31.05, N,   93.20, W
 72240, KLCH, LAKE CHARLES,            LA US,   10,  30.12, N,   93.22, W
