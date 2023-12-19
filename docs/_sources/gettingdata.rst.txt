@@ -1,21 +1,32 @@
-Getting Data with SounderPy
-===========================
+Getting Data
+=============
 
 SounderPy is currently capable of accessing and processing data from:
 
-- ECMWF CDS ERA5 reanalysis [1940-present] *note: you must set up an account through the CDS to unlock ERA5 data. (see: https://cds.climate.copernicus.eu/api-how-to)*
-- UNIDATA THREDDS TDS RAP reanalysis [2005-present]
-- UNIDATA THREDDS TDS RUC reanalysis [2005-2020]
-- The University of Wyoming RAOB archive [1973-present, depending on station]
-- Iowa State University's RAOB archive [1945-present, depending on station]
-- The IGRAv2 Observed profile archive [1905-present, depending on station]
-- Iowa State University's BUFKIT archive [2011-present, depending on station & model]
-- Penn State University's BUFKIT archive [most recent run, depending on station & model]
-- UNIDATA THREDDS TDS RAP-most-recent-analysis [now, most recent analysis only]
-- OU Aircraft Communications, Addressing and Reporting System (ACARS) [2019-present]
-- NCEP FNL 0.25deg Gridded Reanalysis Dataset [2021-present]
++--------------------------------+------------------+------------------+
+|         **DATA**               |  **TYPE**        |  **TIME RANGE**  |
++================================+==================+==================+
+|    ECMWF CDS ERA5 reanalysis*  | Reanalysis       |  1940-present    |
++--------------------------------+------------------+------------------+
+|     UNIDATA THREDDS TDS RAP    | Reanalysis       |  2005-present    |
++--------------------------------+------------------+------------------+
+|     UNIDATA THREDDS TDS RUC    | Reanalysis       |  2005-2020       |
++--------------------------------+------------------+------------------+
+|    UNIDATA THREDDS NCEP-FNL    | Reanalysis       |  2005-2020       |
++--------------------------------+------------------+------------------+
+|    ISU's BUFKIT archive        | Model Forecast   |  2011-present    |
++--------------------------------+------------------+------------------+
+|     PSU's BUFKIT feed          | Model Forecast   | Most recent runs |
++--------------------------------+------------------+------------------+
+|  UNIDATA THREDDS TDS RAP       | Model Analysis   | Most recent run  |
++--------------------------------+------------------+------------------+
+|   OU ACARS Archive             | Observations     | 2019-present     |
++--------------------------------+------------------+------------------+
+|  The Unv. of WY RAOB Archive   | Observations     | 1973-present     |
++--------------------------------+------------------+------------------+
+|  IGRAv2 Observation archive    | Observations     |  1905-present    |
++--------------------------------+------------------+------------------+
 
-|
 
 ***************************************************************
 
@@ -52,11 +63,6 @@ We can use the simple ``spy.get_model_data()`` function:
 ***************************************************************
 
 
-|
-|
-
-
-RRRR
 Model Forecast Data | BUFKIT 
 -----------------------------
 

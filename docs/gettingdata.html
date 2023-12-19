@@ -4,11 +4,12 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Getting Data with SounderPy &mdash; SounderPy v3.0.0 documentation</title>
+  <title>Getting Data &mdash; SounderPy v3.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
   
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -19,10 +20,11 @@
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Potting Data with SounderPy" href="plottingdata.html" />
-    <link rel="prev" title="SounderPy" href="index.html" /> 
+    <link rel="next" title="Plotting Data" href="plottingdata.html" />
+    <link rel="prev" title="About" href="about.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,9 +49,13 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Data with SounderPy</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Data</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#model-reanalysis-data-rap-era5-ncep">Model Reanalysis Data | RAP, ERA5, NCEP</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#spy.get_model_data"><code class="docutils literal notranslate"><span class="pre">spy.get_model_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#model-forecast-data-bufkit">Model Forecast Data | BUFKIT</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#spy.get_bufkit_data"><code class="docutils literal notranslate"><span class="pre">spy.get_bufkit_data()</span></code></a></li>
 </ul>
 </li>
@@ -63,7 +69,9 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="plottingdata.html">Potting Data with SounderPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plottingdata.html">Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examplegallery.html">Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examplescripts.html">Usage Examples</a></li>
 </ul>
 
         </div>
@@ -80,7 +88,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Getting Data with SounderPy</li>
+      <li class="breadcrumb-item active">Getting Data</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/gettingdata.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -90,25 +98,59 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="getting-data-with-sounderpy">
-<h1>Getting Data with SounderPy<a class="headerlink" href="#getting-data-with-sounderpy" title="Link to this heading"></a></h1>
+  <section id="getting-data">
+<h1>Getting Data<a class="headerlink" href="#getting-data" title="Link to this heading"></a></h1>
 <p>SounderPy is currently capable of accessing and processing data from:</p>
-<ul class="simple">
-<li><p>ECMWF CDS ERA5 reanalysis [1940-present] <em>note: you must set up an account through the CDS to unlock ERA5 data. (see: https://cds.climate.copernicus.eu/api-how-to)</em></p></li>
-<li><p>UNIDATA THREDDS TDS RAP reanalysis [2005-present]</p></li>
-<li><p>UNIDATA THREDDS TDS RUC reanalysis [2005-2020]</p></li>
-<li><p>The University of Wyoming RAOB archive [1973-present, depending on station]</p></li>
-<li><p>Iowa State University’s RAOB archive [1945-present, depending on station]</p></li>
-<li><p>The IGRAv2 Observed profile archive [1905-present, depending on station]</p></li>
-<li><p>Iowa State University’s BUFKIT archive [2011-present, depending on station &amp; model]</p></li>
-<li><p>Penn State University’s BUFKIT archive [most recent run, depending on station &amp; model]</p></li>
-<li><p>UNIDATA THREDDS TDS RAP-most-recent-analysis [now, most recent analysis only]</p></li>
-<li><p>OU Aircraft Communications, Addressing and Reporting System (ACARS) [2019-present]</p></li>
-<li><p>NCEP FNL 0.25deg Gridded Reanalysis Dataset [2021-present]</p></li>
-</ul>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>DATA</strong></p></th>
+<th class="head"><p><strong>TYPE</strong></p></th>
+<th class="head"><p><strong>TIME RANGE</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ECMWF CDS ERA5 reanalysis*</p></td>
+<td><p>Reanalysis</p></td>
+<td><p>1940-present</p></td>
+</tr>
+<tr class="row-odd"><td><p>UNIDATA THREDDS TDS RAP</p></td>
+<td><p>Reanalysis</p></td>
+<td><p>2005-present</p></td>
+</tr>
+<tr class="row-even"><td><p>UNIDATA THREDDS TDS RUC</p></td>
+<td><p>Reanalysis</p></td>
+<td><p>2005-2020</p></td>
+</tr>
+<tr class="row-odd"><td><p>UNIDATA THREDDS NCEP-FNL</p></td>
+<td><p>Reanalysis</p></td>
+<td><p>2005-2020</p></td>
+</tr>
+<tr class="row-even"><td><p>ISU’s BUFKIT archive</p></td>
+<td><p>Model Forecast</p></td>
+<td><p>2011-present</p></td>
+</tr>
+<tr class="row-odd"><td><p>PSU’s BUFKIT feed</p></td>
+<td><p>Model Forecast</p></td>
+<td><p>Most recent runs</p></td>
+</tr>
+<tr class="row-even"><td><p>UNIDATA THREDDS TDS RAP</p></td>
+<td><p>Model Analysis</p></td>
+<td><p>Most recent run</p></td>
+</tr>
+<tr class="row-odd"><td><p>OU ACARS Archive</p></td>
+<td><p>Observations</p></td>
+<td><p>2019-present</p></td>
+</tr>
+<tr class="row-even"><td><p>The Unv. of WY RAOB Archive</p></td>
+<td><p>Observations</p></td>
+<td><p>1973-present</p></td>
+</tr>
+<tr class="row-odd"><td><p>IGRAv2 Observation archive</p></td>
+<td><p>Observations</p></td>
+<td><p>1905-present</p></td>
+</tr>
+</tbody>
+</table>
 <hr class="docutils" />
 <section id="model-reanalysis-data-rap-era5-ncep">
 <h2>Model Reanalysis Data | RAP, ERA5, NCEP<a class="headerlink" href="#model-reanalysis-data-rap-era5-ncep" title="Link to this heading"></a></h2>
@@ -141,14 +183,10 @@
 </dl>
 </dd></dl>
 
+</section>
 <hr class="docutils" />
-<div class="line-block">
-<div class="line"><br /></div>
-<div class="line"><br /></div>
-</div>
-<p>RRRR
-Model Forecast Data | BUFKIT
-—————————–</p>
+<section id="model-forecast-data-bufkit">
+<h2>Model Forecast Data | BUFKIT<a class="headerlink" href="#model-forecast-data-bufkit" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>A function used to access BUFKIT model forecast vertical profile data</p></li>
 <li><p>This data is <em>model forecast</em> data. Users must note that BUFKIT data is model data loaded for <em>specific designated BUFKIT sites</em>.</p></li>
@@ -288,8 +326,8 @@ Model Forecast Data | BUFKIT
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="SounderPy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="plottingdata.html" class="btn btn-neutral float-right" title="Potting Data with SounderPy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="about.html" class="btn btn-neutral float-left" title="About" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="plottingdata.html" class="btn btn-neutral float-right" title="Plotting Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

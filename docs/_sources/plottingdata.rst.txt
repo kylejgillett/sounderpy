@@ -1,10 +1,19 @@
-Potting Data with SounderPy
-===========================
+Plotting Data 
+=============
+
+Initally, SounderPy started as a tool meant for getting and parsing data with little focus on plotting said data. However, recent releases have put more emphasis on plotting capabilites. Version 3.0.0 features a number of significant & exciting upgrades to SounderPy's plotting abilities. 
+
+SounderPy can create :ref:`sounding<soundings>` and :ref:`hodograph<hodographs>` plots. 
+
+The `full` sounding plots that SounderPy creates are complex figures with unique design geared towards severe convective storm enviroment analysis. 
+
+These sounding plots are 'my baby' :)
 
 
 
 ***************************************************************
 
+.. _soundings:
 
 Building Soundings
 ----------------------------------
@@ -16,21 +25,62 @@ We can use the simple ``spy.build_sounding()`` function:
 
    Return a full sounding plot of SounderPy data, ``plt`` 
 
-   :param model: required, the requested model to use (rap-ruc, era5, ncep)
-   :type model: str
-   :param latlon: required, the latitude & longitude pair for sounding ([44.92, -84.72])
-   :type latlon: list
-   :param year: required, valid year
-   :type year: str
-   :param month: required, valid month
-   :type month: str
-   :param day: required, valid day
-   :type day: str
-   :param hour: required, valid hour
-   :type hour: str
-   :return: clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information
-   :rtype: dict
+   :param clean_data: the dictionary of data to be plotted (see :doc:`gettingdata`)
+   :type clean_data: dict, required
+   :param style: may be `simple` or `full`. Default is `full`.
+   :type style: str, optional
+   :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
+   :type save: bool, optional
+   :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
+   :type filename: str, optional
+   :param color_blind: whether or not to change the dewpoint trace line from green to blue for improved readability for color deficient users/readers. Default is ``False``
+   :type color_blind: bool, optional
+   :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding. Default is ``False``.
+   :type dark_mode: bool, optional
+   :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
+   :rtype: plt
 
+**************************************************
 
-Bulding Hodographs
+.. _hodographs:
+
+Building Hodographs
 ----------------------------------
+
+Very similarly to soundings, we can use the simple ``spy.build_hodograph()`` function:
+
+.. py:function:: spy.build_hodograph(clean_data, save=False, filename='sounderpy_sounding', dark_mode=False)
+
+
+   Return a full sounding plot of SounderPy data, ``plt`` 
+
+   :param clean_data: the dictionary of data to be plotted (see :doc:`gettingdata`)
+   :type clean_data: dict, required
+   :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
+   :type save: bool, optional
+   :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
+   :type filename: str, optional
+   :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding. Default is ``False``.
+   :type dark_mode: bool, optional
+   :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
+   :rtype: plt
+
+**************************************************
+
+
+Printing data to the console
+-----------------------------
+
+.. py:function:: spy.print_variables():
+
+	:return: prints a number of thermodynamic and kinematic variables to the console.
+
+
+**************************************************
+
+About These Plots:
+^^^^^^^^^^^^^^^^^^^
+
+This plot style has been developed in a way that acts to provide as much information to the user as possible with attributes designed specifically for the analysis of severe convective environments, and supercells/tornadoes in particular. You will also find that this particular plot style does not host many of the common and popular severe weather composite indices – that was intentional. Most, if not all, of the data provided on this plot, are considered, for the lack of a better word, ‘true’ observations of the atmosphere though most are still subject to heavy assumptions. 
+
+The data on these plots are considered, by most, to be useful in determining critical characteristics of the atmosphere related to mesoscylonegenesis and tornadogenesis.

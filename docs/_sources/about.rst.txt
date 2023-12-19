@@ -1,5 +1,5 @@
-What is SounderPy
-=================
+About
+======
 
 
 Installation
@@ -48,20 +48,20 @@ Those three lines will make this!:
 
 Authors and Contributors 
 -------------------------
-**AUTHOR: Kyle J Gillett, Central Michigan University**
+	**AUTHOR: Kyle J Gillett, Central Michigan University**
 
-*CONTRIBUTOR: Scott Thomas, NWS Grand Rapids*
+	*CONTRIBUTOR: Scott Thomas, NWS Grand Rapids*
 
 
 
 Citing SounderPy
 -----------------
-.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.10011851.svg
-   :target: https://doi.org/10.5281/zenodo.10011851
-   :alt: DOI
+	.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.10011851.svg
+	   :target: https://doi.org/10.5281/zenodo.10011851
+	   :alt: DOI
 
-in AMS format:
-    * Gillett, K., 2023: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 2.0.6). Py-Pi, https://pypi.org/project/sounderpy/
+	in AMS format:
+	    * Gillett, K., 2023: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 2.0.6). Py-Pi, https://pypi.org/project/sounderpy/
 
 
 Refrences 
@@ -83,3 +83,5 @@ Refrences
 
 
 	* Pauli Virtanen, Ralf Gommers, Travis E. Oliphant, Matt Haberland, Tyler Reddy, David Cournapeau, Evgeni Burovski, Pearu Peterson, Warren Weckesser, Jonathan Bright, Stéfan J. van der Walt, Matthew Brett, Joshua Wilson, K. Jarrod Millman, Nikolay Mayorov, Andrew R. J. Nelson, Eric Jones, Robert Kern, Eric Larson, CJ Carey, İlhan Polat, Yu Feng, Eric W. Moore, Jake VanderPlas, Denis Laxalde, Josef Perktold, Robert Cimrman, Ian Henriksen, E.A. Quintero, Charles R Harris, Anne M. Archibald, Antônio H. Ribeiro, Fabian Pedregosa, Paul van Mulbregt, and SciPy 1.0 Contributors. (2020) SciPy 1.0: Fundamental Algorithms for Scientific Computing in Python. Nature Methods, 17(3), 261-272.
+
+
