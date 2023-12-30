@@ -19,6 +19,7 @@
         <script src="_static/documentation_options.js?v=5773a0da"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
@@ -72,7 +73,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="helpertools.html">Helper Tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examplegallery.html">Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examplegallery.html">Plot Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplescripts.html">Usage Examples</a></li>
 </ul>
 
@@ -155,7 +156,7 @@
 <p>Very similarly to soundings, we can use the simple <code class="docutils literal notranslate"><span class="pre">spy.build_hodograph()</span></code> function:</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="spy.build_hodograph">
-<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">build_hodograph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clean_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sounderpy_sounding'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.build_hodograph" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">build_hodograph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clean_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sounderpy_sounding'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr_hodo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.build_hodograph" title="Link to this definition"></a></dt>
 <dd><p>Return a full sounding plot of SounderPy data, <code class="docutils literal notranslate"><span class="pre">plt</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -164,6 +165,7 @@
 <li><p><strong>save</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to show the plot inline or save to a file. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code> which displays the file inline.</p></li>
 <li><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – the filename by which a file should be saved to if <code class="docutils literal notranslate"><span class="pre">save</span> <span class="pre">=</span> <span class="pre">True</span></code>. Default is <cite>sounderpy_sounding</cite>.</p></li>
 <li><p><strong>dark_mode</strong> (<em>bool</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> will invert the color scheme for a ‘dark-mode’ sounding. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>sr_hodo</strong> (bool, optional, default is <code class="docutils literal notranslate"><span class="pre">False</span></code>) – transform the hodograph from ground relative to storm relative</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

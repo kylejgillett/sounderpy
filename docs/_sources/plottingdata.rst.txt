@@ -14,6 +14,8 @@ The `full` sounding plots that SounderPy creates are complex figures with unique
 
 These sounding plots are 'my baby' and I hope you find them useful! :)
 
+ 
+
 ***************************************************************
 
 
@@ -77,7 +79,7 @@ Building Hodographs
 
 Very similarly to soundings, we can use the simple ``spy.build_hodograph()`` function:
 
-.. py:function:: spy.build_hodograph(clean_data, save=False, filename='sounderpy_sounding', dark_mode=False)
+.. py:function:: spy.build_hodograph(clean_data, save=False, filename='sounderpy_sounding', dark_mode=False, sr_hodo=False)
 
 
    Return a full sounding plot of SounderPy data, ``plt`` 
@@ -90,6 +92,8 @@ Very similarly to soundings, we can use the simple ``spy.build_hodograph()`` fun
    :type filename: str, optional
    :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding. Default is ``False``.
    :type dark_mode: bool, optional
+   :param sr_hodo: transform the hodograph from ground relative to storm relative 
+   :type sr_hodo: bool, optional, default is ``False``
    :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
    :rtype: plt
 

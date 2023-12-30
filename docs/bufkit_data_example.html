@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plotting Soundings with BUFKIT Forecast Model Data &mdash; SounderPy v3.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5773a0da"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Plotting Soundings with Observed ACARS data" href="acars_data_example.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SounderPy
+              <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gettingdata.html">Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plottingdata.html">Tools for Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpertools.html">Helper Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examplegallery.html">Plot Gallery</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="examplescripts.html">Usage Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="raob_data_example.html">Plotting Soundings with Observed RAOB data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acars_data_example.html">Plotting Soundings with Observed ACARS data</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Plotting Soundings with BUFKIT Forecast Model Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Understanding-SounderPy-Functionality"><strong>Understanding SounderPy Functionality</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#LETS-PLOT-THE-DATA-ON-A-SOUNDING-AND-HODOGRAPH"><strong>LETS PLOT THE DATA ON A SOUNDING AND HODOGRAPH</strong></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="raob_data_example.html">Plotting Soundings with Observed RAOB data</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SounderPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="examplescripts.html">Usage Examples</a></li>
+      <li class="breadcrumb-item active">Plotting Soundings with BUFKIT Forecast Model Data</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/bufkit_data_example.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Plotting-Soundings-with-BUFKIT-Forecast-Model-Data">
+<h1>Plotting Soundings with BUFKIT Forecast Model Data<a class="headerlink" href="#Plotting-Soundings-with-BUFKIT-Forecast-Model-Data" title="Link to this heading"></a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># first, import sounderpy! Its fun to import as &#39;spy&#39;!</span>
+<span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+## ---------------------------------- SOUNDERPY ----------------------------------- ##
+##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
+##                    v3.0.0 | Dec 2023 | (C) Kyle J Gillett                        ##
+## -------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------- ##
+
+</pre></div></div>
+</div>
+<section id="Understanding-SounderPy-Functionality">
+<h2><strong>Understanding SounderPy Functionality</strong><a class="headerlink" href="#Understanding-SounderPy-Functionality" title="Link to this heading"></a></h2>
+<p><strong>To get model forecast data via BUFKIT, we need to use the ``get_bufkit_data()`` function</strong></p>
+<p><strong>Reading the documentation on BUFKIT data access may prove useful before using this notebook: https://kylejgillett.github.io/sounderpy/gettingdata.html#model-forecast-data-bufkit</strong></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">################################ THE FUNCTION ###################################</span>
+<span class="c1"># to get bufkit data, we need to use the `get_bufkit_data()` function</span>
+<span class="c1"># `get_bufkit_data(model, station, fcst_hr, run_year, run_month, run_day, run_hour)`</span>
+<span class="c1">################################################################################</span>
+
+
+<span class="c1">########################## TYPES OF BUFKIT DATA ################################</span>
+<span class="c1"># we can access archived model forecasts from the GFS, NAM, RAP &amp; HRRR</span>
+<span class="c1"># or most recent run forecasts from the GFS, NAM, NAMNEST, RAP, HRRR, SREF, &amp; HIRESW</span>
+<span class="c1">################################################################################</span>
+
+
+<span class="c1">########################## WHERE DATA IS AVAILABLE #############################</span>
+<span class="c1"># NOTE: bufkit forecast data is *only available at specific BUFKIT site locations*</span>
+<span class="c1"># you can find them here: http://www.meteo.psu.edu/bufkit/DomainNAMRAP_NAM_12.html</span>
+<span class="c1">################################################################################</span>
+
+
+<span class="c1">############################# LETS GET SOME DATA ###############################</span>
+<span class="c1"># to get archived forecasts we need every kwarg. (a kwarg is a Keyword Argument, like &#39;year&#39;, and &#39;station&#39;)</span>
+<span class="c1"># the line below will get us a 12z GFS forecast from 08/05/2023 at forecast hour 6 for bufkit site KMOP:</span>
+
+<span class="c1"># clean_data = spy.get_bufkit_data(&#39;gfs&#39;, &#39;kmop&#39;, 6, &#39;2023&#39;, &#39;08&#39;, &#39;05&#39;, &#39;12&#39;)</span>
+
+<span class="c1"># to get the most recent forecasts we use the same function, but we *don&#39;t need a year, month, day or hour kwarg!*</span>
+<span class="c1"># you just need a model, station and forecast hour.</span>
+<span class="c1"># this will get you the most recent HRRR run, at forecast hour 6, for</span>
+<span class="c1"># site `KMOP` (Mount Pleasant, MI METAR site, CMU represent!):</span>
+<span class="n">clean_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_bufkit_data</span><span class="p">(</span><span class="s1">&#39;hrrr&#39;</span><span class="p">,</span> <span class="s1">&#39;kmop&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; BUFKIT DATA ACCESS FUNCTION --
+---------------------------------
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:00
+&gt; SUMMARY: 14Z HRRR F06 for KMOP, MOUNT PLEASANT at 12-30-2023-20Z
+
+&gt; THERMODYNAMICS ---------------------------------------------
+--- SBCAPE: 4.320606690129166 | MUCAPE: 0.0 | MLCAPE: 0.0 | ECAPE: --
+--- MU 0-3: 0.0 | MU 0-6: 0.0 | SB 0-3: 4.320606690129166 | SB 0-6: 4.320606690129166
+
+&gt; KINEMATICS -------------------------------------------------
+--- 0-500 SRW: 22.7 knot | 0-500 SWV: 0.002 | 0-500 SHEAR: 1.1 | 0-500 SRH: 3.1
+--- 1-3km SRW: 14.4 knot | 1-3km SWV: 0.005 | 1-3km SHEAR: 9.1 | | 1-3km SRH: 39.1
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Lets check out the BUFKIT data that we just accessed</span>
+<span class="c1"># and stored in the `clean_data` variable:</span>
+
+<span class="c1"># `clean_data` is a python dictionary of &#39;clean&#39; vertical profile data</span>
+<span class="c1"># it comes with temperature, dewpoint, pressure, height, u and v</span>
+<span class="c1"># as well as a number of useful &#39;meta data&#39;</span>
+
+<span class="n">clean_data</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;p&#39;: array([983.3, 980.4, 975.1, 965.8, 952.3, 934.8, 914. , 891.3, 866.7,
+        839.2, 809. , 775.9, 739.9, 701.1, 659.4, 614.8, 567.8, 522.2,
+        481.1, 444.2, 411. , 380.8, 353.7, 329.2, 307.1, 287.2, 269.2,
+        252.5, 237.4, 223.5, 209.7, 195.8, 181.9, 168. , 154.1, 140.2,
+        126.3, 112.5,  98.6,  85.7,  75.3,  66.9,  59.1]) &lt;Unit(&#39;hectopascal&#39;)&gt;,
+ &#39;z&#39;: array([  224.  ,   247.76,   291.3 ,   368.1 ,   480.51,   628.  ,
+          806.12,  1004.21,  1224.1 ,  1478.57,  1768.64,  2097.98,
+         2471.44,  2894.54,  3374.28,  3916.84,  4524.76,  5154.75,
+         5760.73,  6339.2 ,  6891.3 ,  7423.73,  7929.98,  8414.02,
+         8875.38,  9314.08,  9732.03, 10140.05, 10529.22, 10909.02,
+        11311.52, 11746.96, 12217.29, 12727.92, 13285.83, 13900.13,
+        14580.14, 15332.87, 16188.72, 17094.56, 17927.49, 18688.67,
+        19487.17]) &lt;Unit(&#39;meter&#39;)&gt;,
+ &#39;T&#39;: array([  1.24,   0.84,   0.44,  -0.36,  -1.46,  -2.66,  -3.86,  -5.26,
+         -5.06,  -2.56,  -3.36,  -4.66,  -4.96,  -4.96,  -6.96, -10.16,
+        -13.96, -18.26, -23.06, -28.06, -32.76, -36.96, -40.86, -44.76,
+        -47.96, -50.96, -54.16, -56.86, -58.26, -57.96, -56.86, -55.66,
+        -54.26, -53.16, -51.76, -50.56, -50.76, -51.06, -51.86, -53.06,
+        -53.36, -53.26, -52.96]) &lt;Unit(&#39;degree_Celsius&#39;)&gt;,
+ &#39;Td&#39;: array([  -1.18,   -1.38,   -1.53,   -1.73,   -1.96,   -2.81,   -4.02,
+          -5.37,  -10.3 ,  -16.59,  -19.89,  -17.81,  -18.18,  -27.96,
+         -31.47,  -33.79,  -39.04,  -41.19,  -38.39,  -36.78,  -39.27,
+         -44.61,  -50.16,  -53.49,  -56.44,  -60.2 ,  -60.71,  -63.4 ,
+         -66.85,  -67.29,  -72.58,  -73.05,  -99.7 , -100.08, -100.49,
+        -100.94, -101.43, -101.97, -102.58, -103.23, -103.82, -104.35,
+        -104.91]) &lt;Unit(&#39;degree_Celsius&#39;)&gt;,
+ &#39;u&#39;: array([ 4.07829188,  4.66621908,  4.857461  ,  5.05539801,  4.86222066,
+         4.66759148,  3.88627975,  3.30487405,  8.75      , 18.66055744,
+        21.77431619, 18.85600457, 14.77306079, 14.38176805, 16.52406416,
+        17.6872324 , 17.49890826, 17.48978514, 19.62849072, 23.90739701,
+        24.29305373, 23.32925972, 23.32202857, 23.32202857, 25.27135916,
+        25.65816371, 20.02612948, 15.54959696, 12.63850917,  9.14      ,
+         9.72255214, 11.8601549 , 11.85870265, 11.66253264, 13.60442505,
+        19.24707736, 23.71895424, 21.77216616, 20.21592804, 17.68366859,
+        14.18738524, 10.3006229 ,  9.13381673]) &lt;Unit(&#39;knot&#39;)&gt;,
+ &#39;v&#39;: array([ 3.69019449e+00,  4.27730049e+00,  4.46822925e+00,  4.66662093e+00,
+         4.66759148e+00,  4.86222066e+00,  4.66280278e+00,  4.47117519e+00,
+         1.60734892e-15, -6.99917823e+00, -9.33248384e+00, -1.04951175e+01,
+        -1.01077532e+01, -7.19243684e+00, -5.05506713e+00, -3.49895840e+00,
+        -1.95472811e-01,  2.13818049e+00,  1.55513726e+00,  7.76381546e-01,
+        -5.80982196e-01, -1.94261189e+00, -2.71907764e+00, -2.71907764e+00,
+        -9.70827692e-01,  7.79445452e-01,  1.16522020e+00,  9.72848520e-01,
+         1.94128831e-01,  1.67899076e-15,  5.82734875e-01, -9.72998280e-01,
+        -3.11107240e+00, -3.10969973e+00,  3.89511278e-01,  6.60851822e+00,
+         6.99886489e+00,  6.80212326e+00,  7.77636506e+00,  7.19138132e+00,
+         5.05190064e+00,  5.44239542e+00,  6.21899445e+00]) &lt;Unit(&#39;knot&#39;)&gt;,
+ &#39;site_info&#39;: {&#39;site-id&#39;: &#39;KMOP&#39;,
+  &#39;site-name&#39;: &#39;MOUNT PLEASANT&#39;,
+  &#39;site-lctn&#39;: &#39;MI&#39;,
+  &#39;site-latlon&#39;: [43.37, -84.44],
+  &#39;site-elv&#39;: 213,
+  &#39;source&#39;: &#39;BUFKIT FORECAST PROFILE&#39;,
+  &#39;model&#39;: &#39;HRRR&#39;,
+  &#39;fcst-hour&#39;: &#39;F06&#39;,
+  &#39;run-time&#39;: [&#39;2023&#39;, &#39;12&#39;, &#39;30&#39;, &#39;14&#39;],
+  &#39;valid-time&#39;: [&#39;2023&#39;, &#39;12&#39;, &#39;30&#39;, &#39;20&#39;]}}
+</pre></div></div>
+</div>
+<hr class="docutils" />
+</section>
+<section id="LETS-PLOT-THE-DATA-ON-A-SOUNDING-AND-HODOGRAPH">
+<h2><strong>LETS PLOT THE DATA ON A SOUNDING AND HODOGRAPH</strong><a class="headerlink" href="#LETS-PLOT-THE-DATA-ON-A-SOUNDING-AND-HODOGRAPH" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># lets make a sounding!</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">clean_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; SOUNDING PLOTTER FUNCTION --
+---------------------------------
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:01
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/bufkit_data_example_7_1.png" src="_images/bufkit_data_example_7_1.png" />
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="acars_data_example.html" class="btn btn-neutral float-left" title="Plotting Soundings with Observed ACARS data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Kyle J Gillett.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

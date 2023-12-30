@@ -13,7 +13,7 @@ SounderPy is an open-source atmospheric science Python package for vertical prof
 SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines National Weather Service Office, the State University of New York at Albany, Mississippi State University, and others. Many have used SounderPy in projects and papers, such as students at Ohio State University, Central Michigan University & Rizal Technological University.
 
 * SounderPy is supported for Python >= 3.9. 
-* Examples of SounderPy use in a Jupyter Notebook format can be found at 
+* Examples of SounderPy use in a Jupyter Notebook format can be found at... *under construction*
 
 .. image:: https://img.shields.io/pypi/v/sounderpy.svg
    :target: https://pypi.python.org/pypi/sounderpy/
@@ -59,6 +59,9 @@ What exactly can SounderPy do?
 	* Retrieves vertical profile data 
 	* 'Cleans up' the data for analysis 
 	* Plots the data on advanced but easy to read sounding and hodograph plots. 
+		+ See what kind of plots SounderPy can create :ref:`here<gallery>`
+
+
 
 
 What data can SounderPy work with?
