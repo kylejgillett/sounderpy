@@ -1,9 +1,40 @@
-Helper Tools
-==============
+🛠️ Helper Tools
+================
 
 A collection of helper tools included within SounderPy.
 
 *************************
+
+Printing a dictionary of profile parameters
+--------------------------------------------
+
+Return a massive dictionary of common calculated paramters and special variables for a vertical profile.
+
+Data returned in this dictionary include...
+      - an interpolated version of the profile
+      - basic parameter such as mixing ratio, theta-e, wet-bulb, etc
+      - Thermodynamic parameters such as SB, MU, ML parcel properties (LCL, LFC, EL, CAPE, CIN, etc)
+      - Kinematic parameters such as storm motion, storm-relative wind, streamwise vorticity, SRH, etc.
+
+.. class:: sounding_params()
+
+   .. py:function:: .calc(clean_data)
+
+      :param clean_data: a dictionary of SounderPy data (see :doc:`gettingdata`)
+      :type clean_data: dict, required
+      :return: special sounding parameters
+      :rtype: dict
+
+
+.. note::
+   These calculated parameters are the same used on SounderPy plots. This function simply returns the master dictionary of all of these values.
+
+
+
+************************************************************
+
+Finding site lat/lon pairs
+---------------------------
 
 .. py:function:: spy.get_latlon(station_type, station_id)
 
@@ -32,6 +63,8 @@ Example:
 
 ***************************************************************
 
+Saving data to a file
+----------------------
 
 .. py:function:: spy.to_file(file_type, clean_data, filename=None)
 
@@ -58,6 +91,8 @@ Example:
 
 ***************************************************************
 
+Interpolating a vertical profile
+---------------------------------
 
 .. py:function:: spy.interp_data(variable, heights, step=100)
 
@@ -82,6 +117,8 @@ Example:
 
 ***************************************************************
 
+Finding a 'nearest' value
+--------------------------
 
 .. py:function:: spy.find_nearest(array, value)
 

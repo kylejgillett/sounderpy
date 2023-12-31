@@ -1,6 +1,7 @@
-About
-======
+📖 About
+=========
 
+☕ SounderPy is a open-source package developed on my own time. Would you like to support continued SounderPy development? Consider "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"! ☕
 
 Installation
 ------------
@@ -90,11 +91,26 @@ Refrences
 	* Marsh, P., Halbert, K., Blumberg, G., Supinie, T., Esmaili, R., Szkodzinski, J., "SHARPpy: Sounding/Hodograph Analysis and Research Program in Python." GitHub. Available at: https://github.com/sharppy/SHARPpy.
 
 
-***************************************************************
+****************************************
+
+About the Author
+-----------------
+
+Hey! 
+
+Thank you so much for checking out and using SounderPy. My name is Kyle Gillett and I am the developer of SounderPy. This tool started out as a way for me to internally house all of my data retrieval functions for plotting soundings. As you can see, it has since blossomed into a full-scale Python package. I am currently an undergraduate student of Meteorology at Central Michigan University, the President of the Central Michigan University Student Chapter of the American Meteorological Society and an on-air meteorologist with WNEM TV-5 in Saginaw, MI.
+
+SounderPy is published on PyPi and the source code is available on GitHub -- this tool is an open source project. If you have found SounderPy useful in your work, I'd love to hear about it! The coolest part of this project has been hearing how many folks have been using this software. If you'd like to support continued SounderPy development, consider "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"! ☕. 
+
+Have an issues? You can `open a GitHub Issue <https://github.com/kylejgillett/sounderpy/issues>`_ or just shoot me a DM on `twitter <https://twitter.com/wxkylegillett>`_!
+
+**Useful Links**
+
++ Check out SounderPy `on GitHub <https://github.com/kylejgillett/sounderpy>`_
++ Check out SounderPy `on PyPi <https://pypi.org/project/sounderpy/>`_
++ Check out my `webiste <https://kylegillettwx.wordpress.com/>`_
++ Get updates on SounderPy development on `twitter <https://twitter.com/wxkylegillett>`_
++ Support SounderPy by "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"
 
 
-Some notes about SounderPy 
-----------------------------
-
-+ Profile thermodynamic and kinematic property calculations are computed using SHARPPY software functionality.
-+ 
+Thanks for using SounderPy!

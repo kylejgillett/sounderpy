@@ -1,5 +1,5 @@
-Usage Examples
-===============
+📝 Usage Examples
+==================
 
 
 .. nblinkgallery::

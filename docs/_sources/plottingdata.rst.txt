@@ -1,5 +1,5 @@
-Tools for Plotting Data
-========================
+📈 Tools for Plotting Data
+===========================
 
 .. image:: _static/images/example-sounding_light.png
    :width: 300 px

@@ -1,5 +1,5 @@
-Plot Gallery
-=============
+📊 Plot Gallery
+================
 
 Examples of plots that can be created by SounderPy:
 

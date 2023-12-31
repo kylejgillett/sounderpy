@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Helper Tools &mdash; SounderPy v3.0.0 documentation</title>
+  <title>🛠️ Helper Tools &mdash; SounderPy v3.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -24,8 +24,8 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Plot Gallery" href="examplegallery.html" />
-    <link rel="prev" title="Tools for Plotting Data" href="plottingdata.html" /> 
+    <link rel="next" title="📊 Plot Gallery" href="examplegallery.html" />
+    <link rel="prev" title="📈 Tools for Plotting Data" href="plottingdata.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -50,18 +50,35 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gettingdata.html">Tools for Getting Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="plottingdata.html">Tools for Plotting Data</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Helper Tools</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#spy.get_latlon"><code class="docutils literal notranslate"><span class="pre">spy.get_latlon()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#spy.to_file"><code class="docutils literal notranslate"><span class="pre">spy.to_file()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#spy.interp_data"><code class="docutils literal notranslate"><span class="pre">spy.interp_data()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#spy.find_nearest"><code class="docutils literal notranslate"><span class="pre">spy.find_nearest()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">🛠️ Helper Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#printing-a-dictionary-of-profile-parameters">Printing a dictionary of profile parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sounding_params"><code class="docutils literal notranslate"><span class="pre">sounding_params</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sounding_params..calc"><code class="docutils literal notranslate"><span class="pre">sounding_params..calc()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="examplegallery.html">Plot Gallery</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examplescripts.html">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#finding-site-lat-lon-pairs">Finding site lat/lon pairs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spy.get_latlon"><code class="docutils literal notranslate"><span class="pre">spy.get_latlon()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#saving-data-to-a-file">Saving data to a file</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spy.to_file"><code class="docutils literal notranslate"><span class="pre">spy.to_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#interpolating-a-vertical-profile">Interpolating a vertical profile</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spy.interp_data"><code class="docutils literal notranslate"><span class="pre">spy.interp_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#finding-a-nearest-value">Finding a ‘nearest’ value</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spy.find_nearest"><code class="docutils literal notranslate"><span class="pre">spy.find_nearest()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
 </ul>
 
         </div>
@@ -78,7 +95,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Helper Tools</li>
+      <li class="breadcrumb-item active">🛠️ Helper Tools</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/helpertools.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -89,9 +106,50 @@
            <div itemprop="articleBody">
              
   <section id="helper-tools">
-<h1>Helper Tools<a class="headerlink" href="#helper-tools" title="Link to this heading"></a></h1>
+<h1>🛠️ Helper Tools<a class="headerlink" href="#helper-tools" title="Link to this heading"></a></h1>
 <p>A collection of helper tools included within SounderPy.</p>
 <hr class="docutils" />
+<section id="printing-a-dictionary-of-profile-parameters">
+<h2>Printing a dictionary of profile parameters<a class="headerlink" href="#printing-a-dictionary-of-profile-parameters" title="Link to this heading"></a></h2>
+<p>Return a massive dictionary of common calculated paramters and special variables for a vertical profile.</p>
+<dl class="simple">
+<dt>Data returned in this dictionary include…</dt><dd><ul class="simple">
+<li><p>an interpolated version of the profile</p></li>
+<li><p>basic parameter such as mixing ratio, theta-e, wet-bulb, etc</p></li>
+<li><p>Thermodynamic parameters such as SB, MU, ML parcel properties (LCL, LFC, EL, CAPE, CIN, etc)</p></li>
+<li><p>Kinematic parameters such as storm motion, storm-relative wind, streamwise vorticity, SRH, etc.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="sounding_params">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sounding_params</span></span><a class="headerlink" href="#sounding_params" title="Link to this definition"></a></dt>
+<dd><dl class="py function">
+<dt class="sig sig-object py" id="sounding_params..calc">
+<span class="sig-prename descclassname"><span class="pre">.</span></span><span class="sig-name descname"><span class="pre">calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clean_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sounding_params..calc" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>clean_data</strong> (<em>dict</em><em>, </em><em>required</em>) – a dictionary of SounderPy data (see <a class="reference internal" href="gettingdata.html"><span class="doc">🌐 Tools for Getting Data</span></a>)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>special sounding parameters</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These calculated parameters are the same used on SounderPy plots. This function simply returns the master dictionary of all of these values.</p>
+</div>
+</section>
+<hr class="docutils" />
+<section id="finding-site-lat-lon-pairs">
+<h2>Finding site lat/lon pairs<a class="headerlink" href="#finding-site-lat-lon-pairs" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="spy.get_latlon">
 <span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">get_latlon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.get_latlon" title="Link to this definition"></a></dt>
@@ -122,7 +180,10 @@
 <ul class="simple">
 <li><p>note: you can use this lat/lon pair list when calling the function <a class="reference internal" href="gettingdata.html#modeldata"><span class="std std-ref">get_model_data</span></a></p></li>
 </ul>
+</section>
 <hr class="docutils" />
+<section id="saving-data-to-a-file">
+<h2>Saving data to a file<a class="headerlink" href="#saving-data-to-a-file" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="spy.to_file">
 <span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.to_file" title="Link to this definition"></a></dt>
@@ -152,7 +213,10 @@
 <span class="n">spy</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;sharppy&#39;</span><span class="p">,</span> <span class="n">clean_data</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
 <hr class="docutils" />
+<section id="interpolating-a-vertical-profile">
+<h2>Interpolating a vertical profile<a class="headerlink" href="#interpolating-a-vertical-profile" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="spy.interp_data">
 <span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">interp_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.interp_data" title="Link to this definition"></a></dt>
@@ -178,7 +242,10 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">interp_data</span><span class="p">(</span><span class="n">temperature_array</span><span class="p">,</span> <span class="n">height_array</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
 <hr class="docutils" />
+<section id="finding-a-nearest-value">
+<h2>Finding a ‘nearest’ value<a class="headerlink" href="#finding-a-nearest-value" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="spy.find_nearest">
 <span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">find_nearest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.find_nearest" title="Link to this definition"></a></dt>
@@ -206,13 +273,14 @@
 </pre></div>
 </div>
 </section>
+</section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="plottingdata.html" class="btn btn-neutral float-left" title="Tools for Plotting Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="examplegallery.html" class="btn btn-neutral float-right" title="Plot Gallery" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="plottingdata.html" class="btn btn-neutral float-left" title="📈 Tools for Plotting Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="examplegallery.html" class="btn btn-neutral float-right" title="📊 Plot Gallery" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

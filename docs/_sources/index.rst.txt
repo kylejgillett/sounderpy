@@ -1,8 +1,8 @@
 .. SounderPy documentation master file, created by
    sphinx-quickstart on Thu Dec  7 19:10:38 2023.
 
-SounderPy
-=========
+🎈 SounderPy
+=============
 
 .. image:: _static/images/example-sounding_light.png
    :width: 300 px
@@ -91,6 +91,8 @@ What data can SounderPy work with?
 	|  IGRAv2 Observation archive    | Observations     |  1905-present    |
 	+--------------------------------+------------------+------------------+
 
+
+☕ SounderPy is a open-source package developed on my own time. Would you like to support continued SounderPy development? Consider "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"! ☕
 
 Directory
 ==================
