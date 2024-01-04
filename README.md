@@ -1,10 +1,11 @@
 <div align="center">
 <img src="https://github.com/kylejgillett/sounderpy/assets/100786530/2e9477c9-e36a-4163-accb-fe46780058dd" width="250">
 
-# SounderPy - Vertical Profile Data Retrieval and Analysis Tool For Python
-LATEST VERSION: v2.0.6 |  RELEASED: October 4th, 2023  |  COPYRIGHT Kyle J Gillett, 2023
-### [VISIT SOUNDERPY DOCUMENTATION HERE](https://github.com/kylejgillett/sounderpy/wiki)
-#### [CHECK OUT AN EXAMPLES & TUTORIALS](https://github.com/kylejgillett/sounderpy/blob/main/examples)
+</div>
+
+# SounderPy, the vertical profile data retrieval and analysis tool for Python
+LATEST VERSION: v3.0.0 |  RELEASED: January, 2024  |  COPYRIGHT Kyle J Gillett, 2023, 2024
+
 A Python package that helps you to access and plot vertical profile data for meteorological analysis 
 
 [![PyPI Package](https://img.shields.io/pypi/v/sounderpy.svg)](https://pypi.python.org/pypi/sounderpy/)
@@ -16,57 +17,62 @@ A Python package that helps you to access and plot vertical profile data for met
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10011851.svg)](https://doi.org/10.5281/zenodo.10011851)
 
+-----
+
+<div align="center">
+   
+### [VISIT SOUNDERPY DOCUMENTATION](https://kylejgillett.github.io/sounderpy/) | [CHECK OUT AN EXAMPLES & TUTORIALS](https://kylejgillett.github.io/sounderpy/examplescripts.html)
 </div>
 
 
-
------
 ## What is SounderPy:
 
-- SounderPy is a Python package used to access vertical profile data for calculations or plotting of a vertical profile (sounding). SounderPy's main use is for getting the data, but some basic plotting tools are included.
+SounderPy is an open-source atmospheric science Python package for vertical profile analysis. This tool is designed to get data, ‘clean it up’ for simple use, and plot the data on advanced-sounding plots. SounderPy was developed with the goal in mind to keep the code simple and efficient for users of all experience levels and for reliability in all use cases.
 
-## SounderPy is currently capable of accessing and processing data from:
+SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines National Weather Service Office, the State University of New York at Albany, Mississippi State University, and others. Many have used SounderPy in projects and papers, such as students at Ohio State University, Central Michigan University & Rizal Technological University.
 
-- ECMWF CDS ERA5 reanalysis [1940-present] *note: you must set up an account through the CDS to unlock ERA5 data. (see: https://cds.climate.copernicus.eu/api-how-to)
-- UNIDATA THREDDS TDS RAP reanalysis [2005-present]
-- UNIDATA THREDDS TDS RUC reanalysis [2005-2020]
-- The University of Wyoming RAOB archive [1973-present, depending on station]
-- Iowa State University's RAOB archive [1945-present, depending on station]
-- The IGRAv2 Observed profile archive [1905-present, depending on station]
-- Iowa State University's BUFKIT archive [2011-present, depending on station & model]
-- Penn State University's BUFKIT archive [most recent run, depending on station & model]
-- UNIDATA THREDDS TDS RAP-most-recent-analysis [now, most recent analysis only]
-- OU Aircraft Communications, Addressing and Reporting System (ACARS) [2019-present]
-- NCEP FNL 0.25deg Gridded Reanalysis Dataset [2021-present]
 
 
 ## Why SounderPy?
-- Sometimes data is tough to find, and often times is even tougher to get it in the format you like. SounderPy gets you this data!
-- The code needed for loading and parsing vertical data (especially from models) can be large and messy. SounderPy keeps it hidden away in a PyPi package -- just import and call sounderPy functions to keep your code clean!
+- Sometimes data is tough to find, and often times it’s even tougher to get it in the format you like. SounderPy gets you this data!
+- The code needed for loading and parsing meteorological data, especially from models, can be large and messy. SounderPy keeps it hidden away in a PyPi package – just import and call sounderPy functions to keep your code clean!
+- SounderPy functions are designed to be simple and quick making for reliable use in research, forecast/analysis operations, and simply for fun!
+
+
+
+## What kind of data?:
+
+| **DATA**                        | **FUNCTION**       | **TYPE**          | **TIME RANGE**   |
+|---------------------------------|--------------------|-------------------|-------------------|
+| ECMWF CDS ERA5 reanalysis*      | get_model_data()   | Reanalysis        | 1940-present      |
+| UNIDATA THREDDS TDS RAP         | get_model_data()   | Reanalysis        | 2005-present      |
+| UNIDATA THREDDS TDS RUC         | get_model_data()   | Reanalysis        | 2005-2020         |
+| UNIDATA THREDDS NCEP-FNL        | get_model_data()   | Reanalysis        | 2005-2020         |
+| ISU's BUFKIT archive             | get_bufkit_data()  | Model Forecast    | 2011-present      |
+| PSU's BUFKIT feed               | get_bufkit_data()  | Model Forecast    | Most recent runs  |
+| UNIDATA THREDDS TDS RAP         | get_model_data()   | Model Analysis    | Most recent run   |
+| OU ACARS Archive                | acars_data()       | Observations      | 2019-present      |
+| The Unv. of WY RAOB Archive      | get_obs_data()     | Observations      | 1973-present      |
+| IGRAv2 Observation archive       | get_obs_data()     | Observations      | 1905-present      |
+
 
 -------
 
-## How to use SounderPy:
-1. Make sure your environment has the required dependencies:
-   - cdsapi>=0.6.1
-   - ecape>0.0.0
-   - matplotlib>=3.3.0, <=3.7.1
-   - metpy>=1.5.1
-   - netcdf4>=1.6.4
-   - numpy>=1.20.0
-   - pandas>=1.2.0
-   - siphon>=0.9
-   - scipy>= 1.10.1
-   - xarray>=0.18.0
+## Installation
 
-2. ```
+1. #### Install the SounderPy software via pip:
+   ```
    pip install sounderpy
    ```
    Find it at https://pypi.org/project/sounderpy/
-3. ```
+   
+3. #### Import SounderPy into your Python project:
+   ```py
    import sounderpy as spy
    ```
-4. ```
+   
+5. #### Declare a few variables we need for getting data
+   ```py
    year  = '2011' 
    month = '04'
    day   = '27'
@@ -74,54 +80,39 @@ A Python package that helps you to access and plot vertical profile data for met
    latlon = [33.19, -87.46]
    method = 'rap' 
    ```
-5. ```
-   raw_data = spy.get_model_data(method, latlon, year, month, day, hour)
+7. #### Get some data!
+   ```py
+   clean_data = spy.get_model_data(method, latlon, year, month, day, hour)
    ```
-6. ```
-   clean_data = spy.parse_data(raw_data)
+   and boom! Now you have a callable dictionary of vertical profile reanalysis data including... 
+
+   + Temperature
+   + Dewpoint
+   + Pressure
+   + Height 
+   + U-component Wind 
+   + V-component Wind
+   
+### SounderPy can also plot profile data on unique sounding and hodograph figures!
+   ```py 
+   spy.build_sounding(clean_data)
    ```
-------
-  and boom! Now you have a callable dictionary of vertical profile reanalysis data including... 
-  
-1. Temperature
-2. Dewpoint
-3. Relative Humidity
-4. Pressure
-5. Height 
-6. U-component Wind 
-7. V-component Wind
+   
+   ```py 
+   spy.build_hodograph(clean_data)
+   ```
+   <div align="center">
+   <img src="https://kylejgillett.github.io/sounderpy/_images/example-sounding_light2.png" width="600">
+   
+   <img src="https://kylejgillett.github.io/sounderpy/_images/example-hodograph_dark.png" width="600">
+   </div>
 
-
-You can make a quick sounding plot of the data using built-in MetPy plotting functions! Just call...
-`spy.metpy_sounding(clean_data)`
-<div align="center">
-<img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_v2-0-6_example-sounding.png" width="600">
-</div>
-
-
-or for a hodograph-only plot...
-
-`spy.metpy_hodograph(clean_data)`
-
-
-<div align="center">
-<img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_v2-0-6_example-hodograph.png" width="600">
-</div>
-
-------
-
-or a looping GIF using this tutorial: *[SounderPy Looping GIF Tutorial](https://github.com/kylejgillett/sounderpy/blob/main/examples/sounderpy-gif_tutorial.ipynb)*
-
-
-<div align="center">
-<img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounding-loop_04192023_12zhrrr.gif" width="600">
-</div>
-
+## To learn more about what you can do with SounderPy, [check out the documentation](https://kylejgillett.github.io/sounderpy/)
 ------
 
 ## AUTHORS AND CONTRIBUTORS
 ### **AUTHOR: Kyle J Gillett, Central Michigan University** 
-#### CONTRIBUTOR: Scott Thomas, NWS Grand Rapids 
+##### CONTRIBUTOR: Scott Thomas, NWS Grand Rapids 
 
 ------
 
