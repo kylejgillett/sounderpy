@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creating Composite Sounding Plots &mdash; SounderPy v3.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5773a0da"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SounderPy
+              <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpertools.html">🛠️ Helper Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SounderPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Creating Composite Sounding Plots</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/composite_example.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Creating-Composite-Sounding-Plots">
+<h1>Creating Composite Sounding Plots<a class="headerlink" href="#Creating-Composite-Sounding-Plots" title="Link to this heading"></a></h1>
+<p>This tutorial creates SounderPy Composite Soundings.</p>
+<section id="Here-we-will-explore:">
+<h2>Here we will explore:<a class="headerlink" href="#Here-we-will-explore:" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Choosing data</p></li>
+<li><p>Building composite plots</p></li>
+<li><p>Customizing composite Plots</p></li>
+<li><p>Saving composite plots to a file</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># First lets import SounderPy. Its fun to import as &#39;spy&#39;!</span>
+<span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+## ---------------------------------- SOUNDERPY ----------------------------------- ##
+##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
+##                    v3.0.0 | Jan. 2024 | (C) Kyle J Gillett                       ##
+## -------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------- ##
+
+</pre></div></div>
+</div>
+<section id="Choosing-Data">
+<h3><strong>Choosing Data</strong><a class="headerlink" href="#Choosing-Data" title="Link to this heading"></a></h3>
+<section id="SounderPy's-Composite-Sounding-function-will-ingest-any-data-native-to-SounderPy!">
+<h4>SounderPy’s Composite Sounding function will ingest any data native to SounderPy!<a class="headerlink" href="#SounderPy's-Composite-Sounding-function-will-ingest-any-data-native-to-SounderPy!" title="Link to this heading"></a></h4>
+<ul>
+<li><p class="rubric" id="this-could-be"><strong>This could be…</strong></p>
+<ul class="simple">
+<li><p>ACARS Aircraft Observations</p></li>
+<li><p>RAOB Observations</p></li>
+<li><p>BUFKIT Forecasts</p></li>
+<li><p>RAP/RUC Reanalysis</p></li>
+<li><p>NCEP FNL Reanalysis</p></li>
+<li><p>ERA5 Reanalysis</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="The-goal-of-the-Composite-Sounding-is-to-compare-profiles-to-each-other.-Examples-of-this-could-be...">
+<h4>The goal of the Composite Sounding is to compare profiles to each other. Examples of this could be…<a class="headerlink" href="#The-goal-of-the-Composite-Sounding-is-to-compare-profiles-to-each-other.-Examples-of-this-could-be..." title="Link to this heading"></a></h4>
+<ul>
+<li><p class="rubric" id="forecast-model-data"><strong>Forecast Model Data:</strong></p>
+<ul class="simple">
+<li><p>Comparing different BUFKIT models for the same forecast hour (12z HRRR, GFS, NAM at forecast hour 12)</p></li>
+<li><p>Comparing BUFKIT model runs for the same hour (06z, 12z, 18z runs, valid at 00z)</p></li>
+<li><p>Comparing forecast hours for a specific model run (12z HRRR at F00, F01, F02, F03 etc)</p></li>
+</ul>
+</li>
+<li><p class="rubric" id="observed-data"><strong>Observed Data:</strong></p>
+<ul class="simple">
+<li><p>Comparing different launch times for the same station (12z, 18z, 00z at OUN)</p></li>
+<li><p>Comparing several area stations at a given time (JAN, BMX, LIX at 18z)</p></li>
+<li><p>The same can be done for ACARS aircraft observations! (DAL at 0200z, 0210z, 0230z)</p></li>
+</ul>
+</li>
+<li><p class="rubric" id="reanalysis-data"><strong>Reanalysis Data:</strong></p>
+<ul class="simple">
+<li><p>Comparing different valid times for a given location (23z, 00z, 01z at [43.2, -83.5])</p></li>
+</ul>
+</li>
+<li><p class="rubric" id="mixing-data-types"><strong>Mixing data types!!</strong></p>
+<ul class="simple">
+<li><p>Compare past model preformance against observations!</p></li>
+<li><p>Compare reanalysis with observations to see how close the reanalysis is to the actual atmosphere</p></li>
+<li><p>Check analogs by comparing reanalysis cases or observations to forecast model data</p></li>
+</ul>
+</li>
+</ul>
+<p>The combos are endless, and SounderPy can do it all!</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="The-``build_composite()``-function">
+<h3><strong>The ``build_composite()`` function</strong><a class="headerlink" href="#The-``build_composite()``-function" title="Link to this heading"></a></h3>
+<ul>
+<li><p class="rubric" id="build-compositedata-list-dark-modefalse-shade-betweenfalse-alphas-to-usenone-colors-to-usenone-ls-to-usenone-lw-to-usenone-savefalse-filenamesounderpy-sounding"><strong>``build_composite(data_list, dark_mode=False, shade_between=False, alphas_to_use=’none’, colors_to_use=’none’, ls_to_use=’none’, lw_to_use=’none’, save=False, filename=’sounderpy_sounding’)``</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data_list</span></code> (list of dicts, required) – a list of data dictionaries for each profile to be plotted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dark_mode</span></code> (bool, optional) – True will invert the color scheme for a ‘dark-mode’ sounding. Default is False.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shade_between</span></code> (bool, optional) – Lightly shade between the dewpoint &amp; temperature trace. In many cases, this improves readability. Default is True.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">alphas_to_use</span></code> (list of floats, optional) – A list of custom alphas (0.0-1.0). List length must match the number of profiles listed in data_list. Default is ‘none’. Default alpha is 1.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">colors_to_use</span></code> (list of strings, optional) – A list of custom matplotlib color name stings. List length must match the number of profiles listed in data_list. Default is ‘none’.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ls_to_use</span></code> (list of stings, optional) – A list of custom matplotlib linestyles. List length must match the number of profiles listed in data_list. Default is ‘none’. Default linestyle is ‘-‘.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lw_to_use</span></code> (list of floats, optional) – A list of custom linewidths. List length must match the number of profiles listed in data_list. Default is ‘none’. Default linewidth is 3.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">save</span></code> (bool, optional) – whether to show the plot inline or save to a file. Default is False which displays the file inline.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">filename</span></code> (str, optional) – the filename by which a file should be saved to if save = True. Default is sounderpy_sounding.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="Building-a-Composite-Sounding">
+<h3>Building a Composite Sounding<a class="headerlink" href="#Building-a-Composite-Sounding" title="Link to this heading"></a></h3>
+<p>First, we need a <code class="docutils literal notranslate"><span class="pre">list</span></code> of ‘clean_data’ <code class="docutils literal notranslate"><span class="pre">dictionaries</span></code>. Lets get multiple dictionaries of data, and for this tutorial, lets examine forecast model preformance for the May 20, 2022 Gaylord, MI EF3 tornado event. We can compare the forecast models against the 18z observation from APX (Gaylord)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># get data for 12z model runs at F06 for 18z 05-20-2022</span>
+<span class="c1"># the `hush` kwarg is used here to reduce the amount of printed</span>
+<span class="c1"># output produced by the `get_bufkit_data()` &amp; `get_obs_data()` functions</span>
+
+<span class="n">hrrr</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_bufkit_data</span><span class="p">(</span><span class="s1">&#39;hrrr&#39;</span><span class="p">,</span> <span class="s1">&#39;apx&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;2022&#39;</span><span class="p">,</span> <span class="s1">&#39;05&#39;</span><span class="p">,</span> <span class="s1">&#39;20&#39;</span><span class="p">,</span> <span class="s1">&#39;12&#39;</span><span class="p">,</span> <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">rap</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_bufkit_data</span><span class="p">(</span><span class="s1">&#39;rap&#39;</span><span class="p">,</span> <span class="s1">&#39;apx&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;2022&#39;</span><span class="p">,</span> <span class="s1">&#39;05&#39;</span><span class="p">,</span> <span class="s1">&#39;20&#39;</span><span class="p">,</span> <span class="s1">&#39;12&#39;</span><span class="p">,</span> <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nam</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_bufkit_data</span><span class="p">(</span><span class="s1">&#39;nam&#39;</span><span class="p">,</span> <span class="s1">&#39;apx&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;2022&#39;</span><span class="p">,</span> <span class="s1">&#39;05&#39;</span><span class="p">,</span> <span class="s1">&#39;20&#39;</span><span class="p">,</span> <span class="s1">&#39;12&#39;</span><span class="p">,</span> <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">gfs</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_bufkit_data</span><span class="p">(</span><span class="s1">&#39;gfs&#39;</span><span class="p">,</span> <span class="s1">&#39;apx&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;2022&#39;</span><span class="p">,</span> <span class="s1">&#39;05&#39;</span><span class="p">,</span> <span class="s1">&#39;20&#39;</span><span class="p">,</span> <span class="s1">&#39;12&#39;</span><span class="p">,</span> <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># get data for the 18z RAOB launch from APX</span>
+<span class="n">raob</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s1">&#39;apx&#39;</span><span class="p">,</span> <span class="s1">&#39;2022&#39;</span><span class="p">,</span> <span class="s1">&#39;05&#39;</span><span class="p">,</span> <span class="s1">&#39;20&#39;</span><span class="p">,</span> <span class="s1">&#39;18&#39;</span><span class="p">,</span> <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; BUFKIT DATA ACCESS FUNCTION --
+---------------------------------
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:00
+&gt; SUMMARY: 12Z HRRR F06 for APX, GAYLORD at 05-20-2022-18Z
+&gt; BUFKIT DATA ACCESS FUNCTION --
+---------------------------------
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:00
+&gt; SUMMARY: 12Z RAP F06 for APX, GAYLORD at 05-20-2022-18Z
+&gt; BUFKIT DATA ACCESS FUNCTION --
+---------------------------------
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:00
+&gt; SUMMARY: 12Z NAM F06 for APX, GAYLORD at 05-20-2022-18Z
+&gt; BUFKIT DATA ACCESS FUNCTION --
+---------------------------------
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:00
+&gt; SUMMARY: 12Z GFS F06 for APX, GAYLORD at 05-20-2022-18Z
+&gt; OBSERVED DATA ACCESS FUNCTION --
+-----------------------------------
+&gt; PROFILE FOUND: APX on 05/20/2022 at 18z | From UW
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:01
+&gt; SUMMARY: 18Z Launch for KAPX, GAYLORD at 05-20-2022-18Z
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># add those dictionaries to a list</span>
+<span class="c1"># the order of data is up to you, but note that</span>
+<span class="c1"># in later steps the order must be consistent!</span>
+
+<span class="n">data_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">hrrr</span><span class="p">,</span> <span class="n">rap</span><span class="p">,</span> <span class="n">nam</span><span class="p">,</span> <span class="n">gfs</span><span class="p">,</span> <span class="n">raob</span><span class="p">]</span>
+
+<span class="c1"># now we can build our composite with just this to start</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span><span class="n">data_list</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; COMPOSITE SOUNDING FUNCTION --
+-------------------------------
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:00
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/composite_example_4_1.png" src="_images/composite_example_4_1.png" />
+</div>
+</div>
+</section>
+<section id="Customizing-Composite-Soundings">
+<h3><strong>Customizing Composite Soundings</strong><a class="headerlink" href="#Customizing-Composite-Soundings" title="Link to this heading"></a></h3>
+<p>That’s decent plot for the tiny line of code it needed. But, we can visually enchance this a bit to really get the effect we want. Recall, we are comparing how well models did to the observed profile, so the observed profile should be the most visible. Lets try to mess with some settings.</p>
+<section id="How-can-we-customize-the-plot?">
+<h4>How can we customize the plot?<a class="headerlink" href="#How-can-we-customize-the-plot?" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Changing the colors</p></li>
+<li><p>Setting alphas</p></li>
+<li><p>Setting line widths</p></li>
+<li><p>Setting line styles</p></li>
+<li><p>Dark mode</p></li>
+</ul>
+<p>To use these settings we must create lists, of equal length to <code class="docutils literal notranslate"><span class="pre">data_list</span></code>, with the values we want:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># specify custom colors (cyan will stand out nice for the RAOB -- the last list item)</span>
+<span class="n">colors_to_use</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;cornflowerblue&#39;</span><span class="p">,</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="s1">&#39;purple&#39;</span><span class="p">,</span> <span class="s1">&#39;cyan&#39;</span><span class="p">]</span>
+
+<span class="c1"># specify custom linewidths, make the RAOB satnd out with a larger linewidth</span>
+<span class="n">lw_to_use</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+
+<span class="c1"># specify custom linestyles, dotted for the models and solid for the RAOB</span>
+<span class="n">ls_to_use</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">]</span>
+
+<span class="c1"># specify custom alphas just to help the RAOB pop some more.</span>
+<span class="n">alphas_to_use</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># add it all to the `build_composite()` function!</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span><span class="n">data_list</span><span class="p">,</span> <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">colors_to_use</span><span class="o">=</span><span class="n">colors_to_use</span><span class="p">,</span>
+                    <span class="n">lw_to_use</span><span class="o">=</span><span class="n">lw_to_use</span><span class="p">,</span>
+                    <span class="n">ls_to_use</span><span class="o">=</span><span class="n">ls_to_use</span><span class="p">,</span>
+                    <span class="n">alphas_to_use</span><span class="o">=</span><span class="n">alphas_to_use</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; COMPOSITE SOUNDING FUNCTION --
+-------------------------------
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:00
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/composite_example_6_1.png" src="_images/composite_example_6_1.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Saving-plots-as-a-file">
+<h3>Saving plots as a file<a class="headerlink" href="#Saving-plots-as-a-file" title="Link to this heading"></a></h3>
+<p>By default, SounderPy is set to show plots inline. If you want/need to save them to a file, SounderPy offers that option!</p>
+<p>Just set the <code class="docutils literal notranslate"><span class="pre">save</span></code> kwarg to True, and give it a file name using the <code class="docutils literal notranslate"><span class="pre">filename</span></code> kwarg!</p>
+<section id="IMPORTANT-NOTE!!!">
+<h4>IMPORTANT NOTE!!!<a class="headerlink" href="#IMPORTANT-NOTE!!!" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>If your plots come out with a funky layout when displaying them inline, it may be due to your screen resolution.</p></li>
+<li><p>In the event that this is the case, simply use the <code class="docutils literal notranslate"><span class="pre">save=True</span></code> option to save plots to a file!</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#spy.build_composite(data_list, save=True, filename=&#39;composite_model-raob_0520202218z&#39;)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Kyle J Gillett.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -48,20 +48,24 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">🌐 Tools for Getting Data</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#model-reanalysis-data-rap-era5-ncep">Model Reanalysis Data | RAP, ERA5, NCEP</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#spy.get_model_data"><code class="docutils literal notranslate"><span class="pre">spy.get_model_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-key-names">Model key names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#latitude-longitude-pairs">Latitude-Longitude pairs</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#model-forecast-data-bufkit">Model Forecast Data | BUFKIT</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#available-bufkit-sites">AVAILABLE BUFKIT SITES:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#available-model-data">AVAILABLE MODEL DATA:</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#spy.get_bufkit_data"><code class="docutils literal notranslate"><span class="pre">spy.get_bufkit_data()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#spy.get_bufkit_data"><code class="docutils literal notranslate"><span class="pre">spy.get_bufkit_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#available-bufkit-sites">Available BUFKIT Sites:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#available-models">Available Models:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#forecastkeys">Model key names</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#observed-data-raob-igrav2">Observed Data | RAOB &amp; IGRAv2</a><ul>
@@ -70,8 +74,9 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#observed-data-acars-aircraft-obs">Observed Data | ACARS Aircraft Obs</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#acars_data"><code class="docutils literal notranslate"><span class="pre">acars_data</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#acars_data.spy.list_profiles"><code class="docutils literal notranslate"><span class="pre">acars_data.spy.list_profiles()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#acars_data.spy.get_profile"><code class="docutils literal notranslate"><span class="pre">acars_data.spy.get_profile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acars_data..list_profiles"><code class="docutils literal notranslate"><span class="pre">acars_data..list_profiles()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acars_data..get_profile"><code class="docutils literal notranslate"><span class="pre">acars_data..get_profile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acars-data-retrieval-example">ACARS Data Retrieval Example</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#what-does-the-data-look-like">What does the data look like?</a></li>
@@ -79,6 +84,9 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helpertools.html">🛠️ Helper Tools</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
 </ul>
@@ -109,7 +117,7 @@
              
   <section id="tools-for-getting-data">
 <h1>🌐 Tools for Getting Data<a class="headerlink" href="#tools-for-getting-data" title="Link to this heading"></a></h1>
-<p>Getting data is tough, then getting it into a usable format can often be as bad or worse. Thankfully this is SounderPy’s main purpose and strong suit!</p>
+<p>Getting data can be tough, and then getting it into a usable format can often be as bad or worse. Thankfully this is SounderPy’s main purpose and strong suit!</p>
 <p><strong>SounderPy is currently capable of accessing and processing data from:</strong></p>
 <table class="docutils align-default">
 <thead>
@@ -165,7 +173,7 @@
 <td><p>Observations</p></td>
 <td><p>1973-present</p></td>
 </tr>
-<tr class="row-odd"><td><p>IGRAv2 Observation archive</p></td>
+<tr class="row-odd"><td><p>IGRAv2 Observation Archive</p></td>
 <td><p>get_obs_data()</p></td>
 <td><p>Observations</p></td>
 <td><p>1905-present</p></td>
@@ -184,17 +192,17 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>str</em><em>, </em><em>required</em>) – the requested model to use (rap-ruc, era5, ncep)</p></li>
-<li><p><strong>latlon</strong> (<em>list</em><em>, </em><em>required</em>) – the latitude &amp; longitude pair for sounding ([44.92, -84.72])</p></li>
+<li><p><strong>model</strong> (<em>str</em><em>, </em><em>required</em>) – the model <a class="reference internal" href="#reanalysiskeys"><span class="std std-ref">‘key’</span></a> name to request data from</p></li>
+<li><p><strong>latlon</strong> (<em>list</em><em>, </em><em>required</em>) – the <a class="reference internal" href="#latlonpairs"><span class="std std-ref">latitude &amp; longitude pair</span></a> for sounding in a <cite>list</cite></p></li>
 <li><p><strong>year</strong> (<em>str</em><em>, </em><em>required</em>) – valid year</p></li>
 <li><p><strong>month</strong> (<em>str</em><em>, </em><em>required</em>) – valid month</p></li>
 <li><p><strong>day</strong> (<em>str</em><em>, </em><em>required</em>) – valid day</p></li>
 <li><p><strong>hour</strong> (<em>str</em><em>, </em><em>required</em>) – required, valid hour</p></li>
-<li><p><strong>hush</strong> (bool, optional, default is <cite>False</cite>) – whether to ‘hush’ a read-out of thermodynamic and kinematic parameters when getting a data.</p></li>
+<li><p><strong>hush</strong> (bool, optional, default is <cite>False</cite>) – whether to ‘hush’ a read-out of thermodynamic and kinematic parameters when getting data.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, &amp; model information</p>
+<dd class="field-even"><p><a class="reference internal" href="#datadescription"><span class="std std-ref">clean_data</span></a>, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, &amp; model information</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
@@ -202,6 +210,24 @@
 </dl>
 </dd></dl>
 
+<section id="model-key-names">
+<span id="reanalysiskeys"></span><h3>Model key names<a class="headerlink" href="#model-key-names" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'era5'</span></code>: ECMWF ReAnalysis v5 (ERA5), reanalysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'rap'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'rap-ruc'</span></code>: RAPid refresh (RAP) / Rapid Update Cycle (RUC), reanalysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'ncep'</span></code>: NCEP Global Data Assimilation System/Final 0.25 degree, reanalysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'rap-now'</span></code>: RAPid refresh, latest analysis</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="latitude-longitude-pairs">
+<span id="latlonpairs"></span><h3>Latitude-Longitude pairs<a class="headerlink" href="#latitude-longitude-pairs" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>A <cite>list</cite> of <cite>floats</cite>: <code class="docutils literal notranslate"><span class="pre">[44.92,</span> <span class="pre">-84.72]</span></code></p></li>
+</ul>
+</div></blockquote>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><strong>BEWARE</strong> This data is <em>reanalysis</em>, therefore not a forecast &amp; not entirely representative of the actual atmosphere. Understanding the caveats of using reanalysis model data is important when utilizing this function.</p>
@@ -216,25 +242,45 @@
 </div>
 <hr class="docutils" />
 </section>
+</section>
 <section id="model-forecast-data-bufkit">
 <span id="bufkitdata"></span><h2>Model Forecast Data | BUFKIT<a class="headerlink" href="#model-forecast-data-bufkit" title="Link to this heading"></a></h2>
 <p><strong>A function used to access BUFKIT model forecast vertical profile data</strong></p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<ul class="simple">
-<li><p>This data is <em>model forecast</em> data. Users must note that BUFKIT data is model data loaded for <em>specific designated BUFKIT sites</em></p></li>
-<li><p>To learn more about BUFKIT check out: <a class="reference external" href="https://meteor.geol.iastate.edu/~ckarsten/bufkit/bufkit.html">IEM BUFKIT page</a></p></li>
+<dl class="py function">
+<dt class="sig sig-object py" id="spy.get_bufkit_data">
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">get_bufkit_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fcst_hour</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_month</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_day</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_hour</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.get_bufkit_data" title="Link to this definition"></a></dt>
+<dd><p>Return a <code class="docutils literal notranslate"><span class="pre">dict</span></code> of ‘cleaned up’ model forecast data from a <a class="reference internal" href="#forecastmodels"><span class="std std-ref">given model</span></a>, for a given BUFKIT <a class="reference internal" href="#forecastsites"><span class="std std-ref">site identifier</span></a>, forecast hour, &amp; model-run-date</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>str</em><em>, </em><em>required</em>) – the model <a class="reference internal" href="#forecastkeys"><span class="std std-ref">‘key’</span></a> name to request data from</p></li>
+<li><p><strong>station</strong> (<em>str</em><em>, </em><em>required</em>) – a 3-4 digit BUFKIT site identifier</p></li>
+<li><p><strong>fcst_hour</strong> (<em>int</em><em>, </em><em>required</em>) – valid forecast hour</p></li>
+<li><p><strong>year</strong> (<em>str</em><em>, </em><em>required</em>) – valid year</p></li>
+<li><p><strong>month</strong> (<em>str</em><em>, </em><em>required</em>) – valid month</p></li>
+<li><p><strong>day</strong> (<em>str</em><em>, </em><em>required</em>) – valid day</p></li>
+<li><p><strong>hour</strong> (<em>str</em><em>, </em><em>required</em>) – valid hour</p></li>
+<li><p><strong>hush</strong> (bool, optional, default is <cite>False</cite>) – whether to ‘hush’ a read-out of thermodynamic and kinematic parameters when getting data.</p></li>
 </ul>
-</div>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#datadescription"><span class="std std-ref">clean_data</span></a>, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, &amp; model information</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
 <section id="available-bufkit-sites">
-<h3>AVAILABLE BUFKIT SITES:<a class="headerlink" href="#available-bufkit-sites" title="Link to this heading"></a></h3>
+<span id="forecastsites"></span><h3>Available BUFKIT Sites:<a class="headerlink" href="#available-bufkit-sites" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>Iowa State University’s <a class="reference external" href="https://meteor.geol.iastate.edu/~ckarsten/bufkit/data/">IEM BUFKIT warehouse</a></p></li>
-<li><p>Penn State University’s <a class="reference external" href="http://www.meteo.psu.edu/bufkit/DomainNAMRAP_NAM_12.html">PSU BUFKIT warehouse</a></p></li>
+<li><p>Iowa State University’s <a class="reference external" href="https://meteor.geol.iastate.edu/~ckarsten/bufkit/data/">IEM BUFKIT Warehouse Maps</a></p></li>
+<li><p>Penn State University’s <a class="reference external" href="http://www.meteo.psu.edu/bufkit/DomainNAMRAP_NAM_12.html">PSU BUFKIT Warehouse Maps</a></p></li>
 </ul>
 </section>
-<section id="available-model-data">
-<h3>AVAILABLE MODEL DATA:<a class="headerlink" href="#available-model-data" title="Link to this heading"></a></h3>
+<section id="available-models">
+<span id="forecastmodels"></span><h3>Available Models:<a class="headerlink" href="#available-models" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><dl class="simple">
 <dt>Most recent model runs:</dt><dd><ul>
@@ -253,32 +299,27 @@
 </dl>
 </li>
 </ul>
-<dl class="py function">
-<dt class="sig sig-object py" id="spy.get_bufkit_data">
-<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">get_bufkit_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fcst_hour</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_month</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_day</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_hour</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.get_bufkit_data" title="Link to this definition"></a></dt>
-<dd><p>Return a <code class="docutils literal notranslate"><span class="pre">dict</span></code> of ‘cleaned up’ model forecast data from a given model, for a given BUFKIT site identifier, forecast hour, &amp; model-run-date</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>str</em><em>, </em><em>required</em>) – the requested model to use (such as hrrr, nam, gfs, etc)</p></li>
-<li><p><strong>station</strong> (<em>str</em><em>, </em><em>required</em>) – a 3-4 digit BUFKIT site identifier</p></li>
-<li><p><strong>fcst_hour</strong> (<em>int</em><em>, </em><em>required</em>) – valid forecast hour</p></li>
-<li><p><strong>year</strong> (<em>str</em><em>, </em><em>required</em>) – valid year</p></li>
-<li><p><strong>month</strong> (<em>str</em><em>, </em><em>required</em>) – valid month</p></li>
-<li><p><strong>day</strong> (<em>str</em><em>, </em><em>required</em>) – valid day</p></li>
-<li><p><strong>hour</strong> (<em>str</em><em>, </em><em>required</em>) – valid hour</p></li>
-<li><p><strong>hush</strong> (bool, optional, default is <cite>False</cite>) – whether to ‘hush’ a read-out of thermodynamic and kinematic parameters when getting a data.</p></li>
+</section>
+<section id="forecastkeys">
+<span id="id1"></span><h3>Model key names<a class="headerlink" href="#forecastkeys" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">hrrr</span></code>: High Resolution Rapid Refresh, analysis (F00) &amp; forecast</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rap</span></code>: RAPid refresh, analysis (F00) &amp; forecast</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nam</span></code>: North American Mesoscale model, analysis (F00) &amp; forecast</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">namnest</span></code>: Nested North American Mesoscale model, analysis (F00) &amp; forecast</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gfs</span></code>: Global Forecast System, analysis (F00) &amp; forecast</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sref</span></code>: Short Range Ensemble Forecast, analysis (F00) &amp; forecast</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hiresw</span></code>: High RESolution Window forecast system, analysis (F00) &amp; forecast</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, &amp; model information</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
+</div></blockquote>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<ul class="simple">
+<li><p>This data is <em>model forecast</em> data. Users must note that BUFKIT data is model data loaded for <em>specific designated BUFKIT sites</em></p></li>
+<li><p>To learn more about BUFKIT check out: <a class="reference external" href="https://meteor.geol.iastate.edu/~ckarsten/bufkit/bufkit.html">IEM BUFKIT page</a></p></li>
+</ul>
+</div>
 <hr class="docutils" />
 </section>
 </section>
@@ -298,11 +339,11 @@
 <li><p><strong>month</strong> (<em>str</em><em>, </em><em>required</em>) – launch month</p></li>
 <li><p><strong>day</strong> (<em>str</em><em>, </em><em>required</em>) – launch day</p></li>
 <li><p><strong>hour</strong> (<em>str</em><em>, </em><em>required</em>) – launch hour</p></li>
-<li><p><strong>hush</strong> (bool, optional, default is <cite>False</cite>) – whether to ‘hush’ a read-out of thermodynamic and kinematic parameters when getting a data.</p></li>
+<li><p><strong>hush</strong> (bool, optional, default is <cite>False</cite>) – whether to ‘hush’ a read-out of thermodynamic and kinematic parameters when getting data.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, &amp; model information</p>
+<dd class="field-even"><p><a class="reference internal" href="#datadescription"><span class="std std-ref">clean_data</span></a>, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, &amp; model information</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
@@ -344,32 +385,64 @@
 </dd>
 </dl>
 <dl class="py function">
-<dt class="sig sig-object py" id="acars_data.spy.list_profiles">
-<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">list_profiles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#acars_data.spy.list_profiles" title="Link to this definition"></a></dt>
-<dd><p>Return a list of strings that represents ACARS profiles for a given date and hour.</p>
+<dt class="sig sig-object py" id="acars_data..list_profiles">
+<span class="sig-prename descclassname"><span class="pre">.</span></span><span class="sig-name descname"><span class="pre">list_profiles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#acars_data..list_profiles" title="Link to this definition"></a></dt>
+<dd><p>Return a <a class="reference internal" href="#acarslists"><span class="std std-ref">list of strings</span></a> that represents ACARS profiles for a given date and hour.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="acars_data.spy.get_profile">
-<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">get_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#acars_data.spy.get_profile" title="Link to this definition"></a></dt>
-<dd><p>Return a <code class="docutils literal notranslate"><span class="pre">dict</span></code> of ‘cleaned up’ ACARS observation profile data. Do so by selecting one of the profile string “IDs” listed by <code class="docutils literal notranslate"><span class="pre">list_profiles()</span></code> and pasting it as an argument in <code class="docutils literal notranslate"><span class="pre">get_profile()</span></code></p>
+<dt class="sig sig-object py" id="acars_data..get_profile">
+<span class="sig-prename descclassname"><span class="pre">.</span></span><span class="sig-name descname"><span class="pre">get_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#acars_data..get_profile" title="Link to this definition"></a></dt>
+<dd><p>Return a <code class="docutils literal notranslate"><span class="pre">dict</span></code> of ‘cleaned up’ ACARS observation profile data. Do so by selecting one of the profile string <a class="reference internal" href="#acarslists"><span class="std std-ref">“IDs”</span></a> listed by <code class="docutils literal notranslate"><span class="pre">list_profiles()</span></code> and pasting it as an argument in <code class="docutils literal notranslate"><span class="pre">get_profile()</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>profile</strong> (<em>str</em><em>, </em><em>required</em>) – profile “ID”</p></li>
-<li><p><strong>hush</strong> (bool, optional, default is <cite>False</cite>) – whether to ‘hush’ a read-out of thermodynamic and kinematic parameters when getting a data.</p></li>
+<li><p><strong>profile</strong> (<em>str</em><em>, </em><em>required</em>) – profile <a class="reference internal" href="#acarslists"><span class="std std-ref">“ID”</span></a></p></li>
+<li><p><strong>hush</strong> (bool, optional, default is <cite>False</cite>) – whether to ‘hush’ a read-out of thermodynamic and kinematic parameters when getting data.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#datadescription"><span class="std std-ref">clean_data</span></a>, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, &amp; model information</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
 
 </dd></dl>
 
+<section id="acars-data-retrieval-example">
+<span id="acarslists"></span><h3>ACARS Data Retrieval Example<a class="headerlink" href="#acars-data-retrieval-example" title="Link to this heading"></a></h3>
+<p>Here is a simple example of the ACARS data retrieval functionality:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1"># Start by setting up an &#39;ACARS connection&#39;</span>
+<span class="linenos"> 2</span><span class="n">acars_conn</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">acars_data</span><span class="p">(</span><span class="s1">&#39;2023&#39;</span><span class="p">,</span> <span class="s1">&#39;12&#39;</span><span class="p">,</span> <span class="s1">&#39;30&#39;</span><span class="p">,</span> <span class="s1">&#39;14&#39;</span><span class="p">)</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="c1"># List profiles</span>
+<span class="linenos"> 5</span><span class="n">acars_conn</span><span class="o">.</span><span class="n">list_profiles</span><span class="p">()</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="linenos"> 8</span><span class="sd">`.list_profiles()` will return a list of all profiles available</span>
+<span class="linenos"> 9</span><span class="sd">during the date/time entered in `acars_data()`, like this:</span>
+<span class="linenos">10</span><span class="sd">[&#39;ATL_1450&#39;,</span>
+<span class="linenos">11</span><span class="sd">&#39;AUS_1410&#39;,</span>
+<span class="linenos">12</span><span class="sd">&#39;AUS_1430&#39;,</span>
+<span class="linenos">13</span><span class="sd">&#39;AUS_1450&#39;,</span>
+<span class="linenos">14</span><span class="sd">&#39;BNA_1420&#39;,</span>
+<span class="linenos">15</span><span class="sd">&#39;BWI_1430&#39;]</span>
+<span class="linenos">16</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span><span class="c1"># To now get the data for a profile,</span>
+<span class="linenos">19</span><span class="c1"># copy the &#39;profile ID&#39; and add it to `.get_profile()`:</span>
+<span class="linenos">20</span><span class="n">acars_conn</span><span class="o">.</span><span class="n">get_profile</span><span class="p">(</span><span class="s1">&#39;AUS_1450&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>ACARS data is aircraft observation data, thus these profiles are typically not ‘full’ profiles (i.e., up to 100 hPa). Often times these profiles extend to only 500 hPa or less. They may also contain various errors such as unreasonably dry dewpoints and unreasonably high wind velocities.</p>
 </div>
 <hr class="docutils" />
+</section>
 </section>
 <section id="what-does-the-data-look-like">
 <span id="datadescription"></span><h2>What does the data look like?<a class="headerlink" href="#what-does-the-data-look-like" title="Link to this heading"></a></h2>

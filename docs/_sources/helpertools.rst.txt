@@ -12,7 +12,7 @@ Return a massive dictionary of common calculated paramters and special variables
 
 Data returned in this dictionary include...
       - an interpolated version of the profile
-      - basic parameter such as mixing ratio, theta-e, wet-bulb, etc
+      - basic parameters such as mixing ratio, theta-e, wet-bulb, etc
       - Thermodynamic parameters such as SB, MU, ML parcel properties (LCL, LFC, EL, CAPE, CIN, etc)
       - Kinematic parameters such as storm motion, storm-relative wind, streamwise vorticity, SRH, etc.
 
@@ -31,7 +31,7 @@ Data returned in this dictionary include...
 
 
 
-************************************************************
+****************************************************************
 
 Finding site lat/lon pairs
 ---------------------------

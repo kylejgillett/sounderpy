@@ -1,7 +1,7 @@
 🌐 Tools for Getting Data
 ==========================
 
-Getting data is tough, then getting it into a usable format can often be as bad or worse. Thankfully this is SounderPy's main purpose and strong suit!
+Getting data can be tough, and then getting it into a usable format can often be as bad or worse. Thankfully this is SounderPy's main purpose and strong suit!
 
 **SounderPy is currently capable of accessing and processing data from:**
 
@@ -26,12 +26,12 @@ Getting data is tough, then getting it into a usable format can often be as bad 
 +--------------------------------+-------------------+------------------+------------------+
 |  The Unv. of WY RAOB Archive   | get_obs_data()    | Observations     | 1973-present     |
 +--------------------------------+-------------------+------------------+------------------+
-|  IGRAv2 Observation archive    | get_obs_data()    | Observations     |  1905-present    |
+|  IGRAv2 Observation Archive    | get_obs_data()    | Observations     |  1905-present    |
 +--------------------------------+-------------------+------------------+------------------+
 
                     
 
-***************************************************************
+**********************************************************************
 
 .. _modeldata:
 
@@ -47,9 +47,9 @@ We can use the simple ``spy.get_model_data()`` function:
 
    Return a ``dict`` of 'cleaned up' model reanalysis data from a given model, for a given location, date, and time
 
-   :param model: the requested model to use (rap-ruc, era5, ncep)
+   :param model: the model :ref:`'key' <reanalysiskeys>` name to request data from
    :type model: str, required
-   :param latlon: the latitude & longitude pair for sounding ([44.92, -84.72])
+   :param latlon: the :ref:`latitude & longitude pair<latlonpairs>` for sounding in a `list`
    :type latlon: list, required
    :param year: valid year
    :type year: str, required
@@ -59,10 +59,32 @@ We can use the simple ``spy.get_model_data()`` function:
    :type day: str, required
    :param hour: required, valid hour
    :type hour: str, required
-   :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting a data.
+   :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting data.
    :type hush: bool, optional, default is `False`
-   :return: clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information
+   :return: :ref:`clean_data<datadescription>`, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information
    :rtype: dict
+
+
+
+.. _reanalysiskeys:
+
+Model key names 
+^^^^^^^^^^^^^^^
+  - ``'era5'``: ECMWF ReAnalysis v5 (ERA5), reanalysis 
+
+  - ``'rap'``, or ``'rap-ruc'``: RAPid refresh (RAP) / Rapid Update Cycle (RUC), reanalysis 
+
+  - ``'ncep'``: NCEP Global Data Assimilation System/Final 0.25 degree, reanalysis 
+
+  - ``'rap-now'``: RAPid refresh, latest analysis
+
+.. _latlonpairs:
+
+Latitude-Longitude pairs
+^^^^^^^^^^^^^^^^^^^^^^^^^
+  - A `list` of `floats`: ``[44.92, -84.72]``
+
+
 
 .. note::
    **BEWARE** This data is *reanalysis*, therefore not a forecast & not entirely representative of the actual atmosphere. Understanding the caveats of using reanalysis model data is important when utilizing this function. 
@@ -72,6 +94,11 @@ We can use the simple ``spy.get_model_data()`` function:
 
 .. tip::
    **Is data access taking forever?** Sometimes the NCEP (RAP-RUC, NCEP-FNL) & ECMWF CDS (ERA5) servers are down and not able to be accessed. Sometimes these issues are resolved within hours, other times possibly a few days. 
+
+
+
+
+
 
 ***************************************************************
 
@@ -85,31 +112,11 @@ Model Forecast Data | BUFKIT
 
 **A function used to access BUFKIT model forecast vertical profile data**
 
-.. tip:: 
-   - This data is *model forecast* data. Users must note that BUFKIT data is model data loaded for *specific designated BUFKIT sites*
-   - To learn more about BUFKIT check out: `IEM BUFKIT page <https://meteor.geol.iastate.edu/~ckarsten/bufkit/bufkit.html>`_
-
-AVAILABLE BUFKIT SITES:
-^^^^^^^^^^^^^^^^^^^^^^^^
-- Iowa State University's `IEM BUFKIT warehouse <https://meteor.geol.iastate.edu/~ckarsten/bufkit/data/>`_
-- Penn State University's `PSU BUFKIT warehouse <http://www.meteo.psu.edu/bufkit/DomainNAMRAP_NAM_12.html>`_
-
-AVAILABLE MODEL DATA:
-^^^^^^^^^^^^^^^^^^^^^^
-- Most recent model runs: 
-    - GFS, NAM, NAMNEST, RAP, HRRR, SREF & HIRESW
-    - via Penn State's BUFKIT Warehouse
-- Archive model runs: 
-    - GFS, NAM, NAMNEST, RAP, HRRR
-    - via Iowa State's BUFKIT Warehouse
-
-
-
 .. py:function:: spy.get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, run_day=None, run_hour=None)
 
-   Return a ``dict`` of 'cleaned up' model forecast data from a given model, for a given BUFKIT site identifier, forecast hour, & model-run-date
+   Return a ``dict`` of 'cleaned up' model forecast data from a :ref:`given model<forecastmodels>`, for a given BUFKIT :ref:`site identifier<forecastsites>`, forecast hour, & model-run-date
 
-   :param model: the requested model to use (such as hrrr, nam, gfs, etc)
+   :param model: the model :ref:`'key' <forecastkeys>` name to request data from 
    :type model: str, required
    :param station: a 3-4 digit BUFKIT site identifier
    :type station: str, required
@@ -123,10 +130,50 @@ AVAILABLE MODEL DATA:
    :type day: str, required
    :param hour: valid hour
    :type hour: str, required
-   :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting a data.
+   :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting data.
    :type hush: bool, optional, default is `False`
-   :return: clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information
+   :return: :ref:`clean_data<datadescription>`, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information
    :rtype: dict
+
+.. _forecastsites:
+
+Available BUFKIT Sites:
+^^^^^^^^^^^^^^^^^^^^^^^^
+- Iowa State University's `IEM BUFKIT Warehouse Maps <https://meteor.geol.iastate.edu/~ckarsten/bufkit/data/>`_
+- Penn State University's `PSU BUFKIT Warehouse Maps <http://www.meteo.psu.edu/bufkit/DomainNAMRAP_NAM_12.html>`_
+
+.. _forecastmodels:
+
+Available Models:
+^^^^^^^^^^^^^^^^^^
+- Most recent model runs: 
+    - GFS, NAM, NAMNEST, RAP, HRRR, SREF & HIRESW
+    - via Penn State's BUFKIT Warehouse
+- Archive model runs: 
+    - GFS, NAM, NAMNEST, RAP, HRRR
+    - via Iowa State's BUFKIT Warehouse
+
+
+.. _forecastkeys:
+
+Model key names 
+^^^^^^^^^^^^^^^
+  - ``hrrr``: High Resolution Rapid Refresh, analysis (F00) & forecast
+  - ``rap``: RAPid refresh, analysis (F00) & forecast
+  - ``nam``: North American Mesoscale model, analysis (F00) & forecast
+  - ``namnest``: Nested North American Mesoscale model, analysis (F00) & forecast
+  - ``gfs``: Global Forecast System, analysis (F00) & forecast 
+  - ``sref``: Short Range Ensemble Forecast, analysis (F00) & forecast
+  - ``hiresw``: High RESolution Window forecast system, analysis (F00) & forecast
+
+
+.. tip:: 
+   - This data is *model forecast* data. Users must note that BUFKIT data is model data loaded for *specific designated BUFKIT sites*
+   - To learn more about BUFKIT check out: `IEM BUFKIT page <https://meteor.geol.iastate.edu/~ckarsten/bufkit/bufkit.html>`_
+
+
+
+
 
 
 ***************************************************************
@@ -156,9 +203,9 @@ Observed Data | RAOB & IGRAv2
    :type day: str, required
    :param hour: launch hour
    :type hour: str, required
-   :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting a data.
+   :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting data.
    :type hush: bool, optional, default is `False`
-   :return: clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information
+   :return: :ref:`clean_data<datadescription>`, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information
    :rtype: dict
 
 .. note::
@@ -192,18 +239,51 @@ Observed Data | ACARS Aircraft Obs
    :param hour: observation hour
    :type hour: str, required
 
-   .. py:function:: spy.list_profiles()
+   .. py:function:: .list_profiles()
 
-      Return a list of strings that represents ACARS profiles for a given date and hour.
+      Return a :ref:`list of strings<acarslists>` that represents ACARS profiles for a given date and hour.
 
-   .. py:function:: spy.get_profile(profile)
+   .. py:function:: .get_profile(profile)
 
-      Return a ``dict`` of 'cleaned up' ACARS observation profile data. Do so by selecting one of the profile string "IDs" listed by ``list_profiles()`` and pasting it as an argument in ``get_profile()``
+      Return a ``dict`` of 'cleaned up' ACARS observation profile data. Do so by selecting one of the profile string :ref:`"IDs"<acarslists>` listed by ``list_profiles()`` and pasting it as an argument in ``get_profile()``
 
-      :param profile: profile "ID"
+      :param profile: profile :ref:`"ID"<acarslists>`
       :type profile: str, required
-      :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting a data.
+      :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting data.
       :type hush: bool, optional, default is `False`
+      :return: :ref:`clean_data<datadescription>`, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information
+      :rtype: dict
+
+.. _acarslists:
+
+ACARS Data Retrieval Example
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Here is a simple example of the ACARS data retrieval functionality:
+
+.. code-block:: python
+   :linenos:
+
+   # Start by setting up an 'ACARS connection'
+   acars_conn = spy.acars_data('2023', '12', '30', '14')
+
+   # List profiles
+   acars_conn.list_profiles()
+
+   '''
+   `.list_profiles()` will return a list of all profiles available
+   during the date/time entered in `acars_data()`, like this:
+   ['ATL_1450',
+   'AUS_1410',
+   'AUS_1430',
+   'AUS_1450',
+   'BNA_1420',
+   'BWI_1430']
+   '''
+
+   # To now get the data for a profile, 
+   # copy the 'profile ID' and add it to `.get_profile()`:
+   acars_conn.get_profile('AUS_1450')
+
 
 .. note::
    ACARS data is aircraft observation data, thus these profiles are typically not 'full' profiles (i.e., up to 100 hPa). Often times these profiles extend to only 500 hPa or less. They may also contain various errors such as unreasonably dry dewpoints and unreasonably high wind velocities. 

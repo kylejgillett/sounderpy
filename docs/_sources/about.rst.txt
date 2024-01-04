@@ -25,17 +25,17 @@ In your Python document, its fun to import SounderPy as ``spy``!:
 Sample Basic Use 
 -----------------
 
-SounderPy is designed for simple and efficient use. Below is a basic example for plotting the latest HRRR forecast profile at hour 4 for BUFKIT site 'KMOP':
+SounderPy is designed for simple and efficient use. Below is a basic example plotting an 03/31/2023 12z HRRR forecast profile at forecast hour 8 for BUFKIT site 'KMLI':
 
 .. code-block:: python
 
    import sounderpy as spy
-   clean_data = spy.get_bufkit_data('hrrr', 'kmop', 4)
+   clean_data = spy.get_bufkit_data('hrrr', 'kmli', 8, '2023', '03', '31', '12')
    spy.build_sounding(clean_data, style='simple', dark_mode=True)
 
 Those three lines will make this!:
 
-.. image:: _static/images/example-sounding_dark.png
+.. image:: _static/images/example-sounding_simple_dark.png
    :alt: Example SounderPy Sounding
 
 

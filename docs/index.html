@@ -47,12 +47,18 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helpertools.html">🛠️ Helper Tools</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
 </ul>
@@ -88,7 +94,7 @@
 <p>SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines National Weather Service Office, the State University of New York at Albany, Mississippi State University, and others. Many have used SounderPy in projects and papers, such as students at Ohio State University, Central Michigan University &amp; Rizal Technological University.</p>
 <ul class="simple">
 <li><p>SounderPy is supported for Python &gt;= 3.9.</p></li>
-<li><p>Examples of SounderPy use in a Jupyter Notebook format can be found at… <em>under construction</em></p></li>
+<li><p>Examples of SounderPy use are available on the <a class="reference internal" href="examplescripts.html"><span class="doc">📝 Usage Examples</span></a> page</p></li>
 </ul>
 <a class="reference external image-reference" href="https://pypi.python.org/pypi/sounderpy/"><img alt="PyPI Package" src="https://img.shields.io/pypi/v/sounderpy.svg" /></a>
 <a class="reference external image-reference" href="https://pypi.python.org/pypi/sounderpy/"><img alt="PyPI Downloads" src="https://img.shields.io/pypi/dm/sounderpy.svg" /></a>
@@ -184,7 +190,7 @@
 <h1>Directory<a class="headerlink" href="#directory" title="Link to this heading"></a></h1>
 <blockquote>
 <div><div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">General:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="about.html#installation">Installation</a></li>
@@ -195,17 +201,23 @@
 <li class="toctree-l2"><a class="reference internal" href="about.html#about-the-author">About the Author</a></li>
 </ul>
 </li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="gettingdata.html#model-reanalysis-data-rap-era5-ncep">Model Reanalysis Data | RAP, ERA5, NCEP</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="gettingdata.html#spy.get_model_data"><code class="docutils literal notranslate"><span class="pre">spy.get_model_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#model-key-names">Model key names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#latitude-longitude-pairs">Latitude-Longitude pairs</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="gettingdata.html#model-forecast-data-bufkit">Model Forecast Data | BUFKIT</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#available-bufkit-sites">AVAILABLE BUFKIT SITES:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#available-model-data">AVAILABLE MODEL DATA:</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="gettingdata.html#spy.get_bufkit_data"><code class="docutils literal notranslate"><span class="pre">spy.get_bufkit_data()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#spy.get_bufkit_data"><code class="docutils literal notranslate"><span class="pre">spy.get_bufkit_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#available-bufkit-sites">Available BUFKIT Sites:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#available-models">Available Models:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#forecastkeys">Model key names</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="gettingdata.html#observed-data-raob-igrav2">Observed Data | RAOB &amp; IGRAv2</a><ul>
@@ -214,8 +226,9 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="gettingdata.html#observed-data-acars-aircraft-obs">Observed Data | ACARS Aircraft Obs</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="gettingdata.html#acars_data"><code class="docutils literal notranslate"><span class="pre">acars_data</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#acars_data.spy.list_profiles"><code class="docutils literal notranslate"><span class="pre">acars_data.spy.list_profiles()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#acars_data.spy.get_profile"><code class="docutils literal notranslate"><span class="pre">acars_data.spy.get_profile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#acars_data..list_profiles"><code class="docutils literal notranslate"><span class="pre">acars_data..list_profiles()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#acars_data..get_profile"><code class="docutils literal notranslate"><span class="pre">acars_data..get_profile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#acars-data-retrieval-example">ACARS Data Retrieval Example</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="gettingdata.html#what-does-the-data-look-like">What does the data look like?</a></li>
@@ -265,6 +278,11 @@
 </li>
 </ul>
 </li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="examplegallery.html#sounding-types">Sounding Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examplegallery.html#sounding-settings">Sounding Settings</a></li>
