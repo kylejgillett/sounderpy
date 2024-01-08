@@ -71,18 +71,18 @@ SounderPy has been used by several institutions. For example, this tool has been
    import sounderpy as spy
    ```
    
-5. #### Declare a few variables we need for getting data
+5. #### Lets declare a few simple variables we can use to get data:
    ```py
-   year  = '2011' 
-   month = '04'
-   day   = '27'
-   hour  = '22'
-   latlon = [33.19, -87.46]
-   method = 'rap' 
+   year  = '2014' 
+   month = '06'
+   day   = '16'
+   hour  = '18'
+   station = 'OAX'
    ```
 7. #### Get some data!
    ```py
-   clean_data = spy.get_model_data(method, latlon, year, month, day, hour)
+   # this will get us 18z observations on June 16th, 2014 from OAX (Omaha, Neb)
+   clean_data = spy.get_obs_data(station, year, month, day, hour)
    ```
    and boom! Now you have a callable dictionary of vertical profile reanalysis data including... 
 
@@ -95,14 +95,14 @@ SounderPy has been used by several institutions. For example, this tool has been
    
 ### SounderPy can also plot profile data on unique sounding and hodograph figures!
    ```py 
-   spy.build_sounding(clean_data)
+   spy.build_sounding(clean_data, color_blind=True)
    ```
    
    ```py 
-   spy.build_hodograph(clean_data)
+   spy.build_hodograph(clean_data, dark_mode=True)
    ```
    <div align="center">
-   <img src="https://kylejgillett.github.io/sounderpy/_images/example-sounding_light2.png" width="600">
+   <img src="https://kylejgillett.github.io/sounderpy/_images/example-sounding_light.png" width="600">
    
    <img src="https://kylejgillett.github.io/sounderpy/_images/example-hodograph_dark.png" width="600">
    </div>
@@ -120,9 +120,10 @@ SounderPy has been used by several institutions. For example, this tool has been
 ## CITING SOUNDERPY
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10011851.svg)](https://doi.org/10.5281/zenodo.10011851)
 
+
 in AMS format:
 
-- Gillett, K., 2023: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 2.0.6). Py-Pi, https://pypi.org/project/sounderpy/
+- Gillett, K., 2023: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.0). Py-Pi, https://pypi.org/project/sounderpy/
 
 ------
 
@@ -140,3 +141,5 @@ in AMS format:
 - Ryan M. May, Sean C. Arms, John R. Leeman, and Chastang, J. Siphon: A collection of Python Utilities for Accessing Remote Atmospheric and Oceanic Datasets. Unidata. 2017. [Available online at https://github.com/Unidata/siphon.] doi:10.5065/D6CN72NW.
 
 - Pauli Virtanen, Ralf Gommers, Travis E. Oliphant, Matt Haberland, Tyler Reddy, David Cournapeau, Evgeni Burovski, Pearu Peterson, Warren Weckesser, Jonathan Bright, Stéfan J. van der Walt, Matthew Brett, Joshua Wilson, K. Jarrod Millman, Nikolay Mayorov, Andrew R. J. Nelson, Eric Jones, Robert Kern, Eric Larson, CJ Carey, İlhan Polat, Yu Feng, Eric W. Moore, Jake VanderPlas, Denis Laxalde, Josef Perktold, Robert Cimrman, Ian Henriksen, E.A. Quintero, Charles R Harris, Anne M. Archibald, Antônio H. Ribeiro, Fabian Pedregosa, Paul van Mulbregt, and SciPy 1.0 Contributors. (2020) SciPy 1.0: Fundamental Algorithms for Scientific Computing in Python. Nature Methods, 17(3), 261-272.
+
+- Marsh, P., Halbert, K., Blumberg, G., Supinie, T., Esmaili, R., Szkodzinski, J., "SHARPpy: Sounding/Hodograph Analysis and Research Program in Python." GitHub. Available at: https://github.com/sharppy/SHARPpy.
