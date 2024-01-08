@@ -1615,7 +1615,7 @@ def __full_hodograph(clean_data, dark_mode, sr_hodo):
     #################################################################
     fig = plt.figure(figsize=(16, 12), linewidth=1.5, edgecolor=brdr_clr)
     fig.set_facecolor(bckgrnd_clr)  
-    hod_ax = plt.subplot()
+    hod_ax = plt.axes((0.13, 0.11, 0.77, 0.77))
     h = Hodograph(hod_ax, component_range=150.)
     try:
         h.ax.set_xlim(x_Minlimit, x_Maxlimit)                                  
