@@ -1,3 +1,172 @@
+# NEXRAD & TDWR SITES LIST
+# (C) KYLE J GILLETT 2024
+
+ID,NAME,ELV,LAT,LON
+KABR, Aberdeen, SD,                          1383, 45.456, -98.413 
+KABX, Albuquerque, NM,                       5951, 35.15,  -106.824
+KAKQ, Wakefield, VA,                         254,  36.984, -77.008 
+KAMA, Amarillo, TX,                          3703, 35.233, -101.709
+KAMX, Miami, FL,                             111,  25.611, -80.413 
+KAPX, Gaylord, MI,                           1561, 44.906, -84.72  
+KARX, La Crosse, WI,                         1357, 43.823, -91.191 
+KATX, Camano Island, WA,                     642,  48.195, -122.496
+KBBX, Beale AFB, CA,                         221,  39.496, -121.632
+KBGM, Binghamton, NY,                        1703, 42.2,   -75.985 
+KBHX, Eureka, CA,                            2516, 40.499, -124.292
+KBIS, Bismarck, ND,                          1755, 46.771, -100.76 
+KBLX, Billings, MT,                          3703, 45.854, -108.607
+KBMX, Birmingham, AL,                        759,  33.172, -86.77  
+KBOX, Boston, MA,                            231,  41.956, -71.137 
+KBRO, Brownsville, TX,                       87,   25.916, -97.419 
+KBUF, Buffalo, NY,                           790,  42.949, -78.737 
+KBYX, Key West, FL,                          89,   24.597, -81.703 
+KCAE, Columbia, SC,                          344,  33.949, -81.119 
+KCBW, Caribou, ME,                           859,  46.039, -67.806 
+KCBX, Boise, ID,                             3171, 43.49,  -116.236
+KCCX, State College, PA,                     2486, 40.923, -78.004 
+KCLE, Cleveland, OH,                         860,  41.413, -81.86  
+KCLX, Charleston, SC,                        228,  32.655, -81.042 
+KCRP, Corpus Christi, TX,                    142,  27.784, -97.511 
+KCXX, Burlington, VT,                        431,  44.511, -73.166 
+KCYS, Cheyenne, WY,                          6192, 41.152, -104.806
+KDAX, Sacramento, CA,                        144,  38.501, -121.678
+KDDC, Dodge City, KS,                        2671, 37.761, -99.969 
+KDFX, Laughlin AFB, TX,                      1196, 29.273, -100.28 
+KDGX, Jackson, MS,                           609,  32.28,  -89.984 
+KDIX, Philadelphia, PA,                      230,  39.947, -74.411 
+KDLH, Duluth, MN,                            1542, 46.837, -92.21  
+KDMX, Des Moines, IA,                        1094, 41.731, -93.723 
+KDOX, Dover AFB, DE,                         163,  38.826, -75.44  
+KDTX, Detroit, MI,                           1216, 42.7,   -83.472 
+KDVN, Davenport, IA,                         851,  41.612, -90.581 
+KDYX, Dyess AFB, TX,                         1581, 32.538, -99.254 
+KEAX, Kansas City, MO,                       1098, 38.81,  -94.264 
+KEMX, Tucson, AZ,                            5319, 31.894, -110.63 
+KENX, Albany, NY,                            1934, 42.586, -74.064 
+KEOX, Fort Rucker, AL,                       537,  31.46,  -85.459 
+KEPZ, El Paso, TX,                           4218, 31.873, -106.698 
+KESX, Las Vegas, NV,                         4948, 35.701, -114.891 
+KEVX, Eglin AFB, FL,                         222,  30.565, -85.922 
+KEWX, San Antonio, TX,                       766,  29.704, -98.029 
+KEYX, Edwards AFB, CA,                       2873, 35.098, -117.561 
+KFCX, Blacksburg, VA,                        2965, 37.024, -80.274 
+KFDR, Atlus AFB, OK,                         1311, 34.362, -98.977 
+KFDX, Cannon AFB, NM,                        4698, 34.634, -103.619 
+KFFC, Atlanta, GA,                           972,  33.363, -84.566 
+KFSD, Sioux Falls, SD,                       1495, 43.588, -96.729 
+KFSX, Flagstaff, AZ,                         7514, 34.574, -111.198 
+KFTG, Denver, CO,                            5610, 39.786, -104.546 
+KFWS, Fort Worth, TX,                        776,  32.573, -97.303 
+KGGW, Glasgow, MT,                           2384, 48.206, -106.625 
+KGJX, Grand Junction, CO,                    10100, 39.062, -108.214 
+KGLD, Goodland, KS,                          3717, 39.367, -101.7 
+KGRB, Green Bay, WI,                         822,  44.499, -88.111 
+KGRK, Fort Hood, TX,                         602,  30.722, -97.383 
+KGRR, Grand Rapids, MI,                      875,  42.894, -85.545 
+KGSP, Geer, SC,                              1068, 34.883, -82.22 
+KGWX, Columbus AFB, MS,                      589,  33.897, -88.329 
+KGYX, Portland, ME,                          473,  43.891, -70.256 
+KHDX, Holloman AFB, NM,                      4270, 33.077, -106.12 
+KHGX, Houston, TX,                           115,  29.472, -95.079 
+KHNX, San Joaquin Valley, CA,                340,  36.314, -119.632
+KHPX, Fort Campbell, KY,                     624,  36.737, -87.285 
+KHTX, Huntsville, AL,                        1859, 34.931, -86.084 
+KICT, Wichita, KS,                           1403, 37.654, -97.443 
+KICX, Cedar City, UT,                        10756, 37.591, -112.862 
+KILN, Cincinnati, OH,                        1170, 39.42, -83.822 
+KILX, Lincoln, IL,                           730,  40.15, -89.337 
+KIND, Indianapolis, IN,                      887,  39.708, -86.28 
+KINX, Tulsa, OK,                             749,  36.175, -95.564 
+KIWA, Phoenix, AZ,                           1426, 33.289, -111.67 
+KIWX, North Webster, IN,                     1055, 41.359, -85.7 
+KJAX, Jacksonville, FL,                      159,  30.485, -81.702 
+KJGX, Robins AFB, GA,                        618,  32.675, -83.351 
+KJKL, Jackson, KY,                           1461, 37.591, -83.313 
+KLBB, Lubbock, TX,                           3378, 33.654, -101.814 
+KLCH, Lake Charles, LA,                      136,  30.125, -93.216 
+KLGX, Langley Hill, WA,                      366,  47.116, -124.107 
+KLIX, New Orleans, LA,                       179,  30.337, -89.825 
+KLNX, North Platte, NE,                      3112, 41.958, -100.576 
+KLOT, Chicago, IL,                           760,  41.604, -88.085 
+KLRX, Elko, NV,                              6895, 40.74, -116.803 
+KLSX, St. Louis, MO,                         721,  38.699, -90.683 
+KLTX, Wilmington, NC,                        145,  33.989, -78.429 
+KLVX, Louisville, KY,                        833,  37.975, -85.944 
+KLWX, Sterling, VA,                          404,  38.976, -77.487 
+KLZK, Little Rock, AR,                       649,  34.836, -92.262 
+KMAF, Midland, TX,                           2961, 31.943, -102.189 
+KMAX, Medford, OR,                           7553, 42.081, -122.717 
+KMBX, Minot AFB, ND,                         1590, 48.393, -100.864 
+KMHX, Morehead City, NC,                     144,  34.776, -76.876 
+KMKX, Milwaukee, WI,                         1022, 42.968, -88.551 
+KMLB, Melbourne, FL,                         149,  28.113, -80.654 
+KMOB, Mobile, AL,                            289,  30.679, -88.24 
+KMPX, Minneapolis, MN,                       1101, 44.849, -93.565 
+KMQT, Marquette, MI,                         1525, 46.531, -87.548 
+KMRX, Knoxville, TN,                         1434, 36.168, -83.402 
+KMSX, Missoula, MT,                          7978, 47.041, -113.986 
+KMTX, Salt Lake City, UT,                    6593, 41.263, -112.448 
+KMUX, San Francisco, CA,                     3550, 37.155, -121.898 
+KMVX, Grand Forks, ND,                       1080, 47.528, -97.325 
+KMXX, Maxwell AFB, AL,                       560,  32.537, -85.79 
+KNKX, San Diego, CA,                         1052, 32.919, -117.041 
+KNQA, Memphis, TN,                           435,  35.345, -89.873 
+KOAX, Omaha, NE,                             1260, 41.32, -96.367 
+KOHX, Nashville, TN,                         676,  36.247, -86.563 
+KOKX, Upton, NY,                             198,  40.865, -72.864 
+KOTX, Spokane, WA,                           2449, 47.681, -117.626 
+KPAH, Paducah, KY,                           505,  37.068, -88.772 
+KPBZ, Pittsburgh, PA,                        1266, 40.532, -80.218
+KPDT, Pendleton, OR,                         1580, 45.691, -118.853 
+KPOE, Fort Polk, LA,                         472, 31.155, -92.976 
+KPUX, Pueblo, CA,                            5363, 38.46, -104.181 
+KRAX, Raleigh, NC,                           461, 35.665, -78.49 
+KRGX, Reno, NV,                              8396, 39.754, -119.462 
+KRIW, Riverton, WY,                          5633, 43.066, -108.477 
+KRLX, Charleston, WV,                        1212, 38.311, -81.723 
+KRTX, Portland, OR,                          1728, 45.715, -122.965 
+KSFX, Pocatello, ID,                         4539, 43.106, -112.686 
+KSGF, Springfield, MO,                       1375, 37.235, -93.4 
+KSHV, Shreveport, LA,                        386, 32.451, -93.841 
+KSJT, San Angelo, TX,                        2004, 31.371, -100.492 
+KSOX, Santa Ana Mountains, CA,               3105, 33.818, -117.636 
+KSRX, Fort Smith, AR,                        737, 35.29, -94.362 
+KTBW, Tampa Bay, FL,                         122, 27.705, -82.402 
+KTFX, Great Falls, MT,                       3804, 47.46, -111.385 
+KTLH, Tallahassee, FL,                       176, 30.398, -84.329 
+KTLX, Oklahoma City, OK,                     1277, 35.333, -97.278 
+KTWX, Topeka, KS,                            1415, 38.997, -96.232 
+KTYX, Fort Drum, NY,                         1960, 43.756, -75.68 
+KUDX, Rapid City, SD,                        3194, 44.125, -102.83 
+KUEX, Hastings, NE,                          2057, 40.321, -98.442 
+KVAX, Moody AFB, GA,                         330, 30.89, -83.002 
+KVBX, Vandenberg AFB, CA,                    1354, 34.839, -120.398 
+KVNX, Vance AFB, OK,                         1258, 36.741, -98.128 
+KVTX, Los Angeles, CA,                       2807, 34.412, -119.179 
+KVWX, Evansville, IN,                        627, 38.26, -87.724 
+KYUX, Yuma, AZ,                              239, 32.495, -114.656 
+PABC, Bethel, AK,                            190, 60.792, -161.876 
+PACG, Biorka Island, AK,                     272, 56.853, -135.528 
+PAEC, Nome, AK,                              90, 64.512, -165.293 
+PAHG, Anchorage, AK,                         356, 60.726, -151.351 
+PAIH, Middleton Island, AK,                  132, 59.46, -146.303 
+PAKC, King Salmon, AK,                       144, 58.68, -156.627 
+PAPD, Fairbanks, AK,                         2707, 65.035, -147.501 
+PGUA, Andersen AFB, Guam,                    386, 13.456, 144.811 
+PHKI, South Kauai, HI,                       340, 21.894, -159.552 
+PHKM, Kamuela, HI,                           3965, 20.125, -155.778 
+PHMO, Molokai, HI,                           1444, 21.133, -157.18 
+PHWA, South Shore, HI,                       1461, 19.095, -155.569 
+RKJK, Kunsan, KO,                            191, 35.924, 126.622 
+RKSG, Camp Humphreys, KO,                    1521, 37.207, 127.285 
+RODN, Kadena, JP,                            412, 26.308, 127.903 
+TJUA, San Juan, PR,                          2958, 18.116, -66.078
+TADW, Andrews Air Force Base, MD (ADW),      346,  38.695, -76.845
+TATL, Atlanta, GA (ATL),                     1075, 33.647, -84.262
+TBNA, Nashville, TN (BNA),                   817,  35.98, -86.662
+TBOS, Boston, MA (BOS),                      264,  42.158, -70.933
+TBWI, Baltimore, MD (BWI),                   342,  39.09, -76.63
+TCLT, Charlotte, NC (CLT),                   871,  35.337, -80.885
 TCMH, Columbus, OH (CMH),                    1148, 40.006, -82.715
 TCVG, Covington, OH (CVG),                   1053, 38.898, -84.58
 TDAL, Dallas, TX (DAL),                      622,  32.926, -96.968
