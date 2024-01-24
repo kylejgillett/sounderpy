@@ -79,4 +79,4 @@ Composite Soundings
    :width: 300 px
    :align: right
 
-   Comparing Models to an Obsevered Profile
+   Comparing Models to an Observed Profile

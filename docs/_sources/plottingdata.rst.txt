@@ -19,7 +19,8 @@ Check out SounderPy's :doc:`examplegallery` & :doc:`examplescripts`
 ********************************************************************
 
 
-
+.. tip::
+   **Do your plots have funky scaling?** This is a common issue for smaller screen sizes. To fix this, use the `save=True` kwarg in your plot function.
 
 .. _soundings:
 

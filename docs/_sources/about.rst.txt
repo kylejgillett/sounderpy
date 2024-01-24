@@ -1,7 +1,7 @@
 📖 About
 =========
 
-☕ SounderPy is a open-source package developed on my own time. Would you like to support continued SounderPy development? Consider "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"! ☕
+☕ SounderPy is an open-source package developed on my own time. Would you like to support continued SounderPy development? Consider "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"! ☕
 
 Installation
 ------------
@@ -60,14 +60,15 @@ Citing SounderPy
 	   :target: https://doi.org/10.5281/zenodo.10011851
 	   :alt: DOI
 
+
 	in AMS format:
-	     Gillett, K., 2023: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 2.0.6). Py-Pi, https://pypi.org/project/sounderpy/
+	     Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.0). Py-Pi, https://pypi.org/project/sounderpy/
 
 
 ***************************************************************
 
 
-Refrences 
+References 
 ----------
 
 	* Harris, C.R., Millman, K.J., van der Walt, S.J. et al. Array programming with NumPy. Nature 585, 357–362 (2020). DOI: 10.1038/s41586-020-2649-2.
@@ -102,14 +103,14 @@ Thank you so much for checking out and using SounderPy. My name is Kyle Gillett 
 
 SounderPy is published on PyPi and the source code is available on GitHub -- this tool is an open source project. If you have found SounderPy useful in your work, I'd love to hear about it! The coolest part of this project has been hearing how many folks have been using this software. If you'd like to support continued SounderPy development, consider "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"! ☕. 
 
-Have an issues? You can `open a GitHub Issue <https://github.com/kylejgillett/sounderpy/issues>`_ or just shoot me a DM on `twitter <https://twitter.com/wxkylegillett>`_!
+Have an issue? You can `open a GitHub Issue <https://github.com/kylejgillett/sounderpy/issues>`_ or just shoot me a DM on `twitter <https://twitter.com/wxkylegillett>`_!
 
 **Useful Links**
 
 + Check out SounderPy `on GitHub <https://github.com/kylejgillett/sounderpy>`_
 + Check out SounderPy `on PyPi <https://pypi.org/project/sounderpy/>`_
-+ Check out my `webiste <https://kylegillettwx.wordpress.com/>`_
-+ Get updates on SounderPy development on `twitter <https://twitter.com/wxkylegillett>`_
++ Check out my `website <https://kylegillettwx.wordpress.com/>`_
++ Get updates on SounderPy development on `Twitter <https://twitter.com/wxkylegillett>`_
 + Support SounderPy by "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"
 
 

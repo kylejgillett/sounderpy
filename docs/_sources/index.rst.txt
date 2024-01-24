@@ -101,6 +101,7 @@ Directory
      :caption: General:
      
      about
+     troubleshooting
 
   .. toctree::
      :maxdepth: 5
