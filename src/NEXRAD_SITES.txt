@@ -1,7 +1,7 @@
 # NEXRAD & TDWR SITES LIST
 # (C) KYLE J GILLETT 2024
 
-ID,NAME,ELV,LAT,LON
+ID,NAME,STATE,ELV,LAT,LON
 KABR, Aberdeen, SD,                          1383, 45.456, -98.413 
 KABX, Albuquerque, NM,                       5951, 35.15,  -106.824
 KAKQ, Wakefield, VA,                         254,  36.984, -77.008 
