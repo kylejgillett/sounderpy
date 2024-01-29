@@ -1639,7 +1639,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 70200, POME, NOME,                    AK US,    6,  64.50, N,  165.43, W
 70219, PBET, BETHEL ARPT,             AK US,   45,  60.78, N,  161.80, W
 70231, PMCG, MCGRATH,                 AK US,  103,  62.97, N,  155.62, W
-70261, PFAI, FAIRBANKS,               AK US,  138,  64.82, N,  147.87, W
+70261, PAFA, FAIRBANKS,               AK US,  138,  64.82, N,  147.87, W
 70266, PABG, FORT GREELY,             AK US,  398,  63.97, N,  145.70, W
 70270, PAFR, FORT RICHARDSON,         AK US,  115,  61.27, N,  149.65, W
 70273, PANC, ANCHORAGE INTL,          AK US,   40,  61.17, N,  150.02, W
