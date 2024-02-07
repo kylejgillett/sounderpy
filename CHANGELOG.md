@@ -1,8 +1,88 @@
 
 # SounderPy Change Log
-All notable changes to this project will be documented in this file.
+All notable changes to this project will be documented in this file. Apologies for the ridiculous versioning -- blame that on me not using tests and PyPi uploads correctly 🙃
 
-## [2.0.6] - LATEST RELEASE | 2023-10-04 - Release #4
+
+## [3.0.1] PRE-RELEASE | Upcoming Release
+Version 3.0.1 of SounderPy is bringing a number of minor and a couple of major bug fixes to release 3.0.0. This release will also feature a few new tools and improvements to existing functions. 
+
+### The Scoop:
+
+### Additions
+   1. VAD Hodograph plot function that plots NEXRAD VWP VAD data on a hodograph: `build_vad_hodograph()`.
+   2. Ability to target specific RAP-RUC datasets when using `get_model_data()` using the `dataset` kwarg.
+   3. Ability to determine a 'box average' size when using `get_model_data()` using the `box_avg_size` kwarg. See the **Changed** section for more info.
+   4. *IN THE WORKS*: New ECAPE operations, allowing for the plotting of different ECAPE parcel traces 
+ 
+### Changed
+   1. Model reanalysis data now uses an 'area-average' or 'box-sounding' approach to build a vertical profile of reanalysis data. I.e., by default, a user must pass a lat/lon point to `get_model_data()`, SounderPy will extract data for a 0.1x0.1 degree box and average the data together to build an averaged-point profile.
+
+### Bug Fixes 
+   1. Corrected EIL-SRH plot on hodographs
+   2. Corrected 0-1km Streamwise Vorticity value on sounding and hodograph plots
+   3. Improved Freezing-Point calculation using interpolation scheme.
+   4. Corrected last-forecast-hour BUFKIT data retrieval issue and created an error message for when an invalid forecast hour is requested.
+   5. Corrected RAOB site ID issue -- users can now request data using a WMO ID or ICAO ID.
+
+### Removed 
+  None
+
+
+-------
+-------
+-------
+
+## [3.0.0] LATEST RELEASE | 2024-01-08 - Release #5
+
+## Summary
+Version 3.0.0 of SounderPy brings exciting to features and improvements to existing functionality. This release will provide users with enhanced plotting capabilities, an improved user interface, improved parameter calculations via Sharppy utilities, and cleaner code overall. 
+
+Some major upgrades include... a number of new and improved plotting tools that create one-of-a-kind sounding and hodograph plots, new parameter calculations utilizing [Sharrpy](https://github.com/sharppy/SHARPpy/blob/main/README.md) functionality and a new [documentation site](https://kylejgillett.github.io/sounderpy/).
+
+### The Scoop:
+
+### Additions
+   1. New plot creation abilities using the new `build_sounding()` and `build_hodograph()` functions.
+   2. Composite sounding plots using the new `build_composite()` function. This will allow users to analyze several profiles at once.
+   3. A 'Dark Mode' setting for sounding, hodograph, and composite plots.
+   4. A color-blind friendly setting for sounding plots that turns the green dewpoint trace to blue.
+   5. Redesigned package structure, including the base sounderpy.py module, a calc.py module, and a plot.py module.
+   6. A new stand-alone documentation site that offers clear, easy-to-find documentation for SounderPy's funtionality. [Available, under construction, here.](https://kylejgillett.github.io/sounderpy/)
+   7. A print out of general thermodynamic and kinematic parameters of a given profile to the console when data is retrieved by SounderPy.  
+ 
+### Changed
+   1. Functions `build_sounding()` and `build_hodograph()` replace `metpy_sounding()` and `metpy_hodograph()`
+   2. `get_model_data()` keyword argument `method` changed to `model`
+   3.  Some warnings were changed to exceptions and other warnings were made more concise to address specific issues and improve the code's user-interface. 
+   4. Computed thermodynamic and kinematic properties of a profile were changed to the widely accepted Sharppy calculation methods. This allows for increased reliability in functioning calculations and for more parameters that can be included in plots. SounderPy now directly uses the Sharrpy package for calculations of profile properties. 
+
+### Bug Fixes 
+   1. Minor bugs were addressed throughout the code. Some of these include...
+        + The NWS-hosted METAR site list was removed from its online location a couple months ago. SounderPy now has its only METAR site list for finding METAR lat/lon sites. 
+        + Some data retrieval functions would only like station ID's in upper-case ('APX'), this bug was fixed so lines like the following will be accepted: `spy.get_obs_data('apx', '2022', '05', '20', '18')`
+
+### Removed 
+  1. The `parse_data()` function is depreciated. Its functionality was simply added to the `get_model_data()` function. 
+
+------
+
+## Examples of new plots available with SounderPy functionality:
+
+### New Full Sounding Plot:
+![example-sounding_light](https://github.com/kylejgillett/sounderpy/assets/100786530/70d7209f-bc99-45c7-8999-952f26e60dba)
+
+### New Composite Sounding Plot using 'Dark Mode'
+![example-composite_dark](https://github.com/kylejgillett/sounderpy/assets/100786530/12d545d1-1518-4cbf-82d8-7062626c42e7)
+
+### New Hodograph Plot in 'Dark Mode'
+![example-hodograph_dark](https://github.com/kylejgillett/sounderpy/assets/100786530/3d3e3995-e915-49b5-850d-03c7981eccb6)
+
+
+-----
+-----
+-----
+
+## [2.0.6] - 2023-10-04 - Release #4
  
 SounderPy v2.0.6 will feature a few bug fixes to the plotting functions from v2.0.5. 
  
@@ -11,6 +91,8 @@ SounderPy v2.0.6 will feature a few bug fixes to the plotting functions from v2.
   - MetPy CAPE/CIN calculations were changed from MetPy's `surface_based_cape_cin()` to MetPy's `cape_cin()` which seems to both perform better and handle possibly erroneous data better. This was done for SB, ML & MU CAPE/CIN.
   - An improved way to set the temperature axis bounds was created to ensure that the profile plots somewhat in the 'middle' of the skew-t for the best possible readability.
 
+-----
+-----
 -----
 
 
@@ -39,7 +121,8 @@ SounderPy v2.0.5 will feature a number of new tools, improvements to existing fu
   - Corrected Bufkit data output lat-lon data
 
 -----
-
+-----
+-----
 
  
 ## [2.0.4] - 2023-08-06 - Release #2
@@ -71,6 +154,8 @@ SounderPy v2.0.4 will feature a number of new tools, improvements to existing fu
   - fixed `requirements.txt`, thus allowing dependencies to automatically load upon installing SounderPy
 
 -----
+-----
+-----
 
 ## [1.0.0] - 2023-07-15 - Release #1
   
@@ -78,6 +163,8 @@ The initial release of SounderPy
  
 
 ## All Releases
+- [sounderpy-3.0.0](https://pypi.org/project/sounderpy/3.0.0/)
+  Major: Major improvements to plot style, calculations, function names, repaired many bugs
 - [sounderpy-2.0.6](https://pypi.org/project/sounderpy/2.0.6/)
   Minor: bug fixes to plotting functions from v2.0.5
 - [sounderpy-2.0.5](https://pypi.org/project/sounderpy/2.0.5/)
