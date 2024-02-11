@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plotting Soundings with Observed ACARS data &mdash; SounderPy v3.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5773a0da"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SounderPy
+              <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpertools.html">🛠️ Helper Tools</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SounderPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Plotting Soundings with Observed ACARS data</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/acars_data_example.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Plotting-Soundings-with-Observed-ACARS-data">
+<h1>Plotting Soundings with Observed ACARS data<a class="headerlink" href="#Plotting-Soundings-with-Observed-ACARS-data" title="Link to this heading"></a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># first, import sounderpy! Its fun to import as &#39;spy&#39;!</span>
+<span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+## ---------------------------------- SOUNDERPY ----------------------------------- ##
+##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
+##                    v3.0.0 | Dec 2023 | (C) Kyle J Gillett                        ##
+## -------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------- ##
+
+</pre></div></div>
+</div>
+<section id="Understanding-SounderPy-Functionality">
+<h2><strong>Understanding SounderPy Functionality</strong><a class="headerlink" href="#Understanding-SounderPy-Functionality" title="Link to this heading"></a></h2>
+<p><strong>To get ACARS data, we need to use the ``acars_data()`` class</strong></p>
+<p><strong>Reading the documentation on ACARS data access may prove useful before using this notebook: https://kylejgillett.github.io/sounderpy/gettingdata.html#observed-data-acars-aircraft-obs</strong></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># First we need to set up a &#39;connection&#39; to the ACARS data.</span>
+<span class="c1"># We do this by creating a variable called `acars_conn` which is set equal</span>
+<span class="c1"># to the `acars_data()` class which needs a year, month, day and hour as strings.</span>
+
+<span class="c1"># Lets look for flights on Dec. 30th 2023 at 12 UTC</span>
+<span class="n">acars_conn</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">acars_data</span><span class="p">(</span><span class="s1">&#39;2023&#39;</span><span class="p">,</span> <span class="s1">&#39;12&#39;</span><span class="p">,</span> <span class="s1">&#39;30&#39;</span><span class="p">,</span> <span class="s1">&#39;12&#39;</span><span class="p">)</span>
+
+<span class="c1"># Now that we have the connection established, lets look for a profile</span>
+<span class="c1"># to plot. We can do this by using the `.list_profiles() function:</span>
+<span class="n">acars_conn</span><span class="o">.</span><span class="n">list_profiles</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; LIST ACARS PROFILES FUNCTION --
+---------------------------------
+&gt; AVAILABLE ACARS PROFILES FOR 2023-12-30 12Z...
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:00
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;ATL_1220&#39;,
+ &#39;BWI_1200&#39;,
+ &#39;BWI_1220&#39;,
+ &#39;BWI_1250&#39;,
+ &#39;DAL_1210&#39;,
+ &#39;DCA_1210&#39;,
+ &#39;FLL_1200&#39;,
+ &#39;HOU_1230&#39;,
+ &#39;HOU_1240&#39;,
+ &#39;HOU_1250&#39;,
+ &#39;MCI_1210&#39;,
+ &#39;MCI_1230&#39;,
+ &#39;MCI_1240&#39;,
+ &#39;MCO_1240&#39;,
+ &#39;MDW_1200&#39;,
+ &#39;MDW_1210&#39;,
+ &#39;MIA_1200&#39;,
+ &#39;OMA_1220&#39;,
+ &#39;OMA_1240&#39;,
+ &#39;PHX_1220&#39;,
+ &#39;PHX_1240&#39;]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># These are all the available flights we can get data from across the ACARS network</span>
+<span class="c1"># on Dec. 30th 2023 at 12 UTC. Now we can pick one and add it to the function</span>
+<span class="c1"># `.get_profile()` to actually get the data. Lets try &#39;DAL_1210&#39;:</span>
+<span class="n">clean_data</span> <span class="o">=</span> <span class="n">acars_conn</span><span class="o">.</span><span class="n">get_profile</span><span class="p">(</span><span class="s1">&#39;FLL_1200&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; ACARS DATA ACCESS FUNCTION --
+---------------------------------
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:00
+&gt; SUMMARY: 12:03Z Flight from FLL, Fort Lauderdale Hollywood International Airport at 12-30-2023-12:03Z
+
+&gt; THERMODYNAMICS ---------------------------------------------
+--- SBCAPE: 0.0 | MUCAPE: 8.4913235695412 | MLCAPE: 0.0 | ECAPE: --
+--- MU 0-3: 8.4913235695412 | MU 0-6: -- | SB 0-3: 0.0 | SB 0-6: --
+
+&gt; KINEMATICS -------------------------------------------------
+--- 0-500 SRW: -- | 0-500 SWV: -- | 0-500 SHEAR: 8.2 | 0-500 SRH: --
+--- 1-3km SRW: -- | 1-3km SWV: -- | 1-3km SHEAR: 29.7 | | 1-3km SRH: --
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Lets check out the ACARS data that we just accessed</span>
+<span class="c1"># and stored in the `clean_data` variable:</span>
+
+<span class="c1"># `clean_data` is a python dictionary of &#39;clean&#39; vertical profile data</span>
+<span class="c1"># it comes with temperature, dewpoint, pressure, height, u and v</span>
+<span class="c1"># as well as a number of useful &#39;meta data&#39;</span>
+
+<span class="c1"># note how these data only goes up to ~640 hPa</span>
+<span class="n">clean_data</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;p&#39;: array([1018.22, 1010.28, 1000.37,  989.95,  979.16,  969.26,  961.29,
+         954.86,  948.93,  943.47,  937.59,  930.5 ,  922.23,  915.8 ,
+         912.59,  901.83,  882.86,  861.68,  849.43,  849.32,  839.27,
+         809.49,  771.08,  734.44,  708.8 ,  700.74]) &lt;Unit(&#39;hectopascal&#39;)&gt;,
+ &#39;z&#39;: array([ -39.,   27.,  110.,  198.,  290.,  375.,  444.,  500.,  552.,
+         600.,  652.,  715.,  789.,  847.,  876.,  974., 1149., 1348.,
+        1465., 1466., 1563., 1856., 2247., 2635., 2916., 3006.]) &lt;Unit(&#39;meter&#39;)&gt;,
+ &#39;T&#39;: array([13.55, 13.55, 13.25, 13.85, 13.25, 12.75, 12.35, 11.55, 11.05,
+        10.75, 10.25,  9.85,  9.35,  8.85,  8.85,  8.05,  6.85,  5.35,
+         4.85,  4.85,  5.05,  5.55,  4.55,  2.35,  1.35,  0.55]) &lt;Unit(&#39;degree_Celsius&#39;)&gt;,
+ &#39;Td&#39;: array([  9.46,   9.15,   9.27,   7.31,   6.48,   6.66,   7.88,   8.05,
+          8.01,   8.19,   8.11,   8.13,   8.05,   8.08,   8.07,   7.73,
+          5.73,   2.62,  -1.15,  -0.98,  -7.14, -29.93, -29.26, -35.07,
+        -37.08, -36.84]) &lt;Unit(&#39;degree_Celsius&#39;)&gt;,
+ &#39;u&#39;: array([-0.62573786, -0.84089847, -0.24080653,  1.39226674,  2.17753511,
+         4.15252366,  7.03895154,  8.80818165,  8.88181631,  8.95274548,
+         8.95274548,  8.51111233,  9.54882663,  9.67934574, 10.91800767,
+        11.98355442, 14.843301  , 20.78550761, 23.2799129 , 22.45361677,
+        27.86176402, 30.50025652, 37.65615959, 39.875694  , 41.74055785,
+        40.80036966]) &lt;Unit(&#39;knot&#39;)&gt;,
+ &#39;v&#39;: array([-3.95075336, -6.84856845, -6.89579671, -8.79042623, -7.5939674 ,
+        -5.51058502, -3.58652495, -4.29603724, -4.14165897, -3.9860191 ,
+        -3.9860191 , -2.60210817, -2.20452033, -1.53305776, -1.34056278,
+        -0.62803147,  1.29862057,  2.18464488,  4.94829824,  3.95917845,
+         1.46017318, -4.28653151, -3.29448708,  1.39248992,  3.65182562,
+         2.85303978]) &lt;Unit(&#39;knot&#39;)&gt;,
+ &#39;site_info&#39;: {&#39;site-id&#39;: &#39;FLL&#39;,
+  &#39;site-name&#39;: &#39;Fort Lauderdale Hollywood International Airport&#39;,
+  &#39;site-lctn&#39;: &#39;United States&#39;,
+  &#39;site-latlon&#39;: [26.07, -80.15],
+  &#39;site-elv&#39;: &#39;9&#39;,
+  &#39;source&#39;: &#39;ACARS OBSERVED AIRCRAFT PROFILE&#39;,
+  &#39;model&#39;: &#39;no-model&#39;,
+  &#39;fcst-hour&#39;: &#39;no-fcst-hour&#39;,
+  &#39;run-time&#39;: [&#39;no-run-time&#39;],
+  &#39;valid-time&#39;: [&#39;2023&#39;, &#39;12&#39;, &#39;30&#39;, &#39;12:03&#39;]}}
+</pre></div></div>
+</div>
+<hr class="docutils" />
+</section>
+<section id="LETS-PLOT-THE-DATA-ON-A-SOUNDING-AND-HODOGRAPH">
+<h2><strong>LETS PLOT THE DATA ON A SOUNDING AND HODOGRAPH</strong><a class="headerlink" href="#LETS-PLOT-THE-DATA-ON-A-SOUNDING-AND-HODOGRAPH" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># lets make a sounding!</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">clean_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; SOUNDING PLOTTER FUNCTION --
+---------------------------------
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:01
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/acars_data_example_8_1.png" src="_images/acars_data_example_8_1.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Kyle J Gillett.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

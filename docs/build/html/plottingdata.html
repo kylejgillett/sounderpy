@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📈 Tools for Plotting Data &mdash; SounderPy v3.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5773a0da"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="🛠️ Helper Tools" href="helpertools.html" />
+    <link rel="prev" title="🌐 Tools for Getting Data" href="gettingdata.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SounderPy
+              <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">❓ Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">📈 Tools for Plotting Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#building-soundings">Building Soundings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spy.build_sounding"><code class="docutils literal notranslate"><span class="pre">spy.build_sounding()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#building-hodographs">Building Hodographs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spy.build_hodograph"><code class="docutils literal notranslate"><span class="pre">spy.build_hodograph()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#building-composite-soundings">Building Composite Soundings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spy.build_composite"><code class="docutils literal notranslate"><span class="pre">spy.build_composite()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#building-vad-hodographs">Building VAD Hodographs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spy.build_vad_hodograph"><code class="docutils literal notranslate"><span class="pre">spy.build_vad_hodograph()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#printing-data-to-the-console">Printing data to the console</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#about-these-plots">About These Plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="helpertools.html">🛠️ Helper Tools</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SounderPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">📈 Tools for Plotting Data</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/plottingdata.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tools-for-plotting-data">
+<h1>📈 Tools for Plotting Data<a class="headerlink" href="#tools-for-plotting-data" title="Link to this heading"></a></h1>
+<a class="reference internal image-reference" href="_images/example-sounding_dark3.png"><img alt="_images/example-sounding_dark3.png" class="align-right" src="_images/example-sounding_dark3.png" style="width: 300px;" /></a>
+<p>Initially, SounderPy started as a tool meant for getting and parsing data with little focus on plotting said data. However, recent releases have put more emphasis on plotting capabilites. Version 3.0.0 features a number of significant &amp; exciting upgrades to SounderPy’s plotting abilities.</p>
+<p>SounderPy can create general <a class="reference internal" href="#soundings"><span class="std std-ref">sounding</span></a> and <a class="reference internal" href="#hodographs"><span class="std std-ref">hodograph</span></a> plots as well as <a class="reference internal" href="#compsoundings"><span class="std std-ref">composite sounding</span></a> plots!</p>
+<p>The <cite>full</cite> sounding plots that SounderPy creates are complex figures with unique design geared towards severe convective storm enviroment analysis.</p>
+<p>These sounding plots are ‘my baby’ and I hope you find them useful! :)</p>
+<p>Check out SounderPy’s <a class="reference internal" href="examplegallery.html"><span class="doc">📊 Plot Gallery</span></a> &amp; <a class="reference internal" href="examplescripts.html"><span class="doc">📝 Usage Examples</span></a></p>
+<hr class="docutils" />
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><strong>Do your plots have funky scaling?</strong> This is a common issue for smaller screen sizes. To fix this, use the <cite>save=True</cite> kwarg in your plot function.</p>
+</div>
+<section id="building-soundings">
+<span id="soundings"></span><h2>Building Soundings<a class="headerlink" href="#building-soundings" title="Link to this heading"></a></h2>
+<p>We can use the simple <code class="docutils literal notranslate"><span class="pre">spy.build_sounding()</span></code> function:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="spy.build_sounding">
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">build_sounding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clean_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'full'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_blind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sounderpy_sounding'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.build_sounding" title="Link to this definition"></a></dt>
+<dd><p>Return a full sounding plot of SounderPy data, <code class="docutils literal notranslate"><span class="pre">plt</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clean_data</strong> (<em>dict</em><em>, </em><em>required</em>) – the dictionary of data to be plotted (see <a class="reference internal" href="gettingdata.html"><span class="doc">🌐 Tools for Getting Data</span></a>)</p></li>
+<li><p><strong>style</strong> (<em>str</em><em>, </em><em>optional</em>) – may be <cite>simple</cite> or <cite>full</cite>. Default is <cite>full</cite>.</p></li>
+<li><p><strong>color_blind</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to change the dewpoint trace line from green to blue for improved readability for color deficient users/readers. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>dark_mode</strong> (<em>bool</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> will invert the color scheme for a ‘dark-mode’ sounding. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to show the plot inline or save to a file. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code> which displays the file inline.</p></li>
+<li><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – the filename by which a file should be saved to if <code class="docutils literal notranslate"><span class="pre">save</span> <span class="pre">=</span> <span class="pre">True</span></code>. Default is <cite>sounderpy_sounding</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, &amp; SounderPy.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plt</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
+
+<span class="c1"># get data | Note: any sounderpy data will work!</span>
+<span class="n">clean_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s1">&#39;OAX&#39;</span><span class="p">,</span> <span class="s1">&#39;2014&#39;</span><span class="p">,</span> <span class="s1">&#39;06&#39;</span><span class="p">,</span> <span class="s1">&#39;16&#39;</span><span class="p">,</span> <span class="s1">&#39;18&#39;</span><span class="p">)</span>
+
+<span class="c1"># build the sounding!</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">clean_data</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/example-sounding_light.png"><img alt="_images/example-sounding_light.png" src="_images/example-sounding_light.png" style="width: 800px;" /></a>
+<hr class="docutils" />
+</section>
+</section>
+<section id="building-hodographs">
+<span id="hodographs"></span><h2>Building Hodographs<a class="headerlink" href="#building-hodographs" title="Link to this heading"></a></h2>
+<p>Very similarly to soundings, we can use the simple <code class="docutils literal notranslate"><span class="pre">spy.build_hodograph()</span></code> function:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="spy.build_hodograph">
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">build_hodograph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clean_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr_hodo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sounderpy_sounding'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.build_hodograph" title="Link to this definition"></a></dt>
+<dd><p>Return a full hodograph plot of SounderPy data, <code class="docutils literal notranslate"><span class="pre">plt</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clean_data</strong> (<em>dict</em><em>, </em><em>required</em>) – the dictionary of data to be plotted (see <a class="reference internal" href="gettingdata.html"><span class="doc">🌐 Tools for Getting Data</span></a>)</p></li>
+<li><p><strong>dark_mode</strong> (<em>bool</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> will invert the color scheme for a ‘dark-mode’ sounding. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>sr_hodo</strong> (bool, optional, default is <code class="docutils literal notranslate"><span class="pre">False</span></code>) – transform the hodograph from ground relative to storm relative</p></li>
+<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to show the plot inline or save to a file. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code> which displays the file inline.</p></li>
+<li><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – the filename by which a file should be saved to if <code class="docutils literal notranslate"><span class="pre">save</span> <span class="pre">=</span> <span class="pre">True</span></code>. Default is <cite>sounderpy_sounding</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>plt, a SounderPy hodograph built with Matplotlib, MetPy, SharpPy, &amp; SounderPy.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plt</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="id1">
+<h3>Examples<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
+
+<span class="c1"># get data | Note: any sounderpy data will work!</span>
+<span class="n">clean_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s1">&#39;OAX&#39;</span><span class="p">,</span> <span class="s1">&#39;2014&#39;</span><span class="p">,</span> <span class="s1">&#39;06&#39;</span><span class="p">,</span> <span class="s1">&#39;16&#39;</span><span class="p">,</span> <span class="s1">&#39;18&#39;</span><span class="p">)</span>
+
+<span class="c1"># build the hodograph!</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_hodograph</span><span class="p">(</span><span class="n">clean_data</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/example-hodograph_light.png"><img alt="_images/example-hodograph_light.png" src="_images/example-hodograph_light.png" style="width: 800px;" /></a>
+<hr class="docutils" />
+</section>
+</section>
+<section id="building-composite-soundings">
+<span id="compsoundings"></span><h2>Building Composite Soundings<a class="headerlink" href="#building-composite-soundings" title="Link to this heading"></a></h2>
+<p>Sometimes we want to compare two or more profiles against each other. Perhaps at different locations or times, or we may want to compare different models or model run-times. SounderPy allows you to do this!</p>
+<p>To do so, a list of <a class="reference internal" href="gettingdata.html#datadescription"><span class="std std-ref">‘clean_data’ dicts</span></a> is needed. If you want to customize the look of each profile, you can create equal length lists with alphas, linestyles, linewidths, &amp; colors. See below:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="spy.build_composite">
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">build_composite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shade_between</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alphas_to_use</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors_to_use</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ls_to_use</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lw_to_use</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sounderpy_sounding'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.build_composite" title="Link to this definition"></a></dt>
+<dd><p>Return a composite sounding plot of multiple profiles, <code class="docutils literal notranslate"><span class="pre">plt</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_list</strong> (<em>list</em><em> of </em><em>dicts</em><em>, </em><em>required</em>) – a list of data dictionaries for each profile to be plotted</p></li>
+<li><p><strong>dark_mode</strong> (<em>bool</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> will invert the color scheme for a ‘dark-mode’ sounding. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>shade_between</strong> (<em>bool</em><em>, </em><em>optional</em>) – Lightly shade between the dewpoint &amp; temperature trace. In many cases, this improves readability. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>alphas_to_use</strong> (<em>list</em><em> of </em><em>floats</em><em>, </em><em>optional</em>) – A list of custom alphas (0.0-1.0). List length must match the number of profiles listed in <code class="docutils literal notranslate"><span class="pre">data_list</span></code>. Default is ‘none’. Default alpha is 1.</p></li>
+<li><p><strong>colors_to_use</strong> (<em>list</em><em> of </em><em>strings</em><em>, </em><em>optional</em>) – A list of custom matplotlib color name stings. List length must match the number of profiles listed in <code class="docutils literal notranslate"><span class="pre">data_list</span></code>. Default is ‘none’.</p></li>
+<li><p><strong>ls_to_use</strong> (<em>list</em><em> of </em><em>stings</em><em>, </em><em>optional</em>) – A list of custom matplotlib linestyles. List length must match the number of profiles listed in <code class="docutils literal notranslate"><span class="pre">data_list</span></code>. Default is ‘none’. Default linestyle is ‘-‘.</p></li>
+<li><p><strong>lw_to_use</strong> (<em>list</em><em> of </em><em>floats</em><em>, </em><em>optional</em>) – A list of custom linewidths. List length must match the number of profiles listed in <code class="docutils literal notranslate"><span class="pre">data_list</span></code>. Default is ‘none’. Default linewidth is 3.</p></li>
+<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to show the plot inline or save to a file. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code> which displays the file inline.</p></li>
+<li><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – the filename by which a file should be saved to if <code class="docutils literal notranslate"><span class="pre">save</span> <span class="pre">=</span> <span class="pre">True</span></code>. Default is <cite>sounderpy_sounding</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>plt, a SounderPy composite sounding built with Matplotlib, MetPy, SharpPy, &amp; SounderPy.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plt</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="id2">
+<h3>Examples<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
+
+<span class="c1"># get data | Note: any sounderpy data will work!</span>
+<span class="c1"># this example looks at 3 profiles from OAX on Pilger-day.</span>
+<span class="n">clean_data1</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s1">&#39;oax&#39;</span><span class="p">,</span> <span class="s1">&#39;2014&#39;</span><span class="p">,</span> <span class="s1">&#39;06&#39;</span><span class="p">,</span> <span class="s1">&#39;16&#39;</span><span class="p">,</span> <span class="s1">&#39;12&#39;</span><span class="p">)</span>
+<span class="n">clean_data2</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s1">&#39;oax&#39;</span><span class="p">,</span> <span class="s1">&#39;2014&#39;</span><span class="p">,</span> <span class="s1">&#39;06&#39;</span><span class="p">,</span> <span class="s1">&#39;16&#39;</span><span class="p">,</span> <span class="s1">&#39;18&#39;</span><span class="p">)</span>
+<span class="n">clean_data3</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s1">&#39;oax&#39;</span><span class="p">,</span> <span class="s1">&#39;2014&#39;</span><span class="p">,</span> <span class="s1">&#39;06&#39;</span><span class="p">,</span> <span class="s1">&#39;17&#39;</span><span class="p">,</span> <span class="s1">&#39;00&#39;</span><span class="p">)</span>
+
+<span class="c1"># add each dict of data to a list</span>
+<span class="n">data_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">clean_data1</span><span class="p">,</span> <span class="n">clean_data2</span><span class="p">,</span> <span class="n">clean_data3</span><span class="p">]</span>
+
+<span class="c1"># build the composite!</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span><span class="n">data_list</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/example-composite_light.png"><img alt="_images/example-composite_light.png" src="_images/example-composite_light.png" style="width: 800px;" /></a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
+
+<span class="c1"># get data | Note: any sounderpy data will work!</span>
+<span class="c1"># this example looks at 3 profiles from OAX on Pilger-day.</span>
+<span class="n">clean_data1</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s1">&#39;oax&#39;</span><span class="p">,</span> <span class="s1">&#39;2014&#39;</span><span class="p">,</span> <span class="s1">&#39;06&#39;</span><span class="p">,</span> <span class="s1">&#39;16&#39;</span><span class="p">,</span> <span class="s1">&#39;12&#39;</span><span class="p">)</span>
+<span class="n">clean_data2</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s1">&#39;oax&#39;</span><span class="p">,</span> <span class="s1">&#39;2014&#39;</span><span class="p">,</span> <span class="s1">&#39;06&#39;</span><span class="p">,</span> <span class="s1">&#39;16&#39;</span><span class="p">,</span> <span class="s1">&#39;18&#39;</span><span class="p">)</span>
+<span class="n">clean_data3</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s1">&#39;oax&#39;</span><span class="p">,</span> <span class="s1">&#39;2014&#39;</span><span class="p">,</span> <span class="s1">&#39;06&#39;</span><span class="p">,</span> <span class="s1">&#39;17&#39;</span><span class="p">,</span> <span class="s1">&#39;00&#39;</span><span class="p">)</span>
+
+<span class="c1"># add each dict of data to a list</span>
+<span class="n">data_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">clean_data1</span><span class="p">,</span> <span class="n">clean_data2</span><span class="p">,</span> <span class="n">clean_data3</span><span class="p">]</span>
+
+<span class="c1"># lets add some custom parameters:</span>
+<span class="n">ls_to_use</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">]</span>
+<span class="n">lw_to_use</span>     <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">alphas_to_use</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">colors_to_use</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;cornflowerblue&#39;</span><span class="p">,</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="s1">&#39;lime&#39;</span><span class="p">]</span>
+
+<span class="c1"># build the composite with our custom parameters!</span>
+<span class="c1"># and make it dark-mode for fun!</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span><span class="n">data_list</span><span class="p">,</span> <span class="n">ls_to_use</span><span class="o">=</span><span class="n">ls_to_use</span><span class="p">,</span> <span class="n">lw_to_use</span><span class="o">=</span><span class="n">lw_to_use</span>
+<span class="n">alphas_to_use</span><span class="o">=</span><span class="n">alphas_to_use</span><span class="p">,</span> <span class="n">colors_to_use</span><span class="o">=</span><span class="n">colors_to_use</span><span class="p">,</span> <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/example-composite_dark.png"><img alt="_images/example-composite_dark.png" src="_images/example-composite_dark.png" style="width: 800px;" /></a>
+<hr class="docutils" />
+</section>
+</section>
+<section id="building-vad-hodographs">
+<span id="vadhodographs"></span><h2>Building VAD Hodographs<a class="headerlink" href="#building-vad-hodographs" title="Link to this heading"></a></h2>
+<p><em>Function Under Development</em></p>
+<p>SounderPy now offers the ability to plot NEXRAD radar VAD data on a hodograph using the <code class="docutils literal notranslate"><span class="pre">spy.build_vad_hodograph()</span></code> function:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="spy.build_vad_hodograph">
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">build_vad_hodograph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vad_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr_hodo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sounderpy_sounding'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.build_vad_hodograph" title="Link to this definition"></a></dt>
+<dd><p>Return a full hodograph plot of SounderPy VAD data, <code class="docutils literal notranslate"><span class="pre">plt</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vad_data</strong> (<em>dict</em><em>, </em><em>required</em>) – the dictionary of VAD data to be plotted</p></li>
+<li><p><strong>dark_mode</strong> (<em>bool</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> will invert the color scheme for a ‘dark-mode’ sounding. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>sr_hodo</strong> (bool, optional, default is <code class="docutils literal notranslate"><span class="pre">False</span></code>) – transform the hodograph from ground relative to storm relative</p></li>
+<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to show the plot inline or save to a file. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code> which displays the file inline.</p></li>
+<li><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – the filename by which a file should be saved to if <code class="docutils literal notranslate"><span class="pre">save</span> <span class="pre">=</span> <span class="pre">True</span></code>. Default is <cite>sounderpy_hodograph</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>plt, a SounderPy hodograph built with Matplotlib, MetPy, SharpPy, &amp; SounderPy.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plt</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="id3">
+<h3>Examples<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
+
+<span class="c1"># load a VAD file and create vad_data, a &#39;SounderPy-style&#39; Python dict</span>
+<span class="c1"># See &#39;VAD Hodograph example&#39;</span>
+
+<span class="c1"># build the hodograph!</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_vad_hodograph</span><span class="p">(</span><span class="n">vad_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="printing-data-to-the-console">
+<h2>Printing data to the console<a class="headerlink" href="#printing-data-to-the-console" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">spy.print_variables(clean_data):</span></span></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>clean_data</strong> – the dictionary of profile data to calculate profile parameters for (see <a class="reference internal" href="gettingdata.html"><span class="doc">🌐 Tools for Getting Data</span></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>data print out to the console</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">THERMODYNAMICS</span> <span class="o">---------------------------------------------</span>
+<span class="o">---</span> <span class="n">SBCAPE</span><span class="p">:</span> <span class="mf">5771.5</span> <span class="o">|</span> <span class="n">MUCAPE</span><span class="p">:</span> <span class="mf">5771.5</span> <span class="o">|</span> <span class="n">MLCAPE</span><span class="p">:</span> <span class="mf">4322.8</span> <span class="o">|</span> <span class="n">ECAPE</span><span class="p">:</span> <span class="mf">5136.3</span>
+<span class="o">---</span> <span class="n">MU</span> <span class="mi">0</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span> <span class="mf">111.7</span> <span class="o">|</span> <span class="n">MU</span> <span class="mi">0</span><span class="o">-</span><span class="mi">6</span><span class="p">:</span> <span class="mf">1174.7</span> <span class="o">|</span> <span class="n">SB</span> <span class="mi">0</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span> <span class="mf">111.7</span> <span class="o">|</span> <span class="n">SB</span> <span class="mi">0</span><span class="o">-</span><span class="mi">6</span><span class="p">:</span> <span class="mf">1174.7</span>
+
+<span class="o">&gt;</span> <span class="n">KINEMATICS</span> <span class="o">-------------------------------------------------</span>
+<span class="o">---</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SRW</span><span class="p">:</span> <span class="mf">34.8</span> <span class="n">knot</span> <span class="o">|</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SWV</span><span class="p">:</span> <span class="mf">0.014</span> <span class="o">|</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SHEAR</span><span class="p">:</span> <span class="mf">16.6</span> <span class="o">|</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SRH</span><span class="p">:</span> <span class="mf">153.8</span>
+<span class="o">---</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SRW</span><span class="p">:</span> <span class="mf">30.3</span> <span class="n">knot</span> <span class="o">|</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SWV</span><span class="p">:</span> <span class="mf">0.008</span> <span class="o">|</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SHEAR</span><span class="p">:</span> <span class="mf">35.6</span> <span class="o">|</span> <span class="o">|</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SRH</span><span class="p">:</span> <span class="mf">234.2</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="about-these-plots">
+<h2>About These Plots<a class="headerlink" href="#about-these-plots" title="Link to this heading"></a></h2>
+<p>This plot style has been developed in a way that acts to provide as much information to the user as possible with attributes designed specifically for the analysis of severe convective environments, and supercells/tornadoes in particular. You will also find that this particular plot style does not host many of the common and popular severe weather composite indices – that was intentional. Most, if not all, of the data provided on this plot, are considered, for the lack of a better word, ‘true’ observations of the atmosphere though most are still subject to heavy assumptions.</p>
+<p>The data on these plots are considered, by most, to be useful in determining critical characteristics of the atmosphere related to mesoscylonegenesis and tornadogenesis.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="gettingdata.html" class="btn btn-neutral float-left" title="🌐 Tools for Getting Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="helpertools.html" class="btn btn-neutral float-right" title="🛠️ Helper Tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Kyle J Gillett.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -4,7 +4,7 @@
 </div>
 
 # SounderPy, the vertical profile data retrieval and analysis tool for Python
-LATEST VERSION: v3.0.0 |  RELEASED: January, 2024  |  COPYRIGHT Kyle J Gillett, 2023, 2024
+LATEST VERSION: v3.0.1 |  RELEASED: February, 2024  |  COPYRIGHT Kyle J Gillett, 2023, 2024
 
 A Python package that helps you to access and plot vertical profile data for meteorological analysis 
 
@@ -107,7 +107,7 @@ SounderPy has been used by several institutions. For example, this tool has been
    <img src="https://kylejgillett.github.io/sounderpy/_images/example-hodograph_dark.png" width="600">
    </div>
 
-## To learn more about what you can do with SounderPy, [check out the documentation](https://kylejgillett.github.io/sounderpy/)
+### To learn more about what you can do with SounderPy, [check out the documentation](https://kylejgillett.github.io/sounderpy/)
 ------
 
 ## AUTHORS AND CONTRIBUTORS
@@ -118,12 +118,12 @@ SounderPy has been used by several institutions. For example, this tool has been
 
 
 ## CITING SOUNDERPY
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10011851.svg)](https://doi.org/10.5281/zenodo.10011851)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10443609.svg)](https://doi.org/10.5281/zenodo.10443609)
 
 
 in AMS format:
 
-- Gillett, K., 2023: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.0). Py-Pi, https://pypi.org/project/sounderpy/
+- Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.1). Py-Pi, https://pypi.org/project/sounderpy/
 
 ------
 

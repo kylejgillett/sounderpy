@@ -118,10 +118,10 @@ def __full_sounding(clean_data, color_blind, dark_mode):
         left_title = f"VALID: {clean_data['site_info']['valid-time'][1]}-{clean_data['site_info']['valid-time'][2]}-{clean_data['site_info']['valid-time'][0]} {clean_data['site_info']['valid-time'][3]}Z"
         right_title = f"{clean_data['site_info']['site-id']} - {clean_data['site_info']['site-name']} | {clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]}    " 
 
-    elif 'REANALYSIS' in clean_data['site_info']['source']:
-        top_title = f"MODEL REANALYSIS VERTICAL PROFILE | {clean_data['site_info']['valid-time'][3]}Z {clean_data['site_info']['model']} {clean_data['site_info']['fcst-hour']}"
+    elif 'REANALYSIS' or 'ANALYSIS' in clean_data['site_info']['source']:
+        top_title = f"{clean_data['site_info']['source']} VERTICAL PROFILE | {clean_data['site_info']['valid-time'][3]}Z {clean_data['site_info']['model']} {clean_data['site_info']['fcst-hour']}"
         left_title = f"{clean_data['site_info']['run-time'][3]}Z {clean_data['site_info']['model']} {clean_data['site_info']['fcst-hour']} | VALID: {clean_data['site_info']['valid-time'][1]}/{clean_data['site_info']['valid-time'][2]}/{clean_data['site_info']['valid-time'][0]} {clean_data['site_info']['valid-time'][3]}Z"
-        right_title = f"{clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]}    " 
+        right_title = f"{clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]} | {clean_data['site_info']['box_area']}    " 
         
     else:
         top_title = clean_data['site_info']['source']
@@ -487,14 +487,14 @@ def __full_sounding(clean_data, color_blind, dark_mode):
         h.ax.text(kinem['dtm'][0], (kinem['dtm'][1] + 2), 'DTM', weight='bold', fontsize=10, color='brown', ha='center')
         h.plot(kinem['dtm'][0], kinem['dtm'][1], marker='v', color='brown', markersize=8, alpha=0.8, ls='', label='DEVIANT TORNADO MOTION')
     
-    # EFFECTIVE INFLOW LAYER
-    ebot = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][find_nearest(p,kinem['eil'][0])]), (kinem['sm_v'], intrp['vINTRP'][find_nearest(p,kinem['eil'][0])]),  
-                     linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue', label='Effective Inflow Layer')
-    etop = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][find_nearest(p,kinem['eil'][1])]), (kinem['sm_v'], intrp['vINTRP'][find_nearest(p,kinem['eil'][1])]),  
-                     linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue')
+    ebot = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][0])]), (kinem['sm_v'], intrp['vINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][0])]),  
+                 linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue', label='Effective Inflow Layer')
+    etop = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][1])]), (kinem['sm_v'], intrp['vINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][1])]),  
+                 linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue')
+    
     # EFFECTIVE INFLOW LAYER SRH FILL
-    fill_srh = h.ax.fill(np.append(intrp['uINTRP'][find_nearest(p, kinem['eil'][0]):find_nearest(p, kinem['eil'][1])+1], kinem['sm_u']), 
-                         np.append(intrp['vINTRP'][find_nearest(p, kinem['eil'][0]):find_nearest(p, kinem['eil'][1])+1], kinem['sm_v']),
+    fill_srh = h.ax.fill(np.append(intrp['uINTRP'][find_nearest(intrp['zINTRP'], kinem['eil_z'][0]):find_nearest(intrp['zINTRP'], kinem['eil_z'][1])+1], kinem['sm_u']), 
+                         np.append(intrp['vINTRP'][find_nearest(intrp['zINTRP'], kinem['eil_z'][0]):find_nearest(intrp['zINTRP'], kinem['eil_z'][1])+1], kinem['sm_v']),
                          'lightblue',alpha=0.1, label='EIL SRH')
     
     h.ax.text(kinem['mcs'][0], kinem['mcs'][1], 'UP', weight='bold', fontsize=12, color='orange', ha='center', alpha=0.5, clip_on=True)
@@ -872,8 +872,8 @@ def __full_sounding(clean_data, color_blind, dark_mode):
     plt.figtext( 0.732, 0.01, f"{mag(kinem['shear_0_to_1000'])} kt", fontsize=15, color='mediumslateblue', weight='bold')
     plt.figtext( 0.769, 0.01, f"{mag(kinem['srh_0_to_1000'])* met_per_sec:~P}", fontsize=15, color='mediumslateblue', weight='bold')
     plt.figtext( 0.828, 0.01, f"{mag(kinem['srw_0_to_1000'])} kt", fontsize=15, color='mediumslateblue', weight='bold')
-    plt.figtext( 0.870, 0.01, f"{mag(kinem['swv_perc_1_to_3000'])}", fontsize=15, color='mediumslateblue', weight='bold')
-    plt.figtext( 0.905, 0.01, f"{mag_round(kinem['swv_3_to_6000'], 3)}", fontsize=15, color='mediumslateblue', weight='bold')
+    plt.figtext( 0.870, 0.01, f"{mag(kinem['swv_perc_0_to_1000'])}", fontsize=15, color='mediumslateblue', weight='bold')
+    plt.figtext( 0.905, 0.01, f"{mag_round(kinem['swv_0_to_1000'], 3)}", fontsize=15, color='mediumslateblue', weight='bold')
 
     plt.figtext( 0.689, -0.02, f"1-3ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
     plt.figtext( 0.732, -0.02, f"{mag(kinem['shear_1_to_3000'])} kt", fontsize=15, color='slateblue', weight='bold')
@@ -1023,10 +1023,10 @@ def __simple_sounding(clean_data, color_blind, dark_mode):
         right_title = f"{clean_data['site_info']['site-id']} - {clean_data['site_info']['site-name']} | {clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]}    " 
 
 
-    elif 'REANALYSIS' in clean_data['site_info']['source']:
-        top_title = f"MODEL REANALYSIS VERTICAL PROFILE | {clean_data['site_info']['valid-time'][3]}Z {clean_data['site_info']['model']} {clean_data['site_info']['fcst-hour']}"
+    elif 'REANALYSIS' or 'ANALYSIS' in clean_data['site_info']['source']:
+        top_title = f"{clean_data['site_info']['source']} VERTICAL PROFILE | {clean_data['site_info']['valid-time'][3]}Z {clean_data['site_info']['model']} {clean_data['site_info']['fcst-hour']}"
         left_title = f"{clean_data['site_info']['run-time'][3]}Z {clean_data['site_info']['model']} {clean_data['site_info']['fcst-hour']} | VALID: {clean_data['site_info']['valid-time'][1]}/{clean_data['site_info']['valid-time'][2]}/{clean_data['site_info']['valid-time'][0]} {clean_data['site_info']['valid-time'][3]}Z"
-        right_title = f"{clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]}    "    
+        right_title = f"{clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]} | {clean_data['site_info']['box_area']}    "   
         
     else:
         top_title = clean_data['site_info']['source']
@@ -1313,15 +1313,16 @@ def __simple_sounding(clean_data, color_blind, dark_mode):
         h.ax.text(kinem['dtm'][0], (kinem['dtm'][1] + 2), 'DTM', weight='bold', fontsize=10, color='brown', ha='center')
         h.plot(kinem['dtm'][0], kinem['dtm'][1], marker='v', color='brown', markersize=8, alpha=0.8, ls='', label='DEVIANT TORNADO MOTION')
     
-    # EFFECTIVE INFLOW LAYER
-    ebot = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][find_nearest(p,kinem['eil'][0])]), (kinem['sm_v'], intrp['vINTRP'][find_nearest(p,kinem['eil'][0])]),  
-                     linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue', label='Effective Inflow Layer')
-    etop = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][find_nearest(p,kinem['eil'][1])]), (kinem['sm_v'], intrp['vINTRP'][find_nearest(p,kinem['eil'][1])]),  
-                     linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue')
+
     # EFFECTIVE INFLOW LAYER SRH FILL
-    fill_srh = h.ax.fill(np.append(intrp['uINTRP'][find_nearest(p, kinem['eil'][0]):find_nearest(p, kinem['eil'][1])+1], kinem['sm_u']), 
-                         np.append(intrp['vINTRP'][find_nearest(p, kinem['eil'][0]):find_nearest(p, kinem['eil'][1])+1], kinem['sm_v']),
+    ebot = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][0])]), (kinem['sm_v'], intrp['vINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][0])]),  
+                 linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue', label='Effective Inflow Layer')
+    etop = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][1])]), (kinem['sm_v'], intrp['vINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][1])]),  
+                 linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue')
+    fill_srh = h.ax.fill(np.append(intrp['uINTRP'][find_nearest(intrp['zINTRP'], kinem['eil_z'][0]):find_nearest(intrp['zINTRP'], kinem['eil_z'][1])+1], kinem['sm_u']), 
+                         np.append(intrp['vINTRP'][find_nearest(intrp['zINTRP'], kinem['eil_z'][0]):find_nearest(intrp['zINTRP'], kinem['eil_z'][1])+1], kinem['sm_v']),
                          'lightblue',alpha=0.1, label='EIL SRH')
+    
     
     h.ax.text(kinem['mcs'][0], kinem['mcs'][1], 'UP', weight='bold', fontsize=12, color='orange', ha='center', alpha=0.5, clip_on=True)
     h.ax.text(kinem['mcs'][2], kinem['mcs'][3], 'DN', weight='bold', fontsize=12, color='orange', ha='center', alpha=0.5, clip_on=True)
@@ -1551,10 +1552,10 @@ def __full_hodograph(clean_data, dark_mode, sr_hodo):
         right_title = f"{clean_data['site_info']['site-id']} - {clean_data['site_info']['site-name']} | {clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]}    " 
 
 
-    elif 'REANALYSIS' in clean_data['site_info']['source']:
-        top_title = f"MODEL REANALYSIS {hodo_title} | {clean_data['site_info']['valid-time'][3]}Z {clean_data['site_info']['model']} {clean_data['site_info']['fcst-hour']}"
+    elif 'REANALYSIS' or 'ANALYSIS' in clean_data['site_info']['source']:
+        top_title = f"{clean_data['site_info']['source']} {hodo_title} | {clean_data['site_info']['valid-time'][3]}Z {clean_data['site_info']['model']} {clean_data['site_info']['fcst-hour']}"
         left_title = f"{clean_data['site_info']['run-time'][3]}Z {clean_data['site_info']['model']} {clean_data['site_info']['fcst-hour']} | VALID: {clean_data['site_info']['valid-time'][1]}/{clean_data['site_info']['valid-time'][2]}/{clean_data['site_info']['valid-time'][0]} {clean_data['site_info']['valid-time'][3]}Z"
-        right_title = f"{clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]}    " 
+        right_title = f"{clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]} | {clean_data['site_info']['box_area']}    " 
         
     else:
         top_title = clean_data['site_info']['source']
@@ -1713,25 +1714,25 @@ def __full_hodograph(clean_data, dark_mode, sr_hodo):
         
     # EFFECTIVE INFLOW LAYER
     if sr_hodo == False:
-        ebot = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][find_nearest(p,kinem['eil'][0])]), (kinem['sm_v'], intrp['vINTRP'][find_nearest(p,kinem['eil'][0])]),  
+        ebot = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][0])]), (kinem['sm_v'], intrp['vINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][0])]),  
                      linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue', label='Effective Inflow Layer')
-        etop = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][find_nearest(p,kinem['eil'][1])]), (kinem['sm_v'], intrp['vINTRP'][find_nearest(p,kinem['eil'][1])]),  
+        etop = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][1])]), (kinem['sm_v'], intrp['vINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][1])]),  
                      linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue')
         # EFFECTIVE INFLOW LAYER SRH FILL
-        fill_srh = h.ax.fill(np.append(intrp['uINTRP'][find_nearest(p, kinem['eil'][0]):find_nearest(p, kinem['eil'][1])+1], kinem['sm_u']), 
-                             np.append(intrp['vINTRP'][find_nearest(p, kinem['eil'][0]):find_nearest(p, kinem['eil'][1])+1], kinem['sm_v']),
+        fill_srh = h.ax.fill(np.append(intrp['uINTRP'][find_nearest(intrp['zINTRP'], kinem['eil_z'][0]):find_nearest(intrp['zINTRP'], kinem['eil_z'][1])+1], kinem['sm_u']), 
+                             np.append(intrp['vINTRP'][find_nearest(intrp['zINTRP'], kinem['eil_z'][0]):find_nearest(intrp['zINTRP'], kinem['eil_z'][1])+1], kinem['sm_v']),
                              'lightblue',alpha=0.1, label='EIL SRH')
         
     elif sr_hodo == True: 
-        ebot = h.ax.plot((0, intrp['uINTRP'][find_nearest(p,kinem['eil'][0])]), (0, intrp['vINTRP'][find_nearest(p,kinem['eil'][0])]),  
+        ebot = h.ax.plot((0, intrp['uINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][0])]), (0, intrp['vINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][0])]),  
                      linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue', label='Effective Inflow Layer')
-        etop = h.ax.plot((0, intrp['uINTRP'][find_nearest(p,kinem['eil'][1])]), (0, intrp['vINTRP'][find_nearest(p,kinem['eil'][1])]),  
+        etop = h.ax.plot((0, intrp['uINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][1])]), (0, intrp['vINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][1])]),  
                      linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue')
         # EFFECTIVE INFLOW LAYER SRH FILL
-        fill_srh = h.ax.fill(np.append(intrp['uINTRP'][find_nearest(p, kinem['eil'][0]):find_nearest(p, kinem['eil'][1])+1], 0), 
-                             np.append(intrp['vINTRP'][find_nearest(p, kinem['eil'][0]):find_nearest(p, kinem['eil'][1])+1], 0),
+        fill_srh = h.ax.fill(np.append(intrp['uINTRP'][find_nearest(intrp['zINTRP'], kinem['eil_z'][0]):find_nearest(intrp['zINTRP'], kinem['eil_z'][1])+1], 0), 
+                             np.append(intrp['vINTRP'][find_nearest(intrp['zINTRP'], kinem['eil_z'][0]):find_nearest(intrp['zINTRP'], kinem['eil_z'][1])+1], 0),
                              'lightblue',alpha=0.1, label='EIL SRH')
-    
+
     if sr_hodo == False:
         h.ax.text(kinem['mcs'][0], kinem['mcs'][1], 'UP', weight='bold', fontsize=12, color='orange', ha='center', alpha=0.5, clip_on=True)
         h.ax.text(kinem['mcs'][2], kinem['mcs'][3], 'DN', weight='bold', fontsize=12, color='orange', ha='center', alpha=0.5, clip_on=True)
@@ -1983,8 +1984,8 @@ def __full_hodograph(clean_data, dark_mode, sr_hodo):
     plt.figtext( 0.875, 0.78, f"{mag(kinem['shear_0_to_1000'])} kt", fontsize=15, color='mediumslateblue', weight='bold')
     plt.figtext( 0.929, 0.78,  f"{mag(kinem['srh_0_to_1000'])* met_per_sec:~P}", fontsize=15, color='mediumslateblue', weight='bold')
     plt.figtext( 1.006,   0.78, f"{mag(kinem['srw_0_to_1000'])} kt", fontsize=15, color='mediumslateblue', weight='bold')
-    plt.figtext( 1.070, 0.78, f"{mag(kinem['swv_perc_1_to_3000'])}", fontsize=15, color='mediumslateblue', weight='bold')
-    plt.figtext( 1.12, 0.78,  f"{mag_round(kinem['swv_3_to_6000'], 3)}", fontsize=15, color='mediumslateblue', weight='bold')
+    plt.figtext( 1.070, 0.78, f"{mag(kinem['swv_perc_0_to_1000'])}", fontsize=15, color='mediumslateblue', weight='bold')
+    plt.figtext( 1.12, 0.78,  f"{mag_round(kinem['swv_0_to_1000'], 3)}", fontsize=15, color='mediumslateblue', weight='bold')
 
     plt.figtext( 0.815, 0.75, f"1-3ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
     plt.figtext( 0.875, 0.75, f"{mag(kinem['shear_1_to_3000'])} kt", fontsize=15, color='slateblue', weight='bold')
@@ -2396,5 +2397,544 @@ def __composite_sounding(data_list, shade_between, ls_to_use,
     print('> COMPLETE --------')
     elapsed_time = time.time() - st
     print('> RUNTIME:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
+    
+    return plt
+
+
+
+
+
+
+
+#########################################################################
+########################### VAD HODOGRAPH ###############################
+
+def __vad_hodograph(vad_data, dark_mode, sr_hodo):
+
+
+    if dark_mode == True:
+        gen_txt_clr = 'white'
+        bckgrnd_clr = 'black'
+        brdr_clr    = 'white'
+        barb_clr    = 'white'
+        shade_alpha = 0.06
+    else: 
+        gen_txt_clr = 'black'
+        bckgrnd_clr = 'white'
+        brdr_clr    = 'black'
+        barb_clr    = 'black'
+        shade_alpha = 0.02
+    
+    
+    # record process time 
+    st = time.time()  
+
+    
+    def find_nearest(array, value):
+        array = np.asarray(array)
+        nearest_idx = (np.abs(array - value)).argmin()
+        return nearest_idx
+        
+    hodo_color = ['purple','red','darkorange','gold','#fff09f'] 
+    
+    def mag(param):
+        if ma.is_masked(param):
+            fixed = '--'
+        else:
+            try:
+                fixed = int(param.m)
+            except:
+                try: 
+                    fixed = int(param)
+                except: fixed = param
+        return fixed
+    
+    def mag_round(param, dec):
+        if ma.is_masked(param):
+            fixed = '--'
+        else:
+            fixed = np.round(param, dec)
+        return fixed
+
+    #################################################################
+    ### SET UP THE DATA ###
+    #################################################################
+    # declare easy variable names for reuse from `clean_data` 
+    z  = vad_data['z']
+    u  = vad_data['u']
+    v  = vad_data['v']
+    
+    # calculate other sounding parameters using SounderPy Calc
+    kinem, intrp = vad_params(vad_data).calc()
+    #################################################################
+    
+    hodo_title = 'HODOGRAPH'
+    
+    if sr_hodo == True:
+        if ma.is_masked(kinem['sm_u']) == False:
+            if np.isnan(kinem['sm_u']) == False:
+                u = u - (kinem['sm_u'])
+                v = v - (kinem['sm_v'])
+                intrp['uINTRP'] = intrp['uINTRP'] - kinem['sm_u']
+                intrp['vINTRP'] = intrp['vINTRP'] - kinem['sm_v']
+                hodo_title = 'STORM RELATIVE HODOGRAPH'
+            else:
+                sr_hodo = False
+                warnings.warn("This profile can not be plotted as storm relative because a storm-motion does not exist for this data"+
+                              "This plot will feature a ground relative instead.", Warning)
+        else:
+            sr_hodo = False
+            warnings.warn("This profile can not be plotted as storm relative because a storm-motion does not exist for this data"+
+                  "This plot will feature a ground relative instead.", Warning)
+    
+    #################################################################
+    ### DETERMINE PLOT TITLE BASED ON THE DATA ###
+    #################################################################
+    top_title = f"{vad_data['site_info']['source']} {hodo_title}"
+    left_title = f"VALID: {vad_data['site_info']['valid-time'][1]}-{vad_data['site_info']['valid-time'][2]}-{vad_data['site_info']['valid-time'][0]} {vad_data['site_info']['valid-time'][3]}Z"
+    right_title = f"{vad_data['site_info']['site-id']} - {vad_data['site_info']['site-name']} | {vad_data['site_info']['site-latlon'][0]}, {vad_data['site_info']['site-latlon'][1]}    " 
+
+    ################################################################    
+    
+    
+    
+    #################################################################
+    ### DEFINE HODOGRAPH BOUNDS ###
+    #################################################################
+    # determine max height of wind data to plot on hodograph in km (if hodo_layer = 9, 0-9km u and v are plotted)
+    # remove nan values from base wind u and v component arrays to find min & max values.
+    u_clean = u[np.logical_not(np.isnan(u))]
+    v_clean = v[np.logical_not(np.isnan(v))]
+    # restructure u and v, p, ws and z data arrays based on corrected u and v arrays and hodo_layer depth
+    # define x and y min/max values from 'cleaned' and restructured u and v arrays
+    x_min = u.min()
+    y_min = v.min()
+    x_max = u.max()
+    y_max = v.max()
+    # if statements to determine approprate x axis and y axis limits (to change dynamically with the data)
+    if y_max >= 0:
+        y_Maxlimit = (y_max + 15)
+    if y_max < 0:
+        y_Maxlimit = (y_max + 15)
+
+    if x_max >= 0:
+        x_Maxlimit = (x_max + 15)
+    if x_max < 0:
+        x_Maxlimit = (x_max + 15)
+
+    if y_min >= 0:
+        y_Minlimit = (y_min - 40)
+    if y_min < 0:
+        y_Minlimit = (y_min - 40)
+
+    if x_min >= 0:
+        x_Minlimit = (x_min - 40)
+    if x_min < 0:
+        x_Minlimit = (x_min - 40)
+    #################################################################
+        
+        
+    #################################################################
+    ### CREATE HODOGRAPH OBJECT ###
+    #################################################################
+    fig = plt.figure(figsize=(16, 12), linewidth=1.5, edgecolor=brdr_clr)
+    fig.set_facecolor(bckgrnd_clr)  
+    
+    hod_ax = plt.axes((0.13, 0.11, 0.77, 0.77))
+    h = Hodograph(hod_ax, component_range=150.)
+    try:
+        h.ax.set_xlim(x_Minlimit, x_Maxlimit)                                  
+        h.ax.set_ylim(y_Minlimit, y_Maxlimit)                             
+    except:
+        h.ax.set_xlim(-65,65)
+        h.ax.set_ylim(-65,65)
+        pass                                                                         
+    h.add_grid(increment=20, color=gen_txt_clr, linestyle='-', linewidth=1.5, alpha=0.4) 
+    h.add_grid(increment=10, color=gen_txt_clr, linewidth=1, linestyle='--', alpha=0.4) 
+    h.ax.set_facecolor(bckgrnd_clr)
+    h.ax.spines["top"].set_color(brdr_clr)
+    h.ax.spines["left"].set_color(brdr_clr)
+    h.ax.spines["right"].set_color(brdr_clr)
+    h.ax.spines["bottom"].set_color(brdr_clr)
+    h.ax.spines["bottom"].set_color(brdr_clr)
+    h.ax.set_box_aspect(1) 
+    h.ax.set_yticklabels([])
+    h.ax.set_xticklabels([])
+    h.ax.set_xticks([])
+    h.ax.set_yticks([])
+    h.ax.set_xlabel(' ')
+    h.ax.set_ylabel(' ')
+    #################################################################
+    
+    
+    
+    #################################################################
+    ### PLOT HEIGHT MARKERS ###
+    #################################################################
+    plt.xticks(np.arange(0,0,1))
+    plt.yticks(np.arange(0,0,1))
+    for i in range(10,130,20):
+        h.ax.annotate(str(i),(i,0),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
+    for i in range(10,130,20):
+        h.ax.annotate(str(i),(0,i),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
+    for i in range(10,130,20):
+        h.ax.annotate(str(i),(-i,0),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
+    for i in range(10,130,20):
+        h.ax.annotate(str(i),(0,-i),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
+
+    h.plot(intrp['uINTRP'][intrp['hgt_lvls']['h05']],intrp['vINTRP'][intrp['hgt_lvls']['h05']],marker='.', 
+           color='white', alpha=1, markersize=30, clip_on=True, zorder=5)
+    h.ax.annotate(str('.5'),(intrp['uINTRP'][intrp['hgt_lvls']['h05']],intrp['vINTRP'][intrp['hgt_lvls']['h05']]),
+                  weight='bold', fontsize=12, color='black',xytext=(0,-3.2),textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=6) 
+
+    hgt_lvls = [] 
+    for key in intrp['hgt_lvls'].keys():
+        hgt_lvls.append(intrp['hgt_lvls'][key])
+    hgt_lvls.pop(0) 
+
+    for i in hgt_lvls[1::2]:
+        h.plot(intrp['uINTRP'][i],intrp['vINTRP'][i], marker='.', color='white', alpha=1, markersize=30, zorder=5)
+        h.ax.annotate(str(int(round(intrp['zINTRP'][i]/1000,0))),(intrp['uINTRP'][i],intrp['vINTRP'][i]), 
+                      weight='bold', fontsize=12, color='black',xytext=(0,-3.2),textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=6) 
+    #################################################################
+    
+    
+    
+    
+    
+    #################################################################
+    ### PLOT HODOGRAPH LINE ###
+    #################################################################
+    hodo_color = ['purple','red','darkorange','gold','#fff09f']
+
+    h.ax.plot(intrp['uINTRP'][0:10+1],   intrp['vINTRP'][0:10+1],   color=hodo_color[0], linewidth=6, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][10:30+1],  intrp['vINTRP'][10:30+1],  color=hodo_color[1], linewidth=6, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][30:60+1],  intrp['vINTRP'][30:60+1],  color=hodo_color[2], linewidth=6, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][60:90+1],  intrp['vINTRP'][60:90+1],  color=hodo_color[3], linewidth=6, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][90:120+1], intrp['vINTRP'][90:120+1], color=hodo_color[4], linewidth=6, clip_on=True) 
+
+    
+    #################################################################
+    ### ADD HODOGRAPH ANNOTATION ###
+    #################################################################
+    if ma.is_masked(kinem['sm_rm']) == False:
+        # BUNKERS STORM MOTION
+        if sr_hodo == False:
+            h.ax.text((kinem['sm_rm'][0]+0.5), (kinem['sm_rm'][1]-0.5), 'RM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
+            h.ax.text((kinem['sm_lm'][0]+0.5), (kinem['sm_lm'][1]-0.5), 'LM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
+            h.ax.text((kinem['sm_mw'][0]+0.5), (kinem['sm_mw'][1]-0.5), 'MW', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
+            h.ax.arrow(0,0,kinem['sm_u']-0.3, kinem['sm_v']-0.3, linewidth=3, color=gen_txt_clr, alpha=0.2,label='Bunkers RM Vector', length_includes_head=True, head_width=0.5)
+            # DEVIANT TORNADO MOTION
+            h.ax.text(kinem['dtm'][0], (kinem['dtm'][1] + 2), 'DTM', weight='bold', fontsize=10, color='brown', ha='center')
+            h.plot(kinem['dtm'][0], kinem['dtm'][1], marker='v', color='brown', markersize=8, alpha=0.8, ls='', label='DEVIANT TORNADO MOTION')
+        elif sr_hodo == True:
+            h.ax.text((kinem['sm_lm'][0] - kinem['sm_u'] +0.5), (kinem['sm_lm'][1] - kinem['sm_v'] -0.5), 'LM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
+            h.ax.text((kinem['sm_mw'][0] - kinem['sm_u'] +0.5), (kinem['sm_mw'][1] - kinem['sm_v'] -0.5), 'MW', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
+            # DEVIANT TORNADO MOTION
+            h.ax.text(kinem['dtm'][0] - kinem['sm_u'], (kinem['dtm'][1] - kinem['sm_v'] + 2), 'DTM', weight='bold', fontsize=10, color='brown', ha='center')
+            h.plot(kinem['dtm'][0] - kinem['sm_u'], kinem['dtm'][1] - kinem['sm_v'], marker='v', color='brown', markersize=8, alpha=0.8, ls='', label='DEVIANT TORNADO MOTION')
+          
+        
+    # EFFECTIVE INFLOW LAYER
+    if sr_hodo == False:
+        ebot = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][0]), (kinem['sm_v'], intrp['vINTRP'][0]),  
+                     linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue', label='Effective Inflow Layer')
+        etop = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][find_nearest(z,3000)]), (kinem['sm_v'], intrp['vINTRP'][find_nearest(z, 3000)]),  
+                     linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue')
+        # EFFECTIVE INFLOW LAYER SRH FILL
+        fill_srh = h.ax.fill(np.append(intrp['uINTRP'][0:find_nearest(z, 3000)+1], kinem['sm_u']), 
+                             np.append(intrp['vINTRP'][0:find_nearest(z, 3000)+1], kinem['sm_v']),
+                             'lightblue',alpha=0.1, label='EIL SRH')
+        
+    elif sr_hodo == True: 
+        ebot = h.ax.plot((0, intrp['uINTRP'][0]), (0, intrp['vINTRP'][0]),  
+                     linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue', label='Effective Inflow Layer')
+        etop = h.ax.plot((0, intrp['uINTRP'][find_nearest(z, 3000)]), (0, intrp['vINTRP'][find_nearest(z, 3000)]),  
+                     linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue')
+        # EFFECTIVE INFLOW LAYER SRH FILL
+        fill_srh = h.ax.fill(np.append(intrp['uINTRP'][0:find_nearest(z, 3000)+1], 0), 
+                             np.append(intrp['vINTRP'][0:find_nearest(z, 3000)+1], 0),
+                             'lightblue',alpha=0.1, label='EIL SRH')
+    
+    if sr_hodo == False:
+        h.ax.text(kinem['mcs'][0], kinem['mcs'][1], 'UP', weight='bold', fontsize=12, color='orange', ha='center', alpha=0.5, clip_on=True)
+        h.ax.text(kinem['mcs'][2], kinem['mcs'][3], 'DN', weight='bold', fontsize=12, color='orange', ha='center', alpha=0.5, clip_on=True)
+    
+    elif sr_hodo == True:
+        h.ax.text(kinem['mcs'][0]- kinem['sm_u'], kinem['mcs'][1]- kinem['sm_v'], 'UP', weight='bold', fontsize=12, color='orange', ha='center', alpha=0.5, clip_on=True)
+        h.ax.text(kinem['mcs'][2]- kinem['sm_u'], kinem['mcs'][3]- kinem['sm_v'], 'DN', weight='bold', fontsize=12, color='orange', ha='center', alpha=0.5, clip_on=True)
+    
+    try:
+        keys = ['sm_rm', 'sm_lm', 'sm_mw', 'dtm'] 
+
+        speeds = []
+        directions = []
+
+        for key in keys:
+            speeds.append(mpcalc.wind_speed(kinem[key][0]*units.kts,kinem[key][1]*units.kts).m) 
+            directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem[key][0],kinem[key][1]))), full=False, level=3))
+
+        speeds.append(mpcalc.wind_speed(kinem['mcs'][0]*units.kts,kinem['mcs'][1]*units.kts).m) 
+        directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem['mcs'][0],kinem['mcs'][1]))), full=False, level=3))   
+
+        speeds.append(mpcalc.wind_speed(kinem['mcs'][2]*units.kts,kinem['mcs'][3]*units.kts).m) 
+        directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem['mcs'][2],kinem['mcs'][3]))), full=False, level=3)) 
+    
+        #plot Bunkers Storm Motion & DTM Data in box on Hodograph
+        plt.figtext(0.228, 0.86, 
+                    f' RM: {directions[0]} @ {mag(speeds[0])} kts\n LM: {directions[1]} @ {mag(speeds[1])} kts\n MW: {directions[2]} @ {mag(speeds[2])} kts\n'+
+                    f' DTM: {directions[3]} @ {mag(speeds[3])} kts\n US: {directions[4]} @ {mag(speeds[4])} kts\n DS: {directions[5]} @ {mag(speeds[5])} kts', 
+                    color=gen_txt_clr, fontsize=10, verticalalignment='top', linespacing=2.2, alpha=0.6)  
+    except IndexError:
+        pass
+    ################################################################
+    
+    
+    
+    
+    #########################################################################
+    ############################ OTHER AXES ################################# 
+    #########################################################################
+    
+    
+    
+    #################################################################
+    ### STREAMWISENESS AND RH W/HGT ###
+    #################################################################
+    # PLOT AXIS/LOC
+    strmws_ax = plt.axes((0.8015, 0.11, 0.095, 0.32))
+    plt.figtext(0.85, 0.40, f'SW ζ (%)', color=gen_txt_clr, weight='bold', fontsize=12, ha='center', alpha=0.7)
+    strmws_ax.spines["top"].set_color(brdr_clr)
+    strmws_ax.spines["left"].set_color(brdr_clr)
+    strmws_ax.spines["right"].set_color(brdr_clr)
+    strmws_ax.spines["bottom"].set_color(brdr_clr)
+    strmws_ax.spines["bottom"].set_color(brdr_clr)   
+    strmws_ax.set_facecolor(bckgrnd_clr) 
+
+    #YTICKS
+    strmws_ax.set_ylim(0, 3000)
+    strmws_ax.set_yticklabels([])
+    strmws_ax.set_ylabel(' ')
+    strmws_ax.tick_params(axis='y', length = 0)
+    strmws_ax.grid(True, axis='y')
+    strmws_ax.tick_params(axis="x",direction="in", pad=-12)
+
+    #XTICKS
+    strmws_ax.set_xlim(40, 102)
+    strmws_ax.set_xticks([50, 90])
+    strmws_ax.set_xticklabels([50, 90], weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
+    strmws_ax.set_xlabel(' ')
+
+    #HGT LABLES 
+    strmws_ax.text(47, 502 , '0.5km', fontsize=8, alpha=0.6, color=gen_txt_clr)
+    strmws_ax.text(47, 1002, '1.0km', fontsize=8, alpha=0.6, color=gen_txt_clr)
+    strmws_ax.text(47, 1502, '1.5km', fontsize=8, alpha=0.6, color=gen_txt_clr)
+    strmws_ax.text(47, 2002, '2.0km', fontsize=8, alpha=0.6, color=gen_txt_clr)
+    strmws_ax.text(47, 2502, '2.5km', fontsize=8, alpha=0.6, color=gen_txt_clr)
+
+    if ma.is_masked(kinem['sm_rm']) == False:
+        plt.plot(kinem['swv_perc'][0:11],  intrp['zINTRP'][0:11],  color=hodo_color[0], lw=3, clip_on=True)
+        plt.plot(kinem['swv_perc'][10:30], intrp['zINTRP'][10:30], color=hodo_color[1], lw=3, clip_on=True)
+    
+    else:
+        warnings.warn("Streamwiseness could not be plotted (no valid storm motion/not enough data)", Warning)
+    #################################################################
+
+    
+    
+    
+    #################################################################
+    ### VORTICITY W/HGT ###
+    #################################################################
+    vort_ax = plt.axes((0.8965, 0.11, 0.095, 0.32))
+    plt.figtext(0.945, 0.39, f'ζₜₒₜ & ζSW\n(/sec)', color=gen_txt_clr, weight='bold', fontsize=12, ha='center', alpha=0.7)
+    vort_ax.spines["top"].set_color(brdr_clr)
+    vort_ax.spines["left"].set_color(brdr_clr)
+    vort_ax.spines["right"].set_color(brdr_clr)
+    vort_ax.spines["bottom"].set_color(brdr_clr)
+    vort_ax.spines["bottom"].set_color(brdr_clr)   
+    vort_ax.set_facecolor(bckgrnd_clr) 
+
+    #YTICKS
+    vort_ax.tick_params(axis='y', length = 0)
+    vort_ax.grid(True, axis='y')
+    vort_ax.set_ylim(0, 3000)
+    vort_ax.set_yticklabels([])
+    vort_ax.set_ylabel(' ')
+    vort_ax.tick_params(axis="x",direction="in", pad=-12)
+        
+    if ma.is_masked(kinem['sm_rm']) == False: 
+        #XTICKS
+        vort_ax.set_xlabel(' ')
+        vort_max = kinem['vort'][0:30].max()+0.005
+        vort_min = kinem['vort'][0:30].min()-0.005
+    
+        vort_ax.set_xlim(vort_min-0.002, vort_max+0.002)
+        vort_ax.set_xticks([(vort_min+0.005),(vort_max-0.005)])
+        vort_ax.set_xticklabels([(np.round(vort_min+0.002,2)),(np.round(vort_max-0.002,2))], weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
+ 
+        vort_ax.plot(kinem['swv'][0:30],  intrp['zINTRP'][0:30], color='orange', linewidth=3, alpha=0.8, label='SW ζ')
+        vort_ax.plot(kinem['vort'][0:30], intrp['zINTRP'][0:30], color=gen_txt_clr,  linewidth=4, alpha=0.4, label='Total ζ')
+        
+    else:
+        warnings.warn("Total Vorticity could not be plotted (no valid storm motion/not enough data)", Warning)
+    #################################################################
+    
+    
+    
+    
+    
+    #################################################################
+    ### SRW W/HGT ###
+    #################################################################
+    wind_ax = plt.axes((0.9915, 0.11, 0.095, 0.32))
+    plt.figtext(1.037, 0.39, f'SR Wind\n(kts)', weight='bold', color=gen_txt_clr, fontsize=12, ha='center', alpha=0.7)
+    wind_ax.spines["top"].set_color(brdr_clr)
+    wind_ax.spines["left"].set_color(brdr_clr)
+    wind_ax.spines["right"].set_color(brdr_clr)
+    wind_ax.spines["bottom"].set_color(brdr_clr)
+    wind_ax.spines["bottom"].set_color(brdr_clr)   
+    wind_ax.set_facecolor(bckgrnd_clr) 
+    plt.ylabel(' ')
+    plt.xlabel(' ')
+
+    #YTICKS
+    wind_ax.set_ylim(0, 3000)
+    wind_ax.grid(True, axis='y')
+    wind_ax.set_yticklabels([])
+    wind_ax.tick_params(axis='y', length = 0)
+    wind_ax.tick_params(axis="x",direction="in", pad=-12)
+
+    if ma.is_masked(kinem['sm_rm']) == False:
+        #XTICKS
+        wind_max = kinem['srw'][0:30].max()+1
+        wind_min = kinem['srw'][0:30].min()-1
+        wind_ax.set_xlim(wind_min-5, wind_max+5)
+        wind_ax.set_xticks([(wind_min)+2, (wind_max)-2])
+        wind_ax.set_xticklabels([(int(wind_min)+2), (int(wind_max)-2)], weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
+
+        #PLOT SR WIND  
+        wind_ax.plot(kinem['srw'][0:11],  intrp['zINTRP'][0:11],  color=hodo_color[0], clip_on=True, linewidth=3, alpha=0.8, label='0-1 SR Wind')
+        wind_ax.plot(kinem['srw'][10:30], intrp['zINTRP'][10:30], color=hodo_color[1], clip_on=True, linewidth=3, alpha=0.8, label='1-3 SR Wind')
+        
+    else:
+        warnings.warn("Storm Relative Wind could not be plotted (no valid storm motion/not enough data)", Warning)
+        
+    #################################################################
+        
+        
+        
+    
+    #################################################################
+    ### WIND COMPONENTS PLOT ###
+    #################################################################
+    #PLOT AXES/LOC
+    comp_ax = plt.axes((1.0865, 0.11, 0.095, 0.32))
+    plt.figtext(1.135, 0.39, f'U-Wind (green)\nV-Wind (blue)', weight='bold', color=gen_txt_clr, fontsize=12, ha='center', alpha=0.7)
+    comp_ax.spines["top"].set_color(brdr_clr)
+    comp_ax.spines["left"].set_color(brdr_clr)
+    comp_ax.spines["right"].set_color(brdr_clr)
+    comp_ax.spines["bottom"].set_color(brdr_clr)
+    comp_ax.spines["bottom"].set_color(brdr_clr)   
+    comp_ax.set_facecolor(bckgrnd_clr) 
+
+    max_comp = np.array([intrp['uINTRP'][0:30].max(), intrp['vINTRP'][0:30].max()]).max()
+    min_comp = np.array([intrp['uINTRP'][0:30].min(), intrp['vINTRP'][0:30].min()]).min()
+
+    #YTICKS
+    comp_ax.set_ylim(intrp['zINTRP'][0], 3000)
+    comp_ax.set_yticklabels([])
+    plt.ylabel(' ')
+    comp_ax.tick_params(axis='y', length = 0)
+    comp_ax.grid(True, axis='y')
+
+    #XTICKS
+    comp_ax.set_xlim(min_comp - 10, max_comp + 5)
+    comp_ax.set_xticks([(min_comp), (max_comp)])
+    comp_ax.set_xticklabels([int(min_comp), int(max_comp)], weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
+
+    comp_ax.tick_params(axis="x", direction="in", pad=-12)
+    comp_ax.set_xlabel(' ')
+
+    #PLOT THETA VS HGT
+    plt.plot(intrp['uINTRP'], intrp['zINTRP'], color='forestgreen', linewidth=3.5, alpha=0.5, clip_on=True)
+    plt.plot(intrp['vINTRP'], intrp['zINTRP'], color='cornflowerblue', linewidth=3.5, alpha=0.8, clip_on=True)
+
+    #################################################################
+    
+    
+    
+    #########################################################################
+    ############################## TEXT PLOTS ###############################
+    #########################################################################
+
+    
+    
+    #################################################################
+    ### BOXES FOR TEXT ###
+    #################################################################
+    #                                 xloc   yloc   xsize  ysize
+    fig.patches.extend([plt.Rectangle((0.8015, 0.43), 0.38, 0.45,
+                                      edgecolor=brdr_clr, facecolor=bckgrnd_clr, linewidth=1, alpha=1,
+                                      transform=fig.transFigure, figure=fig)])
+    
+    #################################################################
+    ### KINEMATICS ###
+    #################################################################
+    # now some kinematic parameters
+    met_per_sec = (units.m*units.m)/(units.sec*units.sec)
+    plt.figtext( 0.88, 0.84, 'BS         SRH        SRW     SWζ%     SWζ', color=gen_txt_clr, weight='bold', fontsize=15, alpha=0.8)
+    
+    plt.figtext( 0.815, 0.81, f"0-.5ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
+    plt.figtext( 0.875, 0.81, f"{mag(kinem['shear_0_to_500'])} kt", fontsize=15, color='deepskyblue', weight='bold')
+    plt.figtext( 0.929, 0.81,  f"{mag(kinem['srh_0_to_500'])* met_per_sec:~P}", fontsize=15, color='deepskyblue', weight='bold')
+    plt.figtext( 1.006,   0.81, f"{mag(kinem['srw_0_to_500'])} kt", fontsize=15, color='deepskyblue', weight='bold')
+    plt.figtext( 1.070, 0.81, f"{mag(kinem['swv_perc_0_to_500'])}", fontsize=15, color='deepskyblue', weight='bold')
+    plt.figtext( 1.12, 0.81,  f"{mag_round(kinem['swv_0_to_500'], 3)}", fontsize=15, color='deepskyblue', weight='bold')
+
+    plt.figtext( 0.815, 0.78, f"0-1ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
+    plt.figtext( 0.875, 0.78, f"{mag(kinem['shear_0_to_1000'])} kt", fontsize=15, color='mediumslateblue', weight='bold')
+    plt.figtext( 0.929, 0.78,  f"{mag(kinem['srh_0_to_1000'])* met_per_sec:~P}", fontsize=15, color='mediumslateblue', weight='bold')
+    plt.figtext( 1.006,   0.78, f"{mag(kinem['srw_0_to_1000'])} kt", fontsize=15, color='mediumslateblue', weight='bold')
+    plt.figtext( 1.070, 0.78, f"{mag(kinem['swv_perc_0_to_1000'])}", fontsize=15, color='mediumslateblue', weight='bold')
+    plt.figtext( 1.12, 0.78,  f"{mag_round(kinem['swv_0_to_1000'], 3)}", fontsize=15, color='mediumslateblue', weight='bold')
+
+    plt.figtext( 0.815, 0.75, f"1-3ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
+    plt.figtext( 0.875, 0.75, f"{mag(kinem['shear_1_to_3000'])} kt", fontsize=15, color='slateblue', weight='bold')
+    plt.figtext( 0.929, 0.75,  f"{mag(kinem['srh_1_to_3000'])* met_per_sec:~P}", fontsize=15, color='slateblue', weight='bold')
+    plt.figtext( 1.006,   0.75, f"{mag(kinem['srw_1_to_3000'])} kt", fontsize=15, color='slateblue', weight='bold')
+    plt.figtext( 1.070, 0.75, f"{mag(kinem['swv_perc_1_to_3000'])}", fontsize=15, color='slateblue', weight='bold')
+    plt.figtext( 1.12, 0.75,  f"{mag_round(kinem['swv_1_to_3000'], 3)}", fontsize=15, color='slateblue', weight='bold')
+
+    plt.figtext( 0.815, 0.72, f"3-6ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
+    plt.figtext( 0.875, 0.72, f"{mag(kinem['shear_3_to_6000'])} kt", fontsize=15, color='darkslateblue', weight='bold')
+    plt.figtext( 0.929, 0.72,  f"{mag(kinem['srh_3_to_6000'])* met_per_sec:~P}", fontsize=15, color='darkslateblue', weight='bold')
+    plt.figtext( 1.006,   0.72, f"{mag(kinem['srw_3_to_6000'])} kt", fontsize=15, color='darkslateblue', weight='bold')
+    plt.figtext( 1.070, 0.72, f"{mag(kinem['swv_perc_3_to_6000'])}", fontsize=15, color='darkslateblue', weight='bold')
+    plt.figtext( 1.12, 0.72,  f"{mag_round(kinem['swv_3_to_6000'], 3)}", fontsize=15, color='darkslateblue', weight='bold')
+    #################################################################
+    
+
+    
+        
+    # PLOT TITLES ----------------------------------------------------------------------------------
+    plt.figtext( 0.23, 0.89, left_title, ha='left', weight='bold', fontsize=16, color=gen_txt_clr)
+    plt.figtext( 1.20, 0.89, f'{right_title}  ', ha='right', weight='bold', fontsize=16, color=gen_txt_clr)
+    plt.figtext( 0.23, 0.92, top_title, ha='left', weight='bold', fontsize=22, color=gen_txt_clr) 
+    plt.figtext( 0.23, 0.94, ' ') 
+    plt.figtext( 0.225, 0.09, f'SOUNDERPY VERTICAL PROFILE ANALYSIS TOOL | (C) KYLE J GILLETT 2023, CENTRAL MICHIGAN UNIVERSITY | AVAILABLE ON GITHUB & PYPI',
+                ha='left', color='cornflowerblue', alpha=0.8, weight='bold', fontsize=10)
+    
+    img = Image.open(urlopen('https://user-images.githubusercontent.com/100786530/251580013-2e9477c9-e36a-4163-accb-fe46780058dd.png'))
+    #                  side-side  up-down  size   size
+    imgax = fig.add_axes([0.22, 0.12, 0.08, 0.08], anchor='SE')
+    imgax.imshow(img)
+    imgax.axis('off')
+    
+    
+    elapsed_time = time.time() - st
+    print('> RUNTIME:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
+    
+    plt.tight_layout()
     
     return plt
