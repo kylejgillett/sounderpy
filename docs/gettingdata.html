@@ -25,7 +25,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="📈 Tools for Plotting Data" href="plottingdata.html" />
-    <link rel="prev" title="❓ Troubleshooting Issues" href="troubleshooting.html" /> 
+    <link rel="prev" title="❓ Troubleshooting" href="troubleshooting.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -51,7 +51,7 @@
               <p class="caption" role="heading"><span class="caption-text">General:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">❓ Troubleshooting Issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">❓ Troubleshooting</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="current">
@@ -59,6 +59,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#model-reanalysis-data-rap-era5-ncep">Model Reanalysis Data | RAP, ERA5, NCEP</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#spy.get_model_data"><code class="docutils literal notranslate"><span class="pre">spy.get_model_data()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#model-key-names">Model key names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dataset-key-names">Dataset key names</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#latitude-longitude-pairs">Latitude-Longitude pairs</a></li>
 </ul>
 </li>
@@ -185,10 +186,12 @@
 <section id="model-reanalysis-data-rap-era5-ncep">
 <span id="modeldata"></span><h2>Model Reanalysis Data | RAP, ERA5, NCEP<a class="headerlink" href="#model-reanalysis-data-rap-era5-ncep" title="Link to this heading"></a></h2>
 <p><strong>SounderPy hosts a simple function used to access model reanalysis profile data from the ERA5, RAP / RUC, &amp; NCEP FNL datasets</strong></p>
+<p>This tool accesses pressure-level and surface model data, parses it using a ‘box average approach’, and creates a Python dictionary (referred to as a SounderPy clean_data dict in this documentation), of the vertical profile.</p>
+<p>When accessing RAP-RUC data, this tool will search for the given date/time in a list of RAP &amp; RUC datasets available through NCEI – each dataset does have varying output. Because of this, a new argument, <cite>dataset</cite>, allows you to target a specific dataset instead of searching for the first dataset with the desired date/time.</p>
 <p>We can use the simple <code class="docutils literal notranslate"><span class="pre">spy.get_model_data()</span></code> function:</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="spy.get_model_data">
-<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">get_model_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latlon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hour</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.get_model_data" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">get_model_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latlon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hour</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box_avg_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.get_model_data" title="Link to this definition"></a></dt>
 <dd><p>Return a <code class="docutils literal notranslate"><span class="pre">dict</span></code> of ‘cleaned up’ model reanalysis data from a given model, for a given location, date, and time</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -199,6 +202,8 @@
 <li><p><strong>month</strong> (<em>str</em><em>, </em><em>required</em>) – valid month</p></li>
 <li><p><strong>day</strong> (<em>str</em><em>, </em><em>required</em>) – valid day</p></li>
 <li><p><strong>hour</strong> (<em>str</em><em>, </em><em>required</em>) – required, valid hour</p></li>
+<li><p><strong>dataset</strong> (<em>str</em><em>, </em><em>optional</em>) – optional, target a specific <a class="reference internal" href="#datasetkeys"><span class="std std-ref">dataset</span></a> instead of searching for the first one with data.</p></li>
+<li><p><strong>box_avg_size</strong> (<em>int</em><em>, </em><em>optional</em>) – optional, determine an area-averaged box size in degrees, default is 0.10 degrees.</p></li>
 <li><p><strong>hush</strong> (bool, optional, default is <cite>False</cite>) – whether to ‘hush’ a read-out of thermodynamic and kinematic parameters when getting data.</p></li>
 </ul>
 </dd>
@@ -219,6 +224,25 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">'rap'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'rap-ruc'</span></code>: RAPid refresh (RAP) / Rapid Update Cycle (RUC), reanalysis</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'ncep'</span></code>: NCEP Global Data Assimilation System/Final 0.25 degree, reanalysis</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'rap-now'</span></code>: RAPid refresh, latest analysis</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="dataset-key-names">
+<span id="datasetkeys"></span><h3>Dataset key names<a class="headerlink" href="#dataset-key-names" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'RAP_25km'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RAP_25km_old'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RAP_25km_anl'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RAP_25km_anl_old'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RAP_13km'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RAP_13km_old'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RAP_13km_anl'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RAP_13km_anl_old'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RUC_13km'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RUC_13km_old'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RUC_25km'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RUC_25km_old'</span></code></p></li>
 </ul>
 </div></blockquote>
 </section>
@@ -629,7 +653,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="troubleshooting.html" class="btn btn-neutral float-left" title="❓ Troubleshooting Issues" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="troubleshooting.html" class="btn btn-neutral float-left" title="❓ Troubleshooting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="plottingdata.html" class="btn btn-neutral float-right" title="📈 Tools for Plotting Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

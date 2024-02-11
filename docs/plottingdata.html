@@ -51,6 +51,7 @@
               <p class="caption" role="heading"><span class="caption-text">General:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">❓ Troubleshooting</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="current">
@@ -69,6 +70,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#building-composite-soundings">Building Composite Soundings</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#spy.build_composite"><code class="docutils literal notranslate"><span class="pre">spy.build_composite()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id2">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#building-vad-hodographs">Building VAD Hodographs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spy.build_vad_hodograph"><code class="docutils literal notranslate"><span class="pre">spy.build_vad_hodograph()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#printing-data-to-the-console">Printing data to the console</a></li>
@@ -168,7 +174,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="spy.build_hodograph">
 <span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">build_hodograph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clean_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr_hodo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sounderpy_sounding'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.build_hodograph" title="Link to this definition"></a></dt>
-<dd><p>Return a full sounding plot of SounderPy data, <code class="docutils literal notranslate"><span class="pre">plt</span></code></p>
+<dd><p>Return a full hodograph plot of SounderPy data, <code class="docutils literal notranslate"><span class="pre">plt</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -180,7 +186,7 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, &amp; SounderPy.</p>
+<dd class="field-even"><p>plt, a SounderPy hodograph built with Matplotlib, MetPy, SharpPy, &amp; SounderPy.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>plt</p>
@@ -276,6 +282,47 @@
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/example-composite_dark.png"><img alt="_images/example-composite_dark.png" src="_images/example-composite_dark.png" style="width: 800px;" /></a>
+<hr class="docutils" />
+</section>
+</section>
+<section id="building-vad-hodographs">
+<span id="vadhodographs"></span><h2>Building VAD Hodographs<a class="headerlink" href="#building-vad-hodographs" title="Link to this heading"></a></h2>
+<p><em>Function Under Development</em></p>
+<p>SounderPy now offers the ability to plot NEXRAD radar VAD data on a hodograph using the <code class="docutils literal notranslate"><span class="pre">spy.build_vad_hodograph()</span></code> function:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="spy.build_vad_hodograph">
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">build_vad_hodograph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vad_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr_hodo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sounderpy_sounding'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.build_vad_hodograph" title="Link to this definition"></a></dt>
+<dd><p>Return a full hodograph plot of SounderPy VAD data, <code class="docutils literal notranslate"><span class="pre">plt</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vad_data</strong> (<em>dict</em><em>, </em><em>required</em>) – the dictionary of VAD data to be plotted</p></li>
+<li><p><strong>dark_mode</strong> (<em>bool</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> will invert the color scheme for a ‘dark-mode’ sounding. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>sr_hodo</strong> (bool, optional, default is <code class="docutils literal notranslate"><span class="pre">False</span></code>) – transform the hodograph from ground relative to storm relative</p></li>
+<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to show the plot inline or save to a file. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code> which displays the file inline.</p></li>
+<li><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – the filename by which a file should be saved to if <code class="docutils literal notranslate"><span class="pre">save</span> <span class="pre">=</span> <span class="pre">True</span></code>. Default is <cite>sounderpy_hodograph</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>plt, a SounderPy hodograph built with Matplotlib, MetPy, SharpPy, &amp; SounderPy.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plt</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="id3">
+<h3>Examples<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
+
+<span class="c1"># load a VAD file and create vad_data, a &#39;SounderPy-style&#39; Python dict</span>
+<span class="c1"># See &#39;VAD Hodograph example&#39;</span>
+
+<span class="c1"># build the hodograph!</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_vad_hodograph</span><span class="p">(</span><span class="n">vad_data</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 </section>
 <hr class="docutils" />
