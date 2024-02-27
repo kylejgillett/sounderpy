@@ -17,3 +17,6 @@ from .sounderpy import get_latlon
 from .sounderpy import to_file
 from .calc import sounding_params
 from .calc import vad_params
+
+#AMELIA-DEV: Trying ChatGPT suggestions
+from sounderpy.plot import __full_sounding, __full_hodograph, __simple_sounding, __composite_sounding, __vad_hodograph

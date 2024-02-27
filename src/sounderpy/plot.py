@@ -14,7 +14,7 @@ from PIL import Image
 import warnings
 import time
 
-from .calc import *
+from calc import * ## DOT REMOVED
 
 
 

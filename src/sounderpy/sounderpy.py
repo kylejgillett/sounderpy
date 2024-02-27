@@ -29,8 +29,9 @@ from siphon.simplewebservice.wyoming import WyomingUpperAir
 from siphon.simplewebservice.iastate import IAStateUpperAir
 from siphon.simplewebservice.igra2 import IGRAUpperAir
 
-from .plot import __full_sounding, __full_hodograph, __simple_sounding, __composite_sounding, __vad_hodograph
-from .calc import *
+### AMELIA-DEV: Every time I've removed a dot throughout the project to make the program work, I've marked it with a comment. Hopefully this keeps the changes easy to find
+from plot import __full_sounding, __full_hodograph, __simple_sounding, __composite_sounding, __vad_hodograph ## DOT REMOVED
+from calc import * ## DOT REMOVED
 #########################################################################################################
 
 '''
@@ -1875,4 +1876,3 @@ def get_latlon(station_type, station_id):
                               "TIP: buoy IDs typically look like this: '41001'") 
     else:
         raise ValueError(f"Incorrect station_type argument. Valid station_type-s are 'metar', 'raob', 'igra', 'bufkit', 'buoy'")  
-             

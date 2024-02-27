@@ -113,6 +113,7 @@ SounderPy has been used by several institutions. For example, this tool has been
 ## AUTHORS AND CONTRIBUTORS
 ### **AUTHOR: Kyle J Gillett, Central Michigan University** 
 ##### CONTRIBUTOR: Scott Thomas, NWS Grand Rapids 
+##### CONTRIBUTOR: Amelia R H Urquhart, University of Oklahoma
 
 ------
 

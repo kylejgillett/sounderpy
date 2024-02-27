@@ -1,8 +1,8 @@
-from .SHARPPYMAIN.sharppy.sharptab.profile import create_profile
-from .SHARPPYMAIN.sharppy.sharptab.interp import *
-from .SHARPPYMAIN.sharppy.sharptab.winds import *
-from .SHARPPYMAIN.sharppy.sharptab.utils import comp2vec 
-from .SHARPPYMAIN.sharppy.sharptab.params import *
+from SHARPPYMAIN.sharppy.sharptab.profile import create_profile ## DOT REMOVED
+from SHARPPYMAIN.sharppy.sharptab.interp import * ## DOT REMOVED
+from SHARPPYMAIN.sharppy.sharptab.winds import * ## DOT REMOVED
+from SHARPPYMAIN.sharppy.sharptab.utils import comp2vec  ## DOT REMOVED
+from SHARPPYMAIN.sharppy.sharptab.params import * ## DOT REMOVED
 
 
 from ecape.calc import calc_ecape, _get_parcel_profile, calc_mse, calc_integral_arg, calc_lfc_height, calc_el_height
