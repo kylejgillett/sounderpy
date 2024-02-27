@@ -16,6 +16,8 @@ import time
 
 from calc import * ## DOT REMOVED
 
+from ecape_parcel.calc import calc_ecape_parcel, density_temperature
+
 
 
 #########################################################
@@ -196,20 +198,35 @@ def __full_sounding(clean_data, color_blind, dark_mode):
     skew.plot_mixing_lines(color=skw_ln_clr, linewidth=0.2, alpha=0.7)
     # add basic temperature lines
     twline = skew.plot(p, general['wet_bulb'], '#3d8aff', linewidth=1, label='WETBULB TEMP', alpha=0.3)
-    tvline = skew.plot(p, general['virt_temp'], '#0b6431', linestyle='--', linewidth=1, label='VIRTUAL TEMP', alpha=0.3)  
+    tvline = skew.plot(p, general['virt_temp'], 'red', linestyle='--', linewidth=3, label='VIRTUAL TEMP', alpha=0.6)  
     tdline = skew.plot(p, Td, td_color, linewidth=5, label='DEWPOINT')
     tline1 = skew.plot(p, T, 'red', linewidth=5, label='TEMPERATURE')  
+
+    sb_ecape_trace = calc_ecape_parcel(p, z, T, Td, u, v, True, pseudoadiabatic_switch=False, cape_type="surface_based")
+    ml_ecape_trace = calc_ecape_parcel(p, z, T, Td, u, v, True, pseudoadiabatic_switch=False, cape_type="mixed_layer")
+    # mu_irev_adiab_trace = calc_ecape_parcel(p, z, T, Td, u, v, False, entrainment_switch=True, pseudoadiabatic_switch=True, cape_type="most_unstable")
+    mu_ecape_irev_adiab_trace = calc_ecape_parcel(p, z, T, Td, u, v, False, pseudoadiabatic_switch=False, cape_type="most_unstable")
+
+    ml_ecape_trace_Trho = density_temperature(ml_ecape_trace[2], ml_ecape_trace[3], ml_ecape_trace[4])
+    # mu_ecape_pseudo_trace_Trho = density_temperature(mu_irev_adiab_trace[2], mu_irev_adiab_trace[3], mu_irev_adiab_trace[4])
+    mu_ecape_irev_adiab_trace_Trho = density_temperature(mu_ecape_irev_adiab_trace[2], mu_ecape_irev_adiab_trace[3], mu_ecape_irev_adiab_trace[4])
     
     # add parcel lines and CAPE shading
-    if thermo['sbcape'] > 0:
-        sbparcelline = skew.plot(thermo['sbP_trace'], thermo['sbT_trace'], linestyle='--',
-                                 linewidth=1, color='red', alpha=1, label='SB PARCEL')    
-    if thermo['mlcape'] > 0:
-        mlparcelline = skew.plot(thermo['mlP_trace'], thermo['mlT_trace'], color='orangered', linestyle='--',
-                                 linewidth=1, alpha=1, label='ML PARCEL') 
+    # if thermo['sbcape'] > 0:
+    #     sbparcelline = skew.plot(thermo['sbP_trace'], thermo['sbT_trace'], linestyle='--',
+    #                              linewidth=1, color='red', alpha=1, label='SB PARCEL')    
+    # if thermo['mlcape'] > 0:
+    #     mlparcelline = skew.plot(thermo['mlP_trace'], thermo['mlT_trace'], color='orangered', linestyle='--',
+    #                              linewidth=1, alpha=1, label='ML PARCEL') 
+    #     mleparcelline = skew.plot(ml_ecape_trace[0], ml_ecape_trace_Trho, color='orange', linestyle='--',  
+    #                              linewidth=1, alpha=1, label='ML-E PARCEL')
     if thermo['mucape'] > 0:
-        muparcelline = skew.plot(thermo['muP_trace'], thermo['muT_trace'], color='orange', linestyle='--',  
+        muparcelline = skew.plot(thermo['muP_trace'], thermo['muT_trace'], color='red', linestyle='--',  
                                  linewidth=1, alpha=1, label='MU PARCEL')
+        # mueparcelline = skew.plot(mu_irev_adiab_trace[0], mu_ecape_pseudo_trace_Trho, color='yellow', linestyle='--',  
+        #                          linewidth=1, alpha=1, label='MU-E PS PARCEL')
+        mueparcelline = skew.plot(mu_ecape_irev_adiab_trace[0], mu_ecape_irev_adiab_trace_Trho, color='orange', linestyle='--',  
+                                 linewidth=1, alpha=1, label='MU-E IA PARCEL')
 
     skew.plot(thermo['dparcel_p'], thermo['dparcel_T'], linestyle='--',linewidth=0.7, color='purple', 
               alpha=0.8, label='DWNDRFT PARCEL')
