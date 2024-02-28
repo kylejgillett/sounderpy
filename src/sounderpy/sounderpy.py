@@ -1302,7 +1302,7 @@ class acars_data:
 #########################################################################
 
 # Soundings 
-def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False, save=False, filename='sounderpy_sounding'):
+def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False, save=False, filename='sounderpy_sounding', parcel_highlight = ["mu_ia_ecape"], parcel_background = ["mu_ia_cape"]):
     
     '''
        Return a full sounding plot of SounderPy data, ``plt`` 
@@ -1327,12 +1327,12 @@ def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False,
         
     if style == 'full':
         if save == True:
-            __full_sounding(clean_data, color_blind, dark_mode).savefig(filename, bbox_inches='tight')
+            __full_sounding(clean_data, color_blind, dark_mode, parcel_highlight, parcel_background).savefig(filename, bbox_inches='tight')
         else:
             __full_sounding(clean_data, color_blind, dark_mode).show()
     elif style == 'simple':
         if save == True:
-            __simple_sounding(clean_data, color_blind, dark_mode).savefig(filename, bbox_inches='tight')
+            __simple_sounding(clean_data, color_blind, dark_mode, parcel_highlight, parcel_background).savefig(filename, bbox_inches='tight')
         else:
             __simple_sounding(clean_data, color_blind, dark_mode).show()
 

@@ -30,7 +30,7 @@ from ecape_parcel.calc import calc_ecape_parcel, density_temperature
 #########################################################################
 ########################## FULL SOUNDING ################################
 
-def __full_sounding(clean_data, color_blind, dark_mode):
+def __full_sounding(clean_data, color_blind, dark_mode, parcel_highlight = ["mu_ia_ecape"], parcel_background = ["mu_ia_cape"]):
     
     if dark_mode == True:
         gen_txt_clr = 'white'
@@ -202,14 +202,92 @@ def __full_sounding(clean_data, color_blind, dark_mode):
     tdline = skew.plot(p, Td, td_color, linewidth=5, label='DEWPOINT')
     tline1 = skew.plot(p, T, 'red', linewidth=5, label='TEMPERATURE')  
 
-    sb_ecape_trace = calc_ecape_parcel(p, z, T, Td, u, v, True, pseudoadiabatic_switch=False, cape_type="surface_based")
-    ml_ecape_trace = calc_ecape_parcel(p, z, T, Td, u, v, True, pseudoadiabatic_switch=False, cape_type="mixed_layer")
-    # mu_irev_adiab_trace = calc_ecape_parcel(p, z, T, Td, u, v, False, entrainment_switch=True, pseudoadiabatic_switch=True, cape_type="most_unstable")
-    mu_ecape_irev_adiab_trace = calc_ecape_parcel(p, z, T, Td, u, v, False, pseudoadiabatic_switch=False, cape_type="most_unstable")
+    # mu_lpl_p = thermo['muP_trace'][0] * units('hPa')
+    # mu_lpl_idx = np.where(p == mu_lpl_p)[0][0]
+    # print("mu_lpl_idx:", mu_lpl_idx)
+    # mu_lpl_z = z[mu_lpl_idx]
+    # mu_lpl_T = T[mu_lpl_idx]
+    # mu_lpl_Td = Td[mu_lpl_idx]
+    # print(mu_lpl_p)
+    # print(mu_lpl_z)
+    # print(mu_lpl_T)
+    # print(mu_lpl_Td),
+#                                               origin_pressure=mu_lpl_p, origin_pressure=mu_lpl_z, origin_temperature=mu_lpl_T, origin_dewpoint=mu_lpl_Td
 
-    ml_ecape_trace_Trho = density_temperature(ml_ecape_trace[2], ml_ecape_trace[3], ml_ecape_trace[4])
-    # mu_ecape_pseudo_trace_Trho = density_temperature(mu_irev_adiab_trace[2], mu_irev_adiab_trace[3], mu_irev_adiab_trace[4])
-    mu_ecape_irev_adiab_trace_Trho = density_temperature(mu_ecape_irev_adiab_trace[2], mu_ecape_irev_adiab_trace[3], mu_ecape_irev_adiab_trace[4])
+    sb_ps_cape_trace = None
+    sb_ps_cape_trace_Trho = None
+    sb_ps_ecape_trace = None
+    sb_ps_ecape_trace_Trho = None
+    sb_ia_cape_trace = None
+    sb_ia_cape_trace_Trho = None
+    sb_ia_ecape_trace = None
+    sb_ia_ecape_trace_Trho = None
+
+    ml_ps_cape_trace = None
+    ml_ps_cape_trace_Trho = None
+    ml_ps_ecape_trace = None
+    ml_ps_ecape_trace_Trho = None
+    ml_ia_cape_trace = None
+    ml_ia_cape_trace_Trho = None
+    ml_ia_ecape_trace = None
+    ml_ia_ecape_trace_Trho = None
+
+    mu_ps_cape_trace = None
+    mu_ps_cape_trace_Trho = None
+    mu_ps_ecape_trace = None
+    mu_ps_ecape_trace_Trho = None
+    mu_ia_cape_trace = None
+    mu_ia_cape_trace_Trho = None
+    mu_ia_ecape_trace = None
+    mu_ia_ecape_trace_Trho = None
+
+    if "sb_ps_cape" in parcel_highlight or "sb_ps_cape" in parcel_background:
+        sb_ps_cape_trace = calc_ecape_parcel(p, z, T, Td, u, v, False, entrainment_switch=False, pseudoadiabatic_switch=True, cape_type="surface_based")
+        sb_ps_cape_trace_Trho = density_temperature(sb_ps_cape_trace[2], sb_ps_cape_trace[3], sb_ps_cape_trace[4])
+
+    if "sb_ps_ecape" in parcel_highlight or "sb_ps_ecape" in parcel_background:
+        sb_ps_ecape_trace = calc_ecape_parcel(p, z, T, Td, u, v, False, entrainment_switch=True, pseudoadiabatic_switch=True, cape_type="surface_based")
+        sb_ps_ecape_trace_Trho = density_temperature(sb_ps_ecape_trace[2], sb_ps_ecape_trace[3], sb_ps_ecape_trace[4])
+
+    if "sb_ia_cape" in parcel_highlight or "sb_ia_cape" in parcel_background:
+        sb_ia_cape_trace = calc_ecape_parcel(p, z, T, Td, u, v, False, entrainment_switch=False, pseudoadiabatic_switch=False, cape_type="surface_based")
+        sb_ia_cape_trace_Trho = density_temperature(sb_ia_cape_trace[2], sb_ia_cape_trace[3], sb_ia_cape_trace[4])
+
+    if "sb_ia_ecape" in parcel_highlight or "sb_ia_ecape" in parcel_background:
+        sb_ia_ecape_trace = calc_ecape_parcel(p, z, T, Td, u, v, False, entrainment_switch=True, pseudoadiabatic_switch=False, cape_type="surface_based")
+        sb_ia_ecape_trace_Trho = density_temperature(sb_ia_ecape_trace[2], sb_ia_ecape_trace[3], sb_ia_ecape_trace[4])
+
+    if "ml_ps_cape" in parcel_highlight or "ml_ps_cape" in parcel_background:
+        ml_ps_cape_trace = calc_ecape_parcel(p, z, T, Td, u, v, False, entrainment_switch=False, pseudoadiabatic_switch=True, cape_type="mixed_layer")
+        ml_ps_cape_trace_Trho = density_temperature(ml_ps_cape_trace[2], ml_ps_cape_trace[3], ml_ps_cape_trace[4])
+
+    if "ml_ps_ecape" in parcel_highlight or "ml_ps_ecape" in parcel_background:
+        ml_ps_ecape_trace = calc_ecape_parcel(p, z, T, Td, u, v, False, entrainment_switch=True, pseudoadiabatic_switch=True, cape_type="mixed_layer")
+        ml_ps_ecape_trace_Trho = density_temperature(ml_ps_ecape_trace[2], ml_ps_ecape_trace[3], ml_ps_ecape_trace[4])
+
+    if "ml_ia_cape" in parcel_highlight or "ml_ia_cape" in parcel_background:
+        ml_ia_cape_trace = calc_ecape_parcel(p, z, T, Td, u, v, False, entrainment_switch=False, pseudoadiabatic_switch=False, cape_type="mixed_layer")
+        ml_ia_cape_trace_Trho = density_temperature(ml_ia_cape_trace[2], ml_ia_cape_trace[3], ml_ia_cape_trace[4])
+
+    if "ml_ia_ecape" in parcel_highlight or "ml_ia_ecape" in parcel_background:
+        ml_ia_ecape_trace = calc_ecape_parcel(p, z, T, Td, u, v, False, entrainment_switch=True, pseudoadiabatic_switch=False, cape_type="mixed_layer")
+        ml_ia_ecape_trace_Trho = density_temperature(ml_ia_ecape_trace[2], ml_ia_ecape_trace[3], ml_ia_ecape_trace[4])
+
+    if "mu_ps_cape" in parcel_highlight or "mu_ps_cape" in parcel_background:
+        mu_ps_cape_trace = calc_ecape_parcel(p, z, T, Td, u, v, False, entrainment_switch=False, pseudoadiabatic_switch=True, cape_type="most_unstable")
+        mu_ps_cape_trace_Trho = density_temperature(mu_ps_cape_trace[2], mu_ps_cape_trace[3], mu_ps_cape_trace[4])
+
+    if "mu_ps_ecape" in parcel_highlight or "mu_ps_ecape" in parcel_background:
+        mu_ps_ecape_trace = calc_ecape_parcel(p, z, T, Td, u, v, False, entrainment_switch=True, pseudoadiabatic_switch=True, cape_type="most_unstable")
+        mu_ps_ecape_trace_Trho = density_temperature(mu_ps_ecape_trace[2], mu_ps_ecape_trace[3], mu_ps_ecape_trace[4])
+
+    if "mu_ia_cape" in parcel_highlight or "mu_ia_cape" in parcel_background:
+        mu_ia_cape_trace = calc_ecape_parcel(p, z, T, Td, u, v, False, entrainment_switch=False, pseudoadiabatic_switch=False, cape_type="most_unstable")
+        mu_ia_cape_trace_Trho = density_temperature(mu_ia_cape_trace[2], mu_ia_cape_trace[3], mu_ia_cape_trace[4])
+
+    if "mu_ia_ecape" in parcel_highlight or "mu_ia_ecape" in parcel_background:
+        mu_ia_ecape_trace = calc_ecape_parcel(p, z, T, Td, u, v, False, entrainment_switch=True, pseudoadiabatic_switch=False, cape_type="most_unstable")
+        mu_ia_ecape_trace_Trho = density_temperature(mu_ia_ecape_trace[2], mu_ia_ecape_trace[3], mu_ia_ecape_trace[4])
     
     # add parcel lines and CAPE shading
     # if thermo['sbcape'] > 0:
@@ -218,15 +296,83 @@ def __full_sounding(clean_data, color_blind, dark_mode):
     # if thermo['mlcape'] > 0:
     #     mlparcelline = skew.plot(thermo['mlP_trace'], thermo['mlT_trace'], color='orangered', linestyle='--',
     #                              linewidth=1, alpha=1, label='ML PARCEL') 
-    #     mleparcelline = skew.plot(ml_ecape_trace[0], ml_ecape_trace_Trho, color='orange', linestyle='--',  
-    #                              linewidth=1, alpha=1, label='ML-E PARCEL')
-    if thermo['mucape'] > 0:
-        muparcelline = skew.plot(thermo['muP_trace'], thermo['muT_trace'], color='red', linestyle='--',  
-                                 linewidth=1, alpha=1, label='MU PARCEL')
-        # mueparcelline = skew.plot(mu_irev_adiab_trace[0], mu_ecape_pseudo_trace_Trho, color='yellow', linestyle='--',  
-        #                          linewidth=1, alpha=1, label='MU-E PS PARCEL')
-        mueparcelline = skew.plot(mu_ecape_irev_adiab_trace[0], mu_ecape_irev_adiab_trace_Trho, color='orange', linestyle='--',  
-                                 linewidth=1, alpha=1, label='MU-E IA PARCEL')
+    # if thermo['mucape'] > 0:
+    #     muparcelline = skew.plot(thermo['muP_trace'], thermo['muT_trace'], color='orange', linestyle='--',  
+    #                              linewidth=2, alpha=0.5, label='MU PARCEL')
+        
+    if "sb_ps_cape" in parcel_background:
+        sb_ps_parcelline = skew.plot(sb_ps_cape_trace[0], sb_ps_cape_trace_Trho, color='#808080', linestyle='--',  
+                                linewidth=2, alpha=0.5, label='SB PARCEL')
+    if "sb_ps_ecape" in parcel_background:
+        sb_e_ps_parcelline = skew.plot(sb_ps_ecape_trace[0], sb_ps_ecape_trace_Trho, color='#808080', linestyle='--',  
+                                linewidth=2, alpha=0.5, label='SB-E PARCEL')
+    if "sb_ia_cape" in parcel_background:
+        sb_ia_parcelline = skew.plot(sb_ia_cape_trace[0], sb_ia_cape_trace_Trho, color='#808080', linestyle='--',  
+                                linewidth=2, alpha=0.5, label='SB IA PARCEL')
+    if "sb_ia_ecape" in parcel_background:
+        sb_e_ia_parcelline = skew.plot(sb_ia_ecape_trace[0], sb_ia_ecape_trace_Trho, color='#808080', linestyle='--',  
+                                linewidth=2, alpha=0.5, label='SB-E IA PARCEL')
+    if "ml_ps_cape" in parcel_background:
+        ml_ps_parcelline = skew.plot(ml_ps_cape_trace[0], ml_ps_cape_trace_Trho, color='#808080', linestyle='--',  
+                                linewidth=2, alpha=0.5, label='ML PARCEL')
+    if "ml_ps_ecape" in parcel_background:
+        ml_e_ps_parcelline = skew.plot(ml_ps_ecape_trace[0], ml_ps_ecape_trace_Trho, color='#808080', linestyle='--',  
+                                linewidth=2, alpha=0.5, label='ML-E PARCEL')
+    if "ml_ia_cape" in parcel_background:
+        ml_ia_parcelline = skew.plot(ml_ia_cape_trace[0], ml_ia_cape_trace_Trho, color='#808080', linestyle='--',  
+                                linewidth=2, alpha=0.5, label='ML IA PARCEL')
+    if "ml_ia_ecape" in parcel_background:
+        ml_e_ia_parcelline = skew.plot(ml_ia_ecape_trace[0], ml_ia_ecape_trace_Trho, color='#808080', linestyle='--',  
+                                linewidth=2, alpha=0.5, label='ML-E IA PARCEL')
+    if "mu_ps_cape" in parcel_background:
+        mu_ps_parcelline = skew.plot(mu_ps_cape_trace[0], mu_ps_cape_trace_Trho, color='#808080', linestyle='--',  
+                                linewidth=2, alpha=0.5, label='MU PARCEL')
+    if "mu_ps_ecape" in parcel_background:
+        mu_e_ps_parcelline = skew.plot(mu_ps_ecape_trace[0], mu_ps_ecape_trace_Trho, color='#808080', linestyle='--',  
+                                linewidth=2, alpha=0.5, label='MU-E PARCEL')
+    if "mu_ia_cape" in parcel_background:
+        mu_ia_parcelline = skew.plot(mu_ia_cape_trace[0], mu_ia_cape_trace_Trho, color='#808080', linestyle='--',  
+                                linewidth=2, alpha=0.5, label='MU IA PARCEL')
+    if "mu_ia_ecape" in parcel_background:
+        mu_e_ia_parcelline = skew.plot(mu_ia_ecape_trace[0], mu_ia_ecape_trace_Trho, color='#808080', linestyle='--',  
+                                linewidth=2, alpha=0.5, label='MU-E IA PARCEL')
+        
+    if "sb_ps_cape" in parcel_highlight:
+        sb_ps_parcelline = skew.plot(sb_ps_cape_trace[0], sb_ps_cape_trace_Trho, color='red', linestyle='--',  
+                                linewidth=2, alpha=1, label='SB PARCEL')
+    if "sb_ps_ecape" in parcel_highlight:
+        sb_e_ps_parcelline = skew.plot(sb_ps_ecape_trace[0], sb_ps_ecape_trace_Trho, color='red', linestyle='--',  
+                                linewidth=2, alpha=1, label='SB-E PARCEL')
+    if "sb_ia_cape" in parcel_highlight:
+        sb_ia_parcelline = skew.plot(sb_ia_cape_trace[0], sb_ia_cape_trace_Trho, color='red', linestyle='--',  
+                                linewidth=2, alpha=1, label='SB IA PARCEL')
+    if "sb_ia_ecape" in parcel_highlight:
+        sb_e_ia_parcelline = skew.plot(sb_ia_ecape_trace[0], sb_ia_ecape_trace_Trho, color='red', linestyle='--',  
+                                linewidth=2, alpha=1, label='SB-E IA PARCEL')
+    if "ml_ps_cape" in parcel_highlight:
+        ml_ps_parcelline = skew.plot(ml_ps_cape_trace[0], ml_ps_cape_trace_Trho, color='red', linestyle='--',  
+                                linewidth=2, alpha=1, label='ML PARCEL')
+    if "ml_ps_ecape" in parcel_highlight:
+        ml_e_ps_parcelline = skew.plot(ml_ps_ecape_trace[0], ml_ps_ecape_trace_Trho, color='red', linestyle='--',  
+                                linewidth=2, alpha=1, label='ML-E PARCEL')
+    if "ml_ia_cape" in parcel_highlight:
+        ml_ia_parcelline = skew.plot(ml_ia_cape_trace[0], ml_ia_cape_trace_Trho, color='red', linestyle='--',  
+                                linewidth=2, alpha=1, label='ML IA PARCEL')
+    if "ml_ia_ecape" in parcel_highlight:
+        ml_e_ia_parcelline = skew.plot(ml_ia_ecape_trace[0], ml_ia_ecape_trace_Trho, color='red', linestyle='--',  
+                                linewidth=2, alpha=1, label='ML-E IA PARCEL')
+    if "mu_ps_cape" in parcel_highlight:
+        mu_ps_parcelline = skew.plot(mu_ps_cape_trace[0], mu_ps_cape_trace_Trho, color='red', linestyle='--',  
+                                linewidth=2, alpha=1, label='MU PARCEL')
+    if "mu_ps_ecape" in parcel_highlight:
+        mu_e_ps_parcelline = skew.plot(mu_ps_ecape_trace[0], mu_ps_ecape_trace_Trho, color='red', linestyle='--',  
+                                linewidth=2, alpha=1, label='MU-E PARCEL')
+    if "mu_ia_cape" in parcel_highlight:
+        mu_ia_parcelline = skew.plot(mu_ia_cape_trace[0], mu_ia_cape_trace_Trho, color='red', linestyle='--',  
+                                linewidth=2, alpha=1, label='MU IA PARCEL')
+    if "mu_ia_ecape" in parcel_highlight:
+        mu_e_ia_parcelline = skew.plot(mu_ia_ecape_trace[0], mu_ia_ecape_trace_Trho, color='red', linestyle='--',  
+                                linewidth=2, alpha=1, label='MU-E IA PARCEL')
 
     skew.plot(thermo['dparcel_p'], thermo['dparcel_T'], linestyle='--',linewidth=0.7, color='purple', 
               alpha=0.8, label='DWNDRFT PARCEL')
