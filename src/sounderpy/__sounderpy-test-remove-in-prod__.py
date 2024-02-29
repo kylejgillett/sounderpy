@@ -18,12 +18,12 @@ def __test_remove_in_prod__():
     # clean_data = spy.get_model_data(method, latlon, year, month, day, hour)
     
     year  = '2023' 
-    month = '06'
-    day   = '16'
-    hour  = '00'
-    station = 'FWD'
+    month = '01'
+    day   = '29'
+    hour  = '12'
+    station = 'OUN'
     clean_data = spy.get_obs_data(station, year, month, day, hour)
 
-    spy.build_sounding(clean_data, dark_mode=False, save=True, filename="RAOB_Fort-Worth-TX_20230616-00.png", parcel_highlight = ["mu_ia_ecape"], parcel_background = ["mu_ia_cape"])
+    spy.build_sounding(clean_data, dark_mode=True, save=True, filename="RAOB_Norman-OK_20230129-12.png", parcel_highlight = ["mu_ia_ecape"], parcel_background = ["mu_ia_cape"])
 
 __test_remove_in_prod__()
