@@ -5,7 +5,8 @@ from SHARPPYMAIN.sharppy.sharptab.utils import comp2vec  ## DOT REMOVED
 from SHARPPYMAIN.sharppy.sharptab.params import * ## DOT REMOVED
 
 
-from ecape.calc import calc_ecape, _get_parcel_profile, calc_mse, calc_integral_arg, calc_lfc_height, calc_el_height
+# from ecape.calc import calc_ecape, _get_parcel_profile, calc_mse, calc_integral_arg, calc_lfc_height, calc_el_height
+from ecape_parcel.ecape_calc import calc_ecape
 
 import numpy as np
 import numpy.ma as ma
