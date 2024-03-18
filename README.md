@@ -4,7 +4,7 @@
 </div>
 
 # SounderPy, the vertical profile data retrieval and analysis tool for Python
-LATEST VERSION: v3.0.1 |  RELEASED: February, 2024  |  COPYRIGHT Kyle J Gillett, 2023, 2024
+LATEST VERSION: v3.0.2 |  RELEASED: March, 2024  |  COPYRIGHT Kyle J Gillett, 2023, 2024
 
 A Python package that helps you to access and plot vertical profile data for meteorological analysis 
 
@@ -21,15 +21,31 @@ A Python package that helps you to access and plot vertical profile data for met
 
 <div align="center">
    
-### [VISIT SOUNDERPY DOCUMENTATION](https://kylejgillett.github.io/sounderpy/) | [CHECK OUT AN EXAMPLES & TUTORIALS](https://kylejgillett.github.io/sounderpy/examplescripts.html)
+#### [VISIT SOUNDERPY DOCUMENTATION](https://kylejgillett.github.io/sounderpy/) | [CHECK OUT AN EXAMPLES & TUTORIALS](https://kylejgillett.github.io/sounderpy/examplescripts.html) 
+
+### [VISIT THE OPERATIONAL SOUNDERPY SOUNDING ANALYSIS SITE](https://sounderpysoundings.anvil.app/)
 </div>
 
 
 ## What is SounderPy:
 
-SounderPy is an open-source atmospheric science Python package for vertical profile analysis. This tool is designed to get data, ‘clean it up’ for simple use, and plot the data on advanced-sounding plots. SounderPy was developed with the goal in mind to keep the code simple and efficient for users of all experience levels and for reliability in all use cases.
+**ABSTRACT:** SounderPy is a simple, open-source Python package for retrieving and plotting 
+vertical profile (sounding) data. Built for simplicity and reliability for all uses and users, this 
+project’s goal is to provide a uniform method for sounding analysis across multiple data types. 
+Severe weather analysis and forecasting requires a sound comprehension of thermodynamic and 
+kinematic properties of the environment. SounderPy makes this possible with robust access to 
+data and custom visualizations. The tool creates complex yet effective sounding and hodograph 
+plots with high readability which are designed specifically for severe weather analysis and 
+forecasting. SounderPy is capable of retrieving and plotting model forecast data, observed 
+radiosonde data, Aircraft Communications Addressing and Reporting System (ACARS) 
+observation data, and model reanalysis data. All of this functionality can be completed in three
+simple lines of code or less, making SounderPy an accessible tool for both Python experts and 
+novices. A number of scientific Python libraries build the base of SounderPy’s efficient and 
+durable functionality, such as NumPy, Matplotlib, xarray, Metpy, and SHARPpy. SounderPy is 
+available through GitHub and PyPi and is distributed under an MIT license. 
 
-SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines National Weather Service Office, the State University of New York at Albany, Mississippi State University, and others. Many have used SounderPy in projects and papers, such as students at Ohio State University, Central Michigan University & Rizal Technological University.
+
+SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines, Columbia, and Grand Rapids National Weather Service Offices, the State University of New York at Albany, Mississippi State University, the University of North Dakota, and others. Many students at various universities have used SounderPy in projects and papers, such as students at Ohio State University, Central Michigan University & Rizal Technological University.
 
 
 
@@ -42,29 +58,45 @@ SounderPy has been used by several institutions. For example, this tool has been
 
 ## What kind of data?:
 
-| **DATA**                        | **FUNCTION**       | **TYPE**          | **TIME RANGE**   |
+| **DATA**                        | **FUNCTION**       | **TYPE**          | **TIME RANGE**    |
 |---------------------------------|--------------------|-------------------|-------------------|
 | ECMWF CDS ERA5 reanalysis*      | get_model_data()   | Reanalysis        | 1940-present      |
 | UNIDATA THREDDS TDS RAP         | get_model_data()   | Reanalysis        | 2005-present      |
 | UNIDATA THREDDS TDS RUC         | get_model_data()   | Reanalysis        | 2005-2020         |
 | UNIDATA THREDDS NCEP-FNL        | get_model_data()   | Reanalysis        | 2005-2020         |
-| ISU's BUFKIT archive             | get_bufkit_data()  | Model Forecast    | 2011-present      |
+| ISU's BUFKIT archive            | get_bufkit_data()  | Model Forecast    | 2011-present      |
 | PSU's BUFKIT feed               | get_bufkit_data()  | Model Forecast    | Most recent runs  |
 | UNIDATA THREDDS TDS RAP         | get_model_data()   | Model Analysis    | Most recent run   |
 | OU ACARS Archive                | acars_data()       | Observations      | 2019-present      |
-| The Unv. of WY RAOB Archive      | get_obs_data()     | Observations      | 1973-present      |
-| IGRAv2 Observation archive       | get_obs_data()     | Observations      | 1905-present      |
-
+| The Unv. of WY RAOB Archive     | get_obs_data()     | Observations      | 1973-present      |
+| IGRAv2 Observation archive      | get_obs_data()     | Observations      | 1905-present      |
+|  NWS NEXRAD AWS Archive         | pyart_radar_profile() | Observations   |  1990s-present    |
 
 -------
 
 ## Installation
 
-1. #### Install the SounderPy software via pip:
-   ```
-   pip install sounderpy
-   ```
-   Find it at https://pypi.org/project/sounderpy/
+1. #### Install the SounderPy software:
+
+   - SounderPy is available on PyPi and can be installed via ``pip``:
+
+     ```
+      pip install sounderpy
+      ```
+   - or via ``conda forge`` by first setting up the ``conda-forge`` channel:
+
+     ```
+      conda config --add channels conda-forge
+      conda config --set channel_priority strict
+     ```
+     then
+     ```
+     conda install sounderpy
+     ```
+     or
+     ```
+     mamba install sounderpy
+     ```
    
 3. #### Import SounderPy into your Python project:
    ```py
@@ -112,7 +144,9 @@ SounderPy has been used by several institutions. For example, this tool has been
 
 ## AUTHORS AND CONTRIBUTORS
 ### **AUTHOR: Kyle J Gillett, Central Michigan University** 
-##### CONTRIBUTOR: Scott Thomas, NWS Grand Rapids 
+##### *CONTRIBUTOR: Scott Thomas, NWS Grand Rapids | VWP Hodograph, Buoy-sites listing*
+##### *CONTRIBUTOR: Amelia R H Urquhart, University of Oklahoma | ecape-parcels library*
+##### *CONTRIBUTOR: Daryl Herzmann, Iowa State University | SounderPy Feedstock for conda-forge*
 
 ------
 
@@ -123,7 +157,7 @@ SounderPy has been used by several institutions. For example, this tool has been
 
 in AMS format:
 
-- Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.1). Py-Pi, https://pypi.org/project/sounderpy/
+- Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.2). Py-Pi, https://pypi.org/project/sounderpy/
 
 ------
 

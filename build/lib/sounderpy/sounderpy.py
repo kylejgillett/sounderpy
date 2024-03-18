@@ -28,9 +28,17 @@ from siphon.ncss import NCSS
 from siphon.simplewebservice.wyoming import WyomingUpperAir
 from siphon.simplewebservice.iastate import IAStateUpperAir
 from siphon.simplewebservice.igra2 import IGRAUpperAir
+# PYART & NEXRADAWS
+# import os
+# os.environ['PYART_QUIET'] = 'True'
+# import pyart
+# import nexradaws
+# import pytz
 
+# SOUNDERPY
 from .plot import __full_sounding, __full_hodograph, __simple_sounding, __composite_sounding, __vad_hodograph
 from .calc import *
+
 #########################################################################################################
 
 '''
@@ -40,13 +48,14 @@ from .calc import *
 
     THIS RELEASE
     -------
-    Version: 3.0.1 | Feb. 2024
+    Version: 3.0.2 | March 2024
 
     DOCUMENTATION
     -------
     Docs: https://kylejgillett.github.io/sounderpy/
     Code: https://github.com/kylejgillett/sounderpy
     PyPi: https://pypi.org/project/sounderpy/
+    Operational Site: https://sounderpysoundings.anvil.app/
 
     COPYRIGHT
     ---------
@@ -57,7 +66,7 @@ from .calc import *
 citation_text = f"""
 ## ---------------------------------- SOUNDERPY ----------------------------------- ##
 ##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
-##                     v3.0.1 | Feb. 2024 | (C) Kyle J Gillett                      ##
+##                     v3.0.2 | Mar. 2024 | (C) Kyle J Gillett                      ##
 ##                 Docs: https://kylejgillett.github.io/sounderpy/                  ##
 ## --------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------ ##
 """
@@ -428,7 +437,7 @@ def get_model_data(model, latlon, year, month, day, hour, dataset=None, box_avg_
             vert_data = {
             'vert_T' : np.mean(np.array(raw_data['t'][0,:,:,:]-273.15), axis=(1,2)),
             'vert_p' : np.array(raw_data['level']),
-            'vert_z' : np.mean(np.array(raw_data['z'][0]), axis=(1,2)),
+            'vert_z' : np.mean(np.array(raw_data['z'][0])/9.80665, axis=(1,2)),
             'vert_rh': np.mean(np.array(raw_data['r'][0]), axis=(1,2)),
             'vert_u' : np.mean(np.array(raw_data['u'][0])*1.94384, axis=(1,2)),
             'vert_v' : np.mean(np.array(raw_data['v'][0])*1.94384, axis=(1,2)),
@@ -1118,6 +1127,14 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
     print('> RUNTIME:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
     print(f"> SUMMARY: {clean_data['site_info']['run-time'][3]}Z {clean_data['site_info']['model']} {clean_data['site_info']['fcst-hour']} for {clean_data['site_info']['site-id']}, {clean_data['site_info']['site-name']} at {clean_data['site_info']['valid-time'][1]}-{clean_data['site_info']['valid-time'][2]}-{clean_data['site_info']['valid-time'][0]}-{clean_data['site_info']['valid-time'][3]}Z")
     warnings.filterwarnings("ignore")
+
+    def clean_dewpoints(td):
+        for i in range(len(td)):
+            if td[i] < -130 * td[i].units: td[i] = -130 * td[i].units
+
+    clean_dewpoints(clean_data['Td'])
+
+
     if hush == False:
             sounding_params(clean_data).print_vals()
     
@@ -1296,12 +1313,161 @@ class acars_data:
 
 
 
+
+#####################
+# PYART VAD FUNCTION
+#########################################################################
+def pyart_radar_profile(nexrad_site, scan_dt, from_file=False, data_file='none'):
+
+
+    '''
+    Radar data loader and VWP creator function -- powered by PyArt 
+    (https://arm-doe.github.io/pyart/)
+
+    :param nexrad_site: station ID (``'KDTX'``)
+    :type nexrad_site: str, required
+    :param scan_dt: the date and time of the requested scan (``datetime(2021, 12, 11, 4, 24)``)
+    :type scan_dt: datetime obj, required
+    :param from_file: whether or not to search the NEXRAD AWS database or look for a local file, default is False
+    :type from_file: bool, optional
+    :param data_file: the filename of the local radar file to use
+    :type data_file: str, optional
+
+    returns a SounderPy 'vad_data' Python dict.
+
+    """
+
+    '''
+
+    st = time.time()
+
+    print(f'> PYART RADAR DATA RETRIEVAL FUNCTION --\n-----------------------------------------')
+    print('! NOTE: THIS FUNCTION IS CONSIDERED STILL IN DEVELOPMENT')
+    
+    if from_file == False:
+        class ScanNotFoundError(Exception):
+            def __init__(self, message="Scan not found."):
+                self.message = message
+                super().__init__(self.message)
+
+
+        # SET UP AWS CONNECTION
+        conn = nexradaws.NexradAwsInterface()
+        try:
+            scans = conn.get_avail_scans_in_range((scan_dt - timedelta(hours=1)),(scan_dt + timedelta(hours=1)), nexrad_site)
+        except TypeError:
+            raise ScanNotFoundError(f"Could not find the requested scan [{scan_dt} @ {nexrad_site}] in NEXRAD AWS dataset. This may be because the scan does not exist, or perhaps"+
+                                    f" there is an internal AWS error. You could try downloading the file here: https://www.ncdc.noaa.gov/nexradinv/")
+            pass
+
+        datetime_scans = []
+        for i in range(len(scans)):
+            datetime_scans.append(datetime(int(str(scans[i]).split('- ')[1][20:24]), int(str(scans[i]).split('- ')[1][24:26]), int(str(scans[i]).split('- ')[1][26:28]), int(str(scans[i]).split('- ')[1][29:31]), int(str(scans[i]).split('- ')[1][31:33])))
+            scan = str(scans[find_nearest(datetime_scans,scan_dt)]).split('- ')[1][0:-1]
+
+        print(f" + Found radar file: {scan}")
+
+        radar_file = pyart.io.read_nexrad_archive("s3://noaa-nexrad-level2/"+str(scan), station=nexrad_site)  
+        
+    else: 
+        radar_file = pyart.io.read(data_file)
+        scan = f'{data_file[4:8]}/{data_file[8:10]}/{data_file[10:12]}/{data_file[0:4]}/{data_file}'
+
+
+      
+    # GET TIME AND DATE OF FILE FROM SCAN
+    rad_time = scan.split('/')[4].split('_')[1]
+    date = scan.split('/')[4].split('_')[0][4:]
+    timelist = []
+    for i in range(0, len(rad_time), 2):
+        timelist.append(rad_time[i:i+2])
+    datelist = []
+    for i in range(0, len(date), 2):
+        datelist.append(date[i:i+2]) 
+        
+    # CREATE GATE FILTER
+    warnings.filterwarnings("ignore")
+    
+    gatefilter = pyart.filters.GateFilter(radar_file)
+    gatefilter.exclude_transition()
+    gatefilter.exclude_invalid("velocity")
+    gatefilter.exclude_invalid("reflectivity")
+    gatefilter.exclude_outside("reflectivity", 0, 80)
+
+    # PERFORM DEALIASING OF RADAR FILE
+    dealias_data = pyart.correct.dealias_region_based(radar_file, gatefilter=gatefilter)
+    try:
+        radar_file.add_field("corrected_velocity", dealias_data)
+    except ValueError:
+        pass
+    
+    # WRITE CFRADIAL FILE
+    pyart.io.write_cfradial(f"CF-RAD_{scan.split('/')[4]}.nc", radar_file, format='NETCDF4')
+
+    # READ THE CFRADIAL FILE
+    cfrad_file = pyart.io.read_cfradial(f"CF-RAD_{scan.split('/')[4]}.nc")    
+    print(f" + CF-Radial file created: 'CF-RAD_{scan.split('/')[4]}.nc'")
+    
+    # determine height levels
+    zlevels = np.arange(0, 9100, 100) 
+    u_allsweeps = []
+    v_allsweeps = []
+
+    
+    import contextlib
+    from io import StringIO
+
+    # Redirect stdout to a StringIO object
+    with contextlib.redirect_stdout(StringIO()):
+    
+        # for radial sweep, create a PyArt VAD 
+        for idx in range(cfrad_file.nsweeps):
+            radar_1sweep = cfrad_file.extract_sweeps([idx])
+            vad = pyart.retrieve.vad_browning(
+                radar_1sweep, "corrected_velocity", z_want=zlevels)
+            u_allsweeps.append(vad.u_wind)
+            v_allsweeps.append(vad.v_wind)    
+    
+    # LOAD A LIST OF NEXRAD SITE INFORMATION
+    nexrad_sites = pd.read_csv('https://raw.githubusercontent.com/kylejgillett/sounderpy/main/src/NEXRAD_SITES.txt', skiprows=3, skipinitialspace = True)
+
+    # CREATE A PYTHON DICTIONARY OF VAD DATA AND SITE METADATA
+    vad_data = {
+        'u': np.nanmean(np.array(u_allsweeps), axis=0)* 1.944,
+        'v': np.nanmean(np.array(v_allsweeps), axis=0)* 1.944,
+        'z': zlevels,
+        'site_info':  {'site-id': radar_file.metadata['instrument_name'],
+                       'site-name': str(nexrad_sites[nexrad_sites['ID']==radar_file.metadata['instrument_name']]['NAME'].values[0] + ', ' + nexrad_sites[nexrad_sites['ID']==radar_file.metadata['instrument_name']]['STATE'].values[0]),
+                       'site-latlon': [np.round(radar_file.latitude['data'][0], 2), np.round(radar_file.longitude['data'][0], 2)],
+                       'elevation': np.round(nexrad_sites[nexrad_sites['ID']==radar_file.metadata['instrument_name']]['ELV'].values[0]/3.281, 2),
+                       'vcp': str(radar_file.metadata['vcp_pattern']),
+                       'source': 'VAD VWP',
+                       'valid-time': [str(datelist[0]+datelist[1]), datelist[2], datelist[3], str(timelist[0]+':'+timelist[1])]}
+        }
+    
+
+    print('> COMPLETE --------')
+    elapsed_time = time.time() - st
+    print('> RUNTIME:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
+
+
+    return vad_data
+#########################################################################    
+
+
+
+
+
+
+
+
+
 #####################
 # PLOTTTING FUNCTIONS  
 #########################################################################
 
 # Soundings 
-def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False, save=False, filename='sounderpy_sounding'):
+def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False, storm_motion='right_moving', special_parcels=None, save=False, filename='sounderpy_sounding'):
     
     '''
        Return a full sounding plot of SounderPy data, ``plt`` 
@@ -1310,14 +1476,18 @@ def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False,
        :type clean_data: dict, required
        :param style: may be `simple` or `full`. Default is `full`.
        :type style: str, optional
-       :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
-       :type save: bool, optional
-       :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
-       :type filename: str, optional
        :param color_blind: whether or not to change the dewpoint trace line from green to blue for improved readability for color deficient users/readers. Default is ``False``
        :type color_blind: bool, optional
        :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding. Default is ``False``.
        :type dark_mode: bool, optional
+       :param storm_motion: the storm motion used for plotting and calculations. Default is 'right_moving'. Custom storm motions are accepted as a `list` of `floats` representing direction and speed. Ex: ``[270.0, 25.0]`` where '270.0' is the *direction in degrees* and '25.0' is the *speed in kts*. See the :ref:`storm_motions` section for more details.
+       :type storm_motion: str or list of floats, optional
+       :param special_parcels: a nested list of special parcels from the ``ecape_parcels`` library. The nested list should be a list of two lists (`[[a, b], [c, d]]`) where the first list should include 'highlight parcels' and second list should include 'background parcels'. For more details, see the :ref:`parcels_logic` section.
+       :type special_parcels: nested `list` of two `lists`, optional
+       :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
+       :type save: bool, optional
+       :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
+       :type filename: str, optional
        :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
        :rtype: plt
     '''
@@ -1326,18 +1496,24 @@ def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False,
         
     if style == 'full':
         if save == True:
-            __full_sounding(clean_data, color_blind, dark_mode).savefig(filename, bbox_inches='tight')
+            __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels).savefig(filename, bbox_inches='tight')
         else:
-            __full_sounding(clean_data, color_blind, dark_mode).show()
+            __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels).show()
     elif style == 'simple':
         if save == True:
-            __simple_sounding(clean_data, color_blind, dark_mode).savefig(filename, bbox_inches='tight')
+            __simple_sounding(clean_data, color_blind, dark_mode, storm_motion).savefig(filename, bbox_inches='tight')
         else:
-            __simple_sounding(clean_data, color_blind, dark_mode).show()
+            __simple_sounding(clean_data, color_blind, dark_mode, storm_motion).show()
+
+
+
+
+
+
 
 
 # Hodographs 
-def build_hodograph(clean_data, save=False, dark_mode=False, sr_hodo=False, filename='sounderpy_hodograph'):
+def build_hodograph(clean_data, save=False, dark_mode=False, storm_motion='right_moving', sr_hodo=False, filename='sounderpy_hodograph'):
     
     '''
        Return a full sounding plot of SounderPy data, ``plt`` 
@@ -1350,6 +1526,8 @@ def build_hodograph(clean_data, save=False, dark_mode=False, sr_hodo=False, file
        :type filename: str, optional
        :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding. Default is ``False``.
        :type dark_mode: bool, optional
+       :param storm_motion: the storm motion used for plotting and calculations. Default is 'right_moving'. Custom storm motions are accepted as a `list` of `floats` representing direction and speed. Ex: ``[270.0, 25.0]`` where '270.0' is the *direction in degrees* and '25.0' is the *speed in kts*. See the :ref:`storm_motions` section for more details.
+       :type storm_motion: str or list of floats, optional
        :param sr_hodo: transform the hodograph from ground relative to storm relative 
        :type sr_hodo: bool, optional, default is ``False``
        :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
@@ -1359,61 +1537,76 @@ def build_hodograph(clean_data, save=False, dark_mode=False, sr_hodo=False, file
     print(f'> HODOGRAPH PLOTTER FUNCTION --\n-------------------------------')
     
     if save == True:
-        __full_hodograph(clean_data, dark_mode, sr_hodo).savefig(filename, bbox_inches='tight')
+        __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo).savefig(filename, bbox_inches='tight')
     else:
-        __full_hodograph(clean_data, dark_mode, sr_hodo).show()    
+        __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo).show()    
+
+
+
+
+
 
 
 
 
 # VAD Hodographs 
-# def build_vad_hodograph(vad_data, save=False, dark_mode=False, sr_hodo=False, filename='sounderpy_hodograph'):
+def build_vad_hodograph(vad_data, save=False, dark_mode=False, storm_motion='right_moving', sr_hodo=False, filename='sounderpy_hodograph'):
     
-#     '''
-#        Return a VAD hodograph plot of SounderPy VAD data, ``plt`` 
+    '''
+       Return a VAD hodograph plot of SounderPy VAD data, ``plt`` 
 
-#        :param vad_data: the dictionary of VAD data to be plotted
-#        :type vad_data: dict, required
-#        :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
-#        :type save: bool, optional
-#        :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
-#        :type filename: str, optional
-#        :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding. Default is ``False``.
-#        :type dark_mode: bool, optional
-#        :param sr_hodo: transform the hodograph from ground relative to storm relative 
-#        :type sr_hodo: bool, optional, default is ``False``
-#        :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
-#        :rtype: plt
-#     '''
+       :param vad_data: the dictionary of VAD data to be plotted
+       :type vad_data: dict, required
+       :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
+       :type save: bool, optional
+       :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
+       :type filename: str, optional
+       :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding. Default is ``False``.
+       :type dark_mode: bool, optional
+       :param storm_motion: the storm motion used for plotting and calculations. Default is 'right_moving'. Custom storm motions are accepted as a `list` of `floats` representing direction and speed. Ex: ``[270.0, 25.0]`` where '270.0' is the *direction in degrees* and '25.0' is the *speed in kts*. See the :ref:`storm_motions` section for more details.
+       :type storm_motion: str or list of floats, optional
+       :param sr_hodo: transform the hodograph from ground relative to storm relative 
+       :type sr_hodo: bool, optional, default is ``False``
+       :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
+       :rtype: plt
+    '''
     
-#     print(f'> VAD HODOGRAPH PLOTTER FUNCTION --\n-------------------------------')
+    print(f'> VAD HODOGRAPH PLOTTER FUNCTION --\n------------------------------------')
     
-#     if save == True:
-#         __vad_hodograph(vad_data, dark_mode, sr_hodo).savefig(filename, bbox_inches='tight')
-#     else:
-#         __vad_hodograph(vad_data, dark_mode, sr_hodo).show()    
+    if save == True:
+        __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo).savefig(filename, bbox_inches='tight')
+    else:
+        __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo).show()    
+
+
+
+
+
+
 
 
 # Composite Soundings 
-def build_composite(data_list, shade_between=True, ls_to_use='none', alphas_to_use='none', colors_to_use='none', lw_to_use='none',
-                    save=False, filename='sounderpy_hodograph', dark_mode=False):
+def build_composite(data_list, shade_between=True, cmap='viridis', colors_to_use='none', ls_to_use='none', alphas_to_use='none',
+                    lw_to_use='none', dark_mode=False, save=False, filename='sounderpy_hodograph'):
     '''
        Return a composite sounding plot of multiple profiles, ``plt`` 
 
        :param data_list: a list of data dictionaries for each profile to be plotted
        :type data_list: list of dicts, required
-       :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding. Default is ``False``.
-       :type dark_mode: bool, optional
        :param shade_between: Lightly shade between the dewpoint & temperature trace. In many cases, this improves readability. Default is ``True``.
        :type shade_between: bool, optional
-       :param alphas_to_use: A list of custom alphas (0.0-1.0). List length must match the number of profiles listed in ``data_list``. Default is 'none'. Default alpha is 1.
-       :type alphas_to_use: list of floats, optional
+       :param cmap: a linear colormap, may be any custom or matplotlib cmap. Default is 'viridis'. If `colors_to_use` kwarg is provided, `colors_to_use` will be used instead.
+       :type cmap: `matplotlib.colors.LinearSegmentedColormap` or `str` representing the name of a matplotlib cmap, optional
        :param colors_to_use: A list of custom matplotlib color name stings. List length must match the number of profiles listed in ``data_list``. Default is 'none'.
        :type colors_to_use: list of strings, optional
+       :param alphas_to_use: A list of custom alphas (0.0-1.0). List length must match the number of profiles listed in ``data_list``. Default is 'none'. Default alpha is 1.
+       :type alphas_to_use: list of floats, optional
        :param ls_to_use: A list of custom matplotlib linestyles. List length must match the number of profiles listed in ``data_list``. Default is 'none'. Default linestyle is '-'.
        :type ls_to_use: list of stings, optional
        :param lw_to_use: A list of custom linewidths. List length must match the number of profiles listed in ``data_list``. Default is 'none'. Default linewidth is 3.
        :type lw_to_use: list of floats, optional
+       :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding. Default is ``False``.
+       :type dark_mode: bool, optional
        :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
        :type save: bool, optional
        :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
@@ -1426,11 +1619,11 @@ def build_composite(data_list, shade_between=True, ls_to_use='none', alphas_to_u
     print(f'> COMPOSITE SOUNDING FUNCTION --\n-------------------------------')
     
     if save == True:
-        __composite_sounding(data_list, shade_between, ls_to_use, 
-                    alphas_to_use, colors_to_use, lw_to_use, dark_mode).savefig(filename, bbox_inches='tight')
+        __composite_sounding(data_list, shade_between, cmap, colors_to_use, 
+            ls_to_use, alphas_to_use, lw_to_use, dark_mode).savefig(filename, bbox_inches='tight')
     else:
-        __composite_sounding(data_list, shade_between, ls_to_use,
-                    alphas_to_use, colors_to_use, lw_to_use, dark_mode).show()    
+        __composite_sounding(data_list, shade_between, cmap, colors_to_use, 
+            ls_to_use, alphas_to_use, lw_to_use, dark_mode).show() 
         
         
         

@@ -1,0 +1,59 @@
+UPDATE NOTES 
+
+
+
+
+
+- TODO v3.0.2
+================================================================================================================
+	- Checks                                 DONE?          DOC-ed?          LOCAL CHECK          PyPi-CHECK
+	------------------------------------------------------------------------------------------------------------
+	- ECAPE with ACARS ????..................can not be fixed...................................................
+	- ERA5 parse issue.......................DONE...........NA..................................................
+	- Replace NCAPE w/ECAPE..................DONE...........NA.................CHECKED.............CHECKED......
+	- RH w/ hgt annotations..................DONE...........NA.................CHECKED.............CHECKED......
+	- 6-9km Kinematics.......................DONE...........NA.................CHECKED.............CHECKED......
+	- Td fix for bufkit data.................DONE...........NA.................CHECKED.............CHECKED......
+	- Composite sounding colormap............DONE...........DONE...............CHECKED.............CHECKED......
+	- NEW ECAPE..............................DONE...........DONE...............CHECKED.............CHECKED......
+	- Storm motions!.........................DONE...........DONE...............CHECKED.............CHECKED......
+	- Add VAD function?......................DONE...........DONE...............CHECKED.............NA...........
+	- Add Storm Motion Logic to hodograph....DONE...........NA.................CHECKED.............CHECKED......
+
+
+	EXTRAS
+	- GeoPy Locations Function?.............
+	- Herbie model data example?............
+
+	OTHER
+	- _local modules -> public modules.....................DONE 
+	
+	- UPDATE DOCS..........................................DONE
+	- remake all plots and notebooks for docs..............DONE
+
+
+
+
+
+	
+- TODO v3.0.1
+================================================================================================================
+	- Checks                                 DONE?   DOC-ed?
+	------------------------------------------------------------------------------------------------------------
+	- Fix EIL................................DONE....NA.................PyPi Checked
+	- Finish reanalysis parse function.......DONE....Y..................PyPi Checked 
+	- Add new parse function.................DONE....Y..................PyPi Checked
+	- investigate SRV calc...................DONE....NA.................PyPi Checked
+	- fix frz point calc.....................DONE....NA.................PyPi Checked
+	- netCDF4 in req.txt.....................DONE....NA.................PyPi Checked
+	- Plot titles with box area..............DONE....NA.................PyPi Checked
+	- RAOB IDs...............................DONE....NA.................PyPi Checked
+	- last bufkit hour.......................DONE....NA.................PyPi Checked
+	
+
+	- WEIRD BUFKIT ECAPE..........maybe fixed with ECAPE update??
+	- NEW ECAPE....................................todo next time
+	- Add VAD function?............partially done, todo next time
+
+
+	-UPDATE DOCS............................DONE

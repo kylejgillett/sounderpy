@@ -5,29 +5,31 @@ Getting data can be tough, and then getting it into a usable format can often be
 
 **SounderPy is currently capable of accessing and processing data from:**
 
-+--------------------------------+-------------------+------------------+------------------+
-|         **DATA**               |   **FUNCTION**    |  **TYPE**        |  **TIME RANGE**  |
-+================================+===================+==================+==================+
-|    ECMWF CDS ERA5 reanalysis*  | get_model_data()  | Reanalysis       |  1940-present    |
-+--------------------------------+-------------------+------------------+------------------+
-|     UNIDATA THREDDS TDS RAP    | get_model_data()  | Reanalysis       |  2005-present    |
-+--------------------------------+-------------------+------------------+------------------+
-|     UNIDATA THREDDS TDS RUC    | get_model_data()  | Reanalysis       |  2005-2020       |
-+--------------------------------+-------------------+------------------+------------------+
-|    UNIDATA THREDDS NCEP-FNL    | get_model_data()  | Reanalysis       |  2005-2020       |
-+--------------------------------+-------------------+------------------+------------------+
-|    ISU's BUFKIT archive        | get_bufkit_data() | Model Forecast   |  2011-present    |
-+--------------------------------+-------------------+------------------+------------------+
-|     PSU's BUFKIT feed          | get_bufkit_data() | Model Forecast   | Most recent runs |
-+--------------------------------+-------------------+------------------+------------------+
-|  UNIDATA THREDDS TDS RAP       | get_model_data()  | Model Analysis   | Most recent run  |
-+--------------------------------+-------------------+------------------+------------------+
-|   OU ACARS Archive             | acars_data()      | Observations     | 2019-present     |
-+--------------------------------+-------------------+------------------+------------------+
-|  The Unv. of WY RAOB Archive   | get_obs_data()    | Observations     | 1973-present     |
-+--------------------------------+-------------------+------------------+------------------+
-|  IGRAv2 Observation Archive    | get_obs_data()    | Observations     |  1905-present    |
-+--------------------------------+-------------------+------------------+------------------+
++--------------------------------+-----------------------+------------------+------------------+
+|         **DATA**               |   **FUNCTION**        |  **TYPE**        |  **TIME RANGE**  |
++================================+=======================+==================+==================+
+|    ECMWF CDS ERA5 reanalysis*  | get_model_data()      | Reanalysis       |  1940-present    |
++--------------------------------+-----------------------+------------------+------------------+
+|     UNIDATA THREDDS TDS RAP    | get_model_data()      | Reanalysis       |  2005-present    |
++--------------------------------+-----------------------+------------------+------------------+
+|     UNIDATA THREDDS TDS RUC    | get_model_data()      | Reanalysis       |  2005-2020       |
++--------------------------------+-----------------------+------------------+------------------+
+|    UNIDATA THREDDS NCEP-FNL    | get_model_data()      | Reanalysis       |  2005-2020       |
++--------------------------------+-----------------------+------------------+------------------+
+|    ISU's BUFKIT archive        | get_bufkit_data()     | Model Forecast   |  2011-present    |
++--------------------------------+-----------------------+------------------+------------------+
+|     PSU's BUFKIT feed          | get_bufkit_data()     | Model Forecast   | Most recent runs |
++--------------------------------+-----------------------+------------------+------------------+
+|  UNIDATA THREDDS TDS RAP       | get_model_data()      | Model Analysis   | Most recent run  |
++--------------------------------+-----------------------+------------------+------------------+
+|   OU ACARS Archive             | acars_data()          | Observations     | 2019-present     |
++--------------------------------+-----------------------+------------------+------------------+
+|  The Unv. of WY RAOB Archive   | get_obs_data()        | Observations     | 1973-present     |
++--------------------------------+-----------------------+------------------+------------------+
+|  IGRAv2 Observation Archive    | get_obs_data()        | Observations     |  1905-present    |
++--------------------------------+-----------------------+------------------+------------------+
+|  NWS NEXRAD AWS Archive        | pyart_radar_profile() | Observations     |  1990s-present   |
++--------------------------------+-----------------------+------------------+------------------+
 
                     
 
@@ -40,9 +42,13 @@ Model Reanalysis Data | RAP, ERA5, NCEP
 
 **SounderPy hosts a simple function used to access model reanalysis profile data from the ERA5, RAP / RUC, & NCEP FNL datasets** 
 
+This tool accesses pressure-level and surface model data, parses it using a 'box average approach', and creates a Python dictionary (referred to as a SounderPy clean_data dict in this documentation), of the vertical profile. 
+
+When accessing RAP-RUC data, this tool will search for the given date/time in a list of RAP & RUC datasets available through NCEI -- each dataset does have varying output. Because of this, a new argument, `dataset`, allows you to target a specific dataset instead of searching for the first dataset with the desired date/time.
+
 We can use the simple ``spy.get_model_data()`` function:
 
-.. py:function:: spy.get_model_data(model, latlon, year, month, day, hour, hush=False)
+.. py:function:: spy.get_model_data(model, latlon, year, month, day, hour, dataset=None, box_avg_size=0.10, hush=False)
 
 
    Return a ``dict`` of 'cleaned up' model reanalysis data from a given model, for a given location, date, and time
@@ -59,6 +65,10 @@ We can use the simple ``spy.get_model_data()`` function:
    :type day: str, required
    :param hour: required, valid hour
    :type hour: str, required
+   :param dataset: optional, target a specific :ref:`dataset<datasetkeys>` instead of searching for the first one with data.
+   :type dataset: str, optional
+   :param box_avg_size: optional, determine an area-averaged box size in degrees, default is 0.10 degrees.
+   :type box_avg_size: int, optional
    :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting data.
    :type hush: bool, optional, default is `False`
    :return: :ref:`clean_data<datadescription>`, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information
@@ -77,6 +87,30 @@ Model key names
   - ``'ncep'``: NCEP Global Data Assimilation System/Final 0.25 degree, reanalysis 
 
   - ``'rap-now'``: RAPid refresh, latest analysis
+
+
+.. _datasetkeys:
+
+Dataset key names 
+^^^^^^^^^^^^^^^^^^
+  - ``'RAP_25km'``
+  - ``'RAP_25km_old'``
+      
+  - ``'RAP_25km_anl'``
+  - ``'RAP_25km_anl_old'``
+          
+  - ``'RAP_13km'``
+  - ``'RAP_13km_old'``
+      
+  - ``'RAP_13km_anl'``
+  - ``'RAP_13km_anl_old'``
+      
+  - ``'RUC_13km'``
+  - ``'RUC_13km_old'``
+      
+  - ``'RUC_25km'``
+  - ``'RUC_25km_old'``
+
 
 .. _latlonpairs:
 
@@ -139,8 +173,13 @@ Model Forecast Data | BUFKIT
 
 Available BUFKIT Sites:
 ^^^^^^^^^^^^^^^^^^^^^^^^
-- Iowa State University's `IEM BUFKIT Warehouse Maps <https://meteor.geol.iastate.edu/~ckarsten/bufkit/data/>`_
-- Penn State University's `PSU BUFKIT Warehouse Maps <http://www.meteo.psu.edu/bufkit/DomainNAMRAP_NAM_12.html>`_
+.. raw:: html
+
+    <embed>
+        <iframe src="https://kylejgillett.github.io/sounderpy/bufkit_map" width="100%" height="500"></iframe>
+    </embed>
+
+-
 
 .. _forecastmodels:
 
@@ -210,6 +249,17 @@ Observed Data | RAOB & IGRAv2
 
 .. note::
    Some data in these archives may be missing, incomplete or on occasion mislabled. 
+
+
+.. _raobsites:
+
+Available RAOB Sites:
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. raw:: html
+
+    <embed>
+        <iframe src="https://kylejgillett.github.io/sounderpy/raob_map" width="100%" height="500"></iframe>
+    </embed>
 
 ***************************************************************
 
@@ -291,6 +341,31 @@ Here is a simple example of the ACARS data retrieval functionality:
 
 
 ****************************************
+
+
+Observed Data | VAD radar data
+-------------------------------
+
+.. _vaddata:
+
+.. py:function:: pyart_radar_profile(nexrad_site, scan_dt, from_file=False, data_file='none')
+
+   Return a ``dict`` of 'cleaned up' radar VAD data. This radar data loader and VWP creator function is powered by PyArt 
+   (https://arm-doe.github.io/pyart/)
+
+   :param nexrad_site: station ID (``'KDTX'``)
+   :type nexrad_site: str, required
+   :param scan_dt: the date and time of the requested scan (``datetime(2021, 12, 11, 4, 24)``)
+   :type scan_dt: datetime obj, required
+   :param from_file: whether or not to search the NEXRAD AWS database or look for a local file, default is False
+   :type from_file: bool, optional
+   :param data_file: the filename of the local radar file to use
+   :type data_file: str, optional
+
+
+
+
+******************************************
 
 
 

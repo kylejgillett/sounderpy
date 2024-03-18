@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>📈 Tools for Plotting Data &mdash; SounderPy v3.0.0 documentation</title>
+  <title>📈 Tools for Plotting Data &mdash; SounderPy v3.0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5773a0da"></script>
+        <script src="_static/documentation_options.js?v=c4f3aea9"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -77,7 +77,20 @@
 <li class="toctree-l3"><a class="reference internal" href="#id3">Examples</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#printing-data-to-the-console">Printing data to the console</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#storm-motion-logic">Storm Motion Logic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#storm-motion-keys">Storm Motion Keys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-storm-motions">Custom Storm Motions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#parcel-logic">Parcel Logic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-use-this-feature">How to use this feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parcel-keys">Parcel Keys</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#printing-data-to-the-console">Printing data to the console</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spy.print_variables"><code class="docutils literal notranslate"><span class="pre">spy.print_variables()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#about-these-plots">About These Plots</a></li>
 </ul>
 </li>
@@ -116,7 +129,7 @@
   <section id="tools-for-plotting-data">
 <h1>📈 Tools for Plotting Data<a class="headerlink" href="#tools-for-plotting-data" title="Link to this heading"></a></h1>
 <a class="reference internal image-reference" href="_images/example-sounding_dark3.png"><img alt="_images/example-sounding_dark3.png" class="align-right" src="_images/example-sounding_dark3.png" style="width: 300px;" /></a>
-<p>Initially, SounderPy started as a tool meant for getting and parsing data with little focus on plotting said data. However, recent releases have put more emphasis on plotting capabilites. Version 3.0.0 features a number of significant &amp; exciting upgrades to SounderPy’s plotting abilities.</p>
+<p>Initially, SounderPy was a tool meant for getting and parsing data with not as much focus on plotting said data. However, recent releases have put more emphasis on plotting capabilites. Version 3.0.0+ features a number of significant &amp; exciting upgrades to SounderPy’s plotting abilities.</p>
 <p>SounderPy can create general <a class="reference internal" href="#soundings"><span class="std std-ref">sounding</span></a> and <a class="reference internal" href="#hodographs"><span class="std std-ref">hodograph</span></a> plots as well as <a class="reference internal" href="#compsoundings"><span class="std std-ref">composite sounding</span></a> plots!</p>
 <p>The <cite>full</cite> sounding plots that SounderPy creates are complex figures with unique design geared towards severe convective storm enviroment analysis.</p>
 <p>These sounding plots are ‘my baby’ and I hope you find them useful! :)</p>
@@ -131,7 +144,7 @@
 <p>We can use the simple <code class="docutils literal notranslate"><span class="pre">spy.build_sounding()</span></code> function:</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="spy.build_sounding">
-<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">build_sounding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clean_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'full'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_blind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sounderpy_sounding'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.build_sounding" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">build_sounding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clean_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'full'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_blind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storm_motion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'right_moving'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">special_parcels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sounderpy_sounding'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.build_sounding" title="Link to this definition"></a></dt>
 <dd><p>Return a full sounding plot of SounderPy data, <code class="docutils literal notranslate"><span class="pre">plt</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -140,6 +153,8 @@
 <li><p><strong>style</strong> (<em>str</em><em>, </em><em>optional</em>) – may be <cite>simple</cite> or <cite>full</cite>. Default is <cite>full</cite>.</p></li>
 <li><p><strong>color_blind</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to change the dewpoint trace line from green to blue for improved readability for color deficient users/readers. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>dark_mode</strong> (<em>bool</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> will invert the color scheme for a ‘dark-mode’ sounding. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>storm_motion</strong> (<em>str</em><em> or </em><em>list</em><em> of </em><em>floats</em><em>, </em><em>optional</em>) – the storm motion used for plotting and calculations. Default is ‘right_moving’. Custom storm motions are accepted as a <cite>list</cite> of <cite>floats</cite> representing direction and speed. Ex: <code class="docutils literal notranslate"><span class="pre">[270.0,</span> <span class="pre">25.0]</span></code> where ‘270.0’ is the <em>direction in degrees</em> and ‘25.0’ is the <em>speed in kts</em>. See the <a class="reference internal" href="#storm-motions"><span class="std std-ref">Storm Motion Logic</span></a> section for more details.</p></li>
+<li><p><strong>special_parcels</strong> (nested <cite>list</cite> of two <cite>lists</cite>, optional) – a nested list of special parcels from the <code class="docutils literal notranslate"><span class="pre">ecape_parcels</span></code> library. The nested list should be a list of two lists (<cite>[[a, b], [c, d]]</cite>) where the first list should include ‘highlight parcels’ and second list should include ‘background parcels’. For more details, see the <a class="reference internal" href="#parcels-logic"><span class="std std-ref">Parcel Logic</span></a> section. Another option is ‘simple’, which removes all advanced parcels making the plot quicker.</p></li>
 <li><p><strong>save</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to show the plot inline or save to a file. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code> which displays the file inline.</p></li>
 <li><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – the filename by which a file should be saved to if <code class="docutils literal notranslate"><span class="pre">save</span> <span class="pre">=</span> <span class="pre">True</span></code>. Default is <cite>sounderpy_sounding</cite>.</p></li>
 </ul>
@@ -173,13 +188,14 @@
 <p>Very similarly to soundings, we can use the simple <code class="docutils literal notranslate"><span class="pre">spy.build_hodograph()</span></code> function:</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="spy.build_hodograph">
-<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">build_hodograph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clean_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr_hodo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sounderpy_sounding'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.build_hodograph" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">build_hodograph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clean_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storm_motion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'right_moving'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr_hodo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sounderpy_sounding'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.build_hodograph" title="Link to this definition"></a></dt>
 <dd><p>Return a full hodograph plot of SounderPy data, <code class="docutils literal notranslate"><span class="pre">plt</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>clean_data</strong> (<em>dict</em><em>, </em><em>required</em>) – the dictionary of data to be plotted (see <a class="reference internal" href="gettingdata.html"><span class="doc">🌐 Tools for Getting Data</span></a>)</p></li>
 <li><p><strong>dark_mode</strong> (<em>bool</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> will invert the color scheme for a ‘dark-mode’ sounding. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>storm_motion</strong> (<em>str</em><em> or </em><em>list</em><em> of </em><em>floats</em><em>, </em><em>optional</em>) – the storm motion used for plotting and calculations. Default is ‘right_moving’. Custom storm motions are accepted as a <cite>list</cite> of <cite>floats</cite> representing direction and speed. Ex: <code class="docutils literal notranslate"><span class="pre">[270.0,</span> <span class="pre">25.0]</span></code> where ‘270.0’ is the <em>direction in degrees</em> and ‘25.0’ is the <em>speed in kts</em>. See the <a class="reference internal" href="#storm-motions"><span class="std std-ref">Storm Motion Logic</span></a> section for more details.</p></li>
 <li><p><strong>sr_hodo</strong> (bool, optional, default is <code class="docutils literal notranslate"><span class="pre">False</span></code>) – transform the hodograph from ground relative to storm relative</p></li>
 <li><p><strong>save</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to show the plot inline or save to a file. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code> which displays the file inline.</p></li>
 <li><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – the filename by which a file should be saved to if <code class="docutils literal notranslate"><span class="pre">save</span> <span class="pre">=</span> <span class="pre">True</span></code>. Default is <cite>sounderpy_sounding</cite>.</p></li>
@@ -215,18 +231,19 @@
 <p>To do so, a list of <a class="reference internal" href="gettingdata.html#datadescription"><span class="std std-ref">‘clean_data’ dicts</span></a> is needed. If you want to customize the look of each profile, you can create equal length lists with alphas, linestyles, linewidths, &amp; colors. See below:</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="spy.build_composite">
-<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">build_composite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shade_between</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alphas_to_use</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors_to_use</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ls_to_use</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lw_to_use</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sounderpy_sounding'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.build_composite" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">build_composite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'viridis'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors_to_use</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shade_between</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alphas_to_use</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ls_to_use</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lw_to_use</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sounderpy_sounding'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.build_composite" title="Link to this definition"></a></dt>
 <dd><p>Return a composite sounding plot of multiple profiles, <code class="docutils literal notranslate"><span class="pre">plt</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_list</strong> (<em>list</em><em> of </em><em>dicts</em><em>, </em><em>required</em>) – a list of data dictionaries for each profile to be plotted</p></li>
-<li><p><strong>dark_mode</strong> (<em>bool</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> will invert the color scheme for a ‘dark-mode’ sounding. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>shade_between</strong> (<em>bool</em><em>, </em><em>optional</em>) – Lightly shade between the dewpoint &amp; temperature trace. In many cases, this improves readability. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>alphas_to_use</strong> (<em>list</em><em> of </em><em>floats</em><em>, </em><em>optional</em>) – A list of custom alphas (0.0-1.0). List length must match the number of profiles listed in <code class="docutils literal notranslate"><span class="pre">data_list</span></code>. Default is ‘none’. Default alpha is 1.</p></li>
+<li><p><strong>cmap</strong> (<cite>matplotlib.colors.LinearSegmentedColormap</cite> or <cite>str</cite> representing the name of a matplotlib cmap, optional) – a linear colormap, may be any custom or matplotlib cmap. Default is ‘viridis’. If <code class="docutils literal notranslate"><span class="pre">colors_to_use</span></code> kwarg is provided, <code class="docutils literal notranslate"><span class="pre">colors_to_use</span></code> will be used instead.</p></li>
 <li><p><strong>colors_to_use</strong> (<em>list</em><em> of </em><em>strings</em><em>, </em><em>optional</em>) – A list of custom matplotlib color name stings. List length must match the number of profiles listed in <code class="docutils literal notranslate"><span class="pre">data_list</span></code>. Default is ‘none’.</p></li>
+<li><p><strong>alphas_to_use</strong> (<em>list</em><em> of </em><em>floats</em><em>, </em><em>optional</em>) – A list of custom alphas (0.0-1.0). List length must match the number of profiles listed in <code class="docutils literal notranslate"><span class="pre">data_list</span></code>. Default is ‘none’. Default alpha is 1.</p></li>
 <li><p><strong>ls_to_use</strong> (<em>list</em><em> of </em><em>stings</em><em>, </em><em>optional</em>) – A list of custom matplotlib linestyles. List length must match the number of profiles listed in <code class="docutils literal notranslate"><span class="pre">data_list</span></code>. Default is ‘none’. Default linestyle is ‘-‘.</p></li>
 <li><p><strong>lw_to_use</strong> (<em>list</em><em> of </em><em>floats</em><em>, </em><em>optional</em>) – A list of custom linewidths. List length must match the number of profiles listed in <code class="docutils literal notranslate"><span class="pre">data_list</span></code>. Default is ‘none’. Default linewidth is 3.</p></li>
+<li><p><strong>dark_mode</strong> (<em>bool</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> will invert the color scheme for a ‘dark-mode’ sounding. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>save</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to show the plot inline or save to a file. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code> which displays the file inline.</p></li>
 <li><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – the filename by which a file should be saved to if <code class="docutils literal notranslate"><span class="pre">save</span> <span class="pre">=</span> <span class="pre">True</span></code>. Default is <cite>sounderpy_sounding</cite>.</p></li>
 </ul>
@@ -261,24 +278,14 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
 
 <span class="c1"># get data | Note: any sounderpy data will work!</span>
-<span class="c1"># this example looks at 3 profiles from OAX on Pilger-day.</span>
-<span class="n">clean_data1</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s1">&#39;oax&#39;</span><span class="p">,</span> <span class="s1">&#39;2014&#39;</span><span class="p">,</span> <span class="s1">&#39;06&#39;</span><span class="p">,</span> <span class="s1">&#39;16&#39;</span><span class="p">,</span> <span class="s1">&#39;12&#39;</span><span class="p">)</span>
-<span class="n">clean_data2</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s1">&#39;oax&#39;</span><span class="p">,</span> <span class="s1">&#39;2014&#39;</span><span class="p">,</span> <span class="s1">&#39;06&#39;</span><span class="p">,</span> <span class="s1">&#39;16&#39;</span><span class="p">,</span> <span class="s1">&#39;18&#39;</span><span class="p">)</span>
-<span class="n">clean_data3</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s1">&#39;oax&#39;</span><span class="p">,</span> <span class="s1">&#39;2014&#39;</span><span class="p">,</span> <span class="s1">&#39;06&#39;</span><span class="p">,</span> <span class="s1">&#39;17&#39;</span><span class="p">,</span> <span class="s1">&#39;00&#39;</span><span class="p">)</span>
 
-<span class="c1"># add each dict of data to a list</span>
-<span class="n">data_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">clean_data1</span><span class="p">,</span> <span class="n">clean_data2</span><span class="p">,</span> <span class="n">clean_data3</span><span class="p">]</span>
+<span class="n">data_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">hour</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;00&#39;</span><span class="p">,</span> <span class="s1">&#39;01&#39;</span><span class="p">,</span> <span class="s1">&#39;02&#39;</span><span class="p">,</span> <span class="s1">&#39;03&#39;</span><span class="p">,</span> <span class="s1">&#39;04&#39;</span><span class="p">,</span> <span class="s1">&#39;05&#39;</span><span class="p">,</span> <span class="s1">&#39;06&#39;</span><span class="p">]:</span>
+    <span class="n">cd</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_bufkit_data</span><span class="p">(</span><span class="s1">&#39;hrrr&#39;</span><span class="p">,</span> <span class="s1">&#39;dtx&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;2024&#39;</span><span class="p">,</span> <span class="s1">&#39;02&#39;</span><span class="p">,</span> <span class="s1">&#39;28&#39;</span><span class="p">,</span> <span class="n">hour</span><span class="p">,</span> <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cd</span><span class="p">)</span>
 
-<span class="c1"># lets add some custom parameters:</span>
-<span class="n">ls_to_use</span>     <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">]</span>
-<span class="n">lw_to_use</span>     <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-<span class="n">alphas_to_use</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="n">colors_to_use</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;cornflowerblue&#39;</span><span class="p">,</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="s1">&#39;lime&#39;</span><span class="p">]</span>
-
-<span class="c1"># build the composite with our custom parameters!</span>
 <span class="c1"># and make it dark-mode for fun!</span>
-<span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span><span class="n">data_list</span><span class="p">,</span> <span class="n">ls_to_use</span><span class="o">=</span><span class="n">ls_to_use</span><span class="p">,</span> <span class="n">lw_to_use</span><span class="o">=</span><span class="n">lw_to_use</span>
-<span class="n">alphas_to_use</span><span class="o">=</span><span class="n">alphas_to_use</span><span class="p">,</span> <span class="n">colors_to_use</span><span class="o">=</span><span class="n">colors_to_use</span><span class="p">,</span> <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span><span class="n">data_list</span><span class="p">,</span> <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">lw_to_use</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span> <span class="k">for</span> <span class="n">cd</span> <span class="ow">in</span> <span class="n">data_list</span><span class="p">])</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/example-composite_dark.png"><img alt="_images/example-composite_dark.png" src="_images/example-composite_dark.png" style="width: 800px;" /></a>
@@ -287,24 +294,25 @@
 </section>
 <section id="building-vad-hodographs">
 <span id="vadhodographs"></span><h2>Building VAD Hodographs<a class="headerlink" href="#building-vad-hodographs" title="Link to this heading"></a></h2>
-<p><em>Function Under Development</em></p>
+<p><em>Coming soon – function is still in development</em></p>
 <p>SounderPy now offers the ability to plot NEXRAD radar VAD data on a hodograph using the <code class="docutils literal notranslate"><span class="pre">spy.build_vad_hodograph()</span></code> function:</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="spy.build_vad_hodograph">
-<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">build_vad_hodograph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vad_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr_hodo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sounderpy_sounding'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.build_vad_hodograph" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">build_vad_hodograph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vad_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storm_motion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'right_moving'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr_hodo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sounderpy_sounding'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.build_vad_hodograph" title="Link to this definition"></a></dt>
 <dd><p>Return a full hodograph plot of SounderPy VAD data, <code class="docutils literal notranslate"><span class="pre">plt</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>vad_data</strong> (<em>dict</em><em>, </em><em>required</em>) – the dictionary of VAD data to be plotted</p></li>
 <li><p><strong>dark_mode</strong> (<em>bool</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> will invert the color scheme for a ‘dark-mode’ sounding. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>storm_motion</strong> (<em>str</em><em> or </em><em>list</em><em> of </em><em>floats</em><em>, </em><em>optional</em>) – the storm motion used for plotting and calculations. Default is ‘right_moving’. Custom storm motions are accepted as a <cite>list</cite> of <cite>floats</cite> representing direction and speed. Ex: <code class="docutils literal notranslate"><span class="pre">[270.0,</span> <span class="pre">25.0]</span></code> where ‘270.0’ is the <em>direction in degrees</em> and ‘25.0’ is the <em>speed in kts</em>. See the <a class="reference internal" href="#storm-motions"><span class="std std-ref">Storm Motion Logic</span></a> section for more details.</p></li>
 <li><p><strong>sr_hodo</strong> (bool, optional, default is <code class="docutils literal notranslate"><span class="pre">False</span></code>) – transform the hodograph from ground relative to storm relative</p></li>
 <li><p><strong>save</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to show the plot inline or save to a file. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code> which displays the file inline.</p></li>
-<li><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – the filename by which a file should be saved to if <code class="docutils literal notranslate"><span class="pre">save</span> <span class="pre">=</span> <span class="pre">True</span></code>. Default is <cite>sounderpy_hodograph</cite>.</p></li>
+<li><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – the filename by which a file should be saved to if <code class="docutils literal notranslate"><span class="pre">save</span> <span class="pre">=</span> <span class="pre">True</span></code>. Default is <cite>sounderpy_sounding</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>plt, a SounderPy hodograph built with Matplotlib, MetPy, SharpPy, &amp; SounderPy.</p>
+<dd class="field-even"><p>plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, &amp; SounderPy.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>plt</p>
@@ -315,39 +323,157 @@
 <section id="id3">
 <h3>Examples<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
 
-<span class="c1"># load a VAD file and create vad_data, a &#39;SounderPy-style&#39; Python dict</span>
-<span class="c1"># See &#39;VAD Hodograph example&#39;</span>
+<span class="c1"># get VAD data using `pyart_radar_profile()`</span>
+<span class="n">vad_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">pyart_radar_profile</span><span class="p">(</span><span class="s1">&#39;kgrr&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span>
 
 <span class="c1"># build the hodograph!</span>
 <span class="n">spy</span><span class="o">.</span><span class="n">build_vad_hodograph</span><span class="p">(</span><span class="n">vad_data</span><span class="p">)</span>
 </pre></div>
 </div>
+<a class="reference internal image-reference" href="_images/example_vad-hodograph.png"><img alt="_images/example_vad-hodograph.png" src="_images/example_vad-hodograph.png" style="width: 800px;" /></a>
+<hr class="docutils" />
+</section>
+</section>
+<section id="storm-motion-logic">
+<span id="storm-motions"></span><h2>Storm Motion Logic<a class="headerlink" href="#storm-motion-logic" title="Link to this heading"></a></h2>
+<p>Users can define custom storm motions or choose from a number of ‘storm motion keys’ to change the storm motion considered by kinematic and thermodynamic parameters during calculations and plotting. All parameters that consider storm motion will be affected by the <code class="docutils literal notranslate"><span class="pre">storm_motion</span></code> kwarg.</p>
+<section id="storm-motion-keys">
+<h3>Storm Motion Keys<a class="headerlink" href="#storm-motion-keys" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">right_moving</span></code>: Bunkers Right Moving supercell (default)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">left_moving</span></code>: Bunkers Left Moving supercell</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mean_wind</span></code>: 0-6km mean wind.</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">storm_motion</span><span class="o">=</span><span class="s1">&#39;left_moving&#39;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="custom-storm-motions">
+<h3>Custom Storm Motions<a class="headerlink" href="#custom-storm-motions" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>Custom storm motions must be given in a <cite>list</cite> including direction in degrees and speed in knots. Note: degrees must be in the meteorological convention of ‘from’, i.e. ‘northeast’ would be 225 degrees, not 45 degrees.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 250 degrees at 45 knots</span>
+<span class="n">storm_motion</span><span class="o">=</span><span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">45</span><span class="p">]</span>
+</pre></div>
+</div>
+</div></blockquote>
+<hr class="docutils" />
+</section>
+</section>
+<section id="parcel-logic">
+<span id="parcels-logic"></span><h2>Parcel Logic<a class="headerlink" href="#parcel-logic" title="Link to this heading"></a></h2>
+<p>New to v3.0.2, the ‘parcel-update’, is a complex scheme for computing and plotting advanced parcels using various adiabatic ascent schemes and entrainment schemes. This toolkit comes from <a class="reference external" href="https://github.com/a-urq/ecape-parcel-py">Amelia Urquhart’s</a> <code class="docutils literal notranslate"><span class="pre">ecape-parcels</span></code> Python package, which is based on work by <a class="reference external" href="https://journals.ametsoc.org/view/journals/atsc/79/3/JAS-D-21-0118.1.xml">Peters et. al. 2022</a>.</p>
+<p>When plotting soundings, users can choose from a number of parcel types to compute and plot, such as…</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Pseudoadiabatic non-entraining ascent CAPE</p></li>
+<li><p>Pseudoadiabatic entraining ascent CAPE</p></li>
+<li><p>Irreversible Adiabatic non-entraining ascent CAPE</p></li>
+<li><p>Irreversible Adiabatic entraining ascent CAPE</p></li>
+</ul>
+</div></blockquote>
+<p>Each of these parcel types can be computed and plotted from a/the…</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Surface-based parcel</p></li>
+<li><p>Most-Unstable parcel</p></li>
+<li><p>Mixed Layer parcel</p></li>
+</ul>
+</div></blockquote>
+<section id="how-to-use-this-feature">
+<h3>How to use this feature<a class="headerlink" href="#how-to-use-this-feature" title="Link to this heading"></a></h3>
+<p>When plotting a <cite>full</cite> sounding using the <code class="docutils literal notranslate"><span class="pre">build_sounding()</span></code> function, use the kwarg <cite>special_parcels</cite> to choose which parcels you’d like to plot. This kwarg is a nested <cite>list</cite> (<code class="docutils literal notranslate"><span class="pre">[[a,</span> <span class="pre">b],</span> <span class="pre">[c,</span> <span class="pre">d]]</span></code>), where the first <cite>list</cite> contains ‘highlight’ parcels and the second <cite>list</cite> contains ‘background’ parcels. I.e., ‘highlighted’ parcels are darker and on top of ‘background’ parcels, which appear faded and behind the ‘highlight’ parcels.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Example:</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">special_parcels</span> <span class="o">=</span> <span class="p">[[</span><span class="n">sb_ia_ecape</span><span class="p">],</span> <span class="p">[</span><span class="n">sb_ps_ecape</span><span class="p">,</span> <span class="n">sb_ps_cape</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>By default, SounderPy will plot normal MU/ML/SB-CAPE parcels and an mu_ia_ecape parcel. You can override this by setting <code class="docutils literal notranslate"><span class="pre">special_parcels</span></code> to ‘simple’, which only plots the common MU/ML/SB-CAPE parcels. This is greatly reduce the plot-time!</p>
+</div></blockquote>
+</section>
+<section id="parcel-keys">
+<h3>Parcel Keys<a class="headerlink" href="#parcel-keys" title="Link to this heading"></a></h3>
+<p>Note the struture of the ‘parcel key’: <code class="docutils literal notranslate"><span class="pre">sb_ia_ecape</span></code>. This is broken into three components: ‘parcel-type’, ‘ascent-scheme’, and ‘entrainment-scheme’. You can make any parcel you like using this specific nomenclature: <code class="docutils literal notranslate"><span class="pre">parcel-type_ascent-scheme_entrainment-scheme</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>PARCEL-TYPES</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sb</span></code>: surface-based parcel</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mu</span></code>: most-unstable parcel</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ml</span></code>: mixed-layer parcel</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>ASCENT-SCHEMES</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ps</span></code>: Pseudoadiabatic ascent</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ia</span></code>: - Irreversible adiabatic ascent</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>ENTRAINMENT-SCHEMES</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cape</span></code>: non-entraining convective available potential energy</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ecape</span></code>: entraining convective available potential energy</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>Examples:</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sb_ia_ecape</span></code>: surface-based irreversible adiabatic entraining CAPE</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mu_ps_cape</span></code>: most-unstable pseudoadiabatic CAPE</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ml_ia_cape</span></code>: mixed-layer irreversible adiabatic CAPE</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sb_ps_ecape</span></code>: surface-based pseudoadiabatic entraining CAPE</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
 </section>
 </section>
 <hr class="docutils" />
 <section id="printing-data-to-the-console">
 <h2>Printing data to the console<a class="headerlink" href="#printing-data-to-the-console" title="Link to this heading"></a></h2>
 <dl class="py function">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">spy.print_variables(clean_data):</span></span></dt>
+<dt class="sig sig-object py" id="spy.print_variables">
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">print_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clean_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storm_motion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'right_moving'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.print_variables" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>clean_data</strong> – the dictionary of profile data to calculate profile parameters for (see <a class="reference internal" href="gettingdata.html"><span class="doc">🌐 Tools for Getting Data</span></a>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clean_data</strong> (<em>dict</em><em>, </em><em>required</em>) – the dictionary of profile data to calculate profile parameters for (see <a class="reference internal" href="gettingdata.html"><span class="doc">🌐 Tools for Getting Data</span></a>)</p></li>
+<li><p><strong>storm_motion</strong> (<em>str</em><em> or </em><em>list</em><em> of </em><em>floats</em><em>, </em><em>optional</em>) – the storm motion used for calculations. Default is ‘right_moving’. Custom storm motions are accepted as a <cite>list</cite> of <cite>floats</cite> representing direction and speed. Ex: <code class="docutils literal notranslate"><span class="pre">[270.0,</span> <span class="pre">25.0]</span></code> where ‘270.0’ is the <em>direction in degrees</em> and ‘25.0’ is the <em>speed in kts</em>. See the <a class="reference internal" href="#storm-motions"><span class="std std-ref">Storm Motion Logic</span></a> section for more details.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>data print out to the console</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>prints a number of thermodynamic and kinematic variables to the console.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>data print out to the console</p>
 </dd>
 </dl>
 </dd></dl>
 
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">THERMODYNAMICS</span> <span class="o">---------------------------------------------</span>
-<span class="o">---</span> <span class="n">SBCAPE</span><span class="p">:</span> <span class="mf">5771.5</span> <span class="o">|</span> <span class="n">MUCAPE</span><span class="p">:</span> <span class="mf">5771.5</span> <span class="o">|</span> <span class="n">MLCAPE</span><span class="p">:</span> <span class="mf">4322.8</span> <span class="o">|</span> <span class="n">ECAPE</span><span class="p">:</span> <span class="mf">5136.3</span>
-<span class="o">---</span> <span class="n">MU</span> <span class="mi">0</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span> <span class="mf">111.7</span> <span class="o">|</span> <span class="n">MU</span> <span class="mi">0</span><span class="o">-</span><span class="mi">6</span><span class="p">:</span> <span class="mf">1174.7</span> <span class="o">|</span> <span class="n">SB</span> <span class="mi">0</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span> <span class="mf">111.7</span> <span class="o">|</span> <span class="n">SB</span> <span class="mi">0</span><span class="o">-</span><span class="mi">6</span><span class="p">:</span> <span class="mf">1174.7</span>
+<span class="o">---</span> <span class="n">SBCAPE</span><span class="p">:</span> <span class="mf">2090.8</span> <span class="o">|</span> <span class="n">MUCAPE</span><span class="p">:</span> <span class="mf">2090.8</span> <span class="o">|</span> <span class="n">MLCAPE</span><span class="p">:</span> <span class="mf">1878.3</span> <span class="o">|</span> <span class="n">MUECAPE</span><span class="p">:</span> <span class="mf">1651.9</span>
+<span class="o">---</span> <span class="n">MU</span> <span class="mi">0</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span> <span class="mf">71.1</span> <span class="o">|</span> <span class="n">MU</span> <span class="mi">0</span><span class="o">-</span><span class="mi">6</span><span class="p">:</span> <span class="mf">533.0</span> <span class="o">|</span> <span class="n">SB</span> <span class="mi">0</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span> <span class="mf">71.1</span> <span class="o">|</span> <span class="n">SB</span> <span class="mi">0</span><span class="o">-</span><span class="mi">6</span><span class="p">:</span> <span class="mf">533.0</span>
 
 <span class="o">&gt;</span> <span class="n">KINEMATICS</span> <span class="o">-------------------------------------------------</span>
-<span class="o">---</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SRW</span><span class="p">:</span> <span class="mf">34.8</span> <span class="n">knot</span> <span class="o">|</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SWV</span><span class="p">:</span> <span class="mf">0.014</span> <span class="o">|</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SHEAR</span><span class="p">:</span> <span class="mf">16.6</span> <span class="o">|</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SRH</span><span class="p">:</span> <span class="mf">153.8</span>
-<span class="o">---</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SRW</span><span class="p">:</span> <span class="mf">30.3</span> <span class="n">knot</span> <span class="o">|</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SWV</span><span class="p">:</span> <span class="mf">0.008</span> <span class="o">|</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SHEAR</span><span class="p">:</span> <span class="mf">35.6</span> <span class="o">|</span> <span class="o">|</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SRH</span><span class="p">:</span> <span class="mf">234.2</span>
+<span class="o">---</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SRW</span><span class="p">:</span> <span class="mf">35.0</span> <span class="n">knot</span> <span class="o">|</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SWV</span><span class="p">:</span> <span class="mf">0.019</span> <span class="o">|</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SHEAR</span><span class="p">:</span> <span class="mf">21.8</span> <span class="o">|</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SRH</span><span class="p">:</span> <span class="mf">186.2</span>
+<span class="o">---</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SRW</span><span class="p">:</span> <span class="mf">20.9</span> <span class="n">knot</span> <span class="o">|</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SWV</span><span class="p">:</span> <span class="mf">0.005</span> <span class="o">|</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SHEAR</span><span class="p">:</span> <span class="mf">14.1</span> <span class="o">|</span> <span class="o">|</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SRH</span><span class="p">:</span> <span class="mf">54.0</span>
 </pre></div>
 </div>
 </section>
@@ -355,7 +481,7 @@
 <section id="about-these-plots">
 <h2>About These Plots<a class="headerlink" href="#about-these-plots" title="Link to this heading"></a></h2>
 <p>This plot style has been developed in a way that acts to provide as much information to the user as possible with attributes designed specifically for the analysis of severe convective environments, and supercells/tornadoes in particular. You will also find that this particular plot style does not host many of the common and popular severe weather composite indices – that was intentional. Most, if not all, of the data provided on this plot, are considered, for the lack of a better word, ‘true’ observations of the atmosphere though most are still subject to heavy assumptions.</p>
-<p>The data on these plots are considered, by most, to be useful in determining critical characteristics of the atmosphere related to mesoscylonegenesis and tornadogenesis.</p>
+<p>The data on these plots are considered, by most, to be useful in determining critical characteristics of the atmosphere related to supercellular storm mode and tornadogenesis.</p>
 </section>
 </section>
 
@@ -370,7 +496,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Kyle J Gillett.</p>
+    <p>&#169; Copyright 2024, Kyle J Gillett.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -24,3 +24,15 @@ The Fix: saving the plot to a file
 	Add the ``save=True`` kwarg to your plot function (``build_sounding()``, ``build_hodograph()``, ``build_composite()``). 
 
 	You can optionally add the ``filename`` kwarg that allows you to set a specific filename. By default, this filename is *'sounderpy_sounding.png'*.
+
+
+***************************************
+
+Goofy ACARS Profiles
+---------------------
+
+.. image:: _static/images/example-goofy-acars.png
+   :width: 300 px
+   :align: left
+
+Sometimes ACARS data just comes with errors that can not be fixed. Because these observations are taken by aircraft during arrivals and departures, they can be prone to errors such as too-dry dewpoints, too-strong wind velocity, and strange height data. Unfortunately these errors can not be fixed. 

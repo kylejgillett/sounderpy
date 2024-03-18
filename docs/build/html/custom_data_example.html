@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plotting Soundings From Custom Data Sources &mdash; SounderPy v3.0.0 documentation</title>
+  <title>Plotting Soundings From Custom Data Sources &mdash; SounderPy v3.0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5773a0da"></script>
+        <script src="_static/documentation_options.js?v=c4f3aea9"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -49,12 +49,19 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">❓ Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helpertools.html">🛠️ Helper Tools</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
 </ul>
@@ -280,8 +287,9 @@
 
 ## ---------------------------------- SOUNDERPY ----------------------------------- ##
 ##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
-##                    v3.0.0 | Jan. 2024 | (C) Kyle J Gillett                       ##
-## -------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------- ##
+##                     v3.0.2 | Mar. 2024 | (C) Kyle J Gillett                      ##
+##                 Docs: https://kylejgillett.github.io/sounderpy/                  ##
+## --------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------ ##
 
 </pre></div></div>
 </div>
@@ -291,7 +299,7 @@
 <p><strong>You can use any custom data source you like, so long as you can get it into the form that SounderPy plots accept. In this example I will be using some TORUS-2019 FIELD CAMPAIGN data</strong></p>
 <p>This example file is available on Github.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># declare file</span>
@@ -309,8 +317,8 @@
 </section>
 <section id="Creating-the-clean_data-dictionary">
 <h3>Creating the <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> dictionary<a class="headerlink" href="#Creating-the-clean_data-dictionary" title="Link to this heading"></a></h3>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># here we need to parse out the necessary data from the TORUS obs</span>
@@ -372,21 +380,8 @@
 <br/></pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-C:\Users\kjgil\AppData\Local\Temp\ipykernel_19632\3656641563.py:45: FutureWarning: Series.__getitem__ treating keys as positions is deprecated. In a future version, integer keys will always be treated as labels (consistent with DataFrame behavior). To access a value by position, use `ser.iloc[pos]`
-  &#39;site-id&#39;   : info_df.iloc[0][0],                           # could be a station, site, or launch ID
-C:\Users\kjgil\AppData\Local\Temp\ipykernel_19632\3656641563.py:55: FutureWarning: Series.__getitem__ treating keys as positions is deprecated. In a future version, integer keys will always be treated as labels (consistent with DataFrame behavior). To access a value by position, use `ser.iloc[pos]`
-  &#39;valid-time&#39;: [info_df.iloc[2][0][1:5], info_df.iloc[2][0][6:8],
-C:\Users\kjgil\AppData\Local\Temp\ipykernel_19632\3656641563.py:56: FutureWarning: Series.__getitem__ treating keys as positions is deprecated. In a future version, integer keys will always be treated as labels (consistent with DataFrame behavior). To access a value by position, use `ser.iloc[pos]`
-  info_df.iloc[2][0][9:11], info_df.iloc[2][0][12:17]]} # the profile&#39;s valid date/time.
-</pre></div></div>
-</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># lets take a look!</span>
@@ -395,7 +390,7 @@ C:\Users\kjgil\AppData\Local\Temp\ipykernel_19632\3656641563.py:56: FutureWarnin
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -457,58 +452,58 @@ C:\Users\kjgil\AppData\Local\Temp\ipykernel_19632\3656641563.py:56: FutureWarnin
         14955.9086, 15050.6839, 15161.272 , 15259.0649, 15338.8846,
         15419.0078, 15506.9795, 15555.9217, 15613.2344, 15674.2739,
         15754.6549, 15848.7034]) &lt;Unit(&#39;meter&#39;)&gt;,
- &#39;T&#39;: array([ 28.2   ,  26.7908,  25.7964,  25.1216,  24.1948,  23.0903,
-         22.3911,  21.5845,  20.9068,  20.1039,  19.3599,  19.3254,
-         19.0079,  18.3884,  17.6214,  16.9451,  16.1945,  15.816 ,
-         15.3151,  14.5413,  13.908 ,  13.0991,  12.3276,  11.4837,
-         10.7535,  10.0833,   9.5261,   9.1679,   8.4799,   8.3149,
-          7.7667,   7.1036,   6.7054,   6.9481,   6.6544,   6.5477,
-          6.2046,   5.8932,   5.354 ,   4.6905,   3.9004,   3.2078,
-          2.5696,   1.9335,   1.2175,   0.3596,  -0.5399,  -0.8029,
-         -1.3294,  -1.5515,  -2.0171,  -2.1916,  -2.4977,  -3.1631,
-         -3.9195,  -4.7842,  -5.6704,  -6.4944,  -7.275 ,  -7.8046,
-         -8.8396,  -9.9531, -11.1154, -12.1799, -13.1651, -14.1656,
-        -15.2099, -16.2886, -17.3266, -18.2652, -18.8765, -19.5621,
-        -20.4484, -21.3639, -21.7608, -22.3616, -22.7084, -23.288 ,
-        -23.7539, -24.2106, -25.177 , -25.9929, -26.6997, -27.7877,
-        -29.0079, -29.8623, -29.9003, -30.5914, -31.6969, -32.862 ,
-        -33.8999, -34.2575, -35.2947, -36.0471, -36.5145, -37.3057,
-        -38.023 , -38.5278, -39.2727, -40.1294, -41.0747, -42.0626,
-        -42.4745, -43.5881, -44.8326, -45.8483, -47.033 , -47.5585,
-        -48.1946, -48.8846, -49.692 , -50.5242, -51.2707, -52.484 ,
-        -53.2927, -53.7703, -54.1355, -54.6637, -55.5305, -56.578 ,
-        -57.4737, -58.0622, -58.6633, -59.3025, -59.6655, -59.3769,
-        -59.5351, -60.6317, -60.9382, -61.783 , -62.6933, -63.3488,
-        -64.3644, -65.6518, -66.6879, -68.301 , -69.1389, -70.1527,
-        -71.3523, -72.0449, -71.7208, -71.9058, -72.1936, -72.947 ,
-        -72.4577, -72.8167, -73.4977, -70.1776, -69.3956, -68.4407,
-        -67.6315, -66.3885]) &lt;Unit(&#39;degree_Celsius&#39;)&gt;,
- &#39;Td&#39;: array([ 21.6637,  21.3259,  20.9913,  20.4912,  20.3273,  20.1325,
-         19.5742,  19.1155,  18.378 ,  18.0563,  17.8355,  16.9474,
-         16.496 ,  16.1908,  15.9693,  15.4701,  15.3068,  14.5724,
-         13.8105,  13.5506,  12.726 ,  12.2647,  11.7801,  11.4837,
-         10.7535,   9.8916,   9.3979,   8.0057,   7.2509,   5.6961,
-          5.1879,   4.8748,   3.8316,   1.1766,  -0.2849,  -4.0412,
-         -5.2557,  -7.7373,  -8.4062,  -8.0845,  -8.0062,  -7.7363,
-         -8.3461,  -9.6826, -11.3365, -12.6808, -12.1072, -19.5887,
-        -26.4014, -22.3965, -25.6224, -30.949 , -31.3217, -31.3739,
-        -30.8214, -30.7889, -30.82  , -28.7896, -25.7792, -28.1271,
-        -29.2387, -27.9179, -28.4531, -30.3602, -30.9357, -30.9179,
-        -31.4695, -32.0076, -31.51  , -36.8535, -40.7128, -33.4588,
-        -22.6865, -26.8539, -22.6771, -23.2269, -25.9742, -26.9029,
-        -29.6882, -33.601 , -34.3211, -32.5736, -31.2929, -32.4614,
-        -32.6332, -32.4979, -32.5529, -32.9402, -36.0965, -36.8058,
-        -38.1682, -38.2648, -38.2573, -36.5269, -37.1357, -37.3057,
-        -38.023 , -38.5278, -39.2727, -40.1295, -41.0748, -42.0627,
-        -42.9801, -44.2205, -44.8682, -45.9028, -47.033 , -47.5586,
-        -48.1947, -48.8846, -49.6921, -50.5243, -51.2707, -52.484 ,
-        -53.2927, -53.7703, -54.1355, -54.6638, -55.5306, -56.578 ,
-        -57.4738, -58.0623, -58.7743, -59.3068, -59.7779, -59.6177,
-        -60.6829, -61.2155, -61.7815, -62.471 , -63.389 , -64.3861,
-        -65.4264, -66.4259, -66.9961, -68.4497, -69.5271, -70.311 ,
-        -71.6485, -72.5201, -72.3376, -72.6893, -72.9341, -73.5002,
-        -73.2955, -73.5658, -73.7609, -72.5958, -71.6385, -70.9909,
-        -70.3976, -69.7221]) &lt;Unit(&#39;degree_Celsius&#39;)&gt;,
+ &#39;T&#39;: array([301.35  , 299.9408, 298.9464, 298.2716, 297.3448, 296.2403,
+        295.5411, 294.7345, 294.0568, 293.2539, 292.5099, 292.4754,
+        292.1579, 291.5384, 290.7714, 290.0951, 289.3445, 288.966 ,
+        288.4651, 287.6913, 287.058 , 286.2491, 285.4776, 284.6337,
+        283.9035, 283.2333, 282.6761, 282.3179, 281.6299, 281.4649,
+        280.9167, 280.2536, 279.8554, 280.0981, 279.8044, 279.6977,
+        279.3546, 279.0432, 278.504 , 277.8405, 277.0504, 276.3578,
+        275.7196, 275.0835, 274.3675, 273.5096, 272.6101, 272.3471,
+        271.8206, 271.5985, 271.1329, 270.9584, 270.6523, 269.9869,
+        269.2305, 268.3658, 267.4796, 266.6556, 265.875 , 265.3454,
+        264.3104, 263.1969, 262.0346, 260.9701, 259.9849, 258.9844,
+        257.9401, 256.8614, 255.8234, 254.8848, 254.2735, 253.5879,
+        252.7016, 251.7861, 251.3892, 250.7884, 250.4416, 249.862 ,
+        249.3961, 248.9394, 247.973 , 247.1571, 246.4503, 245.3623,
+        244.1421, 243.2877, 243.2497, 242.5586, 241.4531, 240.288 ,
+        239.2501, 238.8925, 237.8553, 237.1029, 236.6355, 235.8443,
+        235.127 , 234.6222, 233.8773, 233.0206, 232.0753, 231.0874,
+        230.6755, 229.5619, 228.3174, 227.3017, 226.117 , 225.5915,
+        224.9554, 224.2654, 223.458 , 222.6258, 221.8793, 220.666 ,
+        219.8573, 219.3797, 219.0145, 218.4863, 217.6195, 216.572 ,
+        215.6763, 215.0878, 214.4867, 213.8475, 213.4845, 213.7731,
+        213.6149, 212.5183, 212.2118, 211.367 , 210.4567, 209.8012,
+        208.7856, 207.4982, 206.4621, 204.849 , 204.0111, 202.9973,
+        201.7977, 201.1051, 201.4292, 201.2442, 200.9564, 200.203 ,
+        200.6923, 200.3333, 199.6523, 202.9724, 203.7544, 204.7093,
+        205.5185, 206.7615]) &lt;Unit(&#39;kelvin&#39;)&gt;,
+ &#39;Td&#39;: array([294.8137, 294.4759, 294.1413, 293.6412, 293.4773, 293.2825,
+        292.7242, 292.2655, 291.528 , 291.2063, 290.9855, 290.0974,
+        289.646 , 289.3408, 289.1193, 288.6201, 288.4568, 287.7224,
+        286.9605, 286.7006, 285.876 , 285.4147, 284.9301, 284.6337,
+        283.9035, 283.0416, 282.5479, 281.1557, 280.4009, 278.8461,
+        278.3379, 278.0248, 276.9816, 274.3266, 272.8651, 269.1088,
+        267.8943, 265.4127, 264.7438, 265.0655, 265.1438, 265.4137,
+        264.8039, 263.4674, 261.8135, 260.4692, 261.0428, 253.5613,
+        246.7486, 250.7535, 247.5276, 242.201 , 241.8283, 241.7761,
+        242.3286, 242.3611, 242.33  , 244.3604, 247.3708, 245.0229,
+        243.9113, 245.2321, 244.6969, 242.7898, 242.2143, 242.2321,
+        241.6805, 241.1424, 241.64  , 236.2965, 232.4372, 239.6912,
+        250.4635, 246.2961, 250.4729, 249.9231, 247.1758, 246.2471,
+        243.4618, 239.549 , 238.8289, 240.5764, 241.8571, 240.6886,
+        240.5168, 240.6521, 240.5971, 240.2098, 237.0535, 236.3442,
+        234.9818, 234.8852, 234.8927, 236.6231, 236.0143, 235.8443,
+        235.127 , 234.6222, 233.8773, 233.0205, 232.0752, 231.0873,
+        230.1699, 228.9295, 228.2818, 227.2472, 226.117 , 225.5914,
+        224.9553, 224.2654, 223.4579, 222.6257, 221.8793, 220.666 ,
+        219.8573, 219.3797, 219.0145, 218.4862, 217.6194, 216.572 ,
+        215.6762, 215.0877, 214.3757, 213.8432, 213.3721, 213.5323,
+        212.4671, 211.9345, 211.3685, 210.679 , 209.761 , 208.7639,
+        207.7236, 206.7241, 206.1539, 204.7003, 203.6229, 202.839 ,
+        201.5015, 200.6299, 200.8124, 200.4607, 200.2159, 199.6498,
+        199.8545, 199.5842, 199.3891, 200.5542, 201.5115, 202.1591,
+        202.7524, 203.4279]) &lt;Unit(&#39;kelvin&#39;)&gt;,
  &#39;u&#39;: array([ -3.75093718,  -6.69346877,  -6.91025041,  -9.46323359,
         -12.06455708, -11.81735206,  -9.46463685,  -6.77097494,
          -2.44271452,   0.79358218,   5.40324226,   8.62494907,
@@ -593,7 +588,7 @@ C:\Users\kjgil\AppData\Local\Temp\ipykernel_19632\3656641563.py:56: FutureWarnin
 <section id="LETS-PLOT-THE-DATA-ON-A-SOUNDING-AND-HODOGRAPH">
 <h4><strong>LETS PLOT THE DATA ON A SOUNDING AND HODOGRAPH</strong><a class="headerlink" href="#LETS-PLOT-THE-DATA-ON-A-SOUNDING-AND-HODOGRAPH" title="Link to this heading"></a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># lets make a sounding!</span>
@@ -609,7 +604,7 @@ C:\Users\kjgil\AppData\Local\Temp\ipykernel_19632\3656641563.py:56: FutureWarnin
 &gt; SOUNDING PLOTTER FUNCTION --
 ---------------------------------
 &gt; COMPLETE --------
-&gt; RUNTIME: 00:00:03
+&gt; RUNTIME: 00:00:23
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -640,7 +635,7 @@ C:\Users\kjgil\AppData\Local\Temp\ipykernel_19632\3656641563.py:56: FutureWarnin
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Kyle J Gillett.</p>
+    <p>&#169; Copyright 2024, Kyle J Gillett.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

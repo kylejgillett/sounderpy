@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Creating Composite Sounding Plots &mdash; SounderPy v3.0.0 documentation</title>
+  <title>Creating Composite Sounding Plots &mdash; SounderPy v3.0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5773a0da"></script>
+        <script src="_static/documentation_options.js?v=c4f3aea9"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -49,12 +49,19 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">❓ Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helpertools.html">🛠️ Helper Tools</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
 </ul>
@@ -111,15 +118,16 @@
 
 ## ---------------------------------- SOUNDERPY ----------------------------------- ##
 ##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
-##                    v3.0.0 | Jan. 2024 | (C) Kyle J Gillett                       ##
-## -------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------- ##
+##                     v3.0.2 | Mar. 2024 | (C) Kyle J Gillett                      ##
+##                 Docs: https://kylejgillett.github.io/sounderpy/                  ##
+## --------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------ ##
 
 </pre></div></div>
 </div>
 <section id="Choosing-Data">
 <h3><strong>Choosing Data</strong><a class="headerlink" href="#Choosing-Data" title="Link to this heading"></a></h3>
-<section id="SounderPy's-Composite-Sounding-function-will-ingest-any-data-native-to-SounderPy!">
-<h4>SounderPy’s Composite Sounding function will ingest any data native to SounderPy!<a class="headerlink" href="#SounderPy's-Composite-Sounding-function-will-ingest-any-data-native-to-SounderPy!" title="Link to this heading"></a></h4>
+<section id="SounderPy's-Composite-Sounding-function-will-ingest-any-data-native-to-SounderPy,-or-even-your-custom-data!">
+<h4>SounderPy’s Composite Sounding function will ingest any data native to SounderPy, or even your custom data!<a class="headerlink" href="#SounderPy's-Composite-Sounding-function-will-ingest-any-data-native-to-SounderPy,-or-even-your-custom-data!" title="Link to this heading"></a></h4>
 <ul>
 <li><p class="rubric" id="this-could-be"><strong>This could be…</strong></p>
 <ul class="simple">
@@ -139,7 +147,7 @@
 <li><p class="rubric" id="forecast-model-data"><strong>Forecast Model Data:</strong></p>
 <ul class="simple">
 <li><p>Comparing different BUFKIT models for the same forecast hour (12z HRRR, GFS, NAM at forecast hour 12)</p></li>
-<li><p>Comparing BUFKIT model runs for the same hour (06z, 12z, 18z runs, valid at 00z)</p></li>
+<li><p>Comparing BUFKIT model runs for the same valid hour (06z, 12z, 18z HRRR runs, valid at 00z)</p></li>
 <li><p>Comparing forecast hours for a specific model run (12z HRRR at F00, F01, F02, F03 etc)</p></li>
 </ul>
 </li>
@@ -173,12 +181,13 @@
 <li><p class="rubric" id="build-compositedata-list-dark-modefalse-shade-betweenfalse-alphas-to-usenone-colors-to-usenone-ls-to-usenone-lw-to-usenone-savefalse-filenamesounderpy-sounding"><strong>``build_composite(data_list, dark_mode=False, shade_between=False, alphas_to_use=’none’, colors_to_use=’none’, ls_to_use=’none’, lw_to_use=’none’, save=False, filename=’sounderpy_sounding’)``</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">data_list</span></code> (list of dicts, required) – a list of data dictionaries for each profile to be plotted</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">dark_mode</span></code> (bool, optional) – True will invert the color scheme for a ‘dark-mode’ sounding. Default is False.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">shade_between</span></code> (bool, optional) – Lightly shade between the dewpoint &amp; temperature trace. In many cases, this improves readability. Default is True.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">alphas_to_use</span></code> (list of floats, optional) – A list of custom alphas (0.0-1.0). List length must match the number of profiles listed in data_list. Default is ‘none’. Default alpha is 1.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cmap</span></code> (matplotlib.colors.LinearSegmentedColormap or str representing the name of a matplotlib cmap, optional) – a linear colormap, may be any custom or matplotlib cmap. Default is ‘viridis’. If colors_to_use kwarg is provided, colors_to_use will be used instead.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">colors_to_use</span></code> (list of strings, optional) – A list of custom matplotlib color name stings. List length must match the number of profiles listed in data_list. Default is ‘none’.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">alphas_to_use</span></code> (list of floats, optional) – A list of custom alphas (0.0-1.0). List length must match the number of profiles listed in data_list. Default is ‘none’. Default alpha is 1.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ls_to_use</span></code> (list of stings, optional) – A list of custom matplotlib linestyles. List length must match the number of profiles listed in data_list. Default is ‘none’. Default linestyle is ‘-‘.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">lw_to_use</span></code> (list of floats, optional) – A list of custom linewidths. List length must match the number of profiles listed in data_list. Default is ‘none’. Default linewidth is 3.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dark_mode</span></code> (bool, optional) – True will invert the color scheme for a ‘dark-mode’ sounding. Default is False.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">save</span></code> (bool, optional) – whether to show the plot inline or save to a file. Default is False which displays the file inline.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">filename</span></code> (str, optional) – the filename by which a file should be saved to if save = True. Default is sounderpy_sounding.</p></li>
 </ul>
@@ -236,7 +245,7 @@
 -----------------------------------
 &gt; PROFILE FOUND: APX on 05/20/2022 at 18z | From UW
 &gt; COMPLETE --------
-&gt; RUNTIME: 00:00:01
+&gt; RUNTIME: 00:00:03
 &gt; SUMMARY: 18Z Launch for KAPX, GAYLORD at 05-20-2022-18Z
 </pre></div></div>
 </div>
@@ -288,7 +297,7 @@
 </ul>
 <p>To use these settings we must create lists, of equal length to <code class="docutils literal notranslate"><span class="pre">data_list</span></code>, with the values we want:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># specify custom colors (cyan will stand out nice for the RAOB -- the last list item)</span>
@@ -343,7 +352,7 @@
 <li><p>In the event that this is the case, simply use the <code class="docutils literal notranslate"><span class="pre">save=True</span></code> option to save plots to a file!</p></li>
 </ul>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#spy.build_composite(data_list, save=True, filename=&#39;composite_model-raob_0520202218z&#39;)</span>
@@ -371,7 +380,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Kyle J Gillett.</p>
+    <p>&#169; Copyright 2024, Kyle J Gillett.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

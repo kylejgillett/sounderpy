@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plotting Soundings with BUFKIT Forecast Model Data &mdash; SounderPy v3.0.0 documentation</title>
+  <title>Plotting Soundings with BUFKIT Forecast Model Data &mdash; SounderPy v3.0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5773a0da"></script>
+        <script src="_static/documentation_options.js?v=c4f3aea9"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -52,6 +52,7 @@
               <p class="caption" role="heading"><span class="caption-text">General:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">❓ Troubleshooting</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul>
@@ -108,8 +109,9 @@
 
 ## ---------------------------------- SOUNDERPY ----------------------------------- ##
 ##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
-##                    v3.0.0 | Dec 2023 | (C) Kyle J Gillett                        ##
-## -------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------- ##
+##                     v3.0.2 | Mar. 2024 | (C) Kyle J Gillett                      ##
+##                 Docs: https://kylejgillett.github.io/sounderpy/                  ##
+## --------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------ ##
 
 </pre></div></div>
 </div>
@@ -118,7 +120,7 @@
 <p><strong>To get model forecast data via BUFKIT, we need to use the ``get_bufkit_data()`` function</strong></p>
 <p><strong>Reading the documentation on BUFKIT data access may prove useful before using this notebook: https://kylejgillett.github.io/sounderpy/gettingdata.html#model-forecast-data-bufkit</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">################################ THE FUNCTION ###################################</span>
@@ -148,8 +150,8 @@
 <span class="c1"># to get the most recent forecasts we use the same function, but we *don&#39;t need a year, month, day or hour kwarg!*</span>
 <span class="c1"># you just need a model, station and forecast hour.</span>
 <span class="c1"># this will get you the most recent HRRR run, at forecast hour 6, for</span>
-<span class="c1"># site `KMOP` (Mount Pleasant, MI METAR site, CMU represent!):</span>
-<span class="n">clean_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_bufkit_data</span><span class="p">(</span><span class="s1">&#39;hrrr&#39;</span><span class="p">,</span> <span class="s1">&#39;kmop&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="c1"># site `KAMA` (AMARILLO ARPT(AWOS)):</span>
+<span class="n">clean_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_bufkit_data</span><span class="p">(</span><span class="s1">&#39;hrrr&#39;</span><span class="p">,</span> <span class="s1">&#39;kama&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -162,19 +164,21 @@
 ---------------------------------
 &gt; COMPLETE --------
 &gt; RUNTIME: 00:00:00
-&gt; SUMMARY: 14Z HRRR F06 for KMOP, MOUNT PLEASANT at 12-30-2023-20Z
+&gt; SUMMARY: 14Z HRRR F06 for KAMA, AMARILLO ARPT(AWOS) at 03-18-2024-20Z
 
 &gt; THERMODYNAMICS ---------------------------------------------
---- SBCAPE: 4.320606690129166 | MUCAPE: 0.0 | MLCAPE: 0.0 | ECAPE: --
---- MU 0-3: 0.0 | MU 0-6: 0.0 | SB 0-3: 4.320606690129166 | SB 0-6: 4.320606690129166
+--- SBCAPE: 0.0 | MUCAPE: 0.0 | MLCAPE: 0.0 | MUECAPE: --
+--- MU 0-3: 0.0 | MU 0-6: 0.0 | SB 0-3: 0.0 | SB 0-6: 0.0
 
 &gt; KINEMATICS -------------------------------------------------
---- 0-500 SRW: 22.7 knot | 0-500 SWV: 0.002 | 0-500 SHEAR: 1.1 | 0-500 SRH: 3.1
---- 1-3km SRW: 14.4 knot | 1-3km SWV: 0.005 | 1-3km SHEAR: 9.1 | | 1-3km SRH: 39.1
+--- 0-500 SRW: 18.2 knot | 0-500 SWV: 0.001 | 0-500 SHEAR: 1.0 | 0-500 SRH: -2.8
+--- 1-3km SRW: 14.0 knot | 1-3km SWV: 0.002 | 1-3km SHEAR: 11.2 | | 1-3km SRH: 21.7
+==============================================================
+
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Lets check out the BUFKIT data that we just accessed</span>
@@ -189,67 +193,70 @@
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{&#39;p&#39;: array([983.3, 980.4, 975.1, 965.8, 952.3, 934.8, 914. , 891.3, 866.7,
-        839.2, 809. , 775.9, 739.9, 701.1, 659.4, 614.8, 567.8, 522.2,
-        481.1, 444.2, 411. , 380.8, 353.7, 329.2, 307.1, 287.2, 269.2,
-        252.5, 237.4, 223.5, 209.7, 195.8, 181.9, 168. , 154.1, 140.2,
-        126.3, 112.5,  98.6,  85.7,  75.3,  66.9,  59.1]) &lt;Unit(&#39;hectopascal&#39;)&gt;,
- &#39;z&#39;: array([  224.  ,   247.76,   291.3 ,   368.1 ,   480.51,   628.  ,
-          806.12,  1004.21,  1224.1 ,  1478.57,  1768.64,  2097.98,
-         2471.44,  2894.54,  3374.28,  3916.84,  4524.76,  5154.75,
-         5760.73,  6339.2 ,  6891.3 ,  7423.73,  7929.98,  8414.02,
-         8875.38,  9314.08,  9732.03, 10140.05, 10529.22, 10909.02,
-        11311.52, 11746.96, 12217.29, 12727.92, 13285.83, 13900.13,
-        14580.14, 15332.87, 16188.72, 17094.56, 17927.49, 18688.67,
-        19487.17]) &lt;Unit(&#39;meter&#39;)&gt;,
- &#39;T&#39;: array([  1.24,   0.84,   0.44,  -0.36,  -1.46,  -2.66,  -3.86,  -5.26,
-         -5.06,  -2.56,  -3.36,  -4.66,  -4.96,  -4.96,  -6.96, -10.16,
-        -13.96, -18.26, -23.06, -28.06, -32.76, -36.96, -40.86, -44.76,
-        -47.96, -50.96, -54.16, -56.86, -58.26, -57.96, -56.86, -55.66,
-        -54.26, -53.16, -51.76, -50.56, -50.76, -51.06, -51.86, -53.06,
-        -53.36, -53.26, -52.96]) &lt;Unit(&#39;degree_Celsius&#39;)&gt;,
- &#39;Td&#39;: array([  -1.18,   -1.38,   -1.53,   -1.73,   -1.96,   -2.81,   -4.02,
-          -5.37,  -10.3 ,  -16.59,  -19.89,  -17.81,  -18.18,  -27.96,
-         -31.47,  -33.79,  -39.04,  -41.19,  -38.39,  -36.78,  -39.27,
-         -44.61,  -50.16,  -53.49,  -56.44,  -60.2 ,  -60.71,  -63.4 ,
-         -66.85,  -67.29,  -72.58,  -73.05,  -99.7 , -100.08, -100.49,
-        -100.94, -101.43, -101.97, -102.58, -103.23, -103.82, -104.35,
+{&#39;p&#39;: array([898. , 895.3, 890.5, 882.2, 869.9, 854.3, 835.8, 815.7, 794.2,
+        770.3, 744.1, 715.6, 684.9, 651.8, 616.3, 578.3, 538.1, 498.7,
+        462.7, 430.1, 400.4, 373. , 348. , 325.2, 304.4, 285.5, 268.2,
+        252. , 237.2, 223.5, 209.6, 195.8, 181.9, 168. , 154.1, 140.2,
+        126.3, 112.4,  98.6,  85.7,  75.3,  66.9,  59.1]) &lt;Unit(&#39;hectopascal&#39;)&gt;,
+ &#39;z&#39;: array([ 1108.29,  1133.52,  1178.47,  1256.56,  1373.17,  1522.7 ,
+         1702.5 ,  1901.07,  2117.35,  2362.91,  2638.8 ,  2947.67,
+         3292.62,  3680.88,  4117.03,  4607.8 ,  5156.26,  5726.26,
+         6278.8 ,  6808.06,  7316.84,  7812.46,  8291.23,  8753.89,
+         9200.06,  9627.02, 10037.34, 10440.57, 10827.59, 11204.62,
+        11608.91, 12035.84, 12497.21, 12996.8 , 13541.82, 14140.62,
+        14801.68, 15535.12, 16350.87, 17216.49, 18010.6 , 18735.25,
+        19494.56]) &lt;Unit(&#39;meter&#39;)&gt;,
+ &#39;T&#39;: array([ 1.294e+01,  1.224e+01,  1.174e+01,  1.074e+01,  9.440e+00,
+         7.840e+00,  6.040e+00,  4.040e+00,  1.940e+00, -6.000e-02,
+        -2.360e+00, -4.360e+00, -5.060e+00, -6.160e+00, -8.360e+00,
+        -1.126e+01, -1.506e+01, -1.916e+01, -2.336e+01, -2.806e+01,
+        -3.246e+01, -3.616e+01, -3.866e+01, -4.116e+01, -4.396e+01,
+        -4.726e+01, -5.056e+01, -5.356e+01, -5.586e+01, -5.746e+01,
+        -5.866e+01, -5.936e+01, -5.886e+01, -5.806e+01, -5.706e+01,
+        -5.646e+01, -5.726e+01, -5.926e+01, -6.156e+01, -6.296e+01,
+        -6.396e+01, -6.376e+01, -6.406e+01]) &lt;Unit(&#39;degree_Celsius&#39;)&gt;,
+ &#39;Td&#39;: array([  -5.46,   -5.54,   -5.61,   -5.73,   -5.96,   -6.2 ,   -6.53,
+          -6.89,   -7.33,   -8.49,   -9.48,  -11.74,  -16.06,  -20.84,
+         -25.41,  -31.23,  -37.29,  -40.29,  -42.33,  -45.08,  -50.82,
+         -53.56,  -54.14,  -59.23,  -65.03,  -65.5 ,  -65.96,  -66.42,
+         -66.86,  -67.29,  -72.59,  -73.05,  -73.54, -100.08, -100.49,
+        -100.94, -101.43, -101.98, -102.58, -103.23, -103.82, -104.35,
         -104.91]) &lt;Unit(&#39;degree_Celsius&#39;)&gt;,
- &#39;u&#39;: array([ 4.07829188,  4.66621908,  4.857461  ,  5.05539801,  4.86222066,
-         4.66759148,  3.88627975,  3.30487405,  8.75      , 18.66055744,
-        21.77431619, 18.85600457, 14.77306079, 14.38176805, 16.52406416,
-        17.6872324 , 17.49890826, 17.48978514, 19.62849072, 23.90739701,
-        24.29305373, 23.32925972, 23.32202857, 23.32202857, 25.27135916,
-        25.65816371, 20.02612948, 15.54959696, 12.63850917,  9.14      ,
-         9.72255214, 11.8601549 , 11.85870265, 11.66253264, 13.60442505,
-        19.24707736, 23.71895424, 21.77216616, 20.21592804, 17.68366859,
-        14.18738524, 10.3006229 ,  9.13381673]) &lt;Unit(&#39;knot&#39;)&gt;,
- &#39;v&#39;: array([ 3.69019449e+00,  4.27730049e+00,  4.46822925e+00,  4.66662093e+00,
-         4.66759148e+00,  4.86222066e+00,  4.66280278e+00,  4.47117519e+00,
-         1.60734892e-15, -6.99917823e+00, -9.33248384e+00, -1.04951175e+01,
-        -1.01077532e+01, -7.19243684e+00, -5.05506713e+00, -3.49895840e+00,
-        -1.95472811e-01,  2.13818049e+00,  1.55513726e+00,  7.76381546e-01,
-        -5.80982196e-01, -1.94261189e+00, -2.71907764e+00, -2.71907764e+00,
-        -9.70827692e-01,  7.79445452e-01,  1.16522020e+00,  9.72848520e-01,
-         1.94128831e-01,  1.67899076e-15,  5.82734875e-01, -9.72998280e-01,
-        -3.11107240e+00, -3.10969973e+00,  3.89511278e-01,  6.60851822e+00,
-         6.99886489e+00,  6.80212326e+00,  7.77636506e+00,  7.19138132e+00,
-         5.05190064e+00,  5.44239542e+00,  6.21899445e+00]) &lt;Unit(&#39;knot&#39;)&gt;,
- &#39;site_info&#39;: {&#39;site-id&#39;: &#39;KMOP&#39;,
-  &#39;site-name&#39;: &#39;MOUNT PLEASANT&#39;,
-  &#39;site-lctn&#39;: &#39;MI&#39;,
-  &#39;site-latlon&#39;: [43.37, -84.44],
-  &#39;site-elv&#39;: 213,
+ &#39;u&#39;: array([-0.38845117, -0.38857584, -0.38857584, -0.38929235, -0.38818847,
+        -0.1941547 , -0.1941547 , -0.1941547 , -0.1941547 , -0.1941547 ,
+        -0.19472446, -0.        ,  1.94326151,  7.97102068, 10.88391095,
+        12.83068595, 12.24633419,  9.52602731,  6.41328371,  5.05718433,
+        10.10967483, 19.44038998, 33.63201528, 47.43056346, 58.50940485,
+        60.06488478, 57.73397035, 55.01282569, 53.45780405, 50.73663366,
+        47.42563566, 47.23232619, 48.21079087, 49.18181545, 49.369603  ,
+        45.68109022, 39.84667397, 36.34793992, 34.98404744, 34.40944083,
+        31.88009819, 32.85414923, 30.90755948]) &lt;Unit(&#39;knot&#39;)&gt;,
+ &#39;v&#39;: array([ -6.7989121 ,  -7.38979085,  -7.38979085,  -7.58000999,
+         -7.7703095 ,  -7.777577  ,  -7.777577  ,  -7.777577  ,
+         -7.777577  ,  -7.777577  ,  -7.96762087,  -9.14      ,
+        -11.27374537,  -8.94333435,  -9.910544  ,  -9.52543427,
+         -8.74813117,  -5.83298411,  -2.13714577,  -1.16661334,
+         -1.74987851,  -2.72178938,   2.1395206 ,   1.35799487,
+          1.55256051,   2.32845795,   1.36057642,   2.71945034,
+          3.30708117,   0.58446992,   1.16733988,   2.33483672,
+          1.94477339,   3.68936702,   5.6336844 ,   3.69146264,
+          1.36362504,  -0.38699327,   3.30696613,   3.11333933,
+          2.52581461,   3.49949687,   0.38841629]) &lt;Unit(&#39;knot&#39;)&gt;,
+ &#39;site_info&#39;: {&#39;site-id&#39;: &#39;KAMA&#39;,
+  &#39;site-name&#39;: &#39;AMARILLO ARPT(AWOS)&#39;,
+  &#39;site-lctn&#39;: &#39;UA&#39;,
+  &#39;site-latlon&#39;: [35.23, -101.7],
+  &#39;site-elv&#39;: 1099,
   &#39;source&#39;: &#39;BUFKIT FORECAST PROFILE&#39;,
   &#39;model&#39;: &#39;HRRR&#39;,
   &#39;fcst-hour&#39;: &#39;F06&#39;,
-  &#39;run-time&#39;: [&#39;2023&#39;, &#39;12&#39;, &#39;30&#39;, &#39;14&#39;],
-  &#39;valid-time&#39;: [&#39;2023&#39;, &#39;12&#39;, &#39;30&#39;, &#39;20&#39;]}}
+  &#39;run-time&#39;: [&#39;2024&#39;, &#39;03&#39;, &#39;18&#39;, &#39;14&#39;],
+  &#39;valid-time&#39;: [&#39;2024&#39;, &#39;03&#39;, &#39;18&#39;, &#39;20&#39;]}}
 </pre></div></div>
 </div>
 <hr class="docutils" />
@@ -257,7 +264,7 @@
 <section id="LETS-PLOT-THE-DATA-ON-A-SOUNDING-AND-HODOGRAPH">
 <h2><strong>LETS PLOT THE DATA ON A SOUNDING AND HODOGRAPH</strong><a class="headerlink" href="#LETS-PLOT-THE-DATA-ON-A-SOUNDING-AND-HODOGRAPH" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># lets make a sounding!</span>
@@ -283,6 +290,14 @@
 <img alt="_images/bufkit_data_example_7_1.png" src="_images/bufkit_data_example_7_1.png" />
 </div>
 </div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
 </section>
 </section>
 
@@ -294,7 +309,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Kyle J Gillett.</p>
+    <p>&#169; Copyright 2024, Kyle J Gillett.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

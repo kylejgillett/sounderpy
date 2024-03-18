@@ -1,7 +1,7 @@
 📝 Usage Examples
 ==================
 
-Examples of SounderPy API.
+Examples of SounderPy API in action!
 
 
 .. nblinkgallery::

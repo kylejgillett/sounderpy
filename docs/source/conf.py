@@ -7,9 +7,9 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'SounderPy'
-copyright = '2023, Kyle J Gillett'
+copyright = '2024, Kyle J Gillett'
 author = 'Kyle J Gillett'
-release = 'v3.0.0'
+release = 'v3.0.2'
 html_logo = 'https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png'
 html_favicon = 'https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png'
 

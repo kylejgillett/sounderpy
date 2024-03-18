@@ -8,7 +8,7 @@ Examples of plots that can be created by SounderPy.
 Sounding Types
 --------------
 
-.. figure:: _static/images/example-sounding_light2.png
+.. figure:: _static/images/example-sounding_light3.png
    :width: 300 px
    :align: left
 
@@ -24,13 +24,13 @@ Sounding Types
 Sounding Settings
 -----------------
 
-.. figure:: _static/images/example-sounding_dark2.png
+.. figure:: _static/images/example-sounding_dark.png
    :width: 300 px
    :align: left
 
    SounderPy Full Sounding Plot in 'dark mode'
 
-.. figure:: _static/images/example-sounding_light3.png
+.. figure:: _static/images/example-sounding_light.png
    :width: 300 px
    :align: right
 
@@ -40,7 +40,7 @@ Sounding Settings
 Hodographs 
 -----------
 
-.. figure:: _static/images/example-hodograph_light2.png
+.. figure:: _static/images/example-hodograph_light.png
    :width: 300 px
    :align: left
 
@@ -69,14 +69,37 @@ Composite Soundings
 
    Composite Plot in 'dark mode'
 
-.. figure:: _static/images/example-composite_dark_many-profiles.png
-   :width: 300 px
-   :align: left
-
-   Comparing Several ACARS Profiles
 
 .. figure:: _static/images/example-composite_dark_model-preformance.png
    :width: 300 px
    :align: right
 
    Comparing Models to an Observed Profile
+
+
+
+
+Other Examples
+--------------
+
+.. figure:: _static/images/custom_data_wrf_example.jpg
+   :width: 300 px
+   :align: left
+
+   SounderPy Custom Plot using WRF data
+
+
+
+.. figure:: _static/images/example-sounding_dark-torus.png
+   :width: 300 px
+   :align: left
+
+   SounderPy Custom Plot using TORUS data
+
+
+
+.. figure:: _static/images/example_vad-hodograph.png
+   :width: 300 px
+   :align: left
+
+   SounderPy VAD Hodograph

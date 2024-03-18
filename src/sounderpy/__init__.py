@@ -3,9 +3,10 @@ from .sounderpy import get_model_data
 from .sounderpy import get_obs_data 
 from .sounderpy import get_bufkit_data 
 from .sounderpy import acars_data
+#from .sounderpy import pyart_radar_profile
 from .sounderpy import build_sounding
 from .sounderpy import build_hodograph
-#from .sounderpy import build_vad_hodograph
+from .sounderpy import build_vad_hodograph
 from .sounderpy import build_composite
 from .sounderpy import print_variables
 from .sounderpy import interp_data 

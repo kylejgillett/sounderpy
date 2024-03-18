@@ -10,10 +10,7 @@
 
 SounderPy is an open-source atmospheric science Python package for vertical profile analysis. This tool is designed to get data, ‘clean it up’ for simple use, and plot the data on advanced-sounding plots. SounderPy was developed with the goal in mind to keep the code simple and efficient for users of all experience levels and for reliability in all use cases.
 
-SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines National Weather Service Office, the State University of New York at Albany, Mississippi State University, and others. Many have used SounderPy in projects and papers, such as students at Ohio State University, Central Michigan University & Rizal Technological University.
-
-* SounderPy is supported for Python >= 3.9. 
-* Examples of SounderPy use are available on the :doc:`examplescripts` page
+SounderPy is supported for Python >= 3.9. Examples of SounderPy use are available on the :doc:`examplescripts` page
 
 .. image:: https://img.shields.io/pypi/v/sounderpy.svg
    :target: https://pypi.python.org/pypi/sounderpy/
@@ -67,29 +64,33 @@ What exactly can SounderPy do?
 What data can SounderPy work with?
 -----------------------------------
 
-	+--------------------------------+------------------+------------------+
-	|         **DATA**               |  **TYPE**        |  **TIME RANGE**  |
-	+================================+==================+==================+
-	|    ECMWF CDS ERA5 reanalysis*  | Reanalysis       |  1940-present    |
-	+--------------------------------+------------------+------------------+
-	|     UNIDATA THREDDS TDS RAP    | Reanalysis       |  2005-present    |
-	+--------------------------------+------------------+------------------+
-	|     UNIDATA THREDDS TDS RUC    | Reanalysis       |  2005-2020       |
-	+--------------------------------+------------------+------------------+
-	|    UNIDATA THREDDS NCEP-FNL    | Reanalysis       |  2005-2020       |
-	+--------------------------------+------------------+------------------+
-	|    ISU's BUFKIT archive        | Model Forecast   |  2011-present    |
-	+--------------------------------+------------------+------------------+
-	|     PSU's BUFKIT feed          | Model Forecast   | Most recent runs |
-	+--------------------------------+------------------+------------------+
-	|  UNIDATA THREDDS TDS RAP       | Model Analysis   | Most recent run  |
-	+--------------------------------+------------------+------------------+
-	|   OU ACARS Archive             | Observations     | 2019-present     |
-	+--------------------------------+------------------+------------------+
-	|  The Unv. of WY RAOB Archive   | Observations     | 1973-present     |
-	+--------------------------------+------------------+------------------+
-	|  IGRAv2 Observation archive    | Observations     |  1905-present    |
-	+--------------------------------+------------------+------------------+
++--------------------------------+-----------------------+------------------+------------------+
+|         **DATA**               |   **FUNCTION**        |  **TYPE**        |  **TIME RANGE**  |
++================================+=======================+==================+==================+
+|    ECMWF CDS ERA5 reanalysis*  | get_model_data()      | Reanalysis       |  1940-present    |
++--------------------------------+-----------------------+------------------+------------------+
+|     UNIDATA THREDDS TDS RAP    | get_model_data()      | Reanalysis       |  2005-present    |
++--------------------------------+-----------------------+------------------+------------------+
+|     UNIDATA THREDDS TDS RUC    | get_model_data()      | Reanalysis       |  2005-2020       |
++--------------------------------+-----------------------+------------------+------------------+
+|    UNIDATA THREDDS NCEP-FNL    | get_model_data()      | Reanalysis       |  2005-2020       |
++--------------------------------+-----------------------+------------------+------------------+
+|    ISU's BUFKIT archive        | get_bufkit_data()     | Model Forecast   |  2011-present    |
++--------------------------------+-----------------------+------------------+------------------+
+|     PSU's BUFKIT feed          | get_bufkit_data()     | Model Forecast   | Most recent runs |
++--------------------------------+-----------------------+------------------+------------------+
+|  UNIDATA THREDDS TDS RAP       | get_model_data()      | Model Analysis   | Most recent run  |
++--------------------------------+-----------------------+------------------+------------------+
+|   OU ACARS Archive             | acars_data()          | Observations     | 2019-present     |
++--------------------------------+-----------------------+------------------+------------------+
+|  The Unv. of WY RAOB Archive   | get_obs_data()        | Observations     | 1973-present     |
++--------------------------------+-----------------------+------------------+------------------+
+|  IGRAv2 Observation Archive    | get_obs_data()        | Observations     |  1905-present    |
++--------------------------------+-----------------------+------------------+------------------+
+|  NWS NEXRAD AWS Archive        | pyart_radar_profile() | Observations     |  1990s-present   |
++--------------------------------+-----------------------+------------------+------------------+
+
+      
 
 
 ☕ SounderPy is a open-source package developed on my own time. Would you like to support continued SounderPy development? Consider "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"! ☕

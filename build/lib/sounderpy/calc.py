@@ -4,8 +4,7 @@ from .SHARPPYMAIN.sharppy.sharptab.winds import *
 from .SHARPPYMAIN.sharppy.sharptab.utils import comp2vec 
 from .SHARPPYMAIN.sharppy.sharptab.params import *
 
-
-from ecape.calc import calc_ecape, _get_parcel_profile, calc_mse, calc_integral_arg, calc_lfc_height, calc_el_height
+from ecape_parcel.ecape_calc import calc_ecape
 
 import numpy as np
 import numpy.ma as ma
@@ -17,7 +16,7 @@ from metpy.units import units
 
 #########################################################
 #            SOUNDERPY SPYCALC FUNCTIONS                #
-# (C) KYLE J GILLETT, CENTRAL MICHIGAN UNIVERSTIY, 2023 #
+# (C) KYLE J GILLETT, CENTRAL MICHIGAN UNIVERSTIY, 2024 #
 #########################################################
 
 
@@ -25,7 +24,7 @@ from metpy.units import units
 class sounding_params:
 
 
-    def __init__(self, clean_data, storm_motion='rm'):
+    def __init__(self, clean_data, storm_motion='right_moving'):
             self.clean_data = clean_data 
             self.storm_motion = storm_motion
 
@@ -215,7 +214,7 @@ class sounding_params:
 
         #--- MIXED LAYER PARCEL PROPERTIES ---#
         # ---------------------------------------------------------------
-        mlpcl_p, mlpcl_T, mlpcl_Td = mpcalc.mixed_parcel(p, T, Td, interpolate=True)[0:3]
+        mlpcl_p, mlpcl_T, mlpcl_Td = mpcalc.mixed_parcel(p, T, Td, bottom=p[0], depth=50*units.hPa, interpolate=True)[0:3]
         mlpcl = parcelx(prof, flag=5, pres=mlpcl_p.m, tmpc=mlpcl_T.m, dwpc=mlpcl_Td.m)
         thermo['mlT_trace'] = mlpcl.ttrace
         thermo['mlP_trace'] = mlpcl.ptrace
@@ -240,15 +239,17 @@ class sounding_params:
 
         #--- DOWNDRAFT CAPE ---#
         # ---------------------------------------------------------------
-        thermo['dcape'], thermo['dparcel_T'], thermo['dparcel_p'] = dcape(prof)                                     # calculate downdraft parcel properties
+        thermo['dcape'], thermo['dparcel_T'], thermo['dparcel_p'] = dcape(prof)
 
-        try: 
-            thermo['ecape'] = calc_ecape(z, p, T, general['spec_humidity'], u, v, 'most_unstable').m
-        except:
-            thermo['ecape'] = ma.masked
-            warnings.warn("ECAPE could not be computed for this sounding (calculation error)", Warning)
-            pass
-
+        
+        # ENTRAINING CAPE NOW LOCATED BELOW KINEMATICS SECTION SO 
+        # CALCULATED STORM MOTION IS INCLUDED IN ECAPE CALCULATIONS
+        
+        
+        
+        
+        
+        
         #--- PBL ---#
         # ---------------------------------------------------------------
         thermo['pbl_top'] = pbl_top(prof) 
@@ -309,25 +310,37 @@ class sounding_params:
             
         #--- USER DEFINED SM PT ---#
         # ---------------------------------------------------------------  
-        if ma.is_masked(kinem['sm_rm']) == False:
-            if self.storm_motion in ['rm', 'RM', 'right', 'right_mover']:
-                kinem['sm_u'] = kinem['sm_rm'][0]
-                kinem['sm_v'] = kinem['sm_rm'][1]
-            else:
-                kinem['sm_u'] = kinem['sm_lm'][0]
-                kinem['sm_v'] = kinem['sm_lm'][1]
+        if str(type(self.storm_motion)) == "<class 'list'>":
+            kinem['sm_u'], kinem['sm_v'] = mpcalc.wind_components(self.storm_motion[1]*units.kts, self.storm_motion[0]*units.deg)
+            kinem['sm_u'], kinem['sm_v'] = kinem['sm_u'].m, kinem['sm_v'].m
+            
         else:
-            kinem['sm_u'] = ma.masked
-            kinem['sm_v'] = ma.masked
+            
+            if ma.is_masked(kinem['sm_rm']) == False:
+                if self.storm_motion.casefold() in ['rm', 'right', 'right_moving', 'right_mover']:
+                    kinem['sm_u'] = kinem['sm_rm'][0]
+                    kinem['sm_v'] = kinem['sm_rm'][1]
+
+                elif self.storm_motion.casefold() in ['lm', 'left', 'left_moving', 'right_mover']:
+                    kinem['sm_u'] = kinem['sm_lm'][0]
+                    kinem['sm_v'] = kinem['sm_lm'][1]
+
+                elif self.storm_motion.casefold() in ['mw', 'mean', 'mean_wind', 'right_mover']:
+                    kinem['sm_u'] = kinem['sm_mw'][0]
+                    kinem['sm_v'] = kinem['sm_mw'][1]
+
+            else:
+                kinem['sm_u'] = ma.masked
+                kinem['sm_v'] = ma.masked
             
                 
         #--- DEVIANT TORNADO MOTION ---#
         # --------------------------------------------------------------- 
-        if ma.is_masked(kinem['sm_rm']) == False:
+        if ma.is_masked(kinem['sm_u']) == False:
             p300m = pres(prof, to_msl(prof, 300.))
             sfc = prof.pres[prof.sfc]
             mw_u_300, mw_v_300 = mean_wind(prof, pbot=sfc, ptop=p300m)
-            kinem['dtm'] = ((kinem['sm_u']+mw_u_300)/2, (kinem['sm_u']+mw_v_300)/2)
+            kinem['dtm'] = ((kinem['sm_u']+mw_u_300)/2, (kinem['sm_v']+mw_v_300)/2)
         else:
             kinem['dtm'] = ma.masked
           
@@ -341,65 +354,73 @@ class sounding_params:
         # ---------------------------------------------------------------    
         sfc = prof.pres[prof.sfc]
         p500m = pres(prof, to_msl(prof, 500.))
+        p1km = pres(prof, to_msl(prof, 1000.))
         p3km = pres(prof, to_msl(prof, 3000.))
         p6km = pres(prof, to_msl(prof, 6000.))
-        p1km = pres(prof, to_msl(prof, 1000.))
+        p9km = pres(prof, to_msl(prof, 9000.))
 
         shear_0_to_500  = wind_shear(prof, pbot=sfc, ptop=p500m)
         shear_0_to_1000 = wind_shear(prof, pbot=sfc, ptop=p1km)
         shear_1_to_3000 = wind_shear(prof, pbot=p1km, ptop=p3km)
         shear_3_to_6000 = wind_shear(prof, pbot=p3km, ptop=p6km)
+        shear_6_to_9000 = wind_shear(prof, pbot=p6km, ptop=p9km)
 
         kinem['shear_0_to_500']  = comp2vec(shear_0_to_500[0], shear_0_to_500[1])[1]
         kinem['shear_0_to_1000'] = comp2vec(shear_0_to_1000[0], shear_0_to_1000[1])[1]
         kinem['shear_1_to_3000'] = comp2vec(shear_1_to_3000[0], shear_1_to_3000[1])[1]
         kinem['shear_3_to_6000'] = comp2vec(shear_3_to_6000[0], shear_3_to_6000[1])[1]
+        kinem['shear_6_to_9000'] = comp2vec(shear_6_to_9000[0], shear_6_to_9000[1])[1]
             
         #--- SRH ---#
         # ---------------------------------------------------------------
-        if ma.is_masked(kinem['sm_rm']) == False:
-            kinem['srh_0_to_500']  = helicity(prof, 0, 500., stu = kinem['sm_u'], stv = kinem['sm_v'])[0]
-            kinem['srh_0_to_1000'] = helicity(prof, 0, 1000., stu = kinem['sm_u'], stv = kinem['sm_v'])[0]
+        if ma.is_masked(kinem['sm_u']) == False:
+            kinem['srh_0_to_500']  = helicity(prof, 0, 500.,     stu = kinem['sm_u'], stv = kinem['sm_v'])[0]
+            kinem['srh_0_to_1000'] = helicity(prof, 0, 1000.,    stu = kinem['sm_u'], stv = kinem['sm_v'])[0]
             kinem['srh_1_to_3000'] = helicity(prof, 1000, 3000., stu = kinem['sm_u'], stv = kinem['sm_v'])[0]
             kinem['srh_3_to_6000'] = helicity(prof, 3000, 6000., stu = kinem['sm_u'], stv = kinem['sm_v'])[0]
+            kinem['srh_6_to_9000'] = helicity(prof, 6000, 9000., stu = kinem['sm_u'], stv = kinem['sm_v'])[0]
         else:
             kinem['srh_0_to_500']  = ma.masked
             kinem['srh_0_to_1000'] = ma.masked
             kinem['srh_1_to_3000'] = ma.masked
             kinem['srh_3_to_6000'] = ma.masked
+            kinem['srh_6_to_9000'] = ma.masked
             warnings.warn("Storm Relative Helicity could not be computed for this sounding (no valid storm motion)", Warning)
 
 
         #--- SRW LAYERS ---#
         # --------------------------------------------------------------- 
-        if ma.is_masked(kinem['sm_rm']) == False:
+        if ma.is_masked(kinem['sm_u']) == False:
             def calc_srw_layer(prof, level):
                 u, v = components(prof, p=pres(prof, to_msl(prof, level)))
                 sru = u - kinem['sm_u']
                 srv = v - kinem['sm_v']
                 return mpcalc.wind_speed(sru*units.kts, srv*units.kts)
             try:
-                kinem['srw_0_to_500']  = (calc_srw_layer(prof, 500)+ calc_srw_layer(prof, 0))/2
+                kinem['srw_0_to_500']  = (calc_srw_layer(prof, 500)  + calc_srw_layer(prof, 0))/2
                 kinem['srw_0_to_1000'] = (calc_srw_layer(prof, 1000) + calc_srw_layer(prof, 0))/2
                 kinem['srw_1_to_3000'] = (calc_srw_layer(prof, 3000) + calc_srw_layer(prof, 1000))/2
                 kinem['srw_3_to_6000'] = (calc_srw_layer(prof, 6000) + calc_srw_layer(prof, 3000))/2
+                kinem['srw_6_to_9000'] = (calc_srw_layer(prof, 9000) + calc_srw_layer(prof, 6000))/2
             except:
                 kinem['srw_0_to_500']  = ma.masked
                 kinem['srw_0_to_1000'] = ma.masked
                 kinem['srw_1_to_3000'] = ma.masked
                 kinem['srw_3_to_6000'] = ma.masked
+                kinem['srw_6_to_9000'] = ma.masked
                 pass
         else:
             kinem['srw_0_to_500']  = ma.masked
             kinem['srw_0_to_1000'] = ma.masked
             kinem['srw_1_to_3000'] = ma.masked
             kinem['srw_3_to_6000'] = ma.masked
+            kinem['srw_6_to_9000'] = ma.masked
             warnings.warn("Storm Relative Wind could not be computed for this sounding (no valid storm motion)", Warning)
             
         #--- SRV ---#
         # ---------------------------------------------------------------
         # adopted from Sam Brandt (2022)    
-        if ma.is_masked(kinem['sm_rm']) == False: 
+        if ma.is_masked(kinem['sm_u']) == False: 
             # CONVERT TO m/s (uses `sm_u, sm_v` calculated above)
             u_ms = (intrp['uINTRP']/1.94384)
             v_ms = (intrp['vINTRP']/1.94384)
@@ -435,10 +456,12 @@ class sounding_params:
             kinem['swv_perc_0_to_1000'] = np.mean(kinem['swv_perc'][0:10])
             kinem['swv_perc_1_to_3000'] = np.mean(kinem['swv_perc'][10:30])
             kinem['swv_perc_3_to_6000'] = np.mean(kinem['swv_perc'][30:60])
+            kinem['swv_perc_6_to_9000'] = np.mean(kinem['swv_perc'][60:90])
             kinem['swv_0_to_500']       = np.mean(kinem['swv'][0:5])
             kinem['swv_0_to_1000']      = np.mean(kinem['swv'][0:10])
             kinem['swv_1_to_3000']      = np.mean(kinem['swv'][10:30])
             kinem['swv_3_to_6000']      = np.mean(kinem['swv'][30:60])
+            kinem['swv_6_to_9000']      = np.mean(kinem['swv'][60:90])
         else:
             kinem['srw']                = ma.masked
             kinem['swv']                = ma.masked
@@ -448,13 +471,42 @@ class sounding_params:
             kinem['swv_perc_0_to_1000'] = ma.masked
             kinem['swv_perc_1_to_3000'] = ma.masked
             kinem['swv_perc_3_to_6000'] = ma.masked
+            kinem['swv_perc_6_to_9000'] = ma.masked
             kinem['swv_0_to_500']       = ma.masked
             kinem['swv_0_to_1000']      = ma.masked
             kinem['swv_1_to_3000']      = ma.masked
             kinem['swv_3_to_6000']      = ma.masked
+            kinem['swv_6_to_9000']      = ma.masked
             warnings.warn("Streamwise Vorticity could not be computed for this sounding (no valid storm motion)", Warning)
         
-        # MEAN RELATIVE HUMIDITY CALCULATIONS ----------------------------------------------------------
+        
+        #--- SIMPLE ENTRAINING CAPE ---#
+        # ---------------------------------------------------------------
+        try: 
+            thermo['mu_ecape'] = calc_ecape(z, p, T, general['spec_humidity'], u, v, 'most_unstable', storm_motion='user_defined', u_sm=kinem['sm_u']*units.kts, v_sm=kinem['sm_v']*units.kts).m
+        except: 
+            thermo['mu_ecape'] = ma.masked
+            warnings.warn("MU-ECAPE could not be computed for this sounding (calculation error)", Warning)
+            pass
+        
+        try:
+            thermo['ml_ecape'] = calc_ecape(z, p, T, general['spec_humidity'], u, v, 'mixed_layer', storm_motion='user_defined', u_sm=kinem['sm_u']*units.kts, v_sm=kinem['sm_v']*units.kts).m
+        except: 
+            thermo['ml_ecape'] = ma.masked
+            warnings.warn("ML-ECAPE could not be computed for this sounding (calculation error)", Warning)
+            pass
+        
+        try:
+            thermo['sb_ecape'] = calc_ecape(z, p, T, general['spec_humidity'], u, v, 'surface_based', storm_motion='user_defined', u_sm=kinem['sm_u']*units.kts, v_sm=kinem['sm_v']*units.kts).m
+        except:
+            thermo['sb_ecape'] = ma.masked
+            warnings.warn("SB-ECAPE could not be computed for this sounding (calculation error)", Warning)
+            pass
+        
+        
+        
+        #--- RH & MIXRAT WITH HEIGHT ---#
+        # ---------------------------------------------------------------
         general['rh_0_500']  = np.mean(intrp['rhINTRP'][0:5])
         general['rh_0_1000'] = np.mean(intrp['rhINTRP'][0:10])
         general['rh_1_3000'] = np.mean(intrp['rhINTRP'][10:30])
@@ -480,7 +532,7 @@ class sounding_params:
         kinem  = self.calc()[2]
         print(' ')
         print(f'> THERMODYNAMICS --------------------------------------------- ')
-        print(f"--- SBCAPE: {np.round(thermo['sbcape'], 1)} | MUCAPE: {np.round(thermo['mucape'], 1)} | MLCAPE: {np.round(thermo['mlcape'], 1)} | ECAPE: {np.round(thermo['ecape'], 1)}")
+        print(f"--- SBCAPE: {np.round(thermo['sbcape'], 1)} | MUCAPE: {np.round(thermo['mucape'], 1)} | MLCAPE: {np.round(thermo['mlcape'], 1)} | MUECAPE: {np.round(thermo['mu_ecape'], 1)}")
         print(f"--- MU 0-3: {np.round(thermo['mu3cape'], 1)} | MU 0-6: {np.round(thermo['mu6cape'], 1)} | SB 0-3: {np.round(thermo['sb3cape'], 1)} | SB 0-6: {np.round(thermo['sb6cape'], 1)}")
         print(' ')
         print(f'> KINEMATICS ------------------------------------------------- ')
@@ -493,11 +545,17 @@ class sounding_params:
 
 
 
+
+
+
+
+
+
 # VAD Profile Calc functions 
 
 class vad_params:
     
-    def __init__(self, vad_data, storm_motion='rm'):
+    def __init__(self, vad_data, storm_motion='right_moving'):
             self.vad_data = vad_data 
             self.storm_motion = storm_motion
             
@@ -670,28 +728,48 @@ class vad_params:
             
             return mean_srw.m
         
+                
         
             
-        #--- STORM MOTION ---#
+        #--- BUNKERS STORM MOTION ---#
         # --------------------------------------------------------------- 
         kinem['sm_rm'] = calc_bunkers(u, v, z)[0:2]
         kinem['sm_lm'] = calc_bunkers(u, v, z)[2:4]
         kinem['sm_mw'] = calc_meanwind(u, v, z, 6000)
+       
         
-        if str.lower(self.storm_motion) == 'rm':
-            kinem['sm_u'] = kinem['sm_rm'][0]
-            kinem['sm_v'] = kinem['sm_rm'][1]
+        #--- USER DEFINED SM PT ---#
+        # ---------------------------------------------------------------  
+        if str(type(self.storm_motion)) == "<class 'list'>":
+            kinem['sm_u'], kinem['sm_v'] = mpcalc.wind_components(self.storm_motion[1]*units.kts, self.storm_motion[0]*units.deg)
+            kinem['sm_u'], kinem['sm_v'] = kinem['sm_u'].m, kinem['sm_v'].m
             
-        elif str.lower(self.storm_motion) == 'lm':
-            kinem['sm_u'] = kinem['sm_lm'][0]
-            kinem['sm_u'] = kinem['sm_lm'][0]
-        
-        
+        else:
+            
+            if ma.is_masked(kinem['sm_rm']) == False:
+                if self.storm_motion.casefold() in ['rm', 'right', 'right_moving', 'right_mover']:
+                    kinem['sm_u'] = kinem['sm_rm'][0]
+                    kinem['sm_v'] = kinem['sm_rm'][1]
+
+                elif self.storm_motion.casefold() in ['lm', 'left', 'left_moving', 'right_mover']:
+                    kinem['sm_u'] = kinem['sm_lm'][0]
+                    kinem['sm_v'] = kinem['sm_lm'][1]
+
+                elif self.storm_motion.casefold() in ['mw', 'mean', 'mean_wind', 'right_mover']:
+                    kinem['sm_u'] = kinem['sm_mw'][0]
+                    kinem['sm_v'] = kinem['sm_mw'][1]
+
+            else:
+                kinem['sm_u'] = ma.masked
+                kinem['sm_v'] = ma.masked
+                
+                
+                
         #--- DEVIANT TORNADO MOTION ---#
         # --------------------------------------------------------------- 
         if ma.is_masked(kinem['sm_u']) == False:
             mw_u_300, mw_v_300 = calc_meanwind(u, v, z, 300)
-            kinem['dtm'] = ((kinem['sm_u']+mw_u_300)/2, (kinem['sm_u']+mw_v_300)/2)
+            kinem['dtm'] = ((kinem['sm_u']+mw_u_300)/2, (kinem['sm_v']+mw_v_300)/2)
         else:
             kinem['dtm'] = ma.masked
           
@@ -711,6 +789,7 @@ class vad_params:
         kinem['shear_0_to_1000'] = calc_shear(u, v, 0, 1000, z)
         kinem['shear_1_to_3000'] = calc_shear(u, v, 1000, 3000, z)
         kinem['shear_3_to_6000'] = calc_shear(u, v, 3000, 6000, z)
+        kinem['shear_6_to_9000'] = calc_shear(u, v, 6000, 9000, z)
             
             
             
@@ -729,29 +808,34 @@ class vad_params:
             kinem['srh_3_to_6000'] = calc_srh(u_comp=u*units.kts, v_comp=v*units.kts, z=z*units.m, 
                                               bottom=3000*units.m, depth=6000*units.m, 
                                               storm_u=kinem['sm_u']*units.kts, storm_v=kinem['sm_v']*units.kts)
+            kinem['srh_6_to_9000'] = calc_srh(u_comp=u*units.kts, v_comp=v*units.kts, z=z*units.m, 
+                                              bottom=6000*units.m, depth=9000*units.m, 
+                                              storm_u=kinem['sm_u']*units.kts, storm_v=kinem['sm_v']*units.kts)
         else:
             kinem['srh_0_to_500']  = ma.masked
             kinem['srh_0_to_1000'] = ma.masked
             kinem['srh_1_to_3000'] = ma.masked
             kinem['srh_3_to_6000'] = ma.masked
+            kinem['srh_6_to_9000'] = ma.masked
             warnings.warn("Storm Relative Helicity could not be computed for this sounding (no valid storm motion)", Warning)
 
 
             
         #--- SRW LAYERS ---#
         # --------------------------------------------------------------- 
-        if ma.is_masked(kinem['sm_rm']) == False:
+        if ma.is_masked(kinem['sm_u']) == False:
             kinem['srw_0_to_500']  = calc_srw_layer(u, v, 0, 500)
             kinem['srw_0_to_1000'] = calc_srw_layer(u, v, 0, 1000)
             kinem['srw_1_to_3000'] = calc_srw_layer(u, v, 1000, 3000)
             kinem['srw_3_to_6000'] = calc_srw_layer(u, v, 3000, 6000)
+            kinem['srw_6_to_9000'] = calc_srw_layer(u, v, 6000, 9000)
 
         
         
         #--- SRV ---#
         # ---------------------------------------------------------------
         # adopted from Sam Brandt (2022)    
-        if ma.is_masked(kinem['sm_rm']) == False: 
+        if ma.is_masked(kinem['sm_u']) == False: 
             # CONVERT TO m/s (uses `sm_u, sm_v` calculated above)
             u_ms = (intrp['uINTRP']/1.94384)
             v_ms = (intrp['vINTRP']/1.94384)
@@ -787,10 +871,12 @@ class vad_params:
             kinem['swv_perc_0_to_1000'] = np.mean(kinem['swv_perc'][0:10])
             kinem['swv_perc_1_to_3000'] = np.mean(kinem['swv_perc'][10:30])
             kinem['swv_perc_3_to_6000'] = np.mean(kinem['swv_perc'][30:60])
+            kinem['swv_perc_6_to_9000'] = np.mean(kinem['swv_perc'][60:90])
             kinem['swv_0_to_500']       = np.mean(kinem['swv'][0:5])
             kinem['swv_0_to_1000']      = np.mean(kinem['swv'][0:10])
             kinem['swv_1_to_3000']      = np.mean(kinem['swv'][10:30])
             kinem['swv_3_to_6000']      = np.mean(kinem['swv'][30:60])
+            kinem['swv_6_to_9000']      = np.mean(kinem['swv'][60:90])
         else:
             kinem['srw']                = ma.masked
             kinem['swv']                = ma.masked
@@ -800,10 +886,12 @@ class vad_params:
             kinem['swv_perc_0_to_1000'] = ma.masked
             kinem['swv_perc_1_to_3000'] = ma.masked
             kinem['swv_perc_3_to_6000'] = ma.masked
+            kinem['swv_perc_6_to_9000'] = ma.masked
             kinem['swv_0_to_500']       = ma.masked
             kinem['swv_0_to_1000']      = ma.masked
             kinem['swv_1_to_3000']      = ma.masked
             kinem['swv_3_to_6000']      = ma.masked
+            kinem['swv_6_to_9000']      = ma.masked
             warnings.warn("Streamwise Vorticity could not be computed for this sounding (no valid storm motion)", Warning)
         
         return kinem, intrp 

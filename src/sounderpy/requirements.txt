@@ -1,10 +1,11 @@
 cdsapi>=0.6.1
-ecape>=0.1.1
+ecape-parcel>=1.2.0.2
 matplotlib>=3.3.0, <=3.7.1
 metpy>=1.5.1
 netcdf4>=1.6.4
 numpy>=1.20.0
 pandas>=1.2.0
+arm_pyart>=1.16.1
 siphon>=0.9
 scipy>= 1.10.1
 xarray>=0.18.0

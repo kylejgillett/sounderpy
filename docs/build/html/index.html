@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🎈 SounderPy &mdash; SounderPy v3.0.0 documentation</title>
+  <title>🎈 SounderPy &mdash; SounderPy v3.0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5773a0da"></script>
+        <script src="_static/documentation_options.js?v=c4f3aea9"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -92,11 +92,7 @@
 <h1>🎈 SounderPy<a class="headerlink" href="#sounderpy" title="Link to this heading"></a></h1>
 <a class="reference internal image-reference" href="_images/example-sounding_light.png"><img alt="_images/example-sounding_light.png" class="align-left" src="_images/example-sounding_light.png" style="width: 300px;" /></a>
 <p>SounderPy is an open-source atmospheric science Python package for vertical profile analysis. This tool is designed to get data, ‘clean it up’ for simple use, and plot the data on advanced-sounding plots. SounderPy was developed with the goal in mind to keep the code simple and efficient for users of all experience levels and for reliability in all use cases.</p>
-<p>SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines National Weather Service Office, the State University of New York at Albany, Mississippi State University, and others. Many have used SounderPy in projects and papers, such as students at Ohio State University, Central Michigan University &amp; Rizal Technological University.</p>
-<ul class="simple">
-<li><p>SounderPy is supported for Python &gt;= 3.9.</p></li>
-<li><p>Examples of SounderPy use are available on the <a class="reference internal" href="examplescripts.html"><span class="doc">📝 Usage Examples</span></a> page</p></li>
-</ul>
+<p>SounderPy is supported for Python &gt;= 3.9. Examples of SounderPy use are available on the <a class="reference internal" href="examplescripts.html"><span class="doc">📝 Usage Examples</span></a> page</p>
 <a class="reference external image-reference" href="https://pypi.python.org/pypi/sounderpy/"><img alt="PyPI Package" src="https://img.shields.io/pypi/v/sounderpy.svg" /></a>
 <a class="reference external image-reference" href="https://pypi.python.org/pypi/sounderpy/"><img alt="PyPI Downloads" src="https://img.shields.io/pypi/dm/sounderpy.svg" /></a>
 <a class="reference external image-reference" href="https://github.com/kylejgillett/sounderpy/blob/main/LICENSE.txt"><img alt="PyPI License" src="https://img.shields.io/pypi/l/ansicolortags.svg" /></a>
@@ -132,58 +128,72 @@
 </section>
 <section id="what-data-can-sounderpy-work-with">
 <h2>What data can SounderPy work with?<a class="headerlink" href="#what-data-can-sounderpy-work-with" title="Link to this heading"></a></h2>
-<blockquote>
-<div><table class="docutils align-default">
+<table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p><strong>DATA</strong></p></th>
+<th class="head"><p><strong>FUNCTION</strong></p></th>
 <th class="head"><p><strong>TYPE</strong></p></th>
 <th class="head"><p><strong>TIME RANGE</strong></p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>ECMWF CDS ERA5 reanalysis*</p></td>
+<td><p>get_model_data()</p></td>
 <td><p>Reanalysis</p></td>
 <td><p>1940-present</p></td>
 </tr>
 <tr class="row-odd"><td><p>UNIDATA THREDDS TDS RAP</p></td>
+<td><p>get_model_data()</p></td>
 <td><p>Reanalysis</p></td>
 <td><p>2005-present</p></td>
 </tr>
 <tr class="row-even"><td><p>UNIDATA THREDDS TDS RUC</p></td>
+<td><p>get_model_data()</p></td>
 <td><p>Reanalysis</p></td>
 <td><p>2005-2020</p></td>
 </tr>
 <tr class="row-odd"><td><p>UNIDATA THREDDS NCEP-FNL</p></td>
+<td><p>get_model_data()</p></td>
 <td><p>Reanalysis</p></td>
 <td><p>2005-2020</p></td>
 </tr>
 <tr class="row-even"><td><p>ISU’s BUFKIT archive</p></td>
+<td><p>get_bufkit_data()</p></td>
 <td><p>Model Forecast</p></td>
 <td><p>2011-present</p></td>
 </tr>
 <tr class="row-odd"><td><p>PSU’s BUFKIT feed</p></td>
+<td><p>get_bufkit_data()</p></td>
 <td><p>Model Forecast</p></td>
 <td><p>Most recent runs</p></td>
 </tr>
 <tr class="row-even"><td><p>UNIDATA THREDDS TDS RAP</p></td>
+<td><p>get_model_data()</p></td>
 <td><p>Model Analysis</p></td>
 <td><p>Most recent run</p></td>
 </tr>
 <tr class="row-odd"><td><p>OU ACARS Archive</p></td>
+<td><p>acars_data()</p></td>
 <td><p>Observations</p></td>
 <td><p>2019-present</p></td>
 </tr>
 <tr class="row-even"><td><p>The Unv. of WY RAOB Archive</p></td>
+<td><p>get_obs_data()</p></td>
 <td><p>Observations</p></td>
 <td><p>1973-present</p></td>
 </tr>
-<tr class="row-odd"><td><p>IGRAv2 Observation archive</p></td>
+<tr class="row-odd"><td><p>IGRAv2 Observation Archive</p></td>
+<td><p>get_obs_data()</p></td>
 <td><p>Observations</p></td>
 <td><p>1905-present</p></td>
 </tr>
+<tr class="row-even"><td><p>NWS NEXRAD AWS Archive</p></td>
+<td><p>pyart_radar_profile()</p></td>
+<td><p>Observations</p></td>
+<td><p>1990s-present</p></td>
+</tr>
 </tbody>
 </table>
-</div></blockquote>
 <p>☕ SounderPy is a open-source package developed on my own time. Would you like to support continued SounderPy development? Consider “<a class="reference external" href="https://www.buymeacoffee.com/kylejgillett">Buying me a coffee</a>”! ☕</p>
 </section>
 </section>
@@ -194,6 +204,7 @@
 <p class="caption" role="heading"><span class="caption-text">General:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="about.html#sounderpy-a-sounding-visualization-tool-for-severe-weather-analysis-and-forecasting">SounderPy: A sounding visualization tool for severe-weather analysis and forecasting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about.html#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about.html#sample-basic-use">Sample Basic Use</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about.html#authors-and-contributors">Authors and Contributors</a></li>
@@ -207,6 +218,7 @@
 <li class="toctree-l3"><a class="reference internal" href="troubleshooting.html#the-fix-saving-the-plot-to-a-file">The Fix: saving the plot to a file</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#goofy-acars-profiles">Goofy ACARS Profiles</a></li>
 </ul>
 </li>
 </ul>
@@ -231,6 +243,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="gettingdata.html#observed-data-raob-igrav2">Observed Data | RAOB &amp; IGRAv2</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="gettingdata.html#spy.get_obs_data"><code class="docutils literal notranslate"><span class="pre">spy.get_obs_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#available-raob-sites">Available RAOB Sites:</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="gettingdata.html#observed-data-acars-aircraft-obs">Observed Data | ACARS Aircraft Obs</a><ul>
@@ -238,6 +251,10 @@
 <li class="toctree-l3"><a class="reference internal" href="gettingdata.html#acars_data..list_profiles"><code class="docutils literal notranslate"><span class="pre">acars_data..list_profiles()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="gettingdata.html#acars_data..get_profile"><code class="docutils literal notranslate"><span class="pre">acars_data..get_profile()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="gettingdata.html#acars-data-retrieval-example">ACARS Data Retrieval Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gettingdata.html#observed-data-vad-radar-data">Observed Data | VAD radar data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#pyart_radar_profile"><code class="docutils literal notranslate"><span class="pre">pyart_radar_profile()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="gettingdata.html#what-does-the-data-look-like">What does the data look like?</a></li>
@@ -264,7 +281,20 @@
 <li class="toctree-l3"><a class="reference internal" href="plottingdata.html#id3">Examples</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="plottingdata.html#printing-data-to-the-console">Printing data to the console</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plottingdata.html#storm-motion-logic">Storm Motion Logic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#storm-motion-keys">Storm Motion Keys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#custom-storm-motions">Custom Storm Motions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plottingdata.html#parcel-logic">Parcel Logic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#how-to-use-this-feature">How to use this feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#parcel-keys">Parcel Keys</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plottingdata.html#printing-data-to-the-console">Printing data to the console</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#spy.print_variables"><code class="docutils literal notranslate"><span class="pre">spy.print_variables()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="plottingdata.html#about-these-plots">About These Plots</a></li>
 </ul>
 </li>
@@ -302,6 +332,7 @@
 <li class="toctree-l2"><a class="reference internal" href="examplegallery.html#sounding-settings">Sounding Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examplegallery.html#hodographs">Hodographs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examplegallery.html#composite-soundings">Composite Soundings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examplegallery.html#other-examples">Other Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
@@ -328,7 +359,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Kyle J Gillett.</p>
+    <p>&#169; Copyright 2024, Kyle J Gillett.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🌐 Tools for Getting Data &mdash; SounderPy v3.0.0 documentation</title>
+  <title>🌐 Tools for Getting Data &mdash; SounderPy v3.0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5773a0da"></script>
+        <script src="_static/documentation_options.js?v=c4f3aea9"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -72,6 +72,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#observed-data-raob-igrav2">Observed Data | RAOB &amp; IGRAv2</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#spy.get_obs_data"><code class="docutils literal notranslate"><span class="pre">spy.get_obs_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#available-raob-sites">Available RAOB Sites:</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#observed-data-acars-aircraft-obs">Observed Data | ACARS Aircraft Obs</a><ul>
@@ -79,6 +80,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#acars_data..list_profiles"><code class="docutils literal notranslate"><span class="pre">acars_data..list_profiles()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#acars_data..get_profile"><code class="docutils literal notranslate"><span class="pre">acars_data..get_profile()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#acars-data-retrieval-example">ACARS Data Retrieval Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#observed-data-vad-radar-data">Observed Data | VAD radar data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyart_radar_profile"><code class="docutils literal notranslate"><span class="pre">pyart_radar_profile()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#what-does-the-data-look-like">What does the data look like?</a></li>
@@ -179,6 +184,11 @@
 <td><p>get_obs_data()</p></td>
 <td><p>Observations</p></td>
 <td><p>1905-present</p></td>
+</tr>
+<tr class="row-even"><td><p>NWS NEXRAD AWS Archive</p></td>
+<td><p>pyart_radar_profile()</p></td>
+<td><p>Observations</p></td>
+<td><p>1990s-present</p></td>
 </tr>
 </tbody>
 </table>
@@ -299,9 +309,10 @@
 
 <section id="available-bufkit-sites">
 <span id="forecastsites"></span><h3>Available BUFKIT Sites:<a class="headerlink" href="#available-bufkit-sites" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p>Iowa State University’s <a class="reference external" href="https://meteor.geol.iastate.edu/~ckarsten/bufkit/data/">IEM BUFKIT Warehouse Maps</a></p></li>
-<li><p>Penn State University’s <a class="reference external" href="http://www.meteo.psu.edu/bufkit/DomainNAMRAP_NAM_12.html">PSU BUFKIT Warehouse Maps</a></p></li>
+<embed>
+    <iframe src="https://kylejgillett.github.io/sounderpy/bufkit_map" width="100%" height="500"></iframe>
+</embed><ul class="simple">
+<li></li>
 </ul>
 </section>
 <section id="available-models">
@@ -380,7 +391,12 @@
 <p class="admonition-title">Note</p>
 <p>Some data in these archives may be missing, incomplete or on occasion mislabled.</p>
 </div>
-<hr class="docutils" />
+<section id="available-raob-sites">
+<span id="raobsites"></span><h3>Available RAOB Sites:<a class="headerlink" href="#available-raob-sites" title="Link to this heading"></a></h3>
+<embed>
+    <iframe src="https://kylejgillett.github.io/sounderpy/raob_map" width="100%" height="500"></iframe>
+</embed><hr class="docutils" />
+</section>
 </section>
 <section id="observed-data-acars-aircraft-obs">
 <span id="acarsdata"></span><h2>Observed Data | ACARS Aircraft Obs<a class="headerlink" href="#observed-data-acars-aircraft-obs" title="Link to this heading"></a></h2>
@@ -466,8 +482,29 @@
 <p class="admonition-title">Note</p>
 <p>ACARS data is aircraft observation data, thus these profiles are typically not ‘full’ profiles (i.e., up to 100 hPa). Often times these profiles extend to only 500 hPa or less. They may also contain various errors such as unreasonably dry dewpoints and unreasonably high wind velocities.</p>
 </div>
-<hr class="docutils" />
 </section>
+</section>
+<hr class="docutils" />
+<section id="observed-data-vad-radar-data">
+<h2>Observed Data | VAD radar data<a class="headerlink" href="#observed-data-vad-radar-data" title="Link to this heading"></a></h2>
+<dl class="py function" id="vaddata">
+<dt class="sig sig-object py" id="pyart_radar_profile">
+<span class="sig-name descname"><span class="pre">pyart_radar_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nexrad_site</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan_dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyart_radar_profile" title="Link to this definition"></a></dt>
+<dd><p>Return a <code class="docutils literal notranslate"><span class="pre">dict</span></code> of ‘cleaned up’ radar VAD data. This radar data loader and VWP creator function is powered by PyArt
+(<a class="reference external" href="https://arm-doe.github.io/pyart/">https://arm-doe.github.io/pyart/</a>)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nexrad_site</strong> (<em>str</em><em>, </em><em>required</em>) – station ID (<code class="docutils literal notranslate"><span class="pre">'KDTX'</span></code>)</p></li>
+<li><p><strong>scan_dt</strong> (<em>datetime obj</em><em>, </em><em>required</em>) – the date and time of the requested scan (<code class="docutils literal notranslate"><span class="pre">datetime(2021,</span> <span class="pre">12,</span> <span class="pre">11,</span> <span class="pre">4,</span> <span class="pre">24)</span></code>)</p></li>
+<li><p><strong>from_file</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to search the NEXRAD AWS database or look for a local file, default is False</p></li>
+<li><p><strong>data_file</strong> (<em>str</em><em>, </em><em>optional</em>) – the filename of the local radar file to use</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
 </section>
 <section id="what-does-the-data-look-like">
 <span id="datadescription"></span><h2>What does the data look like?<a class="headerlink" href="#what-does-the-data-look-like" title="Link to this heading"></a></h2>
@@ -660,7 +697,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Kyle J Gillett.</p>
+    <p>&#169; Copyright 2024, Kyle J Gillett.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

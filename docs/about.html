@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>📖 About &mdash; SounderPy v3.0.0 documentation</title>
+  <title>📖 About &mdash; SounderPy v3.0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5773a0da"></script>
+        <script src="_static/documentation_options.js?v=c4f3aea9"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -51,6 +51,7 @@
               <p class="caption" role="heading"><span class="caption-text">General:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">📖 About</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#sounderpy-a-sounding-visualization-tool-for-severe-weather-analysis-and-forecasting">SounderPy: A sounding visualization tool for severe-weather analysis and forecasting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sample-basic-use">Sample Basic Use</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#authors-and-contributors">Authors and Contributors</a></li>
@@ -99,13 +100,50 @@
              
   <section id="about">
 <h1>📖 About<a class="headerlink" href="#about" title="Link to this heading"></a></h1>
-<p>☕ SounderPy is an open-source package developed on my own time. Would you like to support continued SounderPy development? Consider “<a class="reference external" href="https://www.buymeacoffee.com/kylejgillett">Buying me a coffee</a>”! ☕</p>
+<section id="sounderpy-a-sounding-visualization-tool-for-severe-weather-analysis-and-forecasting">
+<h2>SounderPy: A sounding visualization tool for severe-weather analysis and forecasting<a class="headerlink" href="#sounderpy-a-sounding-visualization-tool-for-severe-weather-analysis-and-forecasting" title="Link to this heading"></a></h2>
+<a class="reference internal image-reference" href="_images/example-sounding_light4.png"><img alt="_images/example-sounding_light4.png" class="align-center" src="_images/example-sounding_light4.png" style="width: 500px;" /></a>
+<hr class="docutils" />
+<p><strong>ABSTRACT:</strong> SounderPy is a simple, open-source Python package for retrieving and plotting
+vertical profile (sounding) data. Built for simplicity and reliability for all uses and users, this
+project’s goal is to provide a uniform method for sounding analysis across multiple data types.
+Severe weather analysis and forecasting requires a sound comprehension of thermodynamic and
+kinematic properties of the environment. SounderPy makes this possible with robust access to
+data and custom visualizations. The tool creates complex yet effective sounding and hodograph
+plots with high readability which are designed specifically for severe weather analysis and
+forecasting. SounderPy is capable of retrieving and plotting model forecast data, observed
+radiosonde data, Aircraft Communications Addressing and Reporting System (ACARS)
+observation data, and model reanalysis data. All of this functionality can be completed in three
+simple lines of code or less, making SounderPy an accessible tool for both Python experts and
+novices. A number of scientific Python libraries build the base of SounderPy’s efficient and
+durable functionality, such as NumPy, Matplotlib, xarray, Metpy, and SHARPpy. SounderPy is
+available through GitHub and PyPi and is distributed under an MIT license.</p>
+<p>SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines, Columbia, and Grand Rapids National Weather Service Offices, the State University of New York at Albany, Mississippi State University, the University of North Dakota, and others. Many students at various universities have used SounderPy in projects and papers, such as students at Ohio State University, Central Michigan University &amp; Rizal Technological University.</p>
+<p>☕ SounderPy is an open-source package developed on my own time. If you would you like to support continued SounderPy development, consider “<a class="reference external" href="https://www.buymeacoffee.com/kylejgillett">Buying me a coffee</a>”! ☕</p>
+</section>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
 <p>SounderPy is available on PyPi and can be installed via <code class="docutils literal notranslate"><span class="pre">pip</span></code>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install sounderpy</span>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install sounderpy</span>
 </pre></div>
 </div>
+</div></blockquote>
+<p>or via <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">forge</span></code> by first setting up the <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code> channel:</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda config --add channels conda-forge</span>
+<span class="go">conda config --set channel_priority strict</span>
+</pre></div>
+</div>
+<p>then you can install sounderpy via:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda install sounderpy</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">mamba install sounderpy</span>
+</pre></div>
+</div>
+</div></blockquote>
 <p>In your Python document, its fun to import SounderPy as <code class="docutils literal notranslate"><span class="pre">spy</span></code>!:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
 </pre></div>
@@ -114,14 +152,14 @@
 <hr class="docutils" />
 <section id="sample-basic-use">
 <h2>Sample Basic Use<a class="headerlink" href="#sample-basic-use" title="Link to this heading"></a></h2>
-<p>SounderPy is designed for simple and efficient use. Below is a basic example plotting an 03/31/2023 12z HRRR forecast profile at forecast hour 8 for BUFKIT site ‘KMLI’:</p>
+<p>SounderPy is designed for simple and efficient use for all users. Below is a basic example plotting an 03/31/2023 12z HRRR forecast profile at forecast hour 8 for BUFKIT site ‘KMLI’:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
 <span class="n">clean_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_bufkit_data</span><span class="p">(</span><span class="s1">&#39;hrrr&#39;</span><span class="p">,</span> <span class="s1">&#39;kmli&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;2023&#39;</span><span class="p">,</span> <span class="s1">&#39;03&#39;</span><span class="p">,</span> <span class="s1">&#39;31&#39;</span><span class="p">,</span> <span class="s1">&#39;12&#39;</span><span class="p">)</span>
-<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">clean_data</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;simple&#39;</span><span class="p">,</span> <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">clean_data</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Those three lines will make this!:</p>
-<img alt="Example SounderPy Sounding" src="_images/example-sounding_simple_dark.png" />
+<p>Those three basic lines will make this!:</p>
+<img alt="Example SounderPy Sounding" src="_images/example-sounding_light2.png" />
 <p>More examples of these plots are available <a class="reference internal" href="examplegallery.html#gallery"><span class="std std-ref">here</span></a></p>
 </section>
 <hr class="docutils" />
@@ -129,15 +167,18 @@
 <h2>Authors and Contributors<a class="headerlink" href="#authors-and-contributors" title="Link to this heading"></a></h2>
 <blockquote>
 <div><p><strong>AUTHOR: Kyle J Gillett, Central Michigan University</strong></p>
-<p><em>CONTRIBUTOR: Scott Thomas, NWS Grand Rapids</em></p>
+<p><em>CONTRIBUTOR: Scott Thomas, NWS Grand Rapids | VWP Hodograph, Buoy-sites listing</em>
+<em>CONTRIBUTOR: Amelia R H Urquhart, University of Oklahoma | ecape-parcels library</em>
+<em>CONTRIBUTOR: Daryl Herzmann, Iowa State University | SounderPy Feedstock for conda-forge</em></p>
 </div></blockquote>
 </section>
+<hr class="docutils" />
 <section id="citing-sounderpy">
 <h2>Citing SounderPy<a class="headerlink" href="#citing-sounderpy" title="Link to this heading"></a></h2>
 <blockquote>
 <div><a class="reference external image-reference" href="https://doi.org/10.5281/zenodo.10443609"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.10443609.svg" /></a>
 <dl class="simple">
-<dt>in AMS format:</dt><dd><p>Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval &amp; Analysis Tool for Python (Version 3.0.1). Py-Pi, <a class="reference external" href="https://pypi.org/project/sounderpy/">https://pypi.org/project/sounderpy/</a></p>
+<dt>in AMS format:</dt><dd><p>Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval &amp; Analysis Tool for Python (Version 3.0.2). Py-Pi, <a class="reference external" href="https://pypi.org/project/sounderpy/">https://pypi.org/project/sounderpy/</a></p>
 </dd>
 </dl>
 </div></blockquote>
@@ -172,6 +213,7 @@
 <p><em>Have an issue?</em> You can <a class="reference external" href="https://github.com/kylejgillett/sounderpy/issues">open a GitHub Issue</a> or just shoot me a DM on <a class="reference external" href="https://twitter.com/wxkylegillett">Twitter</a>!</p>
 <p><strong>Useful Links</strong></p>
 <ul class="simple">
+<li><p>Check out the operational <a class="reference external" href="https://sounderpysoundings.anvil.app/">SounderPy Sounding Analysis Site!</a></p></li>
 <li><p>Check out SounderPy <a class="reference external" href="https://github.com/kylejgillett/sounderpy">on GitHub</a></p></li>
 <li><p>Check out SounderPy <a class="reference external" href="https://pypi.org/project/sounderpy/">on PyPi</a></p></li>
 <li><p>Check out my <a class="reference external" href="https://kylegillettwx.wordpress.com/">website</a></p></li>
@@ -193,7 +235,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Kyle J Gillett.</p>
+    <p>&#169; Copyright 2024, Kyle J Gillett.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
