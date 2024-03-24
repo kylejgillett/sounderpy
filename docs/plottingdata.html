@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>📈 Tools for Plotting Data &mdash; SounderPy v3.0.2 documentation</title>
+  <title>📈 Tools for Plotting Data &mdash; SounderPy v3.0.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=c4f3aea9"></script>
+        <script src="_static/documentation_options.js?v=608b2ab0"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -368,7 +368,7 @@
 </section>
 <section id="parcel-logic">
 <span id="parcels-logic"></span><h2>Parcel Logic<a class="headerlink" href="#parcel-logic" title="Link to this heading"></a></h2>
-<p>New to v3.0.2, the ‘parcel-update’, is a complex scheme for computing and plotting advanced parcels using various adiabatic ascent schemes and entrainment schemes. This toolkit comes from <a class="reference external" href="https://github.com/a-urq/ecape-parcel-py">Amelia Urquhart’s</a> <code class="docutils literal notranslate"><span class="pre">ecape-parcels</span></code> Python package, which is based on work by <a class="reference external" href="https://journals.ametsoc.org/view/journals/atsc/79/3/JAS-D-21-0118.1.xml">Peters et. al. 2022</a>.</p>
+<p>New to v3.0.2+, the ‘parcel-update’, is a complex scheme for computing and plotting advanced parcels using various adiabatic ascent schemes and entrainment schemes. This toolkit comes from <a class="reference external" href="https://github.com/a-urq/ecape-parcel-py">Amelia Urquhart’s</a> <code class="docutils literal notranslate"><span class="pre">ecape-parcels</span></code> Python package, which is based on work by <a class="reference external" href="https://journals.ametsoc.org/view/journals/atsc/79/3/JAS-D-21-0118.1.xml">Peters et. al. 2022</a>.</p>
 <p>When plotting soundings, users can choose from a number of parcel types to compute and plot, such as…</p>
 <blockquote>
 <div><ul class="simple">
@@ -393,7 +393,7 @@
 <div><ul class="simple">
 <li><p>Example:</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">special_parcels</span> <span class="o">=</span> <span class="p">[[</span><span class="n">sb_ia_ecape</span><span class="p">],</span> <span class="p">[</span><span class="n">sb_ps_ecape</span><span class="p">,</span> <span class="n">sb_ps_cape</span><span class="p">]]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">special_parcels</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;sb_ia_ecape&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;sb_ps_ecape&quot;</span><span class="p">,</span> <span class="s2">&quot;sb_ps_cape&quot;</span><span class="p">]]</span>
 </pre></div>
 </div>
 <p>By default, SounderPy will plot normal MU/ML/SB-CAPE parcels and an mu_ia_ecape parcel. You can override this by setting <code class="docutils literal notranslate"><span class="pre">special_parcels</span></code> to ‘simple’, which only plots the common MU/ML/SB-CAPE parcels. This is greatly reduce the plot-time!</p>
@@ -436,10 +436,10 @@
 </ul>
 <blockquote>
 <div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">sb_ia_ecape</span></code>: surface-based irreversible adiabatic entraining CAPE</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">mu_ps_cape</span></code>: most-unstable pseudoadiabatic CAPE</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ml_ia_cape</span></code>: mixed-layer irreversible adiabatic CAPE</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">sb_ps_ecape</span></code>: surface-based pseudoadiabatic entraining CAPE</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'sb_ia_ecape'</span></code>: surface-based irreversible adiabatic entraining CAPE</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'mu_ps_cape'</span></code>: most-unstable pseudoadiabatic CAPE</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'ml_ia_cape'</span></code>: mixed-layer irreversible adiabatic CAPE</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'sb_ps_ecape'</span></code>: surface-based pseudoadiabatic entraining CAPE</p></li>
 </ul>
 </div></blockquote>
 </div></blockquote>

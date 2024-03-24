@@ -343,7 +343,8 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
         trans, _, _ = skew.ax.get_yaxis_text1_transform(0)
         skew.ax.text(0.048, intrp['pINTRP'][key], f"{int(intrp['zINTRP'][key]/1000)}km", 
                      fontsize=13, transform=trans, alpha=0.6, weight='bold', color=gen_txt_clr)   
-
+    
+    trans, _, _ = skew.ax.get_yaxis_text1_transform(0)
     sfc = mpcalc.height_to_pressure_std(general['elevation']*units.m)
     skew.ax.text(0.048, p[0], '-SFC-', fontsize=13, transform=trans, alpha=0.6, weight='bold', color=gen_txt_clr) # plot 'SFC' @ surface pressure
     
@@ -624,12 +625,13 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     #################################################################
     ### ADD HODOGRAPH ANNOTATION ###
     #################################################################
-    if ma.is_masked(kinem['sm_u']) == False:
+    if ma.is_masked(kinem['sm_rm']) == False:
         # BUNKERS STORM MOTION
         h.ax.text((kinem['sm_rm'][0]+0.5), (kinem['sm_rm'][1]-0.5), 'RM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
         h.ax.text((kinem['sm_lm'][0]+0.5), (kinem['sm_lm'][1]-0.5), 'LM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
         h.ax.text((kinem['sm_mw'][0]+0.5), (kinem['sm_mw'][1]-0.5), 'MW', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
     
+    if ma.is_masked(kinem['sm_u']) == False:
         # DEVIANT TORNADO MOTION
         h.ax.text(kinem['dtm'][0], (kinem['dtm'][1] + 2), 'DTM', weight='bold', fontsize=10, color='brown', ha='center')
         h.plot(kinem['dtm'][0], kinem['dtm'][1], marker='v', color='brown', markersize=8, alpha=0.8, ls='', label='DEVIANT TORNADO MOTION')
@@ -1341,6 +1343,7 @@ def __simple_sounding(clean_data, color_blind, dark_mode, storm_motion='right_mo
         skew.ax.text(0.048, intrp['pINTRP'][key], f"{int(intrp['zINTRP'][key]/1000)}km", 
                      fontsize=13, transform=trans, alpha=0.6, weight='bold', color=gen_txt_clr)   
 
+    trans, _, _ = skew.ax.get_yaxis_text1_transform(0)
     sfc = mpcalc.height_to_pressure_std(general['elevation']*units.m)
     skew.ax.text(0.048, p[0], '-SFC-', fontsize=13, transform=trans, alpha=0.6, weight='bold', color=gen_txt_clr) # plot 'SFC' @ surface pressure
     
@@ -1523,12 +1526,13 @@ def __simple_sounding(clean_data, color_blind, dark_mode, storm_motion='right_mo
     #################################################################
     ### ADD HODOGRAPH ANNOTATION ###
     #################################################################
-    if ma.is_masked(kinem['sm_u']) == False:
+    if ma.is_masked(kinem['sm_rm']) == False:
         # BUNKERS STORM MOTION
         h.ax.text((kinem['sm_rm'][0]+0.5), (kinem['sm_rm'][1]-0.5), 'RM', weight='bold', ha='left', fontsize=10, alpha=0.9, color=gen_txt_clr)
         h.ax.text((kinem['sm_lm'][0]+0.5), (kinem['sm_lm'][1]-0.5), 'LM', weight='bold', ha='left', fontsize=10, alpha=0.9, color=gen_txt_clr)
         h.ax.text((kinem['sm_mw'][0]+0.5), (kinem['sm_mw'][1]-0.5), 'MW', weight='bold', ha='left', fontsize=10, alpha=0.9, color=gen_txt_clr)
     
+    if ma.is_masked(kinem['sm_u']) == False:
         # DEVIANT TORNADO MOTION
         h.ax.text(kinem['dtm'][0], (kinem['dtm'][1] + 2), 'DTM', weight='bold', fontsize=8, color='brown', ha='center')
         h.plot(kinem['dtm'][0], kinem['dtm'][1], marker='v', color='brown', markersize=5, alpha=0.8, ls='', label='DEVIANT TORNADO MOTION')
@@ -1923,31 +1927,36 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo):
     #################################################################
     ### ADD HODOGRAPH ANNOTATION ###
     #################################################################
-    if ma.is_masked(kinem['sm_u']) == False:
+    if ma.is_masked(kinem['sm_rm']) == False:
         # BUNKERS STORM MOTION
         if sr_hodo == False:
             h.ax.text((kinem['sm_rm'][0]+0.5), (kinem['sm_rm'][1]-0.5), 'RM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
             h.ax.text((kinem['sm_lm'][0]+0.5), (kinem['sm_lm'][1]-0.5), 'LM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
             h.ax.text((kinem['sm_mw'][0]+0.5), (kinem['sm_mw'][1]-0.5), 'MW', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
+        elif sr_hodo == True:
+            h.ax.text((kinem['sm_lm'][0] - kinem['sm_u'] +0.5), (kinem['sm_lm'][1] - kinem['sm_v'] -0.5), 'LM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
+            h.ax.text((kinem['sm_mw'][0] - kinem['sm_u'] +0.5), (kinem['sm_mw'][1] - kinem['sm_v'] -0.5), 'MW', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
+    
+
+    if ma.is_masked(kinem['sm_u']) == False:    
+        # ADD SM POINT IF ITS A CUSTOM STORM MOTION
+        if str(type(storm_motion)) == "<class 'list'>":
+            h.ax.text((kinem['sm_u']+0.5), (kinem['sm_v']-0.5), 'SM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
+    
+        h.ax.arrow(0,0,kinem['sm_u']-0.3, kinem['sm_v']-0.3, linewidth=3, color=gen_txt_clr, alpha=0.2, 
+                label='SM Vector', length_includes_head=True, head_width=0.5)
         
-            # ADD SM POINT IF ITS A CUSTOM STORM MOTION
-            if str(type(storm_motion)) == "<class 'list'>":
-                h.ax.text((kinem['sm_u']+0.5), (kinem['sm_v']-0.5), 'SM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
-        
-            h.ax.arrow(0,0,kinem['sm_u']-0.3, kinem['sm_v']-0.3, linewidth=3, color=gen_txt_clr, alpha=0.2, 
-                    label='SM Vector', length_includes_head=True, head_width=0.5)
-        
+        if sr_hodo == False:
             # DEVIANT TORNADO MOTION
             h.ax.text(kinem['dtm'][0], (kinem['dtm'][1] + 2), 'DTM', weight='bold', fontsize=10, color='brown', ha='center')
             h.plot(kinem['dtm'][0], kinem['dtm'][1], marker='v', color='brown', markersize=8, alpha=0.8, ls='', label='DEVIANT TORNADO MOTION')
             
         elif sr_hodo == True:
-            h.ax.text((kinem['sm_lm'][0] - kinem['sm_u'] +0.5), (kinem['sm_lm'][1] - kinem['sm_v'] -0.5), 'LM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
-            h.ax.text((kinem['sm_mw'][0] - kinem['sm_u'] +0.5), (kinem['sm_mw'][1] - kinem['sm_v'] -0.5), 'MW', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
             # DEVIANT TORNADO MOTION
             h.ax.text(kinem['dtm'][0] - kinem['sm_u'], (kinem['dtm'][1] - kinem['sm_v'] + 2), 'DTM', weight='bold', fontsize=10, color='brown', ha='center')
             h.plot(kinem['dtm'][0] - kinem['sm_u'], kinem['dtm'][1] - kinem['sm_v'], marker='v', color='brown', markersize=8, alpha=0.8, ls='', label='DEVIANT TORNADO MOTION')
           
+        
         
     # EFFECTIVE INFLOW LAYER SRH FILL
     if sr_hodo == False:
@@ -2298,10 +2307,10 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo):
     plt.figtext( 1.116, 0.59,   f"{mag(thermo['mu3cape'])} J/kg", fontsize=15, color='red', weight='bold')
     #MLCAPE
     plt.figtext( 0.815, 0.56,  f'ML:', weight='bold', fontsize=15, color=gen_txt_clr)
-    plt.figtext( 0.86, 0.56,   f"{mag(thermo['mu_ecape'])} J/kg", fontsize=15, color='darkred', weight='bold')
-    plt.figtext( 0.95, 0.56,    f"{mag(thermo['mucape'])} J/kg",  fontsize=15, color='darkred', weight='bold')
-    plt.figtext( 1.035, 0.56,   f"{mag(thermo['mu6cape'])} J/kg", fontsize=15, color='darkred', weight='bold')
-    plt.figtext( 1.116, 0.56,   f"{mag(thermo['mu3cape'])} J/kg", fontsize=15, color='darkred', weight='bold')
+    plt.figtext( 0.86, 0.56,   f"{mag(thermo['ml_ecape'])} J/kg", fontsize=15, color='darkred', weight='bold')
+    plt.figtext( 0.95, 0.56,    f"{mag(thermo['mlcape'])} J/kg",  fontsize=15, color='darkred', weight='bold')
+    plt.figtext( 1.035, 0.56,   f"{mag(thermo['ml6cape'])} J/kg", fontsize=15, color='darkred', weight='bold')
+    plt.figtext( 1.116, 0.56,   f"{mag(thermo['ml3cape'])} J/kg", fontsize=15, color='darkred', weight='bold')
     # NCAPE
     plt.figtext( 0.86, 0.49, f"MUNCAPE:", weight='bold', fontsize=15, color=gen_txt_clr)
     plt.figtext( 0.943, 0.49, f" {mag(thermo['mu_ncape'])} J/kg", fontsize=15, color='brown', alpha=0.7, weight='bold')
@@ -2933,31 +2942,36 @@ def __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo):
     #################################################################
     ### ADD HODOGRAPH ANNOTATION ###
     #################################################################
-    if ma.is_masked(kinem['sm_u']) == False:
+    if ma.is_masked(kinem['sm_rm']) == False:
         # BUNKERS STORM MOTION
         if sr_hodo == False:
             h.ax.text((kinem['sm_rm'][0]+0.5), (kinem['sm_rm'][1]-0.5), 'RM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
             h.ax.text((kinem['sm_lm'][0]+0.5), (kinem['sm_lm'][1]-0.5), 'LM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
             h.ax.text((kinem['sm_mw'][0]+0.5), (kinem['sm_mw'][1]-0.5), 'MW', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
+        elif sr_hodo == True:
+            h.ax.text((kinem['sm_lm'][0] - kinem['sm_u'] +0.5), (kinem['sm_lm'][1] - kinem['sm_v'] -0.5), 'LM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
+            h.ax.text((kinem['sm_mw'][0] - kinem['sm_u'] +0.5), (kinem['sm_mw'][1] - kinem['sm_v'] -0.5), 'MW', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
+    
+
+    if ma.is_masked(kinem['sm_u']) == False:    
+        # ADD SM POINT IF ITS A CUSTOM STORM MOTION
+        if str(type(storm_motion)) == "<class 'list'>":
+            h.ax.text((kinem['sm_u']+0.5), (kinem['sm_v']-0.5), 'SM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
+    
+        h.ax.arrow(0,0,kinem['sm_u']-0.3, kinem['sm_v']-0.3, linewidth=3, color=gen_txt_clr, alpha=0.2, 
+                label='SM Vector', length_includes_head=True, head_width=0.5)
         
-            # ADD SM POINT IF ITS A CUSTOM STORM MOTION
-            if str(type(storm_motion)) == "<class 'list'>":
-                h.ax.text((kinem['sm_u']+0.5), (kinem['sm_v']-0.5), 'SM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
-        
-            h.ax.arrow(0,0,kinem['sm_u']-0.3, kinem['sm_v']-0.3, linewidth=3, color=gen_txt_clr, alpha=0.2, 
-                    label='SM Vector', length_includes_head=True, head_width=0.5)
-        
+        if sr_hodo == False:
             # DEVIANT TORNADO MOTION
             h.ax.text(kinem['dtm'][0], (kinem['dtm'][1] + 2), 'DTM', weight='bold', fontsize=10, color='brown', ha='center')
             h.plot(kinem['dtm'][0], kinem['dtm'][1], marker='v', color='brown', markersize=8, alpha=0.8, ls='', label='DEVIANT TORNADO MOTION')
             
         elif sr_hodo == True:
-            h.ax.text((kinem['sm_lm'][0] - kinem['sm_u'] +0.5), (kinem['sm_lm'][1] - kinem['sm_v'] -0.5), 'LM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
-            h.ax.text((kinem['sm_mw'][0] - kinem['sm_u'] +0.5), (kinem['sm_mw'][1] - kinem['sm_v'] -0.5), 'MW', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
             # DEVIANT TORNADO MOTION
             h.ax.text(kinem['dtm'][0] - kinem['sm_u'], (kinem['dtm'][1] - kinem['sm_v'] + 2), 'DTM', weight='bold', fontsize=10, color='brown', ha='center')
             h.plot(kinem['dtm'][0] - kinem['sm_u'], kinem['dtm'][1] - kinem['sm_v'], marker='v', color='brown', markersize=8, alpha=0.8, ls='', label='DEVIANT TORNADO MOTION')
           
+        
         
     # EFFECTIVE INFLOW LAYER
     if sr_hodo == False:

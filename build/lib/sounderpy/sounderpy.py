@@ -48,7 +48,7 @@ from .calc import *
 
     THIS RELEASE
     -------
-    Version: 3.0.2 | March 2024
+    Version: 3.0.3 | March 2024
 
     DOCUMENTATION
     -------
@@ -66,7 +66,7 @@ from .calc import *
 citation_text = f"""
 ## ---------------------------------- SOUNDERPY ----------------------------------- ##
 ##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
-##                     v3.0.2 | Mar. 2024 | (C) Kyle J Gillett                      ##
+##                     v3.0.3 | Mar. 2024 | (C) Kyle J Gillett                      ##
 ##                 Docs: https://kylejgillett.github.io/sounderpy/                  ##
 ## --------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------ ##
 """

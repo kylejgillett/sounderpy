@@ -308,7 +308,7 @@ Custom Storm Motions
 Parcel Logic
 ------------
 
-New to v3.0.2, the 'parcel-update', is a complex scheme for computing and plotting advanced parcels using various adiabatic ascent schemes and entrainment schemes. This toolkit comes from `Amelia Urquhart's <https://github.com/a-urq/ecape-parcel-py>`_ ``ecape-parcels`` Python package, which is based on work by `Peters et. al. 2022 <https://journals.ametsoc.org/view/journals/atsc/79/3/JAS-D-21-0118.1.xml>`_. 
+New to v3.0.2+, the 'parcel-update', is a complex scheme for computing and plotting advanced parcels using various adiabatic ascent schemes and entrainment schemes. This toolkit comes from `Amelia Urquhart's <https://github.com/a-urq/ecape-parcel-py>`_ ``ecape-parcels`` Python package, which is based on work by `Peters et. al. 2022 <https://journals.ametsoc.org/view/journals/atsc/79/3/JAS-D-21-0118.1.xml>`_. 
 
 When plotting soundings, users can choose from a number of parcel types to compute and plot, such as...
 
@@ -334,7 +334,7 @@ When plotting a `full` sounding using the ``build_sounding()`` function, use the
 
    .. code-block:: python
       
-      special_parcels = [[sb_ia_ecape], [sb_ps_ecape, sb_ps_cape]]
+      special_parcels = [["sb_ia_ecape"], ["sb_ps_ecape", "sb_ps_cape"]]
 
 
    By default, SounderPy will plot normal MU/ML/SB-CAPE parcels and an mu_ia_ecape parcel. You can override this by setting ``special_parcels`` to 'simple', which only plots the common MU/ML/SB-CAPE parcels. This is greatly reduce the plot-time!
@@ -362,10 +362,10 @@ Note the struture of the 'parcel key': ``sb_ia_ecape``. This is broken into thre
 
 
   - Examples:
-   - ``sb_ia_ecape``: surface-based irreversible adiabatic entraining CAPE
-   - ``mu_ps_cape``: most-unstable pseudoadiabatic CAPE
-   - ``ml_ia_cape``: mixed-layer irreversible adiabatic CAPE
-   - ``sb_ps_ecape``: surface-based pseudoadiabatic entraining CAPE
+   - ``'sb_ia_ecape'``: surface-based irreversible adiabatic entraining CAPE
+   - ``'mu_ps_cape'``: most-unstable pseudoadiabatic CAPE
+   - ``'ml_ia_cape'``: mixed-layer irreversible adiabatic CAPE
+   - ``'sb_ps_ecape'``: surface-based pseudoadiabatic entraining CAPE
 
 
 
