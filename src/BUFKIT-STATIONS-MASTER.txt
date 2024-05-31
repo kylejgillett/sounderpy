@@ -2208,7 +2208,6 @@ WMO numbers must be sequential.      Coordinates are in normal degrees.
 101,265,31.38,-103.51,KPEQ,PECOS MUNICIPAL                 ,TX,796,TAF 7-7
 102,266,26.42,-81.44,KIMM,IMMOKALEE                       ,FL,11,MFL RQST 7-07
 103,267,26.75,-80.94,2IS ,CLEWISTON                       ,FL,6,MFL RQST 7-07
-104,268,31.18,-99.32,BBD ,BRADY CURTIS FIELD              ,TX,546,TAF 7-7
 105,269,30.59,-100.65,SOA ,SONORA MUNICIPAL                ,TX,0,TAF 7-7
 106,270,39.08,-120.94,CFC ,COLFAX WATER                    ,CA,0,HMT FMCW/ARO 12-10
 107,271,37.51,-120.04,MPI ,MARIPOSA                        ,CA,687,HMT S-PROF 12-10
@@ -3839,7 +3838,6 @@ WMO numbers must be sequential.      Coordinates are in normal degrees.
 97,265,31.38,-103.51,KPEQ ,PECOS MUNICIPAL                 ,TX,796,TAF 7-7
 98,266,26.42,-81.44,KIMM ,IMMOKALEE                       ,FL,11,MFL RQST 7-07
 99,267,26.75,-80.94,2IS  ,CLEWISTON                       ,FL,6,MFL RQST 7-07
-100,268,31.18,-99.32,BBD  ,BRADY CURTIS FIELD              ,TX,546,TAF 7-7
 101,269,30.59,-100.65,SOA  ,SONORA MUNICIPAL                ,TX,0,TAF 7-7
 102,270,39.08,-120.94,CFC  ,COLFAX WATER                    ,CA,0,HMT FMCW/ARO 12-10
 103,271,37.51,-120.04,MPI  ,MARIPOSA                        ,CA,687,HMT S-PROF 12-10
@@ -5459,7 +5457,6 @@ WMO numbers must be sequential.      Coordinates are in normal degrees.
 125,265,31.38,-103.51,KPEQ,PECOS MUNICIPAL                 ,TX,796,TAF 7-7
 126,266,26.42,-81.44,KIMM,IMMOKALEE                       ,FL,11,MFL RQST 7-07
 127,267,26.75,-80.94,2IS ,CLEWISTON                       ,FL,6,MFL RQST 7-07
-128,268,31.18,-99.32,BBD ,BRADY CURTIS FIELD              ,TX,546,TAF 7-7
 129,269,30.59,-100.65,SOA ,SONORA MUNICIPAL                ,TX,0,TAF 7-7
 130,270,39.08,-120.94,CFC ,COLFAX WATER                    ,CA,0,HMT FMCW/ARO 12-10
 131,271,37.51,-120.04,MPI ,MARIPOSA                        ,CA,687,HMT S-PROF 12-10
@@ -7249,7 +7246,6 @@ WMO numbers must be sequential.      Coordinates are in normal degrees.
 100,265,31.38,-103.51,KPEQ ,PECOS MUNICIPAL                 ,TX,796,TAF 7-7
 101,266,26.42,-81.44,KIMM ,IMMOKALEE                       ,FL,11,MFL Rqst 7-07
 102,267,26.75,-80.94,K2IS ,CLEWISTON                       ,FL,6,MFL Rqst 7-07
-103,268,31.18,-99.32,KBBD ,BRADY CURTIS FIELD              ,TX,546,TAF 7-7
 104,269,30.59,-100.65,SOA  ,SONORA MUNICIPAL -999 TAF-7     ,TX,0,TAF 7-7
 105,270,39.08,-120.94,CFC  ,COLFAX WATER -999 HMT FMCW/ARO- ,CA,0,HMT FMCW/ARO 12-10
 106,271,37.51,-120.04,MPI  ,MARIPOSA                        ,CA,687,HMT S-PROF 12-10
