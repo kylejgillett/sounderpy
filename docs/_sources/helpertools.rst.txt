@@ -18,10 +18,11 @@ Data returned in this dictionary include...
 
 .. class:: sounding_params()
 
-   .. py:function:: .calc(clean_data)
-
       :param clean_data: a dictionary of SounderPy data (see :doc:`gettingdata`)
       :type clean_data: dict, required
+
+   .. py:function:: .calc()
+
       :return: special sounding parameters
       :rtype: dict
 
