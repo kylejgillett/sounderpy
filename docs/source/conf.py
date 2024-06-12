@@ -9,7 +9,7 @@
 project = 'SounderPy'
 copyright = '2024, Kyle J Gillett'
 author = 'Kyle J Gillett'
-release = 'v3.0.3'
+release = 'v3.0.4'
 html_logo = 'https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png'
 html_favicon = 'https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png'
 

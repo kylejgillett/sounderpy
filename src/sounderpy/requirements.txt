@@ -1,6 +1,7 @@
+cartopy>=0.21.0
 cdsapi>=0.6.1
 ecape-parcel>=1.2.0.2
-matplotlib>=3.3.0, <=3.7.1
+matplotlib>=3.3.0
 metpy>=1.5.1
 netcdf4>=1.6.4
 numpy>=1.20.0

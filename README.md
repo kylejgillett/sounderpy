@@ -4,7 +4,7 @@
 </div>
 
 # SounderPy, the vertical profile data retrieval and analysis tool for Python
-LATEST VERSION: v3.0.3 |  RELEASED: March, 2024  |  COPYRIGHT Kyle J Gillett, 2023, 2024
+LATEST VERSION: v3.0.4 |  RELEASED: June, 2024  |  COPYRIGHT Kyle J Gillett, 2023, 2024
 
 A Python package that helps you to access and plot vertical profile data for meteorological analysis 
 
@@ -45,7 +45,7 @@ durable functionality, such as NumPy, Matplotlib, xarray, Metpy, and SHARPpy. So
 available through GitHub and PyPi and is distributed under an MIT license. 
 
 
-SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines, Columbia, and Grand Rapids National Weather Service Offices, the State University of New York at Albany, Mississippi State University, the University of North Dakota, and others. Many students at various universities have used SounderPy in projects and papers, such as students at Ohio State University, Central Michigan University & Rizal Technological University.
+SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines, Columbia, and Grand Rapids National Weather Service Offices, the State University of New York at Albany, Mississippi State University, the University of North Dakota, and others. Many students at various universities have used SounderPy in projects, posters, and papers, such as students at The University of Oklahoma, Ohio State University, Central Michigan University, Iowa State University, & Rizal Technological University.
 
 
 
@@ -143,7 +143,7 @@ SounderPy has been used by several institutions. For example, this tool has been
 ------
 
 ## AUTHORS AND CONTRIBUTORS
-### **AUTHOR: Kyle J Gillett, Central Michigan University** 
+### **AUTHOR: Kyle J Gillett, University of North Dakota** 
 ##### *CONTRIBUTOR: Scott Thomas, NWS Grand Rapids | VWP Hodograph, Buoy-sites listing*
 ##### *CONTRIBUTOR: Amelia R H Urquhart, University of Oklahoma | ecape-parcels library*
 ##### *CONTRIBUTOR: Daryl Herzmann, Iowa State University | SounderPy Feedstock for conda-forge*
@@ -157,7 +157,7 @@ SounderPy has been used by several institutions. For example, this tool has been
 
 in AMS format:
 
-- Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.3). Py-Pi, https://pypi.org/project/sounderpy/
+- Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.4). Py-Pi, https://pypi.org/project/sounderpy/
 
 ------
 

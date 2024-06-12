@@ -28,7 +28,7 @@ durable functionality, such as NumPy, Matplotlib, xarray, Metpy, and SHARPpy. So
 available through GitHub and PyPi and is distributed under an MIT license. 
 
 
-SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines, Columbia, and Grand Rapids National Weather Service Offices, the State University of New York at Albany, Mississippi State University, the University of North Dakota, and others. Many students at various universities have used SounderPy in projects and papers, such as students at Ohio State University, Central Michigan University & Rizal Technological University.
+SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines, Columbia, and Grand Rapids National Weather Service Offices, the State University of New York at Albany, Mississippi State University, the University of North Dakota, and others. Many students at various universities have used SounderPy in projects, posters, and papers, such as students at The University of Oklahoma, Ohio State University, Central Michigan University, Iowa State University, & Rizal Technological University.
 
 ☕ SounderPy is an open-source package developed on my own time. If you would you like to support continued SounderPy development, consider "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"! ☕
 
@@ -97,7 +97,7 @@ More examples of these plots are available :ref:`here<gallery>`
 
 Authors and Contributors 
 -------------------------
-	**AUTHOR: Kyle J Gillett, Central Michigan University**
+	**AUTHOR: Kyle J Gillett, University of North Dakota**
 
 	*CONTRIBUTOR: Scott Thomas, NWS Grand Rapids | VWP Hodograph, Buoy-sites listing*
 	*CONTRIBUTOR: Amelia R H Urquhart, University of Oklahoma | ecape-parcels library*
@@ -113,7 +113,7 @@ Citing SounderPy
 
 
 	in AMS format:
-	     Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.3). Py-Pi, https://pypi.org/project/sounderpy/
+	     Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.4). Py-Pi, https://pypi.org/project/sounderpy/
 
 
 ***************************************************************
@@ -150,7 +150,7 @@ About the Author
 
 Hey! 
 
-Thank you so much for checking out and using SounderPy. My name is Kyle Gillett and I am the developer of SounderPy. This tool started out as a way for me to internally house all of my data retrieval functions for plotting soundings. As you can see, it has since blossomed into a full-scale Python package. I am currently an undergraduate student of Meteorology at Central Michigan University, the President of the Central Michigan University Student Chapter of the American Meteorological Society and an on-air meteorologist with WNEM TV-5 in Saginaw, MI.
+Thank you so much for checking out and using SounderPy. My name is Kyle Gillett and I'm a master's student of Atmospheric Science at the University of North Dakota, and the developer of SounderPy. This tool started out as a way for me to internally house all of my data retrieval functions for plotting soundings. As you can see, it has since blossomed into a full-scale Python package.
 
 SounderPy is published on PyPi and the source code is available on GitHub -- this tool is an open source project. If you have found SounderPy useful in your work, I'd love to hear about it! The coolest part of this project has been hearing how many folks have been using this software. If you'd like to support continued SounderPy development, consider "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"! ☕. 
 
@@ -161,7 +161,7 @@ SounderPy is published on PyPi and the source code is available on GitHub -- thi
 + Check out the operational `SounderPy Sounding Analysis Site! <https://sounderpysoundings.anvil.app/>`_
 + Check out SounderPy `on GitHub <https://github.com/kylejgillett/sounderpy>`_
 + Check out SounderPy `on PyPi <https://pypi.org/project/sounderpy/>`_
-+ Check out my `website <https://kylegillettwx.wordpress.com/>`_
++ Check out my `website <https://kylegillettphoto.com>`_
 + Get updates on SounderPy development on `Twitter <https://twitter.com/wxkylegillett>`_
 + Support SounderPy by "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"
 

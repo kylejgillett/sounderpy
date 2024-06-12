@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sounderpy"
-version = "3.0.3"
+version = "3.0.4"
 authors = [
-  { name="Kyle J Gillett, Central Michigan University", email="kjgillett10@gmail.com" },
+  { name="Kyle J Gillett, University of North Dakota", email="kyle.gillett@und.edu" },
 ]
 description = "Vertical Profile Data Retrieval and Analysis Tool For Python"
 readme = "README.md"
@@ -23,14 +23,14 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
+	"cartopy>=0.21.0",
 	"cdsapi>=0.6.1",
 	"ecape-parcel>=1.2.0.2",
-	"matplotlib>=3.3.0, <=3.7.1",
+	"matplotlib>=3.3.0",
 	"metpy>=1.5.1",
 	"netcdf4>=1.6.4",
 	"numpy>=1.20.0",
 	"pandas>=1.2.0",
-	"arm_pyart>=1.16.1",
 	"siphon>=0.9",
 	"scipy>= 1.10.1",
 	"xarray>=0.18.0",
@@ -41,4 +41,4 @@ dependencies = [
 "Code" = "https://github.com/kylejgillett/sounderpy"
 "Operational Site" = "https://sounderpysoundings.anvil.app/"
 "PyPi" = "https://pypi.org/project/sounderpy/"
-"My Website" = "https://kylegillettwx.wordpress.com/"
+"My Website" = "https://kylegillettphoto.com"

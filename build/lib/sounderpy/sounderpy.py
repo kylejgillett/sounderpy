@@ -48,7 +48,7 @@ from .calc import *
 
     THIS RELEASE
     -------
-    Version: 3.0.3 | March 2024
+    Version: 3.0.4 | June 2024
 
     DOCUMENTATION
     -------
@@ -66,7 +66,7 @@ from .calc import *
 citation_text = f"""
 ## ---------------------------------- SOUNDERPY ----------------------------------- ##
 ##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
-##                     v3.0.3 | Mar. 2024 | (C) Kyle J Gillett                      ##
+##                     v3.0.4 | June 2024 | (C) Kyle J Gillett                      ##
 ##                 Docs: https://kylejgillett.github.io/sounderpy/                  ##
 ## --------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------ ##
 """
@@ -820,7 +820,7 @@ def get_obs_data(station, year, month, day, hour, hush=False):
             clean_data['site_info'] = {
                     'site-id'   : IGRA_STATIONS[IGRA_STATIONS['ID']==station]['ID'].str.strip().values[0],
                     'site-name' : IGRA_STATIONS[IGRA_STATIONS['ID']==station]['NAME'].str.strip().values[0],
-                    'site-lctn' : 'no-site-location',
+                    'site-lctn' : '',
                     'site-latlon' : get_latlon('igra', station),
                     'site-elv'  : IGRA_STATIONS[IGRA_STATIONS['ID']==station]['EL(m)'].values[0],
                     'source'    : 'RAOB OBSERVED PROFILE',
@@ -897,6 +897,12 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
     # make sure variables are in the correct case
     model   = str.lower(model)
     station = str.upper(station)
+
+    # remove '#' for URL
+    if '#' in station: 
+        url_station = station.replace('#', '%23')
+    else: 
+        url_station = station
     
     # GET MOST-RECENT RUNS FROM PSU SERVERS 
     # if date variables (year, month, day) are not given, the user has 'selected' a most
@@ -908,7 +914,7 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
             model3 = 'gfs3' 
         else:
             model3 = model
-        data_conn = f'http://www.meteo.psu.edu/bufkit/data/{model.upper()}/{model3}_{station.lower()}.buf'
+        data_conn = f'http://www.meteo.psu.edu/bufkit/data/{model.upper()}/{model3}_{url_station.lower()}.buf'
      
     
     # GET ARCHIVE DATA FROM THE IEM SERVERS. CORRECT GFS & NAM MODEL NAMES
@@ -918,12 +924,12 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
         if model not in ['gfs', 'nam', 'namnest', 'rap', 'hrrr']:
             raise ValueError(f"{model} is not a valid model option. Valid models include ['GFS', 'NAM', 'NAMNEST', 'RAP', 'HRRR']")
         if model == 'namnest':
-            model == 'nam4km'
+            model = 'nam4km'
         if model == 'gfs':
             model3 = 'gfs3' 
         else:
             model3 = model
-        data_conn = f'https://mtarchive.geol.iastate.edu/{run_year}/{run_month}/{run_day}/bufkit/{run_hour}/{model}/{model3}_{station.lower()}.buf'  
+        data_conn = f'https://mtarchive.geol.iastate.edu/{run_year}/{run_month}/{run_day}/bufkit/{run_hour}/{model}/{model3}_{url_station.lower()}.buf'  
 
 
     # Check to make sure the user-defined site ID is a valid bufkit site before continuing 
@@ -955,8 +961,8 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
     run_dt = datetime(int(f'20{run_time[0:2]}'), int(run_time[2:4]), int(run_time[4:6]), int(run_time[7:9])) 
     fct_dt = run_dt + timedelta(hours = fcst_hour)
     hr_deltas = {
-         'gfs':[3,180], 'hrrr':[1,48],
-         'rap':[1,51],  'nam':[3,48],
+         'gfs':[1,180], 'hrrr':[1,48],
+         'rap':[1,51],  'nam':[1,48],
          'namnest':[1,60],  'nam4km':[1,60],
          'sref':[1,84],     'hiresw':[1,48]}
     stp_dt = fct_dt + timedelta(hours = hr_deltas[model][0])
@@ -1467,7 +1473,7 @@ def pyart_radar_profile(nexrad_site, scan_dt, from_file=False, data_file='none')
 #########################################################################
 
 # Soundings 
-def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False, storm_motion='right_moving', special_parcels=None, save=False, filename='sounderpy_sounding'):
+def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False, storm_motion='right_moving', special_parcels=None, show_radar=True, radar_time='sounding', map_zoom=2, modify_sfc=None, save=False, filename='sounderpy_sounding'):
     
     '''
        Return a full sounding plot of SounderPy data, ``plt`` 
@@ -1496,9 +1502,9 @@ def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False,
         
     if style == 'full':
         if save == True:
-            __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels).savefig(filename, bbox_inches='tight')
+            __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, show_radar, radar_time, map_zoom, modify_sfc).savefig(filename, bbox_inches='tight')
         else:
-            __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels).show()
+            __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, show_radar, radar_time, map_zoom, modify_sfc).show()
     elif style == 'simple':
         if save == True:
             __simple_sounding(clean_data, color_blind, dark_mode, storm_motion).savefig(filename, bbox_inches='tight')
@@ -1631,7 +1637,7 @@ def build_composite(data_list, shade_between=True, cmap='viridis', colors_to_use
 # print out data to console
 def print_variables(clean_data):
     
-    sounding_params(clean_data).print_vals()
+    sounding_params(clean_data, storm_motion='right_moving', sfc_correction=None).print_vals()
     
 #############################################################################################################################
     

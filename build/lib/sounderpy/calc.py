@@ -9,24 +9,26 @@ from ecape_parcel.ecape_calc import calc_ecape
 import numpy as np
 import numpy.ma as ma
 import warnings
+import copy
 import metpy.calc as mpcalc
 from metpy.units import units
 
 
 
-#########################################################
-#            SOUNDERPY SPYCALC FUNCTIONS                #
-# (C) KYLE J GILLETT, CENTRAL MICHIGAN UNIVERSTIY, 2024 #
-#########################################################
+########################################################
+#            SOUNDERPY SPYCALC FUNCTIONS               #
+# (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024 #
+########################################################
 
 
 
 class sounding_params:
 
 
-    def __init__(self, clean_data, storm_motion='right_moving'):
+    def __init__(self, clean_data, storm_motion='right_moving', modify_sfc=None):
             self.clean_data = clean_data 
             self.storm_motion = storm_motion
+            self.modify_sfc = modify_sfc
 
             
     ######################################################################################################
@@ -62,21 +64,31 @@ class sounding_params:
         if self.clean_data['Td'].units != 'degree_Celsius':
             self.clean_data['Td'] = self.clean_data['Td'].to(units.degC)
         
-        T   = self.clean_data['T']
-        Td  = self.clean_data['Td']
-        p   = self.clean_data['p']
-        z   = self.clean_data['z']
-        u   = self.clean_data['u']
-        v   = self.clean_data['v']
+        # SFC CORRECTION
+        # create a deepcopy of clean_data
+        sounding_data = copy.deepcopy(self.clean_data)
+    
+        # if `modify_sfc` is a list, correct the sfc values
+        if str(type(self.modify_sfc)) == "<class 'list'>":
+            sounding_data['T'][0] = self.modify_sfc[0]*units.degC
+            sounding_data['Td'][0] = self.modify_sfc[1]*units.degC
+        
+        
+        T   = sounding_data['T']
+        Td  = sounding_data['Td']
+        p   = sounding_data['p']
+        z   = sounding_data['z']
+        u   = sounding_data['u']
+        v   = sounding_data['v']
         wd  = mpcalc.wind_direction(u, v)
         ws  = mpcalc.wind_speed(u, v)
 
         # compute useful variables and add them to a new dict of 
         # data that this function will return 
-        if self.clean_data['site_info']['site-elv'] == 9999:
+        if sounding_data['site_info']['site-elv'] == 9999:
             general['elevation'] = z[0].m
         else:
-            general['elevation'] = int(self.clean_data['site_info']['site-elv'])
+            general['elevation'] = int(sounding_data['site_info']['site-elv'])
 
 
         general['sfc_pressure']  = (p[0].m*(1-(0.0065*(general['elevation']))/(T[0].m+(0.0065*(general['elevation']))+273.15))**-5.257)*units.hPa
@@ -111,10 +123,11 @@ class sounding_params:
 
         resolution=100
 
-        rhINTRP = general['rel_humidity'].m[np.isnan(z)==False]
-        mrINTRP = general['mix_ratio'].m[np.isnan(z)==False]
+        rhINTRP     = general['rel_humidity'].m[np.isnan(z)==False]
+        mrINTRP     = general['mix_ratio'].m[np.isnan(z)==False]
         thetaINTRP  = general['theta'].m[np.isnan(z)==False]
         thetaeINTRP = general['theta_e'].m[np.isnan(z)==False]
+        wbINTRP     = general['wet_bulb'].m[np.isnan(z)==False]
         pINTRP  = p.m[np.isnan(z)==False]
         tINTRP  = T.m[np.isnan(z)==False]
         uINTRP  = u.m[np.isnan(z)==False]
@@ -127,6 +140,7 @@ class sounding_params:
         intrp['mrINTRP'] = interpolate(mrINTRP,zINTRP,resolution)
         intrp['thetaINTRP']  = interpolate(thetaINTRP,zINTRP,resolution)
         intrp['thetaeINTRP'] = interpolate(thetaeINTRP,zINTRP,resolution)
+        intrp['wbINTRP'] = interpolate(wbINTRP,zINTRP,resolution)
         intrp['pINTRP'] = interpolate(pINTRP,zINTRP,resolution)
         intrp['uINTRP'] = interpolate(uINTRP,zINTRP,resolution)
         intrp['vINTRP'] = interpolate(vINTRP,zINTRP,resolution)
@@ -161,6 +175,15 @@ class sounding_params:
             warnings.warn("This sounding does not have a freezing point (not enough data)", Warning)
             pass
 
+        try: 
+            wb_frz_pt_index = intrp['wbINTRP'].tolist().index(list(filter(lambda i: i <= 0, intrp['wbINTRP'].tolist()))[0])
+            general['wb_frz_pt_p'] = intrp['pINTRP'][wb_frz_pt_index]*units.hPa
+            general['wb_frz_pt_z'] = intrp['zINTRP'][wb_frz_pt_index]*units.m
+        except IndexError:
+            general['wb_frz_pt_p'] = ma.masked
+            general['wb_frz_pt_z'] = ma.masked
+            warnings.warn("This sounding does not have a wet bulb freezing point (not enough data)", Warning)
+            pass
 
 
         ###################################################################
@@ -187,6 +210,7 @@ class sounding_params:
         thermo['sb_el_p']  = sbpcl.elpres  
         thermo['sb_el_z']  = sbpcl.elhght
         thermo['sb_el_T']  = temp(prof, pres(prof, thermo['sb_el_z']))
+        thermo['sb_mpl_p'] = sbpcl.mplpres
         thermo['sbcape']   = sbpcl.bplus
         thermo['sbcin']    = sbpcl.bminus
         thermo['sb3cape']  = sbpcl.b3km
@@ -207,6 +231,7 @@ class sounding_params:
         thermo['mu_el_p']  = mupcl.elpres
         thermo['mu_el_z']  = mupcl.elhght
         thermo['mu_el_T']  = temp(prof, pres(prof, thermo['mu_el_z']))
+        thermo['mu_mpl_p'] = mupcl.mplpres
         thermo['mucape']   = mupcl.bplus
         thermo['mucin']    = mupcl.bminus
         thermo['mu3cape']  = mupcl.b3km
@@ -226,6 +251,7 @@ class sounding_params:
         thermo['ml_el_p']  = mlpcl.elpres
         thermo['ml_el_z']  = mlpcl.elhght
         thermo['ml_el_T']  = temp(prof, pres(prof, thermo['ml_el_z']))
+        thermo['ml_mpl_p'] = mlpcl.mplpres
         thermo['mlcape']   = mlpcl.bplus
         thermo['mlcin']    = mlpcl.bminus
         thermo['ml3cape']  = mlpcl.b3km
@@ -272,7 +298,7 @@ class sounding_params:
         #--- TEMPERATURE ADVECTION ---#
         # ---------------------------------------------------------------
         #returns temp_adv (C/hr) array and 2D array of top and bottom bounds of temp advection layer (mb)
-        thermo['temp_adv'] = inferred_temp_adv(prof, lat=self.clean_data['site_info']['site-latlon'][0])
+        thermo['temp_adv'] = inferred_temp_adv(prof, lat=sounding_data['site_info']['site-latlon'][0])
         ####################################################################
         
         
@@ -284,8 +310,10 @@ class sounding_params:
         ####################################################################
         #--- LAPSE RATES ---#
         # ---------------------------------------------------------------   
-        kinem['eil'] = effective_inflow_layer(prof, ecape=100, ecinh=- 250)
+        kinem['eil'] = effective_inflow_layer(prof, ecape=100, ecinh=-150)
         kinem['eil_z'] = [to_agl(prof, hght(prof, kinem['eil'][0])), to_agl(prof, hght(prof, kinem['eil'][1]))]
+        
+        eil_idx = [find_nearest(intrp['zINTRP'], kinem['eil_z'][0]), find_nearest(intrp['zINTRP'], kinem['eil_z'][1])]
 
         #--- STORM MOTION ---#
         # ---------------------------------------------------------------   
@@ -364,27 +392,37 @@ class sounding_params:
         shear_1_to_3000 = wind_shear(prof, pbot=p1km, ptop=p3km)
         shear_3_to_6000 = wind_shear(prof, pbot=p3km, ptop=p6km)
         shear_6_to_9000 = wind_shear(prof, pbot=p6km, ptop=p9km)
+        shear_eil       = wind_shear(prof, pbot=kinem['eil'][0], ptop=kinem['eil'][1])
 
         kinem['shear_0_to_500']  = comp2vec(shear_0_to_500[0], shear_0_to_500[1])[1]
         kinem['shear_0_to_1000'] = comp2vec(shear_0_to_1000[0], shear_0_to_1000[1])[1]
         kinem['shear_1_to_3000'] = comp2vec(shear_1_to_3000[0], shear_1_to_3000[1])[1]
         kinem['shear_3_to_6000'] = comp2vec(shear_3_to_6000[0], shear_3_to_6000[1])[1]
         kinem['shear_6_to_9000'] = comp2vec(shear_6_to_9000[0], shear_6_to_9000[1])[1]
+        kinem['shear_eil'] = comp2vec(shear_eil[0], shear_eil[1])[1]
             
         #--- SRH ---#
         # ---------------------------------------------------------------
         if ma.is_masked(kinem['sm_u']) == False:
-            kinem['srh_0_to_500']  = helicity(prof, 0, 500.,     stu = kinem['sm_u'], stv = kinem['sm_v'])[0]
-            kinem['srh_0_to_1000'] = helicity(prof, 0, 1000.,    stu = kinem['sm_u'], stv = kinem['sm_v'])[0]
-            kinem['srh_1_to_3000'] = helicity(prof, 1000, 3000., stu = kinem['sm_u'], stv = kinem['sm_v'])[0]
-            kinem['srh_3_to_6000'] = helicity(prof, 3000, 6000., stu = kinem['sm_u'], stv = kinem['sm_v'])[0]
-            kinem['srh_6_to_9000'] = helicity(prof, 6000, 9000., stu = kinem['sm_u'], stv = kinem['sm_v'])[0]
+            
+            keys = ['srh_0_to_500', 'srh_0_to_1000', 'srh_1_to_3000', 'srh_3_to_6000', 'srh_6_to_9000', 'srh_eil']
+            lwrs = [0, 0, 1000, 3000, 6000, kinem['eil_z'][0]]
+            uprs = [500, 1000, 3000, 6000, 9000, kinem['eil_z'][1]]
+            
+            for key, lwr, upr in zip(keys, lwrs, uprs):
+                try:
+                    kinem[key]  = helicity(prof, lwr, upr, stu = kinem['sm_u'], stv = kinem['sm_v'])[0]
+                except:
+                    kinem[key] = ma.masked
+                    pass
         else:
             kinem['srh_0_to_500']  = ma.masked
             kinem['srh_0_to_1000'] = ma.masked
             kinem['srh_1_to_3000'] = ma.masked
             kinem['srh_3_to_6000'] = ma.masked
             kinem['srh_6_to_9000'] = ma.masked
+            kinem['srh_6_to_9000'] = ma.masked
+            kinem['srh_eil'] = ma.masked
             warnings.warn("Storm Relative Helicity could not be computed for this sounding (no valid storm motion)", Warning)
 
 
@@ -396,25 +434,24 @@ class sounding_params:
                 sru = u - kinem['sm_u']
                 srv = v - kinem['sm_v']
                 return mpcalc.wind_speed(sru*units.kts, srv*units.kts)
-            try:
-                kinem['srw_0_to_500']  = (calc_srw_layer(prof, 500)  + calc_srw_layer(prof, 0))/2
-                kinem['srw_0_to_1000'] = (calc_srw_layer(prof, 1000) + calc_srw_layer(prof, 0))/2
-                kinem['srw_1_to_3000'] = (calc_srw_layer(prof, 3000) + calc_srw_layer(prof, 1000))/2
-                kinem['srw_3_to_6000'] = (calc_srw_layer(prof, 6000) + calc_srw_layer(prof, 3000))/2
-                kinem['srw_6_to_9000'] = (calc_srw_layer(prof, 9000) + calc_srw_layer(prof, 6000))/2
-            except:
-                kinem['srw_0_to_500']  = ma.masked
-                kinem['srw_0_to_1000'] = ma.masked
-                kinem['srw_1_to_3000'] = ma.masked
-                kinem['srw_3_to_6000'] = ma.masked
-                kinem['srw_6_to_9000'] = ma.masked
-                pass
+            
+            keys = ['srw_0_to_500', 'srw_0_to_1000', 'srw_1_to_3000', 'srw_3_to_6000', 'srw_6_to_9000', 'srw_eil']
+            lwrs = [0, 0, 1000, 3000, 6000, kinem['eil_z'][0]]
+            uprs = [500, 1000, 3000, 6000, 9000, kinem['eil_z'][1]]
+            
+            for key, lwr, upr in zip(keys, lwrs, uprs):
+                try:
+                    kinem[key] = (calc_srw_layer(prof, upr)  + calc_srw_layer(prof, lwr))/2
+                except:
+                    kinem[key] = ma.masked
+                    pass
         else:
             kinem['srw_0_to_500']  = ma.masked
             kinem['srw_0_to_1000'] = ma.masked
             kinem['srw_1_to_3000'] = ma.masked
             kinem['srw_3_to_6000'] = ma.masked
             kinem['srw_6_to_9000'] = ma.masked
+            kinem['srw_eil'] = ma.masked
             warnings.warn("Storm Relative Wind could not be computed for this sounding (no valid storm motion)", Warning)
             
         #--- SRV ---#
@@ -457,11 +494,13 @@ class sounding_params:
             kinem['swv_perc_1_to_3000'] = np.mean(kinem['swv_perc'][10:30])
             kinem['swv_perc_3_to_6000'] = np.mean(kinem['swv_perc'][30:60])
             kinem['swv_perc_6_to_9000'] = np.mean(kinem['swv_perc'][60:90])
+            kinem['swv_perc_eil']       = np.mean(kinem['swv_perc'][eil_idx[0]:eil_idx[1]])
             kinem['swv_0_to_500']       = np.mean(kinem['swv'][0:5])
             kinem['swv_0_to_1000']      = np.mean(kinem['swv'][0:10])
             kinem['swv_1_to_3000']      = np.mean(kinem['swv'][10:30])
             kinem['swv_3_to_6000']      = np.mean(kinem['swv'][30:60])
             kinem['swv_6_to_9000']      = np.mean(kinem['swv'][60:90])
+            kinem['swv_eil']            = np.mean(kinem['swv'][eil_idx[0]:eil_idx[1]])
         else:
             kinem['srw']                = ma.masked
             kinem['swv']                = ma.masked
@@ -472,11 +511,13 @@ class sounding_params:
             kinem['swv_perc_1_to_3000'] = ma.masked
             kinem['swv_perc_3_to_6000'] = ma.masked
             kinem['swv_perc_6_to_9000'] = ma.masked
+            kinem['swv_perc_eil']       = ma.masked
             kinem['swv_0_to_500']       = ma.masked
             kinem['swv_0_to_1000']      = ma.masked
             kinem['swv_1_to_3000']      = ma.masked
             kinem['swv_3_to_6000']      = ma.masked
             kinem['swv_6_to_9000']      = ma.masked
+            kinem['swv_eil']            = ma.masked
             warnings.warn("Streamwise Vorticity could not be computed for this sounding (no valid storm motion)", Warning)
         
         
@@ -548,6 +589,8 @@ class sounding_params:
 
 
 
+        
+        
 
 
 
@@ -555,9 +598,10 @@ class sounding_params:
 
 class vad_params:
     
-    def __init__(self, vad_data, storm_motion='right_moving'):
+    def __init__(self, vad_data, storm_motion='right_moving', modify_sfc=None):
             self.vad_data = vad_data 
             self.storm_motion = storm_motion
+            self.modify_sfc = modify_sfc
             
     
     ######################################################################################################
@@ -655,16 +699,16 @@ class vad_params:
         # CALC MEAN_WIND COMPONENTS 
         def calc_meanwind(u_layer, v_layer, z, top):
               layer_top = np.where(z == (top))[0][0]
-              mean_u = np.mean(u_layer[:layer_top])
-              mean_v = np.mean(v_layer[:layer_top])
+              mean_u = np.nanmean(u_layer[:layer_top])
+              mean_v = np.nanmean(v_layer[:layer_top])
               return mean_u, mean_v
 
         
         # CALC BUNKERS STORM MOTION
         def calc_bunkers(u_layer, v_layer, z):
               layer_top = np.where(z == (6000))[0][0]
-              mean_u = np.mean(u_layer[:layer_top])
-              mean_v = np.mean(v_layer[:layer_top])
+              mean_u = np.nanmean(u_layer[:layer_top])
+              mean_v = np.nanmean(v_layer[:layer_top])
 
               layer_top = np.where(z == (6000))[0][0]
               u_shr = u_layer[layer_top] - u_layer[0]
@@ -714,7 +758,7 @@ class vad_params:
                 
             
         # CALC STORM RELATIVE WIND 
-        def calc_srw_layer(u, v, bottom, top):
+        def calc_srw_layer(u, v, bottom, top, z):
             layer_top = np.where(z == (top))[0][0]
             layer_bot = np.where(z == (bottom))[0][0]
             
@@ -733,9 +777,9 @@ class vad_params:
             
         #--- BUNKERS STORM MOTION ---#
         # --------------------------------------------------------------- 
-        kinem['sm_rm'] = calc_bunkers(u, v, z)[0:2]
-        kinem['sm_lm'] = calc_bunkers(u, v, z)[2:4]
-        kinem['sm_mw'] = calc_meanwind(u, v, z, 6000)
+        kinem['sm_rm'] = calc_bunkers(intrp['uINTRP'], intrp['vINTRP'], intrp['zINTRP'])[0:2]
+        kinem['sm_lm'] = calc_bunkers(intrp['uINTRP'], intrp['vINTRP'], intrp['zINTRP'])[2:4]
+        kinem['sm_mw'] = calc_meanwind(intrp['uINTRP'], intrp['vINTRP'], intrp['zINTRP'], 6000)
        
         
         #--- USER DEFINED SM PT ---#
@@ -768,7 +812,7 @@ class vad_params:
         #--- DEVIANT TORNADO MOTION ---#
         # --------------------------------------------------------------- 
         if ma.is_masked(kinem['sm_u']) == False:
-            mw_u_300, mw_v_300 = calc_meanwind(u, v, z, 300)
+            mw_u_300, mw_v_300 = calc_meanwind(intrp['uINTRP'],intrp['vINTRP'],intrp['zINTRP'], 300)
             kinem['dtm'] = ((kinem['sm_u']+mw_u_300)/2, (kinem['sm_v']+mw_v_300)/2)
         else:
             kinem['dtm'] = ma.masked
@@ -777,38 +821,38 @@ class vad_params:
         
         #--- CORFIDI MSC MOTION ---#
         #----------------------------------------------------------------
-        kinem['mcs'] = calc_corfidi(u, v, z, 
-                                    calc_meanwind(u, v, z, 6000)[0],
-                                    calc_meanwind(u, v, z, 6000)[1])
+        kinem['mcs'] = calc_corfidi(intrp['uINTRP'],intrp['vINTRP'],intrp['zINTRP'],
+                                    calc_meanwind(intrp['uINTRP'],intrp['vINTRP'],intrp['zINTRP'], 6000)[0],
+                                    calc_meanwind(intrp['uINTRP'],intrp['vINTRP'],intrp['zINTRP'], 6000)[1])
 
 
         
         #--- BULK SHEAR ---#
         # ---------------------------------------------------------------  
-        kinem['shear_0_to_500']  = calc_shear(u, v, 0, 500, z)
-        kinem['shear_0_to_1000'] = calc_shear(u, v, 0, 1000, z)
-        kinem['shear_1_to_3000'] = calc_shear(u, v, 1000, 3000, z)
-        kinem['shear_3_to_6000'] = calc_shear(u, v, 3000, 6000, z)
-        kinem['shear_6_to_9000'] = calc_shear(u, v, 6000, 9000, z)
+        kinem['shear_0_to_500']  = calc_shear(intrp['uINTRP'],intrp['vINTRP'], 0, 500, intrp['zINTRP'])
+        kinem['shear_0_to_1000'] = calc_shear(intrp['uINTRP'],intrp['vINTRP'], 0, 1000, intrp['zINTRP'])
+        kinem['shear_1_to_3000'] = calc_shear(intrp['uINTRP'],intrp['vINTRP'], 1000, 3000, intrp['zINTRP'])
+        kinem['shear_3_to_6000'] = calc_shear(intrp['uINTRP'],intrp['vINTRP'], 3000, 6000, intrp['zINTRP'])
+        kinem['shear_6_to_9000'] = calc_shear(intrp['uINTRP'],intrp['vINTRP'], 6000, 9000, intrp['zINTRP'])
             
             
             
         #--- SRH ---#
         # ---------------------------------------------------------------
         if ma.is_masked(kinem['sm_u']) == False:
-            kinem['srh_0_to_500']  = calc_srh(u_comp=u*units.kts, v_comp=v*units.kts, z=z*units.m, 
+            kinem['srh_0_to_500']  = calc_srh(u_comp=intrp['uINTRP']*units.kts, v_comp=intrp['vINTRP']*units.kts, z=intrp['zINTRP']*units.m, 
                                               bottom=None, depth=500*units.m,  
                                               storm_u=kinem['sm_u']*units.kts, storm_v=kinem['sm_v']*units.kts)
-            kinem['srh_0_to_1000'] = calc_srh(u_comp=u*units.kts, v_comp=v*units.kts, z=z*units.m, 
+            kinem['srh_0_to_1000'] = calc_srh(u_comp=intrp['uINTRP']*units.kts, v_comp=intrp['vINTRP']*units.kts, z=intrp['zINTRP']*units.m, 
                                               bottom=None, depth=1000*units.m, 
                                               storm_u=kinem['sm_u']*units.kts, storm_v=kinem['sm_v']*units.kts)
-            kinem['srh_1_to_3000'] = calc_srh(u_comp=u*units.kts, v_comp=v*units.kts, z=z*units.m, 
+            kinem['srh_1_to_3000'] = calc_srh(u_comp=intrp['uINTRP']*units.kts, v_comp=intrp['vINTRP']*units.kts, z=intrp['zINTRP']*units.m, 
                                               bottom=1000*units.m, depth=3000*units.m, 
                                               storm_u=kinem['sm_u']*units.kts, storm_v=kinem['sm_v']*units.kts)
-            kinem['srh_3_to_6000'] = calc_srh(u_comp=u*units.kts, v_comp=v*units.kts, z=z*units.m, 
+            kinem['srh_3_to_6000'] = calc_srh(u_comp=intrp['uINTRP']*units.kts, v_comp=intrp['vINTRP']*units.kts, z=intrp['zINTRP']*units.m, 
                                               bottom=3000*units.m, depth=6000*units.m, 
                                               storm_u=kinem['sm_u']*units.kts, storm_v=kinem['sm_v']*units.kts)
-            kinem['srh_6_to_9000'] = calc_srh(u_comp=u*units.kts, v_comp=v*units.kts, z=z*units.m, 
+            kinem['srh_6_to_9000'] = calc_srh(u_comp=intrp['uINTRP']*units.kts, v_comp=intrp['vINTRP']*units.kts, z=intrp['zINTRP']*units.m, 
                                               bottom=6000*units.m, depth=9000*units.m, 
                                               storm_u=kinem['sm_u']*units.kts, storm_v=kinem['sm_v']*units.kts)
         else:
@@ -824,11 +868,11 @@ class vad_params:
         #--- SRW LAYERS ---#
         # --------------------------------------------------------------- 
         if ma.is_masked(kinem['sm_u']) == False:
-            kinem['srw_0_to_500']  = calc_srw_layer(u, v, 0, 500)
-            kinem['srw_0_to_1000'] = calc_srw_layer(u, v, 0, 1000)
-            kinem['srw_1_to_3000'] = calc_srw_layer(u, v, 1000, 3000)
-            kinem['srw_3_to_6000'] = calc_srw_layer(u, v, 3000, 6000)
-            kinem['srw_6_to_9000'] = calc_srw_layer(u, v, 6000, 9000)
+            kinem['srw_0_to_500']  = calc_srw_layer(intrp['uINTRP'],intrp['vINTRP'], 0, 500, intrp['zINTRP'])
+            kinem['srw_0_to_1000'] = calc_srw_layer(intrp['uINTRP'],intrp['vINTRP'], 0, 1000, intrp['zINTRP'])
+            kinem['srw_1_to_3000'] = calc_srw_layer(intrp['uINTRP'],intrp['vINTRP'], 1000, 3000, intrp['zINTRP'])
+            kinem['srw_3_to_6000'] = calc_srw_layer(intrp['uINTRP'],intrp['vINTRP'], 3000, 6000, intrp['zINTRP'])
+            kinem['srw_6_to_9000'] = calc_srw_layer(intrp['uINTRP'],intrp['vINTRP'], 6000, 9000, intrp['zINTRP'])
 
         
         

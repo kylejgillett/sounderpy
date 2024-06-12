@@ -1,70 +1,70 @@
+# METPY OPERATIONS 
 import metpy.calc as mpcalc
 from metpy.units import units
-from metpy.plots import SkewT, Hodograph
+from metpy.plots import SkewT, Hodograph, USCOUNTIES
 
+#MATPLOTLIB OPERATIONS
 import matplotlib.lines    as mlines
 import matplotlib.pyplot as plt
 import matplotlib.transforms as mtransforms
 import matplotlib.colors as mcolors
 
+# NUMPY OPERATIONS 
 import numpy as np
 import numpy.ma as ma
+import copy
 
-from urllib.request import urlopen
-from PIL import Image
+# STANDARD PYTHON
 import warnings
 import time
+from datetime import datetime
 
-from .calc import *
-
+# ECAPE
 from ecape_parcel.calc import calc_ecape_parcel, density_temperature
 
-#########################################################
-#            SOUNDERPY SPYPLOT FUNCTIONS                #
-# (C) KYLE J GILLETT, CENTRAL MICHIGAN UNIVERSTIY, 2024 #
-#########################################################
+# FOR MAPPING
+from urllib.request import urlopen
+from PIL import Image
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+from cartopy.io.shapereader import Reader
+from cartopy.feature import ShapelyFeature
+
+# DATA RETRIEVAL
+from xarray.backends import NetCDF4DataStore
+from xarray import open_dataset
+from siphon.catalog import TDSCatalog
+from netCDF4 import Dataset
+from matplotlib.colors import LinearSegmentedColormap
+
+# SOUNDERPY MODULES
+from .calc import *
+
+
+
+
+########################################################
+#            SOUNDERPY SPYPLOT FUNCTIONS               #
+# (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024 #
+########################################################
 
 
 
 #########################################################################
 ########################## FULL SOUNDING ################################
 
-
-def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels=None):
-
-
-        
-        
-    if dark_mode == True:
-        gen_txt_clr = 'white'
-        bckgrnd_clr = 'black'
-        brdr_clr    = 'white'
-        barb_clr    = 'white'
-        shade_alpha = 0.06
-        skw_ln_clr = 'white'
-    else: 
-        gen_txt_clr = 'black'
-        bckgrnd_clr = 'white'
-        brdr_clr    = 'black'
-        barb_clr    = 'black'
-        shade_alpha = 0.02
-        skw_ln_clr = 'black'
+def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels=None, 
+                    show_radar=True, radar_time='sounding', map_zoom=2, modify_sfc=None):
+    
     
     # record process time 
     st = time.time()  
 
-    def find_nearest(array, value):
-        array = np.asarray(array)
-        nearest_idx = (np.abs(array - value)).argmin()
-        return nearest_idx
     
-    if color_blind == True:
-        td_color = 'cornflowerblue'
-    else:
-        td_color = 'green'
-        
-    hodo_color = ['purple','red','darkorange','gold','#fff09f'] 
-    
+    # make text prettier
+    # magnitude number text 
     def mag(param):
         if ma.is_masked(param):
             fixed = '---'
@@ -77,29 +77,175 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
                 except: fixed = param
         return fixed
     
-    def mag_round(param, dec):
+    
+    # make text prettier
+    # magnitude and round number text
+    def mag_round(param, dec, mag=False):
         if ma.is_masked(param):
             fixed = '---'
+        elif mag == True:
+            fixed = np.round(param.m, dec)
         else:
             fixed = np.round(param, dec)
         return fixed
 
+    
+    # find nearest value in array
+    def find_nearest(array, value):
+        array = np.asarray(array)
+        nearest_idx = (np.abs(array - value)).argmin()
+        return nearest_idx
+    
+    
+    # get radar mosaic data for map inset
+    def get_radar_mosaic(clean_data, map_zoom, radar_time):
+        '''
+        GET RADAR MOSAIC DATA FOR SOUNDING PLOT
+        
+        - gets data from NCEI for 'sounding time' or now
+        - data only goes back 1 month from current time
+        '''
+    
+        # search the NCEI database for the file closest to 
+        # the requested radar date/time
+        def find_file(target_time, file_names):
+            closest_index = None
+            closest_difference = float('inf')
+
+            for idx, file_name in enumerate(file_names):
+                # Extract the final component (ex: "1220") from the file name
+                components = file_name.split('_')
+                if len(components) > 1:
+                    # Remove file extension if present
+                    last_component = components[-1].split('.')[0]
+                    try:
+                        file_time = int(last_component)
+                        # Convert the target_time to an integer for comparison
+                        target_time_int = int(target_time)
+                        difference = abs(file_time - target_time_int)
+                        if difference < closest_difference:
+                            closest_difference = difference
+                            closest_index = idx
+                    except ValueError:
+                        pass  # Skip if the last component is not a valid integer
+
+            return closest_index
+
+
+        # PREFORM DATETIME OPERATIONS------------------------------------------------------------------------
+        # get sounding data from from clean_data
+        data_dt = datetime(int(clean_data['site_info']['valid-time'][0]), int(clean_data['site_info']['valid-time'][1]), 
+             int(clean_data['site_info']['valid-time'][2]), int(clean_data['site_info']['valid-time'][3][0:2]))
+
+        # get current time
+        curr_dt = datetime.utcnow()
+
+        # if data time is after current time, default to now
+        if data_dt > curr_dt:
+            time = curr_dt.strftime('%H%M')
+            datestr = curr_dt.strftime('%Y%m%d')
+        
+        # if radar time is given as now, time is now
+        elif radar_time == 'now':
+            time = curr_dt.strftime('%H%M')
+            datestr = curr_dt.strftime('%Y%m%d')
+
+        # if radar time is given as sounding, use the valid-time info from clean_data
+        elif radar_time == 'sounding':
+            if len(clean_data['site_info']['valid-time'][3]) == 2:
+                time = f"{clean_data['site_info']['valid-time'][3]}00"
+            else:
+                time = clean_data['site_info']['valid-time'][3]
+            datestr = data_dt.strftime('%Y%m%d')
+
+
+        # PULL SOUNDING DATA LAT/LON ----------------------------------------------------------------------
+        data_lat = clean_data['site_info']['site-latlon'][0]
+        data_lon = clean_data['site_info']['site-latlon'][1]
+
+
+        # GET RADAR DATA ----------------------------------------------------------------------------------
+        composite_url = 'https://thredds.ucar.edu/thredds/catalog/nexrad/composite/gini/dhr/1km/'+datestr+'/catalog.xml'
+        try:
+            # try accessing the NCEI TDS database
+            composite_catalog = TDSCatalog(composite_url).datasets
+            data_found = True
+        except:
+            # no data is available, return no data
+            print('- no radar data available -')
+            data_found = False
+            pass
+        
+        if data_found == True:
+            # if data is foudn, parse it for plotting.
+            filename = composite_catalog[find_file(time, composite_catalog)].subset()
+            composite_query = filename.query()
+            composite_query.lonlat_box(north = data_lat + (map_zoom + 1),
+                             south = data_lat - (map_zoom + 1),
+                             east  = data_lon + (map_zoom + 1),
+                             west  = data_lon - (map_zoom + 1))
+            composite_query.add_lonlat(value=True)
+            composite_query.accept('netcdf4')
+            composite_query.variables('Reflectivity')
+            radar_data = filename.get_data(composite_query)
+            radar_data = open_dataset(NetCDF4DataStore(radar_data))
+
+            return radar_data
+        
+    # define display mode colors and alphas    
+    if dark_mode == True:
+        gen_txt_clr = 'white'
+        bckgrnd_clr = 'black'
+        brdr_clr    = 'white'
+        barb_clr    = 'white'
+        shade_alpha = 0.06
+        skw_ln_clr = 'white'
+        marker_clr = 'white'
+    else: 
+        gen_txt_clr = 'black'
+        bckgrnd_clr = 'white'
+        brdr_clr    = 'black'
+        barb_clr    = 'black'
+        shade_alpha = 0.02
+        skw_ln_clr = 'black'
+        marker_clr = 'black'
+
+
+    # define colorblindness colors
+    if color_blind == True:
+        td_color = 'cornflowerblue'
+    else:
+        td_color = 'green'
+        
+    
 
     #################################################################
     ### SET UP THE DATA ###
     #################################################################
+    # SFC CORRECTION
+    # create a deepcopy of clean_data
+    sounding_data = copy.deepcopy(clean_data)
+    
+    # if `sfc_correction` is a list, correct the sfc values
+    modify_sfc_txt = False 
+    if str(type(modify_sfc)) == "<class 'list'>":
+        sounding_data['T'][0] = modify_sfc[0]*units.degC
+        sounding_data['Td'][0] = modify_sfc[1]*units.degC
+        # add 'user corrected sfc' txt
+        modify_sfc_txt = True
+    
     # declare easy variable names for reuse from `clean_data` 
-    T  = clean_data['T']
-    Td = clean_data['Td']
-    p  = clean_data['p']
-    z  = clean_data['z']
-    u  = clean_data['u']
-    v  = clean_data['v']
+    T  = sounding_data['T']
+    Td = sounding_data['Td']
+    p  = sounding_data['p']
+    z  = sounding_data['z']
+    u  = sounding_data['u']
+    v  = sounding_data['v']
     wd = mpcalc.wind_direction(u, v)
     ws = mpcalc.wind_speed(u, v) 
     
     # calculate other sounding parameters using SounderPy Calc
-    general, thermo, kinem, intrp = sounding_params(clean_data, storm_motion).calc()
+    general, thermo, kinem, intrp = sounding_params(sounding_data, storm_motion).calc()
     #################################################################
     
     
@@ -109,26 +255,31 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     #################################################################
     
     if 'ACARS' in clean_data['site_info']['source']:
+        # title specific to ACARS
         top_title = f"ACARS AIRCRAFT OBSERVATION VERTICAL PROFILE"
         left_title = f"VALID: {clean_data['site_info']['valid-time'][1]}-{clean_data['site_info']['valid-time'][2]}-{clean_data['site_info']['valid-time'][0]} {clean_data['site_info']['valid-time'][3]}Z"
-        right_title = f"{clean_data['site_info']['site-id']} - {clean_data['site_info']['site-name']} | {clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]}    " 
+        right_title = f"{clean_data['site_info']['site-id']} - {clean_data['site_info']['site-name']}, {clean_data['site_info']['site-lctn']} | {clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]}    " 
 
     elif 'BUFKIT' in clean_data['site_info']['source']:
+        # title specific to bufkit
         top_title = f"BUFKIT MODEL FORECAST PROFILE | {clean_data['site_info']['run-time'][3]}Z {clean_data['site_info']['model']} {clean_data['site_info']['fcst-hour']}"
         left_title = f" VALID: {clean_data['site_info']['valid-time'][1]}/{clean_data['site_info']['valid-time'][2]}/{clean_data['site_info']['valid-time'][0]} {clean_data['site_info']['valid-time'][3]}Z"
-        right_title = f"{clean_data['site_info']['site-id']} - {clean_data['site_info']['site-name']} | {clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]}    " 
+        right_title = f"{clean_data['site_info']['site-id']} - {clean_data['site_info']['site-name']}, {clean_data['site_info']['site-lctn']} | {clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]}    " 
 
     elif 'RAOB' in clean_data['site_info']['source']:
+        # title specific to RAOB Obs
         top_title = "RAOB OBSERVED VERTICAL PROFILE"
         left_title = f"VALID: {clean_data['site_info']['valid-time'][1]}-{clean_data['site_info']['valid-time'][2]}-{clean_data['site_info']['valid-time'][0]} {clean_data['site_info']['valid-time'][3]}Z"
-        right_title = f"{clean_data['site_info']['site-id']} - {clean_data['site_info']['site-name']} | {clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]}    " 
+        right_title = f"{clean_data['site_info']['site-id']} - {clean_data['site_info']['site-name']}, {clean_data['site_info']['site-lctn']} | {clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]}    " 
 
     elif 'REANALYSIS' in clean_data['site_info']['source']:
+        # title spcific to reanalysis data
         top_title = f"{clean_data['site_info']['source']} VERTICAL PROFILE | {clean_data['site_info']['valid-time'][3]}Z {clean_data['site_info']['model']} {clean_data['site_info']['fcst-hour']}"
         left_title = f"{clean_data['site_info']['run-time'][3]}Z {clean_data['site_info']['model']} {clean_data['site_info']['fcst-hour']} | VALID: {clean_data['site_info']['valid-time'][1]}/{clean_data['site_info']['valid-time'][2]}/{clean_data['site_info']['valid-time'][0]} {clean_data['site_info']['valid-time'][3]}Z"
         right_title = f"{clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]} | {clean_data['site_info']['box_area']}    " 
         
     else:
+        # title for other data
         top_title = clean_data['site_info']['source']
         left_title = f"VALID: {clean_data['site_info']['valid-time'][1]}-{clean_data['site_info']['valid-time'][2]}-{clean_data['site_info']['valid-time'][0]} {clean_data['site_info']['valid-time'][3]}Z"
         right_title = f"{clean_data['site_info']['site-id']} - {clean_data['site_info']['site-name']} | {clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]}    " 
@@ -146,12 +297,13 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     ### CREATE FIGURE ###
     #################################################################
     #################################################################
-    # Define figure and skew-t
-    fig = plt.figure(figsize=(22,13), linewidth=10, edgecolor=brdr_clr)          # create figure                                   # create figure
+    # create master figure
+    fig = plt.figure(figsize=(22,13), linewidth=10, edgecolor=brdr_clr)         
+    # create skew-t obj and axes params
     skew = SkewT(fig, rotation=47, rect=(0.1124, 0.1005, 0.60, 0.85))  
     skew.ax.set_box_aspect(0.87)
     skew.ax.zorder = 5
-    # Define axis bounds 
+    # Define axis bounds, temp axis based on data
     skew.ax.set_adjustable('datalim')
     skew.ax.set_ylim(1050, 100)    
     if T[0].m <= -10:
@@ -163,15 +315,16 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     else: 
         bounds = [-32, 52]
     skew.ax.set_xlim(bounds[0], bounds[1])   
-    # Define axis labels 
+    # Define and customize axis labels 
     plt.xlabel("  ", fontsize=12)
     plt.ylabel("  ", fontsize=12) 
-    plt.xticks(fontsize=13)  
-    plt.yticks(fontsize=13, ha='left')
-    plt.tick_params(axis="x",direction="in", pad=-12, colors=gen_txt_clr)
-    plt.tick_params(axis="y",direction="in", pad=-7, colors=gen_txt_clr)
+    plt.xticks(fontsize=13, weight='bold')  
+    plt.yticks(fontsize=13, ha='left', weight='bold')
+    plt.tick_params(axis="x", direction="in", pad=-12, colors=gen_txt_clr)
+    plt.tick_params(axis="y", direction="in", pad=-7, colors=gen_txt_clr)
     skew.ax.set_yticks([1000, 900, 800, 700, 600, 500, 400, 300, 200])
     skew.ax.set_yticklabels([1000, 900, 800, 700, 600, 500, 400, 300, 200], color=gen_txt_clr)
+    # add skew-t axis spines
     skew.ax.spines["top"].set_color(brdr_clr)
     skew.ax.spines["left"].set_color(brdr_clr)
     skew.ax.spines["right"].set_color(brdr_clr)
@@ -194,15 +347,22 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     ### PLOT SKEW T LINES ###
     #################################################################
     # Plot relevent Skew-T lines
+    # 0C and -20C highlights
     skew.ax.axvline(0 * units.degC, linestyle='--', color='blue', alpha=0.3)
     skew.ax.axvline(-20 * units.degC, linestyle='--', color='blue', alpha=0.3)
-    skew.plot_dry_adiabats(color=skw_ln_clr, linewidth=0.5, alpha=0.7)   
-    skew.plot_moist_adiabats(color=skw_ln_clr, linewidth=0.5, alpha=0.7)
+    # dry adiabats
+    skew.plot_dry_adiabats(color='cornflowerblue', linewidth=0.2, alpha=0.7) 
+    # moist adiabats
+    skew.plot_moist_adiabats(color='cornflowerblue', linewidth=0.2, alpha=0.7)
+    # mixing ratio lines
     skew.plot_mixing_lines(color=skw_ln_clr, linewidth=0.2, alpha=0.7)
-    # add basic temperature lines
-    twline = skew.plot(p, general['wet_bulb'], '#3d8aff', linewidth=1, label='WETBULB TEMP', alpha=0.3)
-    #tvline = skew.plot(p, general['virt_temp'], 'red', linestyle='--', linewidth=3, label='VIRTUAL TEMP', alpha=0.6)  
+    # wet bulb temp (Tw)
+    twline = skew.plot(p, general['wet_bulb'], '#3d8aff', linewidth=2, label='WETBULB TEMP', alpha=0.6)
+    # virtual temp (Tv)
+    tvline = skew.plot(p, general['virt_temp'], 'darkred', linestyle=(0, (1, 1)), linewidth=4, label='VIRTUAL TEMP', alpha=0.7)  
+    # dewpoint temp (Td)
     tdline = skew.plot(p, Td, td_color, linewidth=5, label='DEWPOINT')
+    # temp (T)
     tline1 = skew.plot(p, T, 'red', linewidth=5, label='TEMPERATURE')  
 
     
@@ -210,6 +370,11 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     #################################################################
     ### PARCELS LOGIC ###
     #################################################################
+    '''
+    SounderPy 'Special Parcels Logic' using Amelia Urquhart’s ecape_parcels library: https://github.com/a-urq/ecape-parcel-py
+    
+    Docs: https://kylejgillett.github.io/sounderpy/plottingdata.html#parcel-logic
+    '''
     parcel_details = {
 
             'term1': {'sb': 'surface_based', 
@@ -249,7 +414,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
             if parcel not in valid_parcel_codes:
                     sys.exit(f"Invalid parcel code provided in 'special_parcels' kwarg. Please make sure parcel codes are one of these:\n{valid_parcel_codes}\n" +
                             "Valid parcel codes include the parcel type ('mu', 'sb', 'ml'), adiabatic scheme ('ps', 'ia'), and cape type ('cape', 'ecape').\n" +
-                            "See ####### DOCS LINK ########## for more info.")
+                            "See 'https://kylejgillett.github.io/sounderpy/plottingdata.html#parcel-logic' for more info.")
 
             # set vars to None 
             trace = None 
@@ -275,17 +440,17 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
             parcel_dict[parcel] = trace
 
 
-        # loop through the parcels agin to plot them  
+        # loop through the parcels again to plot them  
         for parcel in parcel_dict.keys():
 
             if len(parcel_dict[parcel]) == 6:
 
                 parcel_name = str.upper(f"{parcel.split('_')[0]} {parcel_details['term2'][parcel.split('_')[1]][1]} {parcel.split('_')[2]}")
-
+                # if parcel exists, plot it
                 if parcel in special_parcels[0]:
                             skew.plot(parcel_dict[parcel][0], parcel_dict[parcel][-1], color='red', linestyle='--',  
                                              linewidth=2, alpha=1, label=parcel_name)
-
+                # if parcel exists, plot it
                 elif parcel in special_parcels[1]:
                             skew.plot(parcel_dict[parcel][0], parcel_dict[parcel][-1], color='#808080', linestyle='--',  
                                              linewidth=2, alpha=0.5, label=parcel_name)
@@ -311,7 +476,17 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
                 muecapeline = skew.plot(trace[0], trace_Trho, 
                                         linestyle='--', linewidth=3, alpha=1, color='red',
                                         label='MUECAPE PARCEL')
+            
+#                 print(trace_Trho[0:len(T)].m-273.15)
+#                 return trace[0]
+                
+#                 skew.ax.fill_betweenx(p, T, trace_Trho[0:len(T)].m-273.15,
+#                                       color='red', alpha=0.1)
+                
+                #skew.shade_cape(p, T, np.linspace(trace_Trho[0], trace_Trho[-1], len(T)), color='red', alpha=0.4) 
+                #skew.shade_cape(p, T, mu_parcel_path, color='orange') 
         
+        # if CAPE for SB, MU, ML parcels is >0, plotm them
         if thermo['sbcape'] > 0:
             sbparcelline = skew.plot(thermo['sbP_trace'], thermo['sbT_trace'], 
                                      linestyle='--', linewidth=2, alpha=0.5, color='#808080', 
@@ -333,69 +508,108 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     
     #################################################################
     ### PLOT SKEW T ANNOTATIONS ###
-    #################################################################    
+    #################################################################  
+    #plot left side hgt level markers
     hgt_lvls =[]
     for key in intrp['hgt_lvls'].keys():
         hgt_lvls.append(intrp['hgt_lvls'][key])
     hgt_lvls.pop(0) 
 
     for key in hgt_lvls[1::4]:
+        # for a hgt_lvl key, find the pressure at that level's index, plot the hgt at the pressure
         trans, _, _ = skew.ax.get_yaxis_text1_transform(0)
         skew.ax.text(0.048, intrp['pINTRP'][key], f"{int(intrp['zINTRP'][key]/1000)}km", 
-                     fontsize=13, transform=trans, alpha=0.6, weight='bold', color=gen_txt_clr)   
-    
+                     fontsize=11, transform=trans, alpha=0.6, weight='bold', color=gen_txt_clr) 
+        
+    # add a '-sfc-' marker with an elevation of the sfc in meters
     trans, _, _ = skew.ax.get_yaxis_text1_transform(0)
     sfc = mpcalc.height_to_pressure_std(general['elevation']*units.m)
-    skew.ax.text(0.048, p[0], '-SFC-', fontsize=13, transform=trans, alpha=0.6, weight='bold', color=gen_txt_clr) # plot 'SFC' @ surface pressure
+    skew.ax.text(0.048, p[0], f"-SFC ({mag(general['elevation'])}m) -", 
+                 fontsize=11, transform=trans, alpha=0.6, weight='bold', color=gen_txt_clr)
     
     
     # SFC TEMPERATURE AND DEWPOINT ANNOTATIONS---------------------------------------------
+    # plot sfc T value in degF
     T_degF = np.round(T.to(units.degF), 1)
     T_degF_label = '{}°F'.format(int(T_degF[0].magnitude))                             
     plt.annotate(T_degF_label, (T[0], p[0]), textcoords="offset points", xytext=(16,-15),
-                     fontsize=12, color='red', weight='bold', alpha=0.7, ha='center')   
+                     fontsize=12, color='red', weight='bold', alpha=0.7, ha='center') 
+    
+    # plot sfc Td value in DegF
     Td_degF = np.round(Td.to(units.degF), 1) 
     Td_degF_label = '{}°F'.format(int(Td_degF[0].magnitude))                             
     plt.annotate(Td_degF_label,(Td[0], p[0]),textcoords="offset points",xytext=(-16,-15), 
                      fontsize=12, color=td_color, weight='bold', alpha=0.7, ha='center') 
-
+    
+    # if the sfc was modified by the user, plot a modified sfc flag
+    if modify_sfc_txt == True: 
+        plt.annotate("USER MODIFIED SFC →", (Td[0], p[0]),textcoords="offset points",xytext=(-50,0), 
+                     fontsize=10, color=gen_txt_clr, weight='bold', alpha=0.5, ha='right')
+        
+        
     # PARCEL HEIGHT ANNOTATIONS------------------------------------------------------------- 
+    # plot the SBLCL and draw a line between the sfc and the lcl
     plt.text((0.82), (thermo['sb_lcl_p']), "←SBLCL", weight='bold',color='gray',
              alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform(), clip_on=True)
-    lcl_line = plt.Line2D([0.86, 0.86], (p[0], thermo['sb_lcl_p']), color='gray', linestyle=':', alpha=1, transform=skew.ax.get_yaxis_transform())
+    lcl_line = plt.Line2D([0.86, 0.86], (p[0], thermo['sb_lcl_p']), 
+                          color='gray', linestyle=':', alpha=1, transform=skew.ax.get_yaxis_transform())
     skew.ax.add_artist(lcl_line)
+    
+    # if a mulfc doesn't exist,
+    # plot the sblfc, and sbel and draw a line between the lcl and lfc and the lcl to the el
     if ma.is_masked(thermo['mu_lfc_z']) == True:
         plt.text((0.82), (thermo['sb_lfc_p']), "←SBLFC", weight='bold',color='gray',
                  alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform(), clip_on=True)
         plt.text((0.82), (thermo['sb_el_p']), "←SBEL", weight='bold',color='gray', 
                  alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform(), clip_on=True)
-        el_line = plt.Line2D([0.86, 0.86], (p[0], thermo['sb_el_p']), color='gray', linestyle=':', alpha=0.3, transform=skew.ax.get_yaxis_transform())
+        el_line = plt.Line2D([0.86, 0.86], (p[0], thermo['sb_el_p']), 
+                             color='gray', linestyle=':', alpha=0.3, transform=skew.ax.get_yaxis_transform())
         skew.ax.add_artist(el_line)
-        lfc_line = plt.Line2D([0.86, 0.86], (p[0], thermo['sb_lfc_p']), color='gray', linestyle=':', alpha=0.7, transform=skew.ax.get_yaxis_transform())
+        lfc_line = plt.Line2D([0.86, 0.86], (p[0], thermo['sb_lfc_p']), 
+                              color='gray', linestyle=':', alpha=0.7, transform=skew.ax.get_yaxis_transform())
         skew.ax.add_artist(lfc_line)
+    
     else: 
+        # if not, plot mulfc and muel and draw a line between the lcl and lfc and the lcl to the el
         plt.text((0.82), (thermo['mu_lfc_p']), "←MULFC", weight='bold',color='gray',
                  alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform(), clip_on=True)
         plt.text((0.82), (thermo['mu_el_p']), "←MUEL", weight='bold',color='gray',
                  alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform(), clip_on=True)
-        el_line = plt.Line2D([0.86, 0.86], (p[0], thermo['mu_el_p']), color='gray', linestyle=':', alpha=0.3, transform=skew.ax.get_yaxis_transform())
+        el_line = plt.Line2D([0.86, 0.86], (p[0], thermo['mu_el_p']), 
+                             color='gray', linestyle=':', alpha=0.3, transform=skew.ax.get_yaxis_transform())
         skew.ax.add_artist(el_line)
-        lfc_line = plt.Line2D([0.86, 0.86], (p[0], thermo['mu_lfc_p']), color='gray', linestyle=':', alpha=0.7, transform=skew.ax.get_yaxis_transform())
+        lfc_line = plt.Line2D([0.86, 0.86], (p[0], thermo['mu_lfc_p']), 
+                              color='gray', linestyle=':', alpha=0.7, transform=skew.ax.get_yaxis_transform())
         skew.ax.add_artist(lfc_line)
         
+        # plot mumpl, but if its above 110 hPa, just plot whatever the value is at 110 hPa
+        if thermo['mu_mpl_p'] < 110:
+            plt.text((0.82), (110), f"↑MUMPL: {mag(thermo['mu_mpl_p'])}hPa", weight='bold',color='gray',
+                     alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform(), clip_on=True)
+        else: 
+            plt.text((0.82), (thermo['mu_mpl_p']), "←MUMPL", weight='bold',color='gray',
+                     alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform(), clip_on=True)
         
         
         
-    #FRREZING POINT ANNOTATION--------------------------------------------------------------
+        
+    # T & WB FRREZING POINT ANNOTATION--------------------------------------------------------------
     if ma.is_masked(general['frz_pt_z']) == False:
         if general['frz_pt_z'] >= 50*units.m:
-            plt.text((0.78), (general['frz_pt_p']), "←FRZ", weight='bold',color='cornflowerblue',  
-                     alpha=0.6, fontsize=10, transform=skew.ax.get_yaxis_transform(), clip_on=True)
+            plt.text((0.765), (general['frz_pt_p']), "←FRZ", weight='bold',color='cornflowerblue',  
+                     alpha=0.6, fontsize=12, transform=skew.ax.get_yaxis_transform(), clip_on=True)
+    
+    if ma.is_masked(general['wb_frz_pt_z']) == False:
+        if general['wb_frz_pt_z'] >= 50*units.m:
+            plt.text((0.765), (general['wb_frz_pt_p']), "←WB0", weight='bold',color='cornflowerblue',  
+                     alpha=0.6, fontsize=12, transform=skew.ax.get_yaxis_transform(), clip_on=True)
 
-    #PBL TOP POINT ANNOTATION---------------------------------------------------------------                   
+            
+    # PBL TOP POINT ANNOTATION---------------------------------------------------------------                   
     plt.text((0.78), (thermo['pbl_top']), "←PBL", weight='bold',color='gray', 
              alpha=0.9, fontsize=10, transform=skew.ax.get_yaxis_transform(), clip_on=True)
-    pbl_line = plt.Line2D([0.80, 0.80], (p[0], thermo['pbl_top']), color='gray', linestyle=':', alpha=0.7, transform=skew.ax.get_yaxis_transform())
+    pbl_line = plt.Line2D([0.80, 0.80], (p[0], thermo['pbl_top']), color='gray', 
+                          linestyle=':', alpha=0.7, transform=skew.ax.get_yaxis_transform())
     skew.ax.add_artist(pbl_line)
 
     
@@ -404,20 +618,20 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
         idx = find_nearest(thermo['muZ_trace'], 3000)
         cape03_label = " ←{}J/kg".format(mag(thermo['mu3cape']))     
         plt.annotate(cape03_label,  ((thermo['muT_trace'][idx]+7), intrp['pINTRP'][intrp['hgt_lvls']['h3']]),  textcoords="offset points",  xytext=(20, 0), 
-                     color='red', alpha=0.4, fontsize=13.5, weight='bold', ha='right')  
+                     color='red', alpha=0.6, fontsize=13.5, ha='right')  
             
             
     if thermo['mu6cape'] > thermo['mu3cape']:
         idx = find_nearest(thermo['muZ_trace'], 6000)
         cape06_label = " ←{}J/kg".format(mag(thermo['mu6cape']))                                            
         plt.annotate(cape06_label, ((thermo['muT_trace'][idx]+7), intrp['pINTRP'][intrp['hgt_lvls']['h6']]), textcoords="offset points",  xytext=(10, 0), 
-                         color='red', alpha=0.4, fontsize=13.5, weight='bold', ha='right') 
+                         color='red', alpha=0.6, fontsize=13.5, ha='right') 
             
             
     if thermo['mucape'] > thermo['mu6cape']:
             cape_label = "←{}J/kg".format(mag(thermo['mucape']))                                            
             plt.annotate(cape_label,((thermo['mu_el_T']), thermo['mu_el_p']), textcoords="offset points",  xytext=(5, 0), 
-                         color='red', alpha=0.4, fontsize=13.5, weight='bold', ha='left') 
+                         color='red', alpha=0.6, fontsize=13.5, ha='left') 
             
             
             
@@ -438,7 +652,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
 
     # DGZ ANNOTATION-------------------------------
     if T[0].m < 5:
-        if thermo['dgz'][1] < clean_data['p'][0].m:
+        if thermo['dgz'][1] < p[0].m:
             x_start, x_end = 0.12, 0.14
             x_mid = (x_start + x_end)/2
             plt.text((x_start+0.01), (thermo['dgz'][1]-8), "DGZ", weight='bold',color='blue', alpha=0.4, ha='center', fontsize=13, transform=skew.ax.get_yaxis_transform())
@@ -447,7 +661,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
       
     # HGZ ANNOTATION-------------------------------
     else:
-        if thermo['hgz'][1] < clean_data['p'][0].m:
+        if thermo['hgz'][1] < p[0].m:
             x_start, x_end = 0.12, 0.14
             x_mid = (x_start + x_end)/2
             plt.text((x_start+0.01), (thermo['hgz'][1]-8), "HGZ", weight='bold',color='green', alpha=0.4, ha='center', fontsize=13, transform=skew.ax.get_yaxis_transform())
@@ -464,7 +678,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
             plt.annotate(label, (mpcalc.dewpoint_from_relative_humidity(intrp['tINTRP'][hgt_idx]*units.degC, 
                                                                     intrp['rhINTRP'][hgt_idx]/100),
                          intrp['pINTRP'][hgt_idx]*units.hPa), textcoords="offset points", xytext=(-40, 0), 
-                         color='green', weight='bold', alpha=0.4, fontsize=13.5, ha='center') 
+                         color='green', alpha=0.6, fontsize=13.5, ha='center', clip_on=True) 
     except:
         pass
     #################################################################
@@ -475,8 +689,9 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     #################################################################
     ### PLOT SKEW T WIND BARBS ###
     #################################################################
-    interval = np.logspace(2.113, 3, 30) *units.hPa # Arrange wind barbs for best fit
-    idx = mpcalc.resample_nn_1d(p, interval) # Resample wind barbs for best fit
+    # Arrange wind barbs for best fit & resample wind barbs for best fit
+    interval = np.logspace(2.113, 3, 30) *units.hPa
+    idx = mpcalc.resample_nn_1d(p, interval) 
 
     # create blank barbs for small dot at the start of each actual barb
     blank_len = len(u[idx])     
@@ -484,6 +699,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     skew.plot_barbs(pressure=p[idx], u=blank, v=blank, xloc=0.955, fill_empty=True, color=barb_clr,
                     sizes=dict(emptybarb=0.075, width=0.18, height=0.4))
 
+    # plot actual wind barbs
     skew.plot_barbs(pressure=p[idx], u=u[idx], v=v[idx], xloc=0.955, fill_empty=True, color=barb_clr,
                     sizes=dict(emptybarb=0.075, width=0.18, height=0.4), length=8)
 
@@ -502,9 +718,9 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     #################################################################
     ### DEFINE HODOGRAPH BOUNDS ###
     #################################################################
+    # restructure u and v, p, ws and z data arrays based on corrected u and v arrays and hodo_layer depth
     if (z.max().m - z[0].m) > 9001: 
         hodo_hgt = 9000*units.m
-        # restructure u and v, p, ws and z data arrays based on corrected u and v arrays and hodo_layer depth
         p_hodo, u_hodo, v_hodo, z_hodo = mpcalc.get_layer(p, u, v, z, depth=hodo_hgt)
     else:
         p_hodo = p
@@ -521,50 +737,59 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     y_min = v_hodo.min().m
     x_max = u_hodo.max().m
     y_max = v_hodo.max().m
+    
     # if statements to determine approprate x axis and y axis limits (to change dynamically with the data)
     if y_max >= 0:
-        y_Maxlimit = (y_max + 15)
+        y_Maxlimit = (y_max + 30)
     if y_max < 0:
-        y_Maxlimit = (y_max + 15)
+        y_Maxlimit = (y_max + 30)
 
     if x_max >= 0:
-        x_Maxlimit = (x_max + 15)
+        x_Maxlimit = (x_max + 30)
     if x_max < 0:
-        x_Maxlimit = (x_max + 15)
+        x_Maxlimit = (x_max + 30)
 
     if y_min >= 0:
-        y_Minlimit = (y_min - 40)
+        y_Minlimit = (y_min - 45)
     if y_min < 0:
-        y_Minlimit = (y_min - 40)
+        y_Minlimit = (y_min - 45)
 
     if x_min >= 0:
-        x_Minlimit = (x_min - 40)
+        x_Minlimit = (x_min - 45)
     if x_min < 0:
-        x_Minlimit = (x_min - 40)
+        x_Minlimit = (x_min - 45)
     #################################################################
+        
         
         
     #################################################################
     ### CREATE HODOGRAPH OBJECT ###
     #################################################################
+    # create hodograph object
     hod_ax = plt.axes((0.53, 0.1003, 0.85, 0.85))
     h = Hodograph(hod_ax, component_range=160.)
+    # dynamically set hodograph axis bounds
     try:
         h.ax.set_xlim(x_Minlimit, x_Maxlimit)                                  
         h.ax.set_ylim(y_Minlimit, y_Maxlimit)                             
     except:
         h.ax.set_xlim(-65,65)
         h.ax.set_ylim(-65,65)
-        pass                                                                         
-    h.add_grid(increment=20, color=gen_txt_clr, linestyle='-', linewidth=1.5, alpha=0.4) 
-    h.add_grid(increment=10, color=gen_txt_clr, linewidth=1, linestyle='--', alpha=0.4) 
+        pass
+    # add hodograph grid lines
+    h.add_grid(increment=20, color=gen_txt_clr, linestyle='-', linewidth=1.5, alpha=0.2) 
+    h.add_grid(increment=10, color=gen_txt_clr, linewidth=1, linestyle='--', alpha=0.2) 
+    # add background color
     h.ax.set_facecolor(bckgrnd_clr)
+    # add spines 
     h.ax.spines["top"].set_color(brdr_clr)
     h.ax.spines["left"].set_color(brdr_clr)
     h.ax.spines["right"].set_color(brdr_clr)
     h.ax.spines["bottom"].set_color(brdr_clr)
     h.ax.spines["bottom"].set_color(brdr_clr)
-    h.ax.set_box_aspect(1) 
+    # define box aspect
+    h.ax.set_box_aspect(1)
+    # define tick label params (remove them)
     h.ax.set_yticklabels([])
     h.ax.set_xticklabels([])
     h.ax.set_xticks([])
@@ -576,34 +801,47 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     
     
     #################################################################
-    ### PLOT HEIGHT MARKERS ###
+    ### PLOT VELOCITY AND HEIGHT MARKERS ###
     #################################################################
+    # add small velocity markers on the rings 
     plt.xticks(np.arange(0,0,1))
     plt.yticks(np.arange(0,0,1))
     for i in range(10,130,20):
-        h.ax.annotate(str(i),(i,0),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
+        h.ax.annotate(str(i),(i,0),xytext=(0,2),textcoords='offset pixels',
+                      clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
     for i in range(10,130,20):
-        h.ax.annotate(str(i),(0,i),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
+        h.ax.annotate(str(i),(0,i),xytext=(0,2),textcoords='offset pixels',
+                      clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
     for i in range(10,130,20):
-        h.ax.annotate(str(i),(-i,0),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
+        h.ax.annotate(str(i),(-i,0),xytext=(0,2),textcoords='offset pixels',
+                      clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
     for i in range(10,130,20):
-        h.ax.annotate(str(i),(0,-i),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
+        h.ax.annotate(str(i),(0,-i),xytext=(0,2),textcoords='offset pixels',
+                      clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
 
-    h.plot(intrp['uINTRP'][intrp['hgt_lvls']['h05']],intrp['vINTRP'][intrp['hgt_lvls']['h05']],marker='.', 
+    
+    # add 0.5km marker
+    h.plot(intrp['uINTRP'][intrp['hgt_lvls']['h05']],intrp['vINTRP'][intrp['hgt_lvls']['h05']],marker='.', markeredgecolor='black',
            color='white', alpha=1, markersize=30, clip_on=True, zorder=5)
     h.ax.annotate(str('.5'),(intrp['uINTRP'][intrp['hgt_lvls']['h05']],intrp['vINTRP'][intrp['hgt_lvls']['h05']]),
-                  weight='bold', fontsize=12, color='black',xytext=(0,-3.2),textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=6) 
+                  weight='bold', fontsize=11, color='black',xytext=(0.02,-5),
+                  textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=6) 
 
+    # add hgt markers 
     hgt_lvls = [] 
     for key in intrp['hgt_lvls'].keys():
         hgt_lvls.append(intrp['hgt_lvls'][key])
     hgt_lvls.pop(0) 
 
-    for i in hgt_lvls[1::2]:
-        h.plot(intrp['uINTRP'][i],intrp['vINTRP'][i], marker='.', color='white', alpha=1, markersize=30, zorder=5)
-        h.ax.annotate(str(int(round(intrp['zINTRP'][i]/1000,0))),(intrp['uINTRP'][i],intrp['vINTRP'][i]), 
-                      weight='bold', fontsize=12, color='black',xytext=(0,-3.2),textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=6) 
+    for lvl in hgt_lvls[1::2]:
+        if lvl < 130:
+            h.plot(intrp['uINTRP'][lvl],intrp['vINTRP'][lvl], marker='.', color='white', 
+                   markeredgecolor='black', alpha=1, markersize=30, zorder=5)
+            h.ax.annotate(str(int(round(intrp['zINTRP'][lvl]/1000,0))),(intrp['uINTRP'][lvl],intrp['vINTRP'][lvl]), 
+                          weight='bold', fontsize=11, color='black',xytext=(0.02,-5),
+                          textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=5.1) 
     #################################################################
+    
     
     
     
@@ -614,55 +852,64 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     #################################################################
     hodo_color = ['purple','red','darkorange','gold','#fff09f']
 
-    h.ax.plot(intrp['uINTRP'][0:10+1],   intrp['vINTRP'][0:10+1],   color=hodo_color[0], linewidth=7, clip_on=True)
-    h.ax.plot(intrp['uINTRP'][10:30+1],  intrp['vINTRP'][10:30+1],  color=hodo_color[1], linewidth=7, clip_on=True)
-    h.ax.plot(intrp['uINTRP'][30:60+1],  intrp['vINTRP'][30:60+1],  color=hodo_color[2], linewidth=7, clip_on=True)
-    h.ax.plot(intrp['uINTRP'][60:90+1],  intrp['vINTRP'][60:90+1],  color=hodo_color[3], linewidth=7, clip_on=True)
-    h.ax.plot(intrp['uINTRP'][90:120+1], intrp['vINTRP'][90:120+1], color=hodo_color[4], linewidth=7, clip_on=True) 
+    h.ax.plot(intrp['uINTRP'][0:10+1],   intrp['vINTRP'][0:10+1],   color=hodo_color[0], linewidth=7, zorder=4, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][10:30+1],  intrp['vINTRP'][10:30+1],  color=hodo_color[1], linewidth=7, zorder=4, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][30:60+1],  intrp['vINTRP'][30:60+1],  color=hodo_color[2], linewidth=7, zorder=4, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][60:90+1],  intrp['vINTRP'][60:90+1],  color=hodo_color[3], linewidth=7, zorder=4, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][90:120+1], intrp['vINTRP'][90:120+1], color=hodo_color[4], linewidth=7, zorder=4, clip_on=True) 
 
     
     
+    
     #################################################################
-    ### ADD HODOGRAPH ANNOTATION ###
+    ### ADD HODOGRAPH ANNOTATIONS ###
     #################################################################
+    # BUNKERS STORM MOTION
     if ma.is_masked(kinem['sm_rm']) == False:
-        # BUNKERS STORM MOTION
-        h.ax.text((kinem['sm_rm'][0]+0.5), (kinem['sm_rm'][1]-0.5), 'RM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
-        h.ax.text((kinem['sm_lm'][0]+0.5), (kinem['sm_lm'][1]-0.5), 'LM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
-        h.ax.text((kinem['sm_mw'][0]+0.5), (kinem['sm_mw'][1]-0.5), 'MW', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
+        h.ax.text((kinem['sm_rm'][0]+0.5), (kinem['sm_rm'][1]-0.5), 'RM', 
+                  weight='bold', ha='left', fontsize=14, zorder=7, alpha=0.9, color=gen_txt_clr)
+        h.ax.text((kinem['sm_lm'][0]+0.5), (kinem['sm_lm'][1]-0.5), 'LM', 
+                  weight='bold', ha='left', fontsize=14, zorder=7, alpha=0.9, color=gen_txt_clr)
+        h.ax.text((kinem['sm_mw'][0]+0.5), (kinem['sm_mw'][1]-0.5), 'MW', 
+                  weight='bold', ha='left', fontsize=14, zorder=7, alpha=0.9, color=gen_txt_clr)
     
+    # DEVIANT TORNADO MOTION
     if ma.is_masked(kinem['sm_u']) == False:
-        # DEVIANT TORNADO MOTION
-        h.ax.text(kinem['dtm'][0], (kinem['dtm'][1] + 2), 'DTM', weight='bold', fontsize=10, color='brown', ha='center')
-        h.plot(kinem['dtm'][0], kinem['dtm'][1], marker='v', color='brown', markersize=8, alpha=0.8, ls='', label='DEVIANT TORNADO MOTION')
+        h.ax.text(kinem['dtm'][0], (kinem['dtm'][1] + 2), 'DTM', 
+                  weight='bold', fontsize=10, zorder=7, color='brown', ha='center')
+        h.plot(kinem['dtm'][0], kinem['dtm'][1], marker='v', color='brown', 
+               markersize=8, zorder=7, alpha=0.8, ls='', label='DEVIANT TORNADO MOTION')
     
-        # ADD SM POINT IF ITS A CUSTOM STORM MOTION
+    # ADD SM POINT IF ITS A CUSTOM STORM MOTION
         if str(type(storm_motion)) == "<class 'list'>":
-            h.ax.text((kinem['sm_u']+0.5), (kinem['sm_v']-0.5), 'SM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
+            h.ax.text((kinem['sm_u']+0.5), (kinem['sm_v']-0.5), 'SM', 
+                      weight='bold', ha='left', fontsize=14, alpha=0.9, zorder=7, color=gen_txt_clr)
         
         h.ax.arrow(0,0,kinem['sm_u']-0.3, kinem['sm_v']-0.3, linewidth=3, color=gen_txt_clr, alpha=0.2, 
-                label='SM Vector', length_includes_head=True, head_width=0.5)
+                label='SM Vector', length_includes_head=True, head_width=0.6)
     
     
     # EFFECTIVE INFLOW LAYER SRH FILL
     if ma.is_masked(kinem['eil_z'][0]) == False:
         
-        ebot = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][0])]), (kinem['sm_v'], intrp['vINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][0])]),  
-                 linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue', label='Effective Inflow Layer')
-        etop = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][1])]), (kinem['sm_v'], intrp['vINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][1])]),  
-                 linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue')
-        fill_srh = h.ax.fill(np.append(intrp['uINTRP'][find_nearest(intrp['zINTRP'], kinem['eil_z'][0]):find_nearest(intrp['zINTRP'], kinem['eil_z'][1])+1], kinem['sm_u']), 
-                             np.append(intrp['vINTRP'][find_nearest(intrp['zINTRP'], kinem['eil_z'][0]):find_nearest(intrp['zINTRP'], kinem['eil_z'][1])+1], kinem['sm_v']),
-                             'lightblue',alpha=0.1, label='EIL SRH')
+        ebot = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][0])]), 
+                         (kinem['sm_v'], intrp['vINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][0])]),  
+                 linestyle='-', linewidth=2.3, alpha=0.5, zorder=3, color='lightblue', label='Effective Inflow Layer')
+        etop = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][1])]), 
+                         (kinem['sm_v'], intrp['vINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][1])]),  
+                 linestyle='-', linewidth=2.3, alpha=0.5, zorder=3, color='lightblue')
+        fill_srh = h.ax.fill(np.append(intrp['uINTRP'][find_nearest(intrp['zINTRP'], kinem['eil_z'][0]):find_nearest(intrp['zINTRP'], kinem['eil_z'][1])+1], kinem['sm_u']), np.append(intrp['vINTRP'][find_nearest(intrp['zINTRP'], kinem['eil_z'][0]):find_nearest(intrp['zINTRP'], kinem['eil_z'][1])+1], kinem['sm_v']),'lightblue',alpha=0.3, zorder=2, label='EIL SRH')
     else:
         fill_srh = h.ax.fill(np.append(intrp['uINTRP'][find_nearest(intrp['zINTRP'], 0):find_nearest(intrp['zINTRP'], 3000)], kinem['sm_u']), 
                      np.append(intrp['vINTRP'][find_nearest(intrp['zINTRP'], 0):find_nearest(intrp['zINTRP'], 3000)], kinem['sm_v']),
-                     'lightblue',alpha=0.1, label='0-3 SRH')
+                     'lightblue',alpha=0.1, zorder=2, label='0-3 SRH')
     
     
     # MCS MOTION
-    h.ax.text(kinem['mcs'][0], kinem['mcs'][1], 'UP', weight='bold', fontsize=12, color='orange', ha='center', alpha=0.5, clip_on=True)
-    h.ax.text(kinem['mcs'][2], kinem['mcs'][3], 'DN', weight='bold', fontsize=12, color='orange', ha='center', alpha=0.5, clip_on=True)
+    h.ax.text(kinem['mcs'][0], kinem['mcs'][1], 'UP', 
+              weight='bold', fontsize=12, color='orange', zorder=7, ha='center', alpha=0.5, clip_on=True)
+    h.ax.text(kinem['mcs'][2], kinem['mcs'][3], 'DN', 
+              weight='bold', fontsize=12, color='orange', zorder=7, ha='center', alpha=0.5, clip_on=True)
     
     
     # STORM MOTION PRINTOUT
@@ -674,17 +921,21 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
             directions = []
             
             speeds.append(mpcalc.wind_speed(kinem['sm_u']*units.kts,kinem['sm_v']*units.kts).m) 
-            directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem['sm_u'],kinem['sm_v']))), full=False, level=3)) 
+            directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem['sm_u'],kinem['sm_v']))), 
+                                                        full=False, level=3)) 
 
             for key in keys:
                 speeds.append(mpcalc.wind_speed(kinem[key][0]*units.kts,kinem[key][1]*units.kts).m) 
-                directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem[key][0],kinem[key][1]))), full=False, level=3))
+                directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem[key][0],kinem[key][1]))), 
+                                                            full=False, level=3))
 
             speeds.append(mpcalc.wind_speed(kinem['mcs'][0]*units.kts,kinem['mcs'][1]*units.kts).m) 
-            directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem['mcs'][0],kinem['mcs'][1]))), full=False, level=3))   
+            directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem['mcs'][0],kinem['mcs'][1]))), 
+                                                        full=False, level=3))   
 
             speeds.append(mpcalc.wind_speed(kinem['mcs'][2]*units.kts,kinem['mcs'][3]*units.kts).m) 
-            directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem['mcs'][2],kinem['mcs'][3]))), full=False, level=3)) 
+            directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem['mcs'][2],kinem['mcs'][3]))), 
+                                                        full=False, level=3)) 
                     
                     
             #plot Bunkers Storm Motion & DTM Data in box on Hodograph 
@@ -732,7 +983,6 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     temp_adv_ax.spines["bottom"].set_color(brdr_clr)
     temp_adv_ax.spines["bottom"].set_color(brdr_clr)   
     temp_adv_ax.set_facecolor(bckgrnd_clr)    
-    
     plt.yscale('log')
     temp_adv_ax.set_ylim(1050, 100)
     temp_adv_ax.set_xlim(np.nanmin(thermo['temp_adv'][0])-4, np.nanmax(thermo['temp_adv'][0])+4)
@@ -749,14 +999,84 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
                             temp_adv_bxclr = 'cornflowerblue'
                         elif thermo['temp_adv'][0][i]  > 0:
                             temp_adv_bxclr = 'red'
-                        temp_adv_ax.barh(top_arr[i], thermo['temp_adv'][0][i], align='center', height=bot_arr[i]-top_arr[i], edgecolor='black', alpha=0.3, color=temp_adv_bxclr)
+                        temp_adv_ax.barh(top_arr[i], thermo['temp_adv'][0][i], align='center', 
+                                         height=bot_arr[i]-top_arr[i], edgecolor='black', alpha=0.3, color=temp_adv_bxclr)
                         if thermo['temp_adv'][0][i] > 0:
-                            temp_adv_ax.annotate((np.round(thermo['temp_adv'][0][i],1)), xy=(0.3, top_arr[i]+10), color=gen_txt_clr, textcoords='data', ha='left', weight='bold')
+                            temp_adv_ax.annotate((np.round(thermo['temp_adv'][0][i],1)), 
+                                                 xy=(0.3, top_arr[i]+10), color=gen_txt_clr, textcoords='data', 
+                                                 ha='left', weight='bold')
                         if thermo['temp_adv'][0][i] < 0:
-                            temp_adv_ax.annotate((np.round(thermo['temp_adv'][0][i],1)), xy=(-0.3, top_arr[i]+10), color=gen_txt_clr, textcoords='data', ha='right', weight='bold')
+                            temp_adv_ax.annotate((np.round(thermo['temp_adv'][0][i],1)), 
+                                                 xy=(-0.3, top_arr[i]+10), color=gen_txt_clr, textcoords='data', 
+                                                 ha='right', weight='bold')
     temp_adv_ax.axvline(x=0, color=gen_txt_clr, linewidth=1, linestyle='--', clip_on=True)
     #################################################################
     
+    
+    
+    
+    
+    
+    #################################################################
+    ### SOUNDING MAP INSET -- TEST ###
+    #################################################################
+    # BUILD SIMPLE MAP -----------------------------------------------------------------------------------------------------
+    if map_zoom > 0:
+        proj = ccrs.PlateCarree()
+        map_ax = plt.axes((0.7005, 0.1, 0.20, 0.20), projection=proj, zorder=12) # 1, 0.1 | 0.542, 0.75, 0.20, 0.20
+        map_ax.spines['geo'].set_color(gen_txt_clr)
+
+        zoom_factor = map_zoom
+        map_ax.set_extent([clean_data['site_info']['site-latlon'][1] + zoom_factor, 
+                           clean_data['site_info']['site-latlon'][1] - zoom_factor, 
+                           clean_data['site_info']['site-latlon'][0] + zoom_factor, 
+                           clean_data['site_info']['site-latlon'][0] - zoom_factor])
+        map_ax.set_box_aspect(1) 
+
+        map_ax.add_feature(cfeature.STATES, color=bckgrnd_clr, zorder=1)
+        map_ax.add_feature(cfeature.STATES, edgecolor=gen_txt_clr, alpha=0.7, 
+                       linestyle='-', linewidth=2, zorder=6)
+        map_ax.add_feature(USCOUNTIES, alpha=0.3, edgecolor=gen_txt_clr, 
+                           linestyle='-', linewidth=0.2, zorder=5)
+        map_ax.add_feature(cfeature.LAKES, color=bckgrnd_clr)
+        map_ax.add_feature(cfeature.OCEAN, color=bckgrnd_clr)
+
+        if show_radar == True:
+            # BUILD COLOR MAP -----------------------------------------------------------------------------------------------------
+            radar_cmap = LinearSegmentedColormap.from_list('custom_cmap',
+                        ['#B0C4DE', '#4682B4', '#90EE90', '#228B22', '#FFFF4D', '#E6E600',
+                        '#FFC34D', '#E69900', '#FF4D4D', '#E60000', '#FFCCEE', '#FF198C',
+                        '#D400FF', '#550080'], N=256)
+
+
+            # PLOT RADAR DATA -----------------------------------------------------------------------------------------------------
+            try:
+                radar_data = get_radar_mosaic(sounding_data, map_zoom, radar_time)
+
+                reflectivity = np.ma.masked_array(np.array(radar_data['Reflectivity'])[0,:,:],
+                                                  np.array(radar_data['Reflectivity'])[0,:,:]<10)
+
+                map_ax.pcolormesh(radar_data['lon']+0.05, radar_data['lat']+0.05, reflectivity, 
+                                  vmin=10, vmax=80, cmap=radar_cmap, alpha=1, zorder=4)
+
+                radar_timestamp = f"{str(radar_data['time'].values[0])[5:10]} | {str(radar_data['time'].values[0])[11:16]}"
+
+
+                plt.figtext(0.80, 0.11, f'Valid: {radar_timestamp}', 
+                        ha='center', alpha=0.9, weight='bold', fontsize=13, zorder=13, color=gen_txt_clr,
+                        bbox=dict(facecolor=bckgrnd_clr, alpha=0.8, edgecolor=gen_txt_clr, pad=3))
+            except: 
+                pass
+
+        # ADD PROFILE LOCATION ------------------------------------------------------------------------------------------------
+        map_ax.plot(clean_data['site_info']['site-latlon'][1],clean_data['site_info']['site-latlon'][0], 
+                    marker='o', mfc='none', markeredgewidth=1.5, 
+                    color=marker_clr, markersize='11', transform=ccrs.PlateCarree(), zorder=10, clip_on=True)
+        map_ax.plot(clean_data['site_info']['site-latlon'][1],clean_data['site_info']['site-latlon'][0], 
+                    marker='+', color=marker_clr, markeredgewidth=1.5, 
+                    markersize='18', transform=ccrs.PlateCarree(), zorder=10, clip_on=True)
+
+    #################################################################
     
     
     #################################################################
@@ -834,13 +1154,15 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     
         vort_ax.set_xlim(vort_min-0.002, vort_max+0.002)
         vort_ax.set_xticks([(vort_min+0.005),(vort_max-0.005)])
-        vort_ax.set_xticklabels([(np.round(vort_min+0.002,2)),(np.round(vort_max-0.002,2))], weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
+        vort_ax.set_xticklabels([(np.round(vort_min+0.002,2)),(np.round(vort_max-0.002,2))], 
+                                weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
  
         vort_ax.plot(kinem['swv'][0:30],  intrp['zINTRP'][0:30], color='orange', linewidth=3, alpha=0.8, label='SW ζ')
         vort_ax.plot(kinem['vort'][0:30], intrp['zINTRP'][0:30], color=gen_txt_clr,  linewidth=4, alpha=0.4, label='Total ζ')
         
         if ma.is_masked(kinem['eil_z'][0]) == False:
-            vort_ax.fill_between(x=(vort_min-0.002, vort_max+0.002), y1=kinem['eil_z'][0], y2=kinem['eil_z'][1], color='lightblue', alpha=0.2)
+            vort_ax.fill_between(x=(vort_min-0.002, vort_max+0.002), y1=kinem['eil_z'][0], 
+                                 y2=kinem['eil_z'][1], color='lightblue', alpha=0.2)
     else:
         warnings.warn("Total Vorticity could not be plotted (no valid storm motion/not enough data)", Warning)
     #################################################################
@@ -876,14 +1198,18 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
         wind_min = kinem['srw'][0:30].min()-1
         wind_ax.set_xlim(wind_min-5, wind_max+5)
         wind_ax.set_xticks([(wind_min)+2, (wind_max)-2])
-        wind_ax.set_xticklabels([(int(wind_min)+2), (int(wind_max)-2)], weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
+        wind_ax.set_xticklabels([(int(wind_min)+2), (int(wind_max)-2)], weight='bold', 
+                                alpha=0.5, fontstyle='italic', color=gen_txt_clr)
 
         #PLOT SR WIND  
-        wind_ax.plot(kinem['srw'][0:11],  intrp['zINTRP'][0:11],  color=hodo_color[0], clip_on=True, linewidth=3, alpha=0.8, label='0-1 SR Wind')
-        wind_ax.plot(kinem['srw'][10:30], intrp['zINTRP'][10:30], color=hodo_color[1], clip_on=True, linewidth=3, alpha=0.8, label='1-3 SR Wind')
+        wind_ax.plot(kinem['srw'][0:11],  intrp['zINTRP'][0:11],  color=hodo_color[0], clip_on=True, 
+                     linewidth=3, alpha=0.8, label='0-1 SR Wind')
+        wind_ax.plot(kinem['srw'][10:30], intrp['zINTRP'][10:30], color=hodo_color[1], clip_on=True, 
+                     linewidth=3, alpha=0.8, label='1-3 SR Wind')
         
         if ma.is_masked(kinem['eil_z'][0]) == False:
-            wind_ax.fill_between(x=(wind_min-5, wind_max+5), y1=kinem['eil_z'][0], y2=kinem['eil_z'][1], color='lightblue', alpha=0.2)
+            wind_ax.fill_between(x=(wind_min-5, wind_max+5), y1=kinem['eil_z'][0], y2=kinem['eil_z'][1], 
+                                 color='lightblue', alpha=0.2)
     else:
         warnings.warn("Storm Relative Wind could not be plotted (no valid storm motion/not enough data)", Warning)
         
@@ -929,7 +1255,8 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     plt.plot(intrp['thetaeINTRP'], intrp['zINTRP'], color='purple', linewidth=3.5, alpha=0.8, clip_on=True)
 
     if ma.is_masked(kinem['eil_z'][0]) == False:
-        theta_ax.fill_between(x=(mintheta - 5, maxtheta + 5), y1=kinem['eil_z'][0], y2=kinem['eil_z'][1], color='lightblue', alpha=0.2)
+        theta_ax.fill_between(x=(mintheta - 5, maxtheta + 5), y1=kinem['eil_z'][0], 
+                              y2=kinem['eil_z'][1], color='lightblue', alpha=0.2)
     #################################################################
 
 
@@ -962,7 +1289,8 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     #################################################################
     ### THERMODYNAMICS ###
     #################################################################
-    plt.figtext( 0.17, 0.07, 'SR-ECAPE       CAPE         6CAPE         3CAPE          CIN            LCL', color=gen_txt_clr, weight='bold', fontsize=15)
+    plt.figtext( 0.17, 0.07, 'SR-ECAPE       CAPE         6CAPE         3CAPE          CIN            LCL', 
+                color=gen_txt_clr, weight='bold', fontsize=15)
     #SBCAPE
     plt.figtext( 0.13,  0.04, f"SB:", weight='bold',   fontsize=15, color=gen_txt_clr)
     plt.figtext( 0.17,  0.04, f"{mag(thermo['sb_ecape'])} J/kg",  fontsize=15, color='firebrick', weight='bold')
@@ -1032,11 +1360,19 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     plt.figtext( 0.585, -0.08, f"{mag(general['rh_6_9000'])} %", fontsize=15, color='forestgreen', alpha=0.64, weight='bold')
     plt.figtext( 0.62,  -0.08, f"{mag_round(general['w_6_9000'],1)} g/kg", fontsize=15, color='forestgreen',alpha=0.64, weight='bold')
 
-    plt.figtext( 0.54,  -0.115, f"PWAT:", fontsize=15, weight='bold', color=gen_txt_clr)
-    plt.figtext( 0.588, -0.115, f"{mag(general['pwat'])} in", fontsize=15, color='darkgreen', ha='center', weight='bold')
-    plt.figtext( 0.625, -0.115, f"Tw:", fontsize=15, weight='bold', color=gen_txt_clr, ha='center')
-    plt.figtext( 0.65,  -0.115, f"{mag(general['wet_bulb'][0])} °C", fontsize=15, color='darkgreen', ha='center', weight='bold')
+    plt.figtext( 0.54,  -0.102, f"PWAT:", fontsize=12, weight='bold', color=gen_txt_clr)
+    plt.figtext( 0.59, -0.102, f"{mag_round(general['pwat'], 2, mag=True)}in", fontsize=12, color='darkgreen', ha='center', weight='bold')
+    
+    plt.figtext( 0.625, -0.102, f"WB:", fontsize=12, weight='bold', color=gen_txt_clr, ha='center')
+    plt.figtext( 0.655,  -0.102, f"{mag(general['wet_bulb'][0])} °C", fontsize=12, color='darkgreen', ha='center', weight='bold')
+    
+    plt.figtext( 0.54,  -0.122, f"FRZ:", fontsize=12, weight='bold', color=gen_txt_clr)
+    plt.figtext( 0.59, -0.122, f"{mag(general['frz_pt_z'])}m", fontsize=12, color='cornflowerblue', ha='center', weight='bold')
+    
+    plt.figtext( 0.625, -0.122, f"WB0:", fontsize=12, weight='bold', color=gen_txt_clr, ha='center')
+    plt.figtext( 0.656,  -0.122, f"{mag(general['wb_frz_pt_z'])}m", fontsize=12, color='cornflowerblue', ha='center', weight='bold')
     #################################################################
+    
     
     
     
@@ -1048,39 +1384,46 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     plt.figtext( 0.735, 0.07, 'BS         SRH       SRW    SWζ%    SWζ', color=gen_txt_clr, weight='bold', fontsize=15, alpha=0.8)
 
     plt.figtext( 0.689, 0.04, f"0-.5ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
-    plt.figtext( 0.732, 0.04, f"{mag(kinem['shear_0_to_500'])} kt", fontsize=15, color='deepskyblue', weight='bold')
-    plt.figtext( 0.769, 0.04, f"{mag(kinem['srh_0_to_500'])* met_per_sec:~P}", fontsize=15, color='deepskyblue', weight='bold')
-    plt.figtext( 0.828, 0.04, f"{mag(kinem['srw_0_to_500'])} kt", fontsize=15, color='deepskyblue', weight='bold')
-    plt.figtext( 0.870, 0.04, f"{mag(kinem['swv_perc_0_to_500'])}", fontsize=15, color='deepskyblue', weight='bold')
-    plt.figtext( 0.905, 0.04, f"{mag_round(kinem['swv_0_to_500'], 3)}", fontsize=15, color='deepskyblue', weight='bold')
+    plt.figtext( 0.732, 0.04, f"{mag(kinem['shear_0_to_500'])} kt", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.769, 0.04, f"{mag(kinem['srh_0_to_500'])* met_per_sec:~P}", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.828, 0.04, f"{mag(kinem['srw_0_to_500'])} kt", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.870, 0.04, f"{mag(kinem['swv_perc_0_to_500'])}", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.905, 0.04, f"{mag_round(kinem['swv_0_to_500'], 3)}", fontsize=15, color='#6495ED', weight='bold')
 
     plt.figtext( 0.689, 0.01, f"0-1ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
-    plt.figtext( 0.732, 0.01, f"{mag(kinem['shear_0_to_1000'])} kt", fontsize=15, color='mediumslateblue', weight='bold')
-    plt.figtext( 0.769, 0.01, f"{mag(kinem['srh_0_to_1000'])* met_per_sec:~P}", fontsize=15, color='mediumslateblue', weight='bold')
-    plt.figtext( 0.828, 0.01, f"{mag(kinem['srw_0_to_1000'])} kt", fontsize=15, color='mediumslateblue', weight='bold')
-    plt.figtext( 0.870, 0.01, f"{mag(kinem['swv_perc_0_to_1000'])}", fontsize=15, color='mediumslateblue', weight='bold')
-    plt.figtext( 0.905, 0.01, f"{mag_round(kinem['swv_0_to_1000'], 3)}", fontsize=15, color='mediumslateblue', weight='bold')
+    plt.figtext( 0.732, 0.01, f"{mag(kinem['shear_0_to_1000'])} kt", fontsize=15, color='#7B68EE', weight='bold')
+    plt.figtext( 0.769, 0.01, f"{mag(kinem['srh_0_to_1000'])* met_per_sec:~P}", fontsize=15, color='#7B68EE', weight='bold')
+    plt.figtext( 0.828, 0.01, f"{mag(kinem['srw_0_to_1000'])} kt", fontsize=15, color='#7B68EE', weight='bold')
+    plt.figtext( 0.870, 0.01, f"{mag(kinem['swv_perc_0_to_1000'])}", fontsize=15, color='#7B68EE', weight='bold')
+    plt.figtext( 0.905, 0.01, f"{mag_round(kinem['swv_0_to_1000'], 3)}", fontsize=15, color='#7B68EE', weight='bold')
 
     plt.figtext( 0.689, -0.02, f"1-3ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
-    plt.figtext( 0.732, -0.02, f"{mag(kinem['shear_1_to_3000'])} kt", fontsize=15, color='slateblue', weight='bold')
-    plt.figtext( 0.769, -0.02, f"{mag(kinem['srh_1_to_3000'])* met_per_sec:~P}", fontsize=15, color='slateblue', weight='bold')
-    plt.figtext( 0.828, -0.02, f"{mag(kinem['srw_1_to_3000'])} kt", fontsize=15, color='slateblue', weight='bold')
-    plt.figtext( 0.870, -0.02, f"{mag(kinem['swv_perc_1_to_3000'])}", fontsize=15, color='slateblue', weight='bold')
-    plt.figtext( 0.905, -0.02, f"{mag_round(kinem['swv_1_to_3000'], 3)}", fontsize=15, color='slateblue', weight='bold')
+    plt.figtext( 0.732, -0.02, f"{mag(kinem['shear_1_to_3000'])} kt", fontsize=15, color='#4169E1', weight='bold')
+    plt.figtext( 0.769, -0.02, f"{mag(kinem['srh_1_to_3000'])* met_per_sec:~P}", fontsize=15, color='#4169E1', weight='bold')
+    plt.figtext( 0.828, -0.02, f"{mag(kinem['srw_1_to_3000'])} kt", fontsize=15, color='#4169E1', weight='bold')
+    plt.figtext( 0.870, -0.02, f"{mag(kinem['swv_perc_1_to_3000'])}", fontsize=15, color='#4169E1', weight='bold')
+    plt.figtext( 0.905, -0.02, f"{mag_round(kinem['swv_1_to_3000'], 3)}", fontsize=15, color='#4169E1', weight='bold')
 
     plt.figtext( 0.689, -0.05, f"3-6ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
-    plt.figtext( 0.732, -0.05, f"{mag(kinem['shear_3_to_6000'])} kt", fontsize=15, color='darkslateblue', weight='bold')
-    plt.figtext( 0.769, -0.05, f"{mag(kinem['srh_3_to_6000'])* met_per_sec:~P}", fontsize=15, color='darkslateblue', weight='bold')
-    plt.figtext( 0.828, -0.05, f"{mag(kinem['srw_3_to_6000'])} kt", fontsize=15, color='darkslateblue', weight='bold')
-    plt.figtext( 0.870, -0.05, f"{mag(kinem['swv_perc_3_to_6000'])}", fontsize=15, color='darkslateblue', weight='bold')
-    plt.figtext( 0.905, -0.05, f"{mag_round(kinem['swv_3_to_6000'], 3)}", fontsize=15, color='darkslateblue', weight='bold')
+    plt.figtext( 0.732, -0.05, f"{mag(kinem['shear_3_to_6000'])} kt", fontsize=15, color='#0000CD', weight='bold')
+    plt.figtext( 0.769, -0.05, f"{mag(kinem['srh_3_to_6000'])* met_per_sec:~P}", fontsize=15, color='#0000CD', weight='bold')
+    plt.figtext( 0.828, -0.05, f"{mag(kinem['srw_3_to_6000'])} kt", fontsize=15, color='#0000CD', weight='bold')
+    plt.figtext( 0.870, -0.05, f"{mag(kinem['swv_perc_3_to_6000'])}", fontsize=15, color='#0000CD', weight='bold')
+    plt.figtext( 0.905, -0.05, f"{mag_round(kinem['swv_3_to_6000'], 3)}", fontsize=15, color='#0000CD', weight='bold')
     
     plt.figtext( 0.689, -0.08, f"6-9ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
-    plt.figtext( 0.732, -0.08, f"{mag(kinem['shear_6_to_9000'])} kt", fontsize=15, color='navy', weight='bold')
-    plt.figtext( 0.769, -0.08, f"{mag(kinem['srh_6_to_9000'])* met_per_sec:~P}", fontsize=15, color='navy', weight='bold')
-    plt.figtext( 0.828, -0.08, f"{mag(kinem['srw_6_to_9000'])} kt", fontsize=15, color='navy', weight='bold')
-    plt.figtext( 0.870, -0.08, f"{mag(kinem['swv_perc_6_to_9000'])}", fontsize=15, color='navy', weight='bold')
-    plt.figtext( 0.905, -0.08, f"{mag_round(kinem['swv_6_to_9000'], 3)}", fontsize=15, color='navy', weight='bold')
+    plt.figtext( 0.732, -0.08, f"{mag(kinem['shear_6_to_9000'])} kt", fontsize=15, color='#00008B', weight='bold')
+    plt.figtext( 0.769, -0.08, f"{mag(kinem['srh_6_to_9000'])* met_per_sec:~P}", fontsize=15, color='#00008B', weight='bold')
+    plt.figtext( 0.828, -0.08, f"{mag(kinem['srw_6_to_9000'])} kt", fontsize=15, color='#00008B', weight='bold')
+    plt.figtext( 0.870, -0.08, f"{mag(kinem['swv_perc_6_to_9000'])}", fontsize=15, color='#00008B', weight='bold')
+    plt.figtext( 0.905, -0.08, f"{mag_round(kinem['swv_6_to_9000'], 3)}", fontsize=15, color='#00008B', weight='bold')
+    
+    plt.figtext( 0.689, -0.11, f"EIL:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
+    plt.figtext( 0.732, -0.11, f"{mag(kinem['shear_eil'])} kt", fontsize=15, color='#000080', weight='bold')
+    plt.figtext( 0.769, -0.11, f"{mag(kinem['srh_eil'])* met_per_sec:~P}", fontsize=15, color='#000080', weight='bold')
+    plt.figtext( 0.828, -0.11, f"{mag(kinem['srw_eil'])} kt", fontsize=15, color='#000080', weight='bold')
+    plt.figtext( 0.870, -0.11, f"{mag(kinem['swv_perc_eil'])}", fontsize=15, color='#000080', weight='bold')
+    plt.figtext( 0.905, -0.11, f"{mag_round(kinem['swv_eil'], 3)}", fontsize=15, color='#000080', weight='bold')
     #################################################################
     
     
@@ -1091,7 +1434,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     plt.figtext( 0.125, 0.985, top_title, weight='bold', ha='left', fontsize=30, color=gen_txt_clr)
     plt.figtext( 0.125, 0.959, left_title, ha='left', fontsize=23, color=gen_txt_clr)
     plt.figtext( 1.22, 0.959, right_title, ha='right', fontsize=23, color=gen_txt_clr)
-    skewleg1 = skew.ax.legend(loc='upper left', framealpha=0.3, labelcolor=gen_txt_clr)
+    skewleg1 = skew.ax.legend(loc='upper left', framealpha=0.5, labelcolor=gen_txt_clr, facecolor=bckgrnd_clr)
     
     # plot author credit information 
     plt.figtext( 0.34, -0.105, 'SOUNDERPY VERTICAL PROFILE ANALYSIS TOOL', 
@@ -1122,11 +1465,12 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
 
 
 
-
 #########################################################################
 ########################## SIMPLE SOUNDING ##############################
 
 def __simple_sounding(clean_data, color_blind, dark_mode, storm_motion='right_moving'):
+    
+    warnings.warn("SounderPy's 'Simple Sounding' will be deprecated upon the next release (v3.0.5)", DeprecationWarning)
     
     if dark_mode == True:
         gen_txt_clr = 'white'
@@ -1170,9 +1514,11 @@ def __simple_sounding(clean_data, color_blind, dark_mode, storm_motion='right_mo
                 except: fixed = param
         return fixed
     
-    def mag_round(param, dec):
+    def mag_round(param, dec, mag=False):
         if ma.is_masked(param):
             fixed = '---'
+        elif mag == True:
+            fixed = np.round(param.m, dec)
         else:
             fixed = np.round(param, dec)
         return fixed
@@ -1426,24 +1772,24 @@ def __simple_sounding(clean_data, color_blind, dark_mode, storm_motion='right_mo
     y_max = v_hodo.max().m
     # if statements to determine approprate x axis and y axis limits (to change dynamically with the data)
     if y_max >= 0:
-        y_Maxlimit = (y_max + 15)
+        y_Maxlimit = (y_max + 20)
     if y_max < 0:
-        y_Maxlimit = (y_max + 15)
+        y_Maxlimit = (y_max + 20)
 
     if x_max >= 0:
-        x_Maxlimit = (x_max + 15)
+        x_Maxlimit = (x_max + 20)
     if x_max < 0:
-        x_Maxlimit = (x_max + 15)
+        x_Maxlimit = (x_max + 20)
 
     if y_min >= 0:
-        y_Minlimit = (y_min - 40)
+        y_Minlimit = (y_min - 45)
     if y_min < 0:
-        y_Minlimit = (y_min - 40)
+        y_Minlimit = (y_min - 45)
 
     if x_min >= 0:
-        x_Minlimit = (x_min - 40)
+        x_Minlimit = (x_min - 45)
     if x_min < 0:
-        x_Minlimit = (x_min - 40)
+        x_Minlimit = (x_min - 45)
     #################################################################
         
         
@@ -1496,6 +1842,11 @@ def __simple_sounding(clean_data, color_blind, dark_mode, storm_motion='right_mo
            color='white', alpha=1, markersize=30, clip_on=True, zorder=5)
     h.ax.annotate(str('.5'),(intrp['uINTRP'][intrp['hgt_lvls']['h05']],intrp['vINTRP'][intrp['hgt_lvls']['h05']]),
                   weight='bold', fontsize=9, color='black',xytext=(0,-3.2),textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=6) 
+    
+    h.plot(intrp['uINTRP'][0],intrp['vINTRP'][0],marker='.', 
+           color='white', alpha=1, markersize=30, clip_on=True, zorder=5)
+    h.ax.annotate(str('sfc'),(intrp['uINTRP'][0],intrp['vINTRP'][0]),
+                  weight='bold', fontsize=5, color='black',xytext=(0,-3.2),textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=6) 
 
     hgt_lvls = [] 
     for key in intrp['hgt_lvls'].keys():
@@ -1514,11 +1865,11 @@ def __simple_sounding(clean_data, color_blind, dark_mode, storm_motion='right_mo
     #################################################################
     hodo_color = ['purple','red','darkorange','gold','#fff09f']
 
-    h.ax.plot(intrp['uINTRP'][0:10+1],   intrp['vINTRP'][0:10+1],   color=hodo_color[0], linewidth=5, clip_on=True)
-    h.ax.plot(intrp['uINTRP'][10:30+1],  intrp['vINTRP'][10:30+1],  color=hodo_color[1], linewidth=5, clip_on=True)
-    h.ax.plot(intrp['uINTRP'][30:60+1],  intrp['vINTRP'][30:60+1],  color=hodo_color[2], linewidth=5, clip_on=True)
-    h.ax.plot(intrp['uINTRP'][60:90+1],  intrp['vINTRP'][60:90+1],  color=hodo_color[3], linewidth=5, clip_on=True)
-    h.ax.plot(intrp['uINTRP'][90:120+1], intrp['vINTRP'][90:120+1], color=hodo_color[4], linewidth=5, clip_on=True) 
+    h.ax.plot(intrp['uINTRP'][0:10+1],   intrp['vINTRP'][0:10+1],   color=hodo_color[0], linewidth=5, zorder=4, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][10:30+1],  intrp['vINTRP'][10:30+1],  color=hodo_color[1], linewidth=5, zorder=4, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][30:60+1],  intrp['vINTRP'][30:60+1],  color=hodo_color[2], linewidth=5, zorder=4, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][60:90+1],  intrp['vINTRP'][60:90+1],  color=hodo_color[3], linewidth=5, zorder=4, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][90:120+1], intrp['vINTRP'][90:120+1], color=hodo_color[4], linewidth=5, zorder=4, clip_on=True) 
     #################################################################
     
     
@@ -1528,42 +1879,42 @@ def __simple_sounding(clean_data, color_blind, dark_mode, storm_motion='right_mo
     #################################################################
     if ma.is_masked(kinem['sm_rm']) == False:
         # BUNKERS STORM MOTION
-        h.ax.text((kinem['sm_rm'][0]+0.5), (kinem['sm_rm'][1]-0.5), 'RM', weight='bold', ha='left', fontsize=10, alpha=0.9, color=gen_txt_clr)
-        h.ax.text((kinem['sm_lm'][0]+0.5), (kinem['sm_lm'][1]-0.5), 'LM', weight='bold', ha='left', fontsize=10, alpha=0.9, color=gen_txt_clr)
-        h.ax.text((kinem['sm_mw'][0]+0.5), (kinem['sm_mw'][1]-0.5), 'MW', weight='bold', ha='left', fontsize=10, alpha=0.9, color=gen_txt_clr)
+        h.ax.text((kinem['sm_rm'][0]+0.5), (kinem['sm_rm'][1]-0.5), 'RM', weight='bold', ha='left', fontsize=10, alpha=0.9, zorder=7, color=gen_txt_clr)
+        h.ax.text((kinem['sm_lm'][0]+0.5), (kinem['sm_lm'][1]-0.5), 'LM', weight='bold', ha='left', fontsize=10, alpha=0.9, zorder=7, color=gen_txt_clr)
+        h.ax.text((kinem['sm_mw'][0]+0.5), (kinem['sm_mw'][1]-0.5), 'MW', weight='bold', ha='left', fontsize=10, alpha=0.9, zorder=7, color=gen_txt_clr)
     
     if ma.is_masked(kinem['sm_u']) == False:
         # DEVIANT TORNADO MOTION
-        h.ax.text(kinem['dtm'][0], (kinem['dtm'][1] + 2), 'DTM', weight='bold', fontsize=8, color='brown', ha='center')
-        h.plot(kinem['dtm'][0], kinem['dtm'][1], marker='v', color='brown', markersize=5, alpha=0.8, ls='', label='DEVIANT TORNADO MOTION')
+        h.ax.text(kinem['dtm'][0], (kinem['dtm'][1] + 2), 'DTM', weight='bold', fontsize=8, color='brown', zorder=7, ha='center')
+        h.plot(kinem['dtm'][0], kinem['dtm'][1], marker='v', color='brown', markersize=5, alpha=0.8, ls='', zorder=7, label='DEVIANT TORNADO MOTION')
     
         # ADD SM POINT IF ITS A CUSTOM STORM MOTION
         if str(type(storm_motion)) == "<class 'list'>":
-            h.ax.text((kinem['sm_u']+0.5), (kinem['sm_v']-0.5), 'SM', weight='bold', ha='left', fontsize=10, alpha=0.9, color=gen_txt_clr)
+            h.ax.text((kinem['sm_u']+0.5), (kinem['sm_v']-0.5), 'SM', weight='bold', ha='left', fontsize=10, alpha=0.9, zorder=7, color=gen_txt_clr)
         
         h.ax.arrow(0,0,kinem['sm_u']-0.3, kinem['sm_v']-0.3, linewidth=2, color=gen_txt_clr, alpha=0.2, 
-               label='SM Vector', length_includes_head=True, head_width=0.5)
+               label='SM Vector', length_includes_head=True, zorder=6.5, head_width=0.5)
 
     
     # EFFECTIVE INFLOW LAYER SRH FILL
     if ma.is_masked(kinem['eil_z'][0]) == False:
         
         ebot = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][0])]), (kinem['sm_v'], intrp['vINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][0])]),  
-                 linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue', label='Effective Inflow Layer')
+                 linestyle='-', linewidth=1.5, alpha=0.8, zorder=2, color='lightblue', label='Effective Inflow Layer')
         etop = h.ax.plot((kinem['sm_u'], intrp['uINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][1])]), (kinem['sm_v'], intrp['vINTRP'][find_nearest(intrp['zINTRP'],kinem['eil_z'][1])]),  
-                 linestyle='--', linewidth=2.3, alpha=0.5, color='lightblue')
+                 linestyle='-', linewidth=1.5, alpha=0.8, zorder=2, color='lightblue')
         fill_srh = h.ax.fill(np.append(intrp['uINTRP'][find_nearest(intrp['zINTRP'], kinem['eil_z'][0]):find_nearest(intrp['zINTRP'], kinem['eil_z'][1])+1], kinem['sm_u']), 
                              np.append(intrp['vINTRP'][find_nearest(intrp['zINTRP'], kinem['eil_z'][0]):find_nearest(intrp['zINTRP'], kinem['eil_z'][1])+1], kinem['sm_v']),
-                             'lightblue',alpha=0.1, label='EIL SRH')
+                             'lightblue', zorder=2, alpha=0.03, label='EIL SRH')
     else:
         fill_srh = h.ax.fill(np.append(intrp['uINTRP'][find_nearest(intrp['zINTRP'], 0):find_nearest(intrp['zINTRP'], 3000)], kinem['sm_u']), 
                      np.append(intrp['vINTRP'][find_nearest(intrp['zINTRP'], 0):find_nearest(intrp['zINTRP'], 3000)], kinem['sm_v']),
-                     'lightblue',alpha=0.1, label='0-3 SRH')
+                     'lightblue',alpha=0.03, zorder=2, label='0-3 SRH')
     
     
     # MCS MOTION
-    h.ax.text(kinem['mcs'][0], kinem['mcs'][1], 'UP', weight='bold', fontsize=10, color='orange', ha='center', alpha=0.5, clip_on=True)
-    h.ax.text(kinem['mcs'][2], kinem['mcs'][3], 'DN', weight='bold', fontsize=10, color='orange', ha='center', alpha=0.5, clip_on=True)
+    h.ax.text(kinem['mcs'][0], kinem['mcs'][1], 'UP', weight='bold', fontsize=10, color='orange', ha='center', zorder=7, alpha=0.5, clip_on=True)
+    h.ax.text(kinem['mcs'][2], kinem['mcs'][3], 'DN', weight='bold', fontsize=10, color='orange', ha='center', zorder=7, alpha=0.5, clip_on=True)
     
     
     # STORM MOTION PRINTOUT
@@ -1891,20 +2242,23 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo):
     for i in range(10,130,20):
         h.ax.annotate(str(i),(0,-i),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
 
-    h.plot(intrp['uINTRP'][intrp['hgt_lvls']['h05']],intrp['vINTRP'][intrp['hgt_lvls']['h05']],marker='.', 
+        
+        
+    h.plot(intrp['uINTRP'][intrp['hgt_lvls']['h05']],intrp['vINTRP'][intrp['hgt_lvls']['h05']],marker='.', markeredgecolor='black',
            color='white', alpha=1, markersize=30, clip_on=True, zorder=5)
     h.ax.annotate(str('.5'),(intrp['uINTRP'][intrp['hgt_lvls']['h05']],intrp['vINTRP'][intrp['hgt_lvls']['h05']]),
-                  weight='bold', fontsize=12, color='black',xytext=(0,-3.2),textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=6) 
+                  weight='bold', fontsize=11, color='black',xytext=(0.02,-5),textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=6) 
 
     hgt_lvls = [] 
     for key in intrp['hgt_lvls'].keys():
         hgt_lvls.append(intrp['hgt_lvls'][key])
     hgt_lvls.pop(0) 
 
-    for i in hgt_lvls[1::2]:
-        h.plot(intrp['uINTRP'][i],intrp['vINTRP'][i], marker='.', color='white', alpha=1, markersize=30, zorder=5)
-        h.ax.annotate(str(int(round(intrp['zINTRP'][i]/1000,0))),(intrp['uINTRP'][i],intrp['vINTRP'][i]), 
-                      weight='bold', fontsize=12, color='black',xytext=(0,-3.2),textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=6) 
+    for lvl in hgt_lvls[1::2]:
+        if lvl < 130:
+            h.plot(intrp['uINTRP'][lvl],intrp['vINTRP'][lvl], marker='.', color='white', markeredgecolor='black', alpha=1, markersize=30, zorder=5)
+            h.ax.annotate(str(int(round(intrp['zINTRP'][lvl]/1000,0))),(intrp['uINTRP'][lvl],intrp['vINTRP'][lvl]), 
+                          weight='bold', fontsize=11, color='black',xytext=(0.02,-5),textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=5.1) 
     #################################################################
     
     
@@ -2644,7 +2998,7 @@ def __composite_sounding(data_list, shade_between, cmap, colors_to_use,
             val_times.append(f"{profile['site_info']['valid-time'][3]}Z | {profile['site_info']['valid-time'][1]}-{profile['site_info']['valid-time'][2]}-{profile['site_info']['valid-time'][0]}")
             int_times.append(f"{profile['site_info']['valid-time'][3]}Z | {profile['site_info']['valid-time'][1]}-{profile['site_info']['valid-time'][2]}-{profile['site_info']['valid-time'][0]}")
 
-        if profile['site_info']['source'] == 'MODEL REANALYSIS PROFILE':
+        if profile['site_info']['source'] == 'MODEL REANALYSIS':
             types.append(f"{profile['site_info']['fcst-hour']} {profile['site_info']['model']}")
             locs.append(f"{profile['site_info']['site-latlon']}")
             val_times.append(f"{profile['site_info']['valid-time'][3]}Z | {profile['site_info']['valid-time'][1]}-{profile['site_info']['valid-time'][2]}-{profile['site_info']['valid-time'][0]}")
@@ -2907,20 +3261,21 @@ def __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo):
     for i in range(10,130,20):
         h.ax.annotate(str(i),(0,-i),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
 
-    h.plot(intrp['uINTRP'][intrp['hgt_lvls']['h05']],intrp['vINTRP'][intrp['hgt_lvls']['h05']],marker='.', 
+    h.plot(intrp['uINTRP'][intrp['hgt_lvls']['h05']],intrp['vINTRP'][intrp['hgt_lvls']['h05']],marker='.', markeredgecolor='black',
            color='white', alpha=1, markersize=30, clip_on=True, zorder=5)
     h.ax.annotate(str('.5'),(intrp['uINTRP'][intrp['hgt_lvls']['h05']],intrp['vINTRP'][intrp['hgt_lvls']['h05']]),
-                  weight='bold', fontsize=12, color='black',xytext=(0,-3.2),textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=6) 
+                  weight='bold', fontsize=11, color='black',xytext=(0.02,-5),textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=6) 
 
     hgt_lvls = [] 
     for key in intrp['hgt_lvls'].keys():
         hgt_lvls.append(intrp['hgt_lvls'][key])
     hgt_lvls.pop(0) 
 
-    for i in hgt_lvls[1::2]:
-        h.plot(intrp['uINTRP'][i],intrp['vINTRP'][i], marker='.', color='white', alpha=1, markersize=30, zorder=5)
-        h.ax.annotate(str(int(round(intrp['zINTRP'][i]/1000,0))),(intrp['uINTRP'][i],intrp['vINTRP'][i]), 
-                      weight='bold', fontsize=12, color='black',xytext=(0,-3.2),textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=6) 
+    for lvl in hgt_lvls[1::2]:
+        if lvl < 130:
+            h.plot(intrp['uINTRP'][lvl],intrp['vINTRP'][lvl], marker='.', color='white', markeredgecolor='black', alpha=1, markersize=30, zorder=5)
+            h.ax.annotate(str(int(round(intrp['zINTRP'][lvl]/1000,0))),(intrp['uINTRP'][lvl],intrp['vINTRP'][lvl]), 
+                          weight='bold', fontsize=11, color='black',xytext=(0.02,-5),textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=5.1) 
     #################################################################
     
     

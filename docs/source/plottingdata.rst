@@ -29,7 +29,7 @@ Building Soundings
 
 We can use the simple ``spy.build_sounding()`` function:
 
-.. py:function:: spy.build_sounding(clean_data, style='full', color_blind=False, dark_mode=False, storm_motion='right_moving', special_parcels=None, save=False, filename='sounderpy_sounding')
+.. py:function:: spy.build_sounding(clean_data, style='full', color_blind=False, dark_mode=False, storm_motion='right_moving', special_parcels=None, show_radar=True, radar_time='sounding', map_zoom=2, modify_sfc=None, save=False, filename='sounderpy_sounding')
 
 
    Return a full sounding plot of SounderPy data, ``plt`` 
@@ -46,6 +46,14 @@ We can use the simple ``spy.build_sounding()`` function:
    :type storm_motion: str or list of floats, optional
    :param special_parcels: a nested list of special parcels from the ``ecape_parcels`` library. The nested list should be a list of two lists (`[[a, b], [c, d]]`) where the first list should include 'highlight parcels' and second list should include 'background parcels'. For more details, see the :ref:`parcels_logic` section. Another option is 'simple', which removes all advanced parcels making the plot quicker.
    :type special_parcels: nested `list` of two `lists`, optional
+   :param show_radar: whether or not to display mosaic radar data on the map inset. Default is ``True``
+   :type special_parcels: bool, optional
+   :param radar_time: radar mosaic data valid time. May be ``sounding`` (uses the valid time of the sounding data), or ``now`` (current time/date). Default is ``sounding``. **Note: radar mosaic data only goes back 1 month from current date**
+   :type radar_time: str, optional
+   :param map_zoom: a 'zoom' level for the map inset as an `int`. Default is ``2``. **Note: Setting ``map_zoom=0`` will hide the map**
+   :type map_zoom: int, optional 
+   :param modify_sfc: a `list` in the format ``[temperature, dewpoint]`` to modify the surface values of the ``clean_data`` param. Default is False.
+   :type modify_sfc: bool or list, optional
    :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
    :type save: bool, optional
    :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
@@ -217,7 +225,7 @@ Examples
 Building VAD Hodographs
 ----------------------------------
 
-*Coming soon -- function is still in development*
+*Experimental function, but available for use. Errors are possible.*
 
 SounderPy now offers the ability to plot NEXRAD radar VAD data on a hodograph using the ``spy.build_vad_hodograph()`` function:
 
@@ -243,18 +251,6 @@ SounderPy now offers the ability to plot NEXRAD radar VAD data on a hodograph us
 
 Examples
 ^^^^^^^^^^
-
-.. code-block:: python
-
-   import sounderpy as spy
-   import datetime as dt
-     
-   # get VAD data using `pyart_radar_profile()`
-   vad_data = spy.pyart_radar_profile('kgrr', dt.datetime(2023, 8, 25, 0, 20, 30))
-
-   # build the hodograph! 
-   spy.build_vad_hodograph(vad_data)
-
 
 .. image:: _static/images/example_vad-hodograph.png
    :width: 800 px

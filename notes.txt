@@ -1,6 +1,35 @@
 UPDATE NOTES 
 
 
+- TODO v3.0.4
+================================================================================================================
+	- Checks                                 DONE?          DOC-ed?          LOCAL CHECK          PyPi-CHECK
+	------------------------------------------------------------------------------------------------------------
+	- Check SM and SRW.......................DONE...........NA...............CHECKED
+	- fix docs for sounding_params...........DONE...........DONE.............CHECKED
+	- Publish radar hodo.....................DONE...........NA...............CHECKED
+	- Fix radar profile calcs................DONE...........NA...............CHECKED
+	- Fix BUFKIT NAM/GFS Fhrs................DONE...........NA...............CHECKED
+	- BUFKIT NAM4km -> NAMNEST...............DONE...........NA...............CHECKED
+	- Correct URL builder for BUFKIT sites 
+		with '#' in the ID...................DONE...........NA...............
+
+	PLOT IMPROVEMENTS ---
+	- clip_on = True for RH text.............DONE...........NA...............CHECKED
+	- PWAT digits............................DONE...........NA...............CHECKED
+	- Hodo height markers....................DONE...........NA...............CHECKED
+	- sfc_correction.........................DONE...........DONE.............CHECKED
+	- radar map and radar map settings.......DONE...........DONE.............CHECKED
+	- EIL kinematics.........................DONE...........NA...............CHECKED
+	- Add wetbulb zero hgt marker............DONE...........NA...............CHECKED
+	- Add max parcel Level...................DONE...........NA...............CHECKED
+	- Declare map water colors...............DONE...........NA...............CHECKED
+	- CUSTOM kinematics readout colors.......DONE...........NA...............CHECKED
+
+
+
+
+
 - TODO v3.0.3
 ================================================================================================================
 	- Checks                                 DONE?          DOC-ed?          LOCAL CHECK          PyPi-CHECK
