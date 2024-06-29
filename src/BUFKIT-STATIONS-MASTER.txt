@@ -5436,7 +5436,6 @@ WMO numbers must be sequential.      Coordinates are in normal degrees.
 104,236,38.69,-80.65,K48I,SUTTON                          ,WV,255,USR RQST 2-11
 105,237,34.57,-117.67,KGXA,GRAY BUTTE FIELD                ,CA,923,USR RQST 10-11
 106,238,34.63,-117.61,EMF ,EL MIRAGE FIELD                 ,CA,873,USR RQST 10-11
-107,239,45.97,-86.17,KISQ,MANISTIQUE                      ,MI,209,USR RQST 10-11
 108,240,46.42,-86.65,P53 ,MUNISING                        ,MI,187,USR RQST 10-11
 109,241,39.16,-89.67,K3LF,LITCHFIELD                      ,IL,210,USR RQST 11-11
 110,247,44.05,-101.6,PHP ,PHILIP AIRPORT                  ,SD,673,WEISS 2-99
