@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
     <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
 
     <title>BUFKIT Site Locations Map</title>
@@ -15,7 +16,6 @@
           margin: 0;
           padding: 0;
         }
-
 
         .info-box {
             background-color: white;
@@ -41,17 +41,15 @@
                 { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
                 { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
                 { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
-
                 {
-                featureType: 'administrative',
-                elementType: 'geometry.stroke',
-                stylers: [{ color: '#ffffff' }]
+                    featureType: 'administrative',
+                    elementType: 'geometry.stroke',
+                    stylers: [{ color: '#ffffff' }]
                 },
-
                 {
                     featureType: 'administrative.locality',
                     elementType: 'labels.text.fill',
-                    stylers: [{ color: '#d59563', alpha: 0.5}]
+                    stylers: [{ color: '#d59563', alpha: 0.5 }]
                 },
                 {
                     featureType: 'poi',
@@ -131,7 +129,6 @@
                 zoom: 4,
                 styles: nightModeStyles // Apply night mode styles
             });
-
 
             // Array of BUFKIT site locations
             var bufkitSites = [
@@ -2231,7 +2228,7 @@
                 { lat: 33.5, lng: -106.18,  name: 'OSCURA RANGE CAMP, NM', id: 'OSC'}
             ];
 
-        bufkitSites.forEach(function(site) {
+            bufkitSites.forEach(function(site) {
                 var marker = new google.maps.Marker({
                     position: {lat: site.lat, lng: site.lng},
                     title: site.id
@@ -2256,11 +2253,6 @@
                     infoWindow.open(map, marker);
                 });
             });
-        }
-
-        map.overlayMapTypes.push(tileNEX);
-        
-
 
             // Add credit box
             var creditBox = document.createElement('div');
@@ -2278,11 +2270,8 @@
 
             map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push(creditBox);
         }
-        
-
-
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDqWc25TEkPO2o49Rhnh3u1E66CKamuCZA&callback=initMap"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
     <!-- Replace YOUR_API_KEY with your actual Google Maps API key -->
 </body>
 </html>
