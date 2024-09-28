@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: sounderpy
-Version: 3.0.6.dev0
+Version: 3.0.5.dev7
 Summary: Vertical Profile Data Retrieval and Analysis Tool For Python
 Author-email: "Kyle J Gillett, University of North Dakota" <kyle.gillett@und.edu>
 Project-URL: Docs, https://kylejgillett.github.io/sounderpy/

@@ -225,7 +225,7 @@ Examples
 Building VAD Hodographs
 ----------------------------------
 
-*Coming soon -- function is still in development*
+*Experimental function, but available for use. Errors are possible.*
 
 SounderPy now offers the ability to plot NEXRAD radar VAD data on a hodograph using the ``spy.build_vad_hodograph()`` function:
 
@@ -251,18 +251,6 @@ SounderPy now offers the ability to plot NEXRAD radar VAD data on a hodograph us
 
 Examples
 ^^^^^^^^^^
-
-.. code-block:: python
-
-   import sounderpy as spy
-   import datetime as dt
-     
-   # get VAD data using `pyart_radar_profile()`
-   vad_data = spy.pyart_radar_profile('kgrr', dt.datetime(2023, 8, 25, 0, 20, 30))
-
-   # build the hodograph! 
-   spy.build_vad_hodograph(vad_data)
-
 
 .. image:: _static/images/example_vad-hodograph.png
    :width: 800 px

@@ -51,7 +51,7 @@ We can use the simple ``spy.get_model_data()`` function:
 
    Return a ``dict`` of 'cleaned up' model reanalysis data from a given model, for a given location, date, and time
 
-   :param model: the requested model to use (rap-ruc, era5, ncep)
+   :param model: the requested model to use ("rap-ruc", "era5", "ncep")
    :type model: str, required
    :param latlon: the latitude & longitude pair for sounding ([44.92, -84.72])
    :type latlon: list, required
@@ -63,15 +63,15 @@ We can use the simple ``spy.get_model_data()`` function:
    :type day: str, required
    :param hour: required, valid hour
    :type hour: str, required
-   :param dataset: optional, target a specific dataset instead of searching for the first one with data.
-   :type dataset: str, optional
-   :param box_avg_size: optional, determine an area-averaged box size in degrees, default is 0.10 degrees.
-   :type box_avg_size: int, optional
-   :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting a data.
+   :param dataset: target a specific dataset instead of searching for the first one with data ("rap-ruc" only).
+   :type dataset: str, optional, default is `None`
+   :param box_avg_size: determine an area-averaged box size, in degrees, by which gridded model data will be averaged to find a single vertical porfile.
+   :type box_avg_size: int, optional, Default is `0.10`
+   :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting data.
    :type hush: bool, optional, default is `False`
    :param clean_it: whether to return the raw_data object or a clean_data dict.
    :type clean_it: bool, optional, default is `True`
-   :return: clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information
+   :return: clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, omega & model information
    :rtype: dict
 
 
@@ -80,13 +80,13 @@ We can use the simple ``spy.get_model_data()`` function:
 
 Model key names 
 ^^^^^^^^^^^^^^^
-  - ``'era5'``: ECMWF ReAnalysis v5 (ERA5), reanalysis 
+  - ``'era5'``: ECMWF renalysis v5 (ERA5), reanalysis
 
-  - ``'rap'``, or ``'rap-ruc'``: RAPid refresh (RAP) / Rapid Update Cycle (RUC), reanalysis 
+  - ``'rap'``, or ``'rap-ruc'``: NCEP Rapid Refresh model (RAP) / Rapid Update Cycle model (RUC), reanalysis
 
-  - ``'ncep'``: NCEP Global Data Assimilation System/Final 0.25 degree, reanalysis 
+  - ``'ncep'``: NCEP Global Data Assimilation System/Final 0.25 degree (ncep-fnl), reanalysis
 
-  - ``'rap-now'``: RAPid refresh, latest analysis
+  - ``'rap-now'``: NCEP Rapid Refresh model, latest analysis
 
 
 .. _datasetkeys:
@@ -124,7 +124,13 @@ Latitude-Longitude pairs
    **BEWARE** This data is *reanalysis*, therefore not a forecast & not entirely representative of the actual atmosphere. Understanding the caveats of using reanalysis model data is important when utilizing this function. 
 
 .. tip::
-   **To access ERA5 data** you must set up an account through the CDS to use their API: See: https://cds.climate.copernicus.eu/api-how-to 
+   **To access ERA5 data** you -must- set API access to the ECMWF Climate Data Store (CDS). This includes....
+
+    - creating a CDS API account
+    - Setting up a CDS API personal access token
+    - Creating a $HOME/.cdsapirc file
+
+   Follow the instructions on the CDSAPI "how to" documentation -- See: https://cds.climate.copernicus.eu/how-to-api
 
 .. tip::
    **Is data access taking forever?** Sometimes the NCEP (RAP-RUC, NCEP-FNL) & ECMWF CDS (ERA5) servers are down and not able to be accessed. Sometimes these issues are resolved within hours, other times possibly a few days. 
@@ -144,9 +150,9 @@ Latitude-Longitude pairs
 Model Forecast Data | BUFKIT 
 -----------------------------
 
-**A function used to access BUFKIT model forecast vertical profile data**
+**A function used to access BUFKIT model forecast vertical profile data for a given BUFKIT site**
 
-.. py:function:: spy.get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, run_day=None, run_hour=None)
+.. py:function:: spy.get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, run_day=None, run_hour=None, hush=False, clean_it=True)
 
    Return a ``dict`` of 'cleaned up' model forecast data from a :ref:`given model<forecastmodels>`, for a given BUFKIT :ref:`site identifier<forecastsites>`, forecast hour, & model-run-date
 
@@ -156,17 +162,19 @@ Model Forecast Data | BUFKIT
    :type station: str, required
    :param fcst_hour: valid forecast hour
    :type fcst_hour: int, required
-   :param year: valid year
-   :type year: str, required
-   :param month: valid month
-   :type month: str, required
-   :param day: valid day
-   :type day: str, required
-   :param hour: valid hour
-   :type hour: str, required
+   :param run_year: valid year
+   :type run_year: str, optional, Default=None
+   :param run_month: valid month
+   :type run_month: str, optional, Default=None
+   :param run_day: valid day
+   :type run_day: str, optional, Default=None
+   :param run_hour: valid hour
+   :type run_hour: str, optional, Default=None
    :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting data.
    :type hush: bool, optional, default is `False`
-   :return: :ref:`clean_data<datadescription>`, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information
+   :param clean_it: whether to return the raw_data object or a clean_data dict.
+   :type clean_it: bool, optional, default is `True`
+   :return: :ref:`clean_data<datadescription>`, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, omega, & model information
    :rtype: dict
 
 .. _forecastsites:
@@ -197,13 +205,25 @@ Available Models:
 
 Model key names 
 ^^^^^^^^^^^^^^^
-  - ``hrrr``: High Resolution Rapid Refresh, analysis (F00) & forecast
-  - ``rap``: RAPid refresh, analysis (F00) & forecast
-  - ``nam``: North American Mesoscale model, analysis (F00) & forecast
-  - ``namnest``: Nested North American Mesoscale model, analysis (F00) & forecast
-  - ``gfs``: Global Forecast System, analysis (F00) & forecast 
-  - ``sref``: Short Range Ensemble Forecast, analysis (F00) & forecast
-  - ``hiresw``: High RESolution Window forecast system, analysis (F00) & forecast
+  - ``hrrr``: High Resolution Rapid Refresh, analysis (F00) & forecast; out to forecast hour 48
+  - ``rap``: Rapid Refresh Model, analysis (F00) & forecast; out to forecast hour 51
+  - ``nam``: North American Mesoscale Model, analysis (F00) & forecast; out to forecast hour 48
+  - ``namnest``: Nested North American Mesoscale model, analysis (F00) & forecast; out to forecast hour 60
+  - ``gfs``: Global Forecast System, analysis (F00) & forecast; out to forecast hour 180
+  - ``sref``: Short Range Ensemble Forecast, analysis (F00) & forecast; out to forecast hour 84
+  - ``hiresw``: High Resolution Window Forecast System, analysis (F00) & forecast; out to forecast hour 48
+
+
+.. tip::
+   Running the ``get_bufkit_data()`` function without date kwargs will return the latest available forecast.
+   Example:
+
+   .. code-block:: python
+       :linenos:
+
+       # RAP model for site KGFK at forecast hour 5
+       spy.get_bufkit_data('rap', 'kgfk', 5)
+
 
 
 .. tip:: 
@@ -228,11 +248,11 @@ Observed Data | RAOB & IGRAv2
 - This function will determine which dataset the user would like to access (RAOB from the University of Wyoming, or IGRAv2 from the IGRAv2 dataset) based on the provided station identifier, then search the appropriate dataset. 
 
 
-.. py:function:: spy.get_obs_data(station, year, month, day, hour)
+.. py:function:: spy.get_obs_data(station, year, month, day, hour, hush=False, clean_it=True)
 
    Return a ``dict`` of 'cleaned up' observed profile data
 
-   :param station: a three digit RAOB identifier (such as: 'DTX') or 11 digit IGRAv2 identifier (such as: 'GMM00010393')
+   :param station: may be a three digit RAOB identifier (such as: 'DTX'), 5 digit WMO identifier (such as: '72317'), or 11 digit IGRAv2 identifier (such as: 'GMM00010393')
    :type station: str, required
    :param year: launch year
    :type year: str, required
@@ -244,11 +264,13 @@ Observed Data | RAOB & IGRAv2
    :type hour: str, required
    :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting data.
    :type hush: bool, optional, default is `False`
-   :return: :ref:`clean_data<datadescription>`, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information
+   :param clean_it: whether to return the raw_data object or a clean_data dict.
+   :type clean_it: bool, optional, default is `True`
+   :return: :ref:`clean_data<datadescription>`, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & profile information
    :rtype: dict
 
 .. note::
-   Some data in these archives may be missing, incomplete or on occasion mislabled. 
+   Some data in these archives may be missing, incomplete or on occasion mislabled. If you can't find a RAOB you know for sure exists, try increasing or decreasing the launch_hour by 1 hour.
 
 
 .. _raobsites:
@@ -293,15 +315,17 @@ Observed Data | ACARS Aircraft Obs
 
       Return a :ref:`list of strings<acarslists>` that represents ACARS profiles for a given date and hour.
 
-   .. py:function:: .get_profile(profile)
+   .. py:function:: .get_profile(profile, hush=False, clean_it=True)
 
       Return a ``dict`` of 'cleaned up' ACARS observation profile data. Do so by selecting one of the profile string :ref:`"IDs"<acarslists>` listed by ``list_profiles()`` and pasting it as an argument in ``get_profile()``
 
       :param profile: profile :ref:`"ID"<acarslists>`
       :type profile: str, required
-      :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting data.
-      :type hush: bool, optional, default is `False`
-      :return: :ref:`clean_data<datadescription>`, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information
+   :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting data.
+   :type hush: bool, optional, default is `False`
+   :param clean_it: whether to return the raw_data object or a clean_data dict.
+   :type clean_it: bool, optional, default is `True`
+      :return: :ref:`clean_data<datadescription>`, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & profile/flight information
       :rtype: dict
 
 .. _acarslists:
@@ -343,31 +367,6 @@ Here is a simple example of the ACARS data retrieval functionality:
 ****************************************
 
 
-Observed Data | VAD radar data
--------------------------------
-
-.. _vaddata:
-
-.. py:function:: pyart_radar_profile(nexrad_site, scan_dt, from_file=False, data_file='none')
-
-   Return a ``dict`` of 'cleaned up' radar VAD data. This radar data loader and VWP creator function is powered by PyArt 
-   (https://arm-doe.github.io/pyart/)
-
-   :param nexrad_site: station ID (``'KDTX'``)
-   :type nexrad_site: str, required
-   :param scan_dt: the date and time of the requested scan (``datetime(2021, 12, 11, 4, 24)``)
-   :type scan_dt: datetime obj, required
-   :param from_file: whether or not to search the NEXRAD AWS database or look for a local file, default is False
-   :type from_file: bool, optional
-   :param data_file: the filename of the local radar file to use
-   :type data_file: str, optional
-
-
-
-
-******************************************
-
-
 
 .. _datadescription:
 
@@ -382,6 +381,7 @@ The profile data this `dict` contains...
    + ``clean_data['Td']``: an `array` of dewpoint data
    + ``clean_data['u']``: an `array` of u-component of wind data 
    + ``clean_data['v']``: an `array` of v-component of wind data
+   + ``clean_data['omega']``: an `array` of vertical velocity -- model data only
 
 The profile metadata this `dict` contains (via `clean_data['site_info']`)...
    + ``clean_data['site_info']['site-name']`` 
@@ -404,98 +404,64 @@ The profile metadata this `dict` contains (via `clean_data['site_info']`)...
    + ``clean_data['site_info']['valid-time']`` 
          - the data's valid time as a `list` of `strs`
 
+**New to v3.0.5, profile metadata also contains pre-built plot titles (via `clean_data['titles']`). This will make creating titles manually for custom data sources easier.**
+
+
+
 Below is an example:
 
       .. code-block:: python
 
-         {'p': array([944. , 926.4, 925. , 894.5, 863.5, 850. , 848. , 833.4, 804.1,
-                 795. , 775.7, 774. , 748. , 721.2, 720. , 700. , 685. , 674. ,
-                 670. , 651. , 645.1, 630. , 621.3, 621. , 598.2, 591. , 587. ,
-                 583. , 572. , 554. , 509. , 500. , 473.6, 471. , 446. , 442. ,
-                 425. , 418. , 402. , 400. , 399. , 395. , 386. , 382. , 370. ,
-                 354.7, 354. , 336. , 311.2, 300. , 297. , 279. , 250. , 241. ,
-                 239. , 237.6, 232. , 200. , 194. , 190. , 188. , 170. , 168.9,
-                 165. , 162. , 161. , 160.6, 155. , 152.8, 150. , 138.2, 135. ,
-                 131.3, 131. , 130. , 127. , 125. , 124.8, 122. , 118.7, 118. ,
-                 113. , 112. , 111. , 108. , 103. , 102. , 101. , 100. ]) <Unit('hectopascal')>,
-          'z': array([  446,   610,   623,   914,  1219,  1356,  1376,  1524,  1829,
-                  1926,  2134,  2152,  2438,  2743,  2757,  2990,  3168,  3300,
-                  3349,  3584,  3658,  3850,  3962,  3966,  4267,  4364,  4419,
-                  4473,  4625,  4877,  5542,  5680,  6096,  6137,  6550,  6617,
-                  6911,  7035,  7323,  7360,  7378,  7452,  7620,  7696,  7925,
-                  8230,  8243,  8612,  9144,  9400,  9470,  9900, 10640, 10880,
-                 10935, 10973, 11128, 12070, 12260, 12389, 12454, 13067, 13106,
-                 13246, 13356, 13394, 13411, 13628, 13716, 13830, 14326, 14466,
-                 14630, 14645, 14690, 14831, 14927, 14935, 15075, 15240, 15278,
-                 15544, 15599, 15655, 15826, 16123, 16184, 16247, 16310]) <Unit('meter')>,
-          'T': array([ 26. ,  24.3,  24.2,  21.7,  19.2,  18. ,  17.4,  16.4,  14.3,
-                  13.6,  13.4,  13.4,  10.9,   8.3,   8.2,   6.4,   5.2,   5.8,
-                   6. ,   4.2,   3.6,   2. ,   2.4,   2.4,   0.2,  -0.5,  -0.7,
-                  -0.5,  -0.9,  -3.1,  -9.1, -10.3, -14.1, -14.5, -16.9, -16.7,
-                 -19.1, -19.7, -22.3, -22.5, -22.5, -22.5, -23.9, -24.5, -26.7,
-                 -29.6, -29.7, -32.7, -36.1, -37.7, -37.9, -41.1, -47.1, -49.3,
-                 -49.5, -49.8, -51.1, -59.3, -61.3, -62.3, -62.9, -68.1, -68.3,
-                 -68.9, -68.3, -63.9, -63.8, -62.1, -62.8, -63.7, -68.5, -69.9,
-                 -70.3, -70.3, -68.1, -66.5, -65.3, -65.3, -65.3, -63.8, -63.5,
-                 -62.9, -61.9, -60.5, -59.1, -58.7, -57.5, -55.3, -55.3]) <Unit('degree_Celsius')>,
-          'Td': array([ 17. ,  16.3,  16.2,  15.6,  15. ,  14.7,  14.8,  14.2,  13. ,
-                  12.6,  10. ,   9.8,   8.7,   7.5,   7.4,   5.3,   4.1,  -1.2,
-                  -3. ,  -3.8,  -3.6,  -3. ,  -4.5,  -4.6,  -4.4,  -4.3,  -5.3,
-                  -8.5, -12.9, -14.1, -17.1, -17.3, -17.4, -17.4, -20.1, -22.7,
-                 -26.1, -29.7, -31.3, -31.5, -31.5, -35.5, -37.6, -38.5, -36.8,
-                 -34.5, -34.4, -36.4, -39.8, -41.4, -41.5, -45.7, -50.8, -53. ,
-                 -54.3, -54.7, -56.1, -64.3, -66.3, -67.3, -66.9, -72. , -72.2,
-                 -72.9, -72.5, -68.5, -68.4, -67.1, -67.8, -68.7, -73.5, -74.9,
-                 -75.3, -75.3, -74.1, -74.5, -74.3, -74.4, -76.3, -76.5, -76.5,
-                 -78.9, -78.9, -78.5, -79.1, -83.7, -83.5, -83.3, -83.3]) <Unit('degree_Celsius')>,
-          'u': array([ 10.7246222 ,  10.60660172,  10.60660172,  17.        ,
-                  22.36948102,  26.99707961,  26.99707961,  27.63986722,
-                  31.81980515,  34.37362398,  39.83431104,  39.83431104,
-                  42.13244437,  45.05336244,  45.05336244,  39.83431104,
-                  39.99960775,  40.12982058,  40.22445359,  40.28302882,
-                  40.30508653,  40.30508653,  40.30508653,  40.30508653,
-                  55.92124435,  56.73165519,  56.73165519,  57.52478501,
-                  57.50175672,  58.97894719,  60.00171105,  60.62177826,
-                  64.08587988,  64.08587988,  58.51531863,  58.51531863,
-                  55.35225748,  53.05840464,  49.9682747 ,  49.9682747 ,
-                  49.9682747 ,  48.32997061,  44.23421039,  43.93899135,
-                  44.16729559,  50.78742675,  50.78742675,  50.78742675,
-                  51.60657879,  51.09549882,  51.09549882,  53.85980316,
-                  57.09739058,  55.28477501,  54.37846722,  54.37846722,
-                  55.28477501,  61.62892952,  64.34785288,  67.06677624,
-                  67.97308403,  77.94246969,  78.84877747,  91.15018422,
-                  99.6074178 , 102.42649567, 102.42649567,  80.39200027,
-                  71.59831518,  69.53725394,  67.61480784,  52.13005469,
-                  33.7059555 ,  34.47199994,  37.03650542,  45.28821067,
-                  51.09549882,  51.09549882,  45.033321  ,  37.23909236,
-                  37.60864741,  37.74069899,  38.27679749,  37.58770483,
-                  37.48920614,  36.5444686 ,  36.63991854,  35.80278823,
-                  35.86300913]) <Unit('knot')>,
-          'v': array([ 8.99902654, 10.60660172, 10.60660172, 29.44486373, 31.94692973,
-                 32.17386661, 32.17386661, 32.93991105, 31.81980515, 32.05392292,
-                 33.4249557 , 33.4249557 , 35.35331853, 31.546704  , 31.546704  ,
-                 33.4249557 , 34.77112854, 36.13305274, 37.5099098 , 38.90086875,
-                 40.30508653, 40.30508653, 40.30508653, 40.30508653, 46.92349551,
-                 45.94038855, 45.94038855, 44.9432877 , 43.33068167, 41.29750342,
-                 36.05266524, 35.        , 37.        , 37.        , 36.56442923,
-                 36.56442923, 35.94617631, 35.78834582, 34.98816262, 34.98816262,
-                 34.98816262, 33.84100974, 30.97312756, 29.63722388, 25.5       ,
-                 35.56173905, 35.56173905, 35.56173905, 36.13531549, 29.5       ,
-                 29.5       , 28.63776533, 26.62495049, 25.77971397, 25.3570957 ,
-                 25.3570957 , 25.77971397, 28.7380418 , 30.00589658, 31.27375137,
-                 31.69636963, 36.34517051, 36.76778877, 33.1759539 , 36.25413519,
-                 37.28019562, 37.28019562, 35.79282459, 33.38684268, 25.30949061,
-                 18.11733316, 25.42552651, 28.28265483, 28.92544244, 28.93608934,
-                 29.41050789, 29.5       , 29.5       , 26.        , 21.5       ,
-                 20.84681367, 16.01997627, 14.69308593, 13.68080573, 10.74985688,
-                  5.78807521,  5.14940474,  3.76302468,  3.13760674]) <Unit('knot')>,
-          'site_info': {'site-id': 'KAPX',
-           'site-name': 'GAYLORD',
-           'site-lctn': 'MI US',
-           'site-latlon': [44.92, -84.72],
-           'site-elv': 446.0,
-           'source': 'RAOB OBSERVED PROFILE',
-           'model': 'no-model',
-           'fcst-hour': 'no-fcst-hour',
-           'run-time': ['no-run-time'],
-           'valid-time': ['2022', '05', '20', '18']}}
+        {'p': <Quantity([984.7 981.8 976.4 967.1 953.4 935.8 914.8 892.  867.2 839.6 809.2 775.8
+          739.6 700.4 658.4 613.4 566.1 520.1 478.7 441.6 408.1 377.8 350.5 325.8
+          303.6 283.6 265.5 248.7 233.5 219.6 205.7 191.7 177.7 163.8 149.8 135.9
+          121.9 108.   94.   81.   70.6  62.2  54.3], 'hectopascal')>,
+         'z': <Quantity([  262.29   287.38   334.72   417.39   540.9    701.94   897.92  1116.39
+           1360.38  1638.85  1954.13  2311.53  2712.99  3165.6   3673.36  4247.56
+           4889.99  5558.47  6202.    6817.56  7410.43  7981.44  8527.44  9050.51
+           9548.   10021.78 10474.5  10917.67 11339.77 11745.44 12172.28 12626.51
+          13109.32 13623.36 14184.85 14794.86 15466.97 16205.52 17052.44 17961.73
+          18802.02 19579.02 20415.56], 'meter')>,
+         'T': <Quantity([ 14.84  17.54  20.04  21.34  21.44  20.44  21.44  22.74  21.64  19.94
+           17.54  14.84  11.94   8.64   5.24   1.84  -1.86  -6.06 -10.56 -14.66
+          -18.36 -22.36 -26.66 -30.66 -34.06 -37.26 -40.06 -43.06 -45.96 -48.76
+          -51.56 -54.46 -56.86 -58.26 -58.66 -59.66 -64.26 -65.26 -64.26 -64.66
+          -63.86 -63.36 -62.16], 'degree_Celsius')>,
+         'Td': <Quantity([   9.3     8.79    8.32    7.88    7.01    6.38   -2.2   -13.24  -14.49
+           -24.86  -17.51   -9.57   -7.31   -9.9   -12.11  -12.99  -16.41  -20.62
+           -25.37  -30.93  -36.12  -40.09  -42.47  -45.57  -49.39  -52.06  -54.3
+           -55.81  -58.64  -62.27  -64.93  -65.45  -68.93  -74.24  -74.84 -101.09
+          -101.6  -102.16 -102.8  -103.49 -104.11 -104.68 -105.28], 'degree_Celsius')>,
+         'u': <Quantity([-2.33041109 -2.91567705 -2.3323691   0.77626972  3.5007069   5.63835178
+           9.13497097 10.6914363  13.41432206 20.79403892 23.12721208 21.57710061
+          20.41478107 21.38502534 22.54815854 23.51844683 24.29878342 23.71105505
+          20.98924152 22.35724617 28.57257978 28.18931303 25.65927737 28.56994968
+          28.57863291 29.73848546 31.87877692 31.48766321 29.74415098 27.98817845
+          27.59730449 26.43360693 23.32832754 21.76679295 23.12850533 25.85409643
+          33.62524652 19.4383033   8.94253878  9.13760323  6.0283743   6.02452813
+           0.38886559], 'knot')>,
+         'v': <Quantity([ 3.88459575  9.13602361 12.24993691 13.79818123 13.99892679 13.41310886
+          10.68811982  9.33002089  9.33014275  6.99796725  2.91344493  1.36129697
+          -1.35952707 -4.85855855 -5.83135029 -5.44263343 -4.85978647 -4.08282603
+          -4.27412453 -5.44184192 -4.46923758 -0.19680173 -0.19257433 -4.0813693
+          -2.52543878 -1.75116608 -3.49692463 -2.13557144  0.97112424  2.71960789
+           2.13803291  0.5813991   1.55355538  5.2458388   6.21890192 20.41100923
+          13.40831073  9.91285856 15.74811418  9.3310132   9.72277241  7.38416961
+           6.99920592], 'knot')>,
+         'omega': <Quantity([ 0.   0.   0.   0.   0.   0.1  0.1  0.1 -0.1 -0.3 -0.4 -0.2 -0.1  0.
+           0.   0.1  0.1  0.   0.   0.   0.   0.   0.   0.1  0.1  0.   0.   0.
+          -0.1  0.   0.   0.1  0.1  0.   0.   0.   0.   0.   0.   0.   0.   0.
+           0. ], 'pascal / second')>,
+         'site_info': {'site-id': 'KGFK',
+          'site-name': 'GRAND FORKS INTL',
+          'site-lctn': 'ND',
+          'site-latlon': [47.95, -97.18],
+          'site-elv': 257,
+          'source': 'BUFKIT FORECAST PROFILE',
+          'model': 'RAP',
+          'fcst-hour': 'F00',
+          'run-time': ['2024', '09', '28', '04'],
+          'valid-time': ['2024', '09', '28', '04']},
+         'titles': {'top_title': 'BUFKIT MODEL FORECAST PROFILE | 04Z RAP F00',
+          'left_title': ' RUN: 09/28/2024 04Z  |  VALID: 09/28/2024 04Z',
+          'right_title': 'KGFK - GRAND FORKS INTL, ND | 47.95, -97.18    '}}

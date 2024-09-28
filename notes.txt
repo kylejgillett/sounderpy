@@ -5,16 +5,16 @@ UPDATE NOTES
 ================================================================================================================
 	- Checks                                 DONE?          DOC-ed?          LOCAL CHECK          PyPi-CHECK
 	------------------------------------------------------------------------------------------------------------
-	- interp bad UW hgt......................DONE
-	- add 'titles' to clean_data.............DONE
-	- interp sfc modification................DONE
-	- add sfc wind modification..............DONE
-	- add "return dirty data" kwarg..........DONE
-	- add omega plots for model data.........DONE
-	- separate get_data funcs to py files....DONE
-	- update/fix cdsapi era5 access..........DONE
-	- NWS GFK requests? (dcin)...............DONE
-	- "classic" params box?..................DONE
+	- interp bad UW hgt......................DONE............................DONE..............
+	- add 'titles' to clean_data.............DONE............................DONE..............
+	- interp sfc modification................DONE............................DONE..............
+	- add sfc wind modification..............DONE............................DONE...............DONE
+	- add "return dirty data" kwarg..........DONE............................DONE...............
+	- add omega plots for model data.........DONE............................DONE...............DONE
+	- separate get_data funcs to py files....DONE............................DONE...............DONE
+	- update/fix cdsapi era5 access..........DONE............................DONE...............DONE
+	- NWS GFK requests? (dcin)...............DONE............................DONE...............DONE
+	- "classic" params box?..................DONE............................DONE...............DONE
 	- add sounding param timeseries?
 
 	- check and correct docs

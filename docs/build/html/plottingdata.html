@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>📈 Tools for Plotting Data &mdash; SounderPy v3.0.4 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+  <title>📈 Tools for Plotting Data &mdash; SounderPy v3.0.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
   
@@ -16,8 +16,8 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=ab02ba7d"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/documentation_options.js?v=0f7a3e64"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -298,7 +298,7 @@
 </section>
 <section id="building-vad-hodographs">
 <span id="vadhodographs"></span><h2>Building VAD Hodographs<a class="headerlink" href="#building-vad-hodographs" title="Link to this heading"></a></h2>
-<p><em>Coming soon – function is still in development</em></p>
+<p><em>Experimental function, but available for use. Errors are possible.</em></p>
 <p>SounderPy now offers the ability to plot NEXRAD radar VAD data on a hodograph using the <code class="docutils literal notranslate"><span class="pre">spy.build_vad_hodograph()</span></code> function:</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="spy.build_vad_hodograph">
@@ -326,16 +326,6 @@
 
 <section id="id3">
 <h3>Examples<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
-<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
-
-<span class="c1"># get VAD data using `pyart_radar_profile()`</span>
-<span class="n">vad_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">pyart_radar_profile</span><span class="p">(</span><span class="s1">&#39;kgrr&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span>
-
-<span class="c1"># build the hodograph!</span>
-<span class="n">spy</span><span class="o">.</span><span class="n">build_vad_hodograph</span><span class="p">(</span><span class="n">vad_data</span><span class="p">)</span>
-</pre></div>
-</div>
 <a class="reference internal image-reference" href="_images/example_vad-hodograph.png"><img alt="_images/example_vad-hodograph.png" src="_images/example_vad-hodograph.png" style="width: 800px;" /></a>
 <hr class="docutils" />
 </section>

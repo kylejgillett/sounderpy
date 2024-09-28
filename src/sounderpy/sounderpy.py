@@ -230,20 +230,11 @@ def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False,
     '''
     
     print(f'> SOUNDING PLOTTER FUNCTION\n  ---------------------------------')
-        
-    if style == 'full':
-        if save:
-            __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, show_radar, radar_time, map_zoom, modify_sfc).savefig(filename, bbox_inches='tight')
-        else:
-            __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, show_radar, radar_time, map_zoom, modify_sfc).show()
 
-    elif style == 'simple':
-        if save:
-            __simple_sounding(clean_data, color_blind, dark_mode, storm_motion).savefig(filename, bbox_inches='tight')
-        else:
-            __simple_sounding(clean_data, color_blind, dark_mode, storm_motion).show()
-
-
+    if save:
+        __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, show_radar, radar_time, map_zoom, modify_sfc).savefig(filename, bbox_inches='tight')
+    else:
+        __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, show_radar, radar_time, map_zoom, modify_sfc).show()
 
 
 
@@ -253,7 +244,7 @@ def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False,
 ############
 # FULL HODOGRAPH
 #########################################################################
-def build_hodograph(clean_data, save=False, dark_mode=False, storm_motion='right_moving', sr_hodo=False, filename='sounderpy_hodograph'):
+def build_hodograph(clean_data, save=False, dark_mode=False, storm_motion='right_moving', sr_hodo=False, modify_sfc=None, filename='sounderpy_hodograph'):
     
     '''
        Return a full sounding plot of SounderPy data, ``plt`` 
@@ -277,9 +268,9 @@ def build_hodograph(clean_data, save=False, dark_mode=False, storm_motion='right
     print(f'> HODOGRAPH PLOTTER FUNCTION --\n-------------------------------')
     
     if save:
-        __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo).savefig(filename, bbox_inches='tight')
+        __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc).savefig(filename, bbox_inches='tight')
     else:
-        __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo).show()
+        __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc).show()
 
 
 
@@ -338,7 +329,7 @@ def build_composite(data_list, shade_between=True, cmap='viridis', colors_to_use
 
 
 ############
-# COMPOSITE SOUNDING
+# VAD HODOGRAPH
 #########################################################################
 def build_vad_hodograph(vad_data, save=False, dark_mode=False, storm_motion='right_moving', sr_hodo=False,
                         filename='vad_hodograph'):
