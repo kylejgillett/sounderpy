@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sounderpy"
+version = "3.0.5dev7"
+authors = [
+  { name="Kyle J Gillett, University of North Dakota", email="kyle.gillett@und.edu" },
+]
+description = "Vertical Profile Data Retrieval and Analysis Tool For Python"
+readme = "README.md"
+keywords = ["meteorology", "science", "data-analysis", "weather", "forecasting"]
+requires-python = ">=3.1"
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Atmospheric Science",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+	"cartopy>=0.21.0",
+	"cdsapi>=0.7.3",
+	"ecape-parcel>=1.2.0.2",
+	"matplotlib>=3.3.0",
+	"metpy>=1.5.1",
+	"netcdf4>=1.6.4",
+	"numpy>=1.20.0",
+	"pandas>=1.2.0",
+	"siphon>=0.9",
+	"scipy>= 1.10.1",
+	"xarray>=0.18.0",
+]
+
+[project.urls]
+"Docs" = "https://kylejgillett.github.io/sounderpy/"
+"Code" = "https://github.com/kylejgillett/sounderpy"
+"Operational Site" = "https://sounderpysoundings.anvil.app/"
+"PyPi" = "https://pypi.org/project/sounderpy/"
+"My Website" = "https://kylegillettphoto.com"

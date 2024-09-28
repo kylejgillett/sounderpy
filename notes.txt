@@ -1,0 +1,127 @@
+UPDATE NOTES 
+
+
+- TODO v3.0.5
+================================================================================================================
+	- Checks                                 DONE?          DOC-ed?          LOCAL CHECK          PyPi-CHECK
+	------------------------------------------------------------------------------------------------------------
+	- interp bad UW hgt......................DONE
+	- add 'titles' to clean_data.............DONE
+	- interp sfc modification................DONE
+	- add sfc wind modification..............DONE
+	- add "return dirty data" kwarg..........DONE
+	- add omega plots for model data.........DONE
+	- separate get_data funcs to py files....DONE
+	- update/fix cdsapi era5 access..........DONE
+	- NWS GFK requests? (dcin)...............DONE
+	- "classic" params box?..................DONE
+	- add sounding param timeseries?
+
+	- check and correct docs
+	- check and correct example nbs
+
+
+
+
+	POSSIBLE -----------------------------
+	- Add dropsonde_data() function ? 
+	- Add build_dropsonde() function ?
+	- Add new ACARS data source ?
+
+
+
+
+- TODO v3.0.4
+================================================================================================================
+	- Checks                                 DONE?          DOC-ed?          LOCAL CHECK          PyPi-CHECK
+	------------------------------------------------------------------------------------------------------------
+	- Check SM and SRW.......................DONE...........NA...............CHECKED
+	- fix docs for sounding_params...........DONE...........DONE.............CHECKED
+	- Publish radar hodo.....................DONE...........NA...............CHECKED
+	- Fix radar profile calcs................DONE...........NA...............CHECKED
+	- Fix BUFKIT NAM/GFS Fhrs................DONE...........NA...............CHECKED
+	- BUFKIT NAM4km -> NAMNEST...............DONE...........NA...............CHECKED
+	- Correct URL builder for BUFKIT sites 
+		with '#' in the ID...................DONE...........NA...............
+
+	PLOT IMPROVEMENTS ---
+	- clip_on = True for RH text.............DONE...........NA...............CHECKED
+	- PWAT digits............................DONE...........NA...............CHECKED
+	- Hodo height markers....................DONE...........NA...............CHECKED
+	- sfc_correction.........................DONE...........DONE.............CHECKED
+	- radar map and radar map settings.......DONE...........DONE.............CHECKED
+	- EIL kinematics.........................DONE...........NA...............CHECKED
+	- Add wetbulb zero hgt marker............DONE...........NA...............CHECKED
+	- Add max parcel Level...................DONE...........NA...............CHECKED
+	- Declare map water colors...............DONE...........NA...............CHECKED
+	- CUSTOM kinematics readout colors.......DONE...........NA...............CHECKED
+
+
+
+
+
+- TODO v3.0.3
+================================================================================================================
+	- Checks                                 DONE?          DOC-ed?          LOCAL CHECK          PyPi-CHECK
+	------------------------------------------------------------------------------------------------------------
+	- RM/LM/MW sm points.....................DONE...........NA...............
+	- Hodograph Plot MUCAPE read out.........DONE...........NA...............
+	- Parcel logic docs need quotes..........DONE...........DONE.............
+
+
+
+
+
+- TODO v3.0.2
+================================================================================================================
+	- Checks                                 DONE?          DOC-ed?          LOCAL CHECK          PyPi-CHECK
+	------------------------------------------------------------------------------------------------------------
+	- ECAPE with ACARS ????..................can not be fixed...................................................
+	- ERA5 parse issue.......................DONE...........NA..................................................
+	- Replace NCAPE w/ECAPE..................DONE...........NA.................CHECKED.............CHECKED......
+	- RH w/ hgt annotations..................DONE...........NA.................CHECKED.............CHECKED......
+	- 6-9km Kinematics.......................DONE...........NA.................CHECKED.............CHECKED......
+	- Td fix for bufkit data.................DONE...........NA.................CHECKED.............CHECKED......
+	- Composite sounding colormap............DONE...........DONE...............CHECKED.............CHECKED......
+	- NEW ECAPE..............................DONE...........DONE...............CHECKED.............CHECKED......
+	- Storm motions!.........................DONE...........DONE...............CHECKED.............CHECKED......
+	- Add VAD function?......................DONE...........DONE...............CHECKED.............NA...........
+	- Add Storm Motion Logic to hodograph....DONE...........NA.................CHECKED.............CHECKED......
+
+
+	EXTRAS
+	- GeoPy Locations Function?.............
+	- Herbie model data example?............
+
+	OTHER
+	- _local modules -> public modules.....................DONE 
+	
+	- UPDATE DOCS..........................................DONE
+	- remake all plots and notebooks for docs..............DONE
+
+
+
+
+
+	
+- TODO v3.0.1
+================================================================================================================
+	- Checks                                 DONE?   DOC-ed?
+	------------------------------------------------------------------------------------------------------------
+	- Fix EIL................................DONE....NA.................PyPi Checked
+	- Finish reanalysis parse function.......DONE....Y..................PyPi Checked 
+	- Add new parse function.................DONE....Y..................PyPi Checked
+	- investigate SRV calc...................DONE....NA.................PyPi Checked
+	- fix frz point calc.....................DONE....NA.................PyPi Checked
+	- netCDF4 in req.txt.....................DONE....NA.................PyPi Checked
+	- Plot titles with box area..............DONE....NA.................PyPi Checked
+	- RAOB IDs...............................DONE....NA.................PyPi Checked
+	- last bufkit hour.......................DONE....NA.................PyPi Checked
+	
+
+	- WEIRD BUFKIT ECAPE..........maybe fixed with ECAPE update??
+	- NEW ECAPE....................................todo next time
+	- Add VAD function?............partially done, todo next time
+
+
+	-UPDATE DOCS............................DONE

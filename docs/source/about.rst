@@ -1,0 +1,170 @@
+📖 About
+=========
+
+SounderPy: A sounding visualization tool for severe-weather analysis and forecasting 
+--------------------------------------------------------------------------------------
+
+
+.. image:: _static/images/example-sounding_light4.png
+   :width: 500 px
+   :align: center
+
+***************************************************************
+
+
+**ABSTRACT:** SounderPy is a simple, open-source Python package for retrieving and plotting 
+vertical profile (sounding) data. Built for simplicity and reliability for all uses and users, this 
+project’s goal is to provide a uniform method for sounding analysis across multiple data types. 
+Severe weather analysis and forecasting requires a sound comprehension of thermodynamic and 
+kinematic properties of the environment. SounderPy makes this possible with robust access to 
+data and custom visualizations. The tool creates complex yet effective sounding and hodograph 
+plots with high readability which are designed specifically for severe weather analysis and 
+forecasting. SounderPy is capable of retrieving and plotting model forecast data, observed 
+radiosonde data, Aircraft Communications Addressing and Reporting System (ACARS) 
+observation data, and model reanalysis data. All of this functionality can be completed in three
+simple lines of code or less, making SounderPy an accessible tool for both Python experts and 
+novices. A number of scientific Python libraries build the base of SounderPy’s efficient and 
+durable functionality, such as NumPy, Matplotlib, xarray, Metpy, and SHARPpy. SounderPy is 
+available through GitHub and PyPi and is distributed under an MIT license. 
+
+
+SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines, Columbia, and Grand Rapids National Weather Service Offices, the State University of New York at Albany, Mississippi State University, the University of North Dakota, and others. Many students at various universities have used SounderPy in projects, posters, and papers, such as students at The University of Oklahoma, Ohio State University, Central Michigan University, Iowa State University, & Rizal Technological University.
+
+☕ SounderPy is an open-source package developed on my own time. If you would you like to support continued SounderPy development, consider "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"! ☕
+
+Installation
+------------
+
+SounderPy is available on PyPi and can be installed via ``pip``:
+
+	.. code-block:: console
+
+	   pip install sounderpy 
+
+or via ``conda forge`` by first setting up the ``conda-forge`` channel:
+
+	.. code-block:: console
+
+	   conda config --add channels conda-forge
+	   conda config --set channel_priority strict
+
+	then you can install sounderpy via:
+
+	.. code-block:: console
+
+		conda install sounderpy 
+
+	or 
+
+	.. code-block:: console
+
+		mamba install sounderpy
+
+
+In your Python document, its fun to import SounderPy as ``spy``!:
+
+.. code-block:: python
+
+	import sounderpy as spy
+
+
+
+***************************************************************
+
+Sample Basic Use 
+-----------------
+
+SounderPy is designed for simple and efficient use for all users. Below is a basic example plotting an 03/31/2023 12z HRRR forecast profile at forecast hour 8 for BUFKIT site 'KMLI':
+
+.. code-block:: python
+
+   import sounderpy as spy
+   clean_data = spy.get_bufkit_data('hrrr', 'kmli', 8, '2023', '03', '31', '12')
+   spy.build_sounding(clean_data)
+
+Those three basic lines will make this!:
+
+.. image:: _static/images/example-sounding_light2.png
+   :alt: Example SounderPy Sounding
+
+
+More examples of these plots are available :ref:`here<gallery>`
+
+
+***************************************************************
+
+
+
+Authors and Contributors 
+-------------------------
+	**AUTHOR: Kyle J Gillett, University of North Dakota**
+
+	*CONTRIBUTOR: Scott Thomas, NWS Grand Rapids | VWP Hodograph, Buoy-sites listing*
+	*CONTRIBUTOR: Amelia R H Urquhart, University of Oklahoma | ecape-parcels library*
+	*CONTRIBUTOR: Daryl Herzmann, Iowa State University | SounderPy Feedstock for conda-forge*
+
+***************************************************************
+
+Citing SounderPy
+-----------------
+	.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.10443609.svg
+	   :target: https://doi.org/10.5281/zenodo.10443609
+	   :alt: DOI
+
+
+	in AMS format:
+	     Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.5). Py-Pi, https://pypi.org/project/sounderpy/
+
+
+***************************************************************
+
+
+References 
+----------
+
+	* Harris, C.R., Millman, K.J., van der Walt, S.J. et al. Array programming with NumPy. Nature 585, 357–362 (2020). DOI: 10.1038/s41586-020-2649-2.
+      
+
+	* Hoyer, S. & Hamman, J., (2017). xarray: N-D labeled Arrays and Datasets in Python. Journal of Open Research Software. 5(1), p.10. DOI: https://doi.org/10.5334/jors.148
+
+       
+	* J. D. Hunter, "Matplotlib: A 2D Graphics Environment", Computing in Science & Engineering, vol. 9, no. 3, pp. 90-95, 2007.
+
+      
+	* Ryan M. May, Sean C. Arms, Patrick Marsh, Eric Bruning, John R. Leeman, Kevin Goebbert, Jonathan E. Thielen, Zachary S Bruick, and M. Drew. Camron. Metpy: a Python package for meteorological data. 2023. URL: Unidata/MetPy, doi:10.5065/D6WW7G29.
+      
+
+	* Ryan M. May, Sean C. Arms, John R. Leeman, and Chastang, J. Siphon: A collection of Python Utilities for Accessing Remote Atmospheric and Oceanic Datasets. Unidata. 2017. [Available online at https://github.com/Unidata/siphon.] doi:10.5065/D6CN72NW.
+      
+
+	* Pauli Virtanen, Ralf Gommers, Travis E. Oliphant, Matt Haberland, Tyler Reddy, David Cournapeau, Evgeni Burovski, Pearu Peterson, Warren Weckesser, Jonathan Bright, Stéfan J. van der Walt, Matthew Brett, Joshua Wilson, K. Jarrod Millman, Nikolay Mayorov, Andrew R. J. Nelson, Eric Jones, Robert Kern, Eric Larson, CJ Carey, İlhan Polat, Yu Feng, Eric W. Moore, Jake VanderPlas, Denis Laxalde, Josef Perktold, Robert Cimrman, Ian Henriksen, E.A. Quintero, Charles R Harris, Anne M. Archibald, Antônio H. Ribeiro, Fabian Pedregosa, Paul van Mulbregt, and SciPy 1.0 Contributors. (2020) SciPy 1.0: Fundamental Algorithms for Scientific Computing in Python. Nature Methods, 17(3), 261-272.
+
+       
+	* Marsh, P., Halbert, K., Blumberg, G., Supinie, T., Esmaili, R., Szkodzinski, J., "SHARPpy: Sounding/Hodograph Analysis and Research Program in Python." GitHub. Available at: https://github.com/sharppy/SHARPpy.
+
+
+****************************************
+
+About the Author
+-----------------
+
+Hey! 
+
+Thank you so much for checking out and using SounderPy. My name is Kyle Gillett and I'm a master's student of Atmospheric Science at the University of North Dakota, and the developer of SounderPy. This tool started out as a way for me to internally house all of my data retrieval functions for plotting soundings. As you can see, it has since blossomed into a full-scale Python package.
+
+SounderPy is published on PyPi and the source code is available on GitHub -- this tool is an open source project. If you have found SounderPy useful in your work, I'd love to hear about it! The coolest part of this project has been hearing how many folks have been using this software. If you'd like to support continued SounderPy development, consider "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"! ☕. 
+
+*Have an issue?* You can `open a GitHub Issue <https://github.com/kylejgillett/sounderpy/issues>`_ or just shoot me a DM on `Twitter <https://twitter.com/wxkylegillett>`_!
+
+**Useful Links**
+
++ Check out the operational `SounderPy Sounding Analysis Site! <https://sounderpysoundings.anvil.app/>`_
++ Check out SounderPy `on GitHub <https://github.com/kylejgillett/sounderpy>`_
++ Check out SounderPy `on PyPi <https://pypi.org/project/sounderpy/>`_
++ Check out my `website <https://kylegillettphoto.com>`_
++ Get updates on SounderPy development on `Twitter <https://twitter.com/wxkylegillett>`_
++ Support SounderPy by "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"
+
+
+Thanks for using SounderPy!
+
