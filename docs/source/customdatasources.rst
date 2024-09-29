@@ -145,7 +145,7 @@ Here is an example. ``raw_data`` would be your custom data.
                     'site-lctn'   : 'ND',                               # could be another name, or the state
                     'site-latlon' : [47.9213, -97.087]                  # location lat/lon, list of floats
                     'site-elv'    : 257,                                # the profile's elevation in meters (int or float) (easily found on google)
-                    'source'      : 'UND AREOSPACE'                     # the 'source' which will be the main title component of the plot
+                    'source'      : 'UND AEROSPACE'                     # the 'source' which will be the main title component of the plot
                     'model'       : 'none',                             # model name if a model was involved
                     'fcst-hour'   : f'none',                            # forecast hour if a model was involved
                     'run-time'    : ['none', 'none', 'none', 'none'],   # model run date if a model was involved
@@ -153,7 +153,7 @@ Here is an example. ``raw_data`` would be your custom data.
 
         # declare the plot titles
         clean_data['titles'] = {
-                    'top_title': 'UNIVERSITY OF NORTH DAKOTA AREOSPACE | OBSERVED SOUNDING',
+                    'top_title': 'UNIVERSITY OF NORTH DAKOTA AEROSPACE | OBSERVED SOUNDING',
                     'left_title': 'VALID: 09/28/2024 - 16:15Z',
                     'right_title': 'GRAND FORKS, ND [47.9213, -97.087]    '}
 

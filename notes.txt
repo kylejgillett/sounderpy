@@ -5,29 +5,29 @@ UPDATE NOTES
 ================================================================================================================
 	- Checks                                 DONE?          DOC-ed?          LOCAL CHECK          PyPi-CHECK
 	------------------------------------------------------------------------------------------------------------
-	- interp bad UW hgt......................DONE............................DONE..............
-	- add 'titles' to clean_data.............DONE............................DONE..............
-	- interp sfc modification................DONE............................DONE..............
-	- add sfc wind modification..............DONE............................DONE...............DONE
-	- add "return dirty data" kwarg..........DONE............................DONE...............
-	- add omega plots for model data.........DONE............................DONE...............DONE
-	- separate get_data funcs to py files....DONE............................DONE...............DONE
-	- update/fix cdsapi era5 access..........DONE............................DONE...............DONE
-	- NWS GFK requests? (dcin)...............DONE............................DONE...............DONE
-	- "classic" params box?..................DONE............................DONE...............DONE
-	- correct cm1 sfc data output............DONE
-	- add sounding param timeseries?
+	- interp bad UW hgt......................DONE...........na/fix...........DONE..............
+	- add 'titles' to clean_data.............DONE...........done.............DONE..............
+	- interp sfc modification................DONE...........done.............DONE..............
+	- add sfc wind modification..............DONE...........done.............DONE...............DONE
+	- add "return dirty data" kwarg..........DONE...........done.............DONE...............
+	- add omega plots for model data.........DONE...........done.............DONE...............DONE
+	- separate get_data funcs to py files....DONE...........na/fix...........DONE...............DONE
+	- update/fix cdsapi era5 access..........DONE...........done.............DONE...............DONE
+	- NWS GFK requests? (dcin)...............DONE...........na/fix...........DONE...............DONE
+	- "classic" params box?..................DONE...........na/fix...........DONE...............DONE
+	- correct cm1 sfc data output............DONE...........na/fix...........
 
-	- check and correct docs
-	- check and correct example nbs
-
+	- check and correct/update docs
+	- check and correct/update example nbs
 
 
 
-	POSSIBLE -----------------------------
+
+	POSSIBLE/FUTURE -----------------------------
 	- Add dropsonde_data() function ? 
 	- Add build_dropsonde() function ?
 	- Add new ACARS data source ?
+    - add sounding param timeseries?
 
 
 
