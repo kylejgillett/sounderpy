@@ -55,6 +55,7 @@
 <p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customdatasources.html">✏️ Custom Data Sources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helpertools.html">🛠️ Helper Tools</a></li>
 </ul>
@@ -175,7 +176,7 @@
 <tr class="row-odd"><td><p>OU ACARS Archive</p></td>
 <td><p>acars_data()</p></td>
 <td><p>Observations</p></td>
-<td><p>2019-present</p></td>
+<td><p>2019-06/2024</p></td>
 </tr>
 <tr class="row-even"><td><p>The Unv. of WY RAOB Archive</p></td>
 <td><p>get_obs_data()</p></td>
@@ -186,11 +187,6 @@
 <td><p>get_obs_data()</p></td>
 <td><p>Observations</p></td>
 <td><p>1905-present</p></td>
-</tr>
-<tr class="row-even"><td><p>NWS NEXRAD AWS Archive</p></td>
-<td><p>pyart_radar_profile()</p></td>
-<td><p>Observations</p></td>
-<td><p>1990s-present</p></td>
 </tr>
 </tbody>
 </table>
@@ -219,6 +215,9 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#goofy-acars-profiles">Goofy ACARS Profiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#era5-data-access-not-working">ERA5 data access not working</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#rap-data-won-t-load">RAP data won’t load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#sounderpy-can-t-find-a-raob-sounding-you-know-exists">SounderPy can’t find a RAOB sounding you know exists</a></li>
 </ul>
 </li>
 </ul>
@@ -258,25 +257,34 @@
 <li class="toctree-l2"><a class="reference internal" href="gettingdata.html#what-does-the-data-look-like">What does the data look like?</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="customdatasources.html">✏️ Custom Data Sources</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="customdatasources.html#understanding-the-sounderpy-data-format">Understanding the SounderPy data format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="customdatasources.html#building-a-custom-clean-data-dictionary">Building a custom clean_data dictionary</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="plottingdata.html#building-soundings">Building Soundings</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="plottingdata.html#spy.build_sounding"><code class="docutils literal notranslate"><span class="pre">spy.build_sounding()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#examples">Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#example">Example</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="plottingdata.html#building-hodographs">Building Hodographs</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="plottingdata.html#spy.build_hodograph"><code class="docutils literal notranslate"><span class="pre">spy.build_hodograph()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#id1">Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#id1">Example</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="plottingdata.html#building-composite-soundings">Building Composite Soundings</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="plottingdata.html#spy.build_composite"><code class="docutils literal notranslate"><span class="pre">spy.build_composite()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#id2">Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#examples">Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="plottingdata.html#building-vad-hodographs">Building VAD Hodographs</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="plottingdata.html#spy.build_vad_hodograph"><code class="docutils literal notranslate"><span class="pre">spy.build_vad_hodograph()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#id3">Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#id2">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plottingdata.html#surface-modification-logic">Surface Modification Logic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#the-modify-sfc-dict">The <code class="docutils literal notranslate"><span class="pre">modify_sfc</span></code> dict</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="plottingdata.html#storm-motion-logic">Storm Motion Logic</a><ul>
@@ -289,15 +297,15 @@
 <li class="toctree-l3"><a class="reference internal" href="plottingdata.html#parcel-keys">Parcel Keys</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="plottingdata.html#printing-data-to-the-console">Printing data to the console</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#spy.print_variables"><code class="docutils literal notranslate"><span class="pre">spy.print_variables()</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="plottingdata.html#about-these-plots">About These Plots</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="helpertools.html">🛠️ Helper Tools</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="helpertools.html#printing-a-dictionary-of-profile-parameters">Printing a dictionary of profile parameters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="helpertools.html#printing-data-to-the-console">Printing data to the console</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="helpertools.html#spy.print_variables"><code class="docutils literal notranslate"><span class="pre">spy.print_variables()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="helpertools.html#returning-a-dictionary-of-profile-parameters">Returning a dictionary of profile parameters</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="helpertools.html#sounding_params"><code class="docutils literal notranslate"><span class="pre">sounding_params</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="helpertools.html#sounding_params..calc"><code class="docutils literal notranslate"><span class="pre">sounding_params..calc()</span></code></a></li>
 </ul>
@@ -339,13 +347,8 @@
 </ul>
 </div>
 </div></blockquote>
-</section>
-<section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </section>
 

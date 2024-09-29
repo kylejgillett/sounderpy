@@ -15,6 +15,7 @@ UPDATE NOTES
 	- update/fix cdsapi era5 access..........DONE............................DONE...............DONE
 	- NWS GFK requests? (dcin)...............DONE............................DONE...............DONE
 	- "classic" params box?..................DONE............................DONE...............DONE
+	- correct cm1 sfc data output............DONE
 	- add sounding param timeseries?
 
 	- check and correct docs

@@ -5,21 +5,71 @@ A collection of helper tools included within SounderPy.
 
 *************************
 
-Printing a dictionary of profile parameters
+
+
+Printing data to the console
+-----------------------------
+
+.. py:function:: spy.print_variables(clean_data, storm_motion='right_moving', modify_sfc=None)
+
+   :param clean_data: the dictionary of profile data to calculate profile parameters for (see :doc:`gettingdata`)
+   :type clean_data: dict, required
+   :param storm_motion: the storm motion used for calculations. Default is 'right_moving'. Custom storm motions are accepted as a `list` of `floats` representing direction and speed. Ex: ``[270.0, 25.0]`` where '270.0' is the *direction in degrees* and '25.0' is the *speed in kts*. See the :ref:`storm_motions` section for more details.
+   :type storm_motion: str or list of floats, optional
+   :param modify_sfc: a `dict` in the format ``{'T': 25, 'Td': 21, 'ws': 20, 'wd': 270}`` to modify the surface values of the ``clean_data`` dict.
+   :type modify_sfc: None or dict, optional, default is None
+   :return: prints a number of thermodynamic and kinematic variables to the console.
+   :rtype: data print out to the console
+
+
+
+.. code-block:: python
+
+   > THERMODYNAMICS ---------------------------------------------
+   --- SBCAPE: 2090.8 | MUCAPE: 2090.8 | MLCAPE: 1878.3 | MUECAPE: 1651.9
+   --- MU 0-3: 71.1 | MU 0-6: 533.0 | SB 0-3: 71.1 | SB 0-6: 533.0
+
+   > KINEMATICS -------------------------------------------------
+   --- 0-500 SRW: 35.0 knot | 0-500 SWV: 0.019 | 0-500 SHEAR: 21.8 | 0-500 SRH: 186.2
+   --- 1-3km SRW: 20.9 knot | 1-3km SWV: 0.005 | 1-3km SHEAR: 14.1 | | 1-3km SRH: 54.0
+
+
+
+
+**************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+Returning a dictionary of profile parameters
 --------------------------------------------
 
-Return a massive dictionary of common calculated paramters and special variables for a vertical profile.
+Return a dictionary of common calculated sounding paramters and special variables for a given vertical profile.
 
 Data returned in this dictionary include...
       - an interpolated version of the profile
       - basic parameters such as mixing ratio, theta-e, wet-bulb, etc
-      - Thermodynamic parameters such as SB, MU, ML parcel properties (LCL, LFC, EL, CAPE, CIN, etc)
-      - Kinematic parameters such as storm motion, storm-relative wind, streamwise vorticity, SRH, etc.
+      - Thermodynamic parameters such as SB, MU, ML parcel properties (LCL, LFC, EL, CAPE, CIN, etc), Entrainment CAPE, etc
+      - Kinematic parameters such as storm motion, storm-relative wind, streamwise vorticity, SRH, composite parameters, etc
 
-.. class:: sounding_params()
+.. class:: sounding_params(clean_data, storm_motion='right_moving', modify_sfc=None)
 
-      :param clean_data: a dictionary of SounderPy data (see :doc:`gettingdata`)
-      :type clean_data: dict, required
+   :param clean_data: the dictionary of profile data to calculate profile parameters for (see :doc:`gettingdata`)
+   :type clean_data: dict, required
+   :param storm_motion: the storm motion used for calculations. Default is 'right_moving'. Custom storm motions are accepted as a `list` of `floats` representing direction and speed. Ex: ``[270.0, 25.0]`` where '270.0' is the *direction in degrees* and '25.0' is the *speed in kts*. See the :ref:`storm_motions` section for more details.
+   :type storm_motion: str or list of floats, optional
+   :param modify_sfc: a `dict` in the format ``{'T': 25, 'Td': 21, 'ws': 20, 'wd': 270}`` to modify the surface values of the ``clean_data`` dict.
+   :type modify_sfc: None or dict, optional, default is None
+
 
    .. py:function:: .calc()
 
@@ -33,6 +83,16 @@ Data returned in this dictionary include...
 
 
 ****************************************************************
+
+
+
+
+
+
+
+
+
+
 
 Finding site lat/lon pairs
 ---------------------------
@@ -64,6 +124,17 @@ Example:
 
 ***************************************************************
 
+
+
+
+
+
+
+
+
+
+
+
 Saving data to a file
 ----------------------
 
@@ -92,6 +163,18 @@ Example:
 
 ***************************************************************
 
+
+
+
+
+
+
+
+
+
+
+
+
 Interpolating a vertical profile
 ---------------------------------
 
@@ -117,6 +200,17 @@ Example:
 
 
 ***************************************************************
+
+
+
+
+
+
+
+
+
+
+
 
 Finding a 'nearest' value
 --------------------------

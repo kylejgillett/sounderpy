@@ -57,12 +57,16 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#goofy-acars-profiles">Goofy ACARS Profiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#era5-data-access-not-working">ERA5 data access not working</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rap-data-won-t-load">RAP data won’t load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sounderpy-can-t-find-a-raob-sounding-you-know-exists">SounderPy can’t find a RAOB sounding you know exists</a></li>
 </ul>
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customdatasources.html">✏️ Custom Data Sources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helpertools.html">🛠️ Helper Tools</a></li>
 </ul>
@@ -119,6 +123,37 @@
 <h2>Goofy ACARS Profiles<a class="headerlink" href="#goofy-acars-profiles" title="Link to this heading"></a></h2>
 <a class="reference internal image-reference" href="_images/example-goofy-acars.png"><img alt="_images/example-goofy-acars.png" class="align-left" src="_images/example-goofy-acars.png" style="width: 300px;" /></a>
 <p>Sometimes ACARS data just comes with errors that can not be fixed. Because these observations are taken by aircraft during arrivals and departures, they can be prone to errors such as too-dry dewpoints, too-strong wind velocity, and strange height data. Unfortunately these errors can not be fixed.</p>
+<p>The best way to check if ACARS observations are correct is by comparing them to recent forecast model profiles (at forecast hour 0) for that location.</p>
+</section>
+<hr class="docutils" />
+<section id="era5-data-access-not-working">
+<h2>ERA5 data access not working<a class="headerlink" href="#era5-data-access-not-working" title="Link to this heading"></a></h2>
+<p>To access ERA5 data, some extra steps are involved. Make sure you create an account with the ECMWF Climate Data Store (CDS) to gain access to their API.</p>
+<p>Also note that CDS has recently updated their API (September 2024). Thus, even if you have done this before, you have to migrate to the new API.</p>
+<dl>
+<dt>Basic steps include:</dt><dd><blockquote>
+<div><ul class="simple">
+<li><p>creating a CDS API account</p></li>
+<li><p>Setting up a CDS API personal access token</p></li>
+<li><p>Creating a $HOME/.cdsapirc file</p></li>
+</ul>
+</div></blockquote>
+<p>Follow the instructions on the CDSAPI “how to” documentation – See: <a class="reference external" href="https://cds.climate.copernicus.eu/how-to-api">https://cds.climate.copernicus.eu/how-to-api</a></p>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="rap-data-won-t-load">
+<h2>RAP data won’t load<a class="headerlink" href="#rap-data-won-t-load" title="Link to this heading"></a></h2>
+<p>Sometimes, this just happens. The NCEP server (THREDDS) is prone to high latency or even simply being down. Therefore, data access may take several minutes or data access is not possible.</p>
+<p>Sometimes these issues are resolved within hours, other times possibly a few days. Trying again at a later time is generally the best fix.</p>
+</section>
+<hr class="docutils" />
+<section id="sounderpy-can-t-find-a-raob-sounding-you-know-exists">
+<h2>SounderPy can’t find a RAOB sounding you know exists<a class="headerlink" href="#sounderpy-can-t-find-a-raob-sounding-you-know-exists" title="Link to this heading"></a></h2>
+<p>Ah, this one is fun. Different databases store RAOB data differently. As such, you may find that a sounding that you believe was launched at ‘18z’ is actually stored as ‘19z’ or ‘17z’. Its annoying.</p>
+<p>This will cause the <cite>get_obs_data()</cite> to “not find” the sounding you want because the database it’s searching through has it listed under a different time.</p>
+<p>Try increasing or decreasing the launch_hour by 1 hour.</p>
 </section>
 </section>
 

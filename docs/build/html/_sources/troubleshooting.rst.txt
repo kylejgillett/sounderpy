@@ -26,6 +26,11 @@ The Fix: saving the plot to a file
 	You can optionally add the ``filename`` kwarg that allows you to set a specific filename. By default, this filename is *'sounderpy_sounding.png'*.
 
 
+
+
+
+
+
 ***************************************
 
 Goofy ACARS Profiles
@@ -35,4 +40,58 @@ Goofy ACARS Profiles
    :width: 300 px
    :align: left
 
-Sometimes ACARS data just comes with errors that can not be fixed. Because these observations are taken by aircraft during arrivals and departures, they can be prone to errors such as too-dry dewpoints, too-strong wind velocity, and strange height data. Unfortunately these errors can not be fixed. 
+Sometimes ACARS data just comes with errors that can not be fixed. Because these observations are taken by aircraft during arrivals and departures, they can be prone to errors such as too-dry dewpoints, too-strong wind velocity, and strange height data. Unfortunately these errors can not be fixed.
+
+The best way to check if ACARS observations are correct is by comparing them to recent forecast model profiles (at forecast hour 0) for that location.
+
+
+
+
+
+
+***************************************
+
+ERA5 data access not working
+-----------------------------
+
+To access ERA5 data, some extra steps are involved. Make sure you create an account with the ECMWF Climate Data Store (CDS) to gain access to their API.
+
+Also note that CDS has recently updated their API (September 2024). Thus, even if you have done this before, you have to migrate to the new API.
+
+Basic steps include:
+    - creating a CDS API account
+    - Setting up a CDS API personal access token
+    - Creating a $HOME/.cdsapirc file
+
+   Follow the instructions on the CDSAPI "how to" documentation -- See: https://cds.climate.copernicus.eu/how-to-api
+
+
+
+
+
+
+******************************************
+
+RAP data won't load
+-------------------
+
+Sometimes, this just happens. The NCEP server (THREDDS) is prone to high latency or even simply being down. Therefore, data access may take several minutes or data access is not possible.
+
+Sometimes these issues are resolved within hours, other times possibly a few days. Trying again at a later time is generally the best fix.
+
+
+
+
+
+
+***************************************
+
+SounderPy can't find a RAOB sounding you know exists
+----------------------------------------------------
+
+Ah, this one is fun. Different databases store RAOB data differently. As such, you may find that a sounding that you believe was launched at '18z' is actually stored as '19z' or '17z'. Its annoying.
+
+This will cause the `get_obs_data()` to "not find" the sounding you want because the database it's searching through has it listed under a different time.
+
+Try increasing or decreasing the launch_hour by 1 hour.
+

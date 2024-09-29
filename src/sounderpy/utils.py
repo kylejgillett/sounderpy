@@ -321,6 +321,16 @@ def to_file(file_type, clean_data, filename=None):
         clean_data['mixrt'] = mpcalc.mixing_ratio_from_relative_humidity(clean_data['p'], clean_data['T'],
                                                                          clean_data['relhm'])
 
+        # create the sfc values line
+        top_line = (
+                "%12s" % str(format(np.around(clean_data["p"][0].m, 6), "0.6f")) + delimiter + "\t" +
+                "%12s" % str(format(np.around(clean_data["theta"][0].m, 6), "0.6f")) + delimiter + "\t" +
+                "%12s" % str(format(np.around(clean_data["mixrt"][0].m, 6), "0.6f")) + "\n"
+        )
+
+        # write the sfc values line to the file
+        outfile.write(top_line)
+
         # add data to lines
         for idx in range(num_lines):
             line_str = ""

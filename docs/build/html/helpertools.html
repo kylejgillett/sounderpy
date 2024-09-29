@@ -58,7 +58,11 @@
 <li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">🛠️ Helper Tools</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#printing-a-dictionary-of-profile-parameters">Printing a dictionary of profile parameters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#printing-data-to-the-console">Printing data to the console</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spy.print_variables"><code class="docutils literal notranslate"><span class="pre">spy.print_variables()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#returning-a-dictionary-of-profile-parameters">Returning a dictionary of profile parameters</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#sounding_params"><code class="docutils literal notranslate"><span class="pre">sounding_params</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#sounding_params..calc"><code class="docutils literal notranslate"><span class="pre">sounding_params..calc()</span></code></a></li>
 </ul>
@@ -118,31 +122,63 @@
 <h1>🛠️ Helper Tools<a class="headerlink" href="#helper-tools" title="Link to this heading"></a></h1>
 <p>A collection of helper tools included within SounderPy.</p>
 <hr class="docutils" />
-<section id="printing-a-dictionary-of-profile-parameters">
-<h2>Printing a dictionary of profile parameters<a class="headerlink" href="#printing-a-dictionary-of-profile-parameters" title="Link to this heading"></a></h2>
-<p>Return a massive dictionary of common calculated paramters and special variables for a vertical profile.</p>
+<section id="printing-data-to-the-console">
+<h2>Printing data to the console<a class="headerlink" href="#printing-data-to-the-console" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="spy.print_variables">
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">print_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clean_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storm_motion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'right_moving'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modify_sfc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.print_variables" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clean_data</strong> (<em>dict</em><em>, </em><em>required</em>) – the dictionary of profile data to calculate profile parameters for (see <a class="reference internal" href="gettingdata.html"><span class="doc">🌐 Tools for Getting Data</span></a>)</p></li>
+<li><p><strong>storm_motion</strong> (<em>str</em><em> or </em><em>list</em><em> of </em><em>floats</em><em>, </em><em>optional</em>) – the storm motion used for calculations. Default is ‘right_moving’. Custom storm motions are accepted as a <cite>list</cite> of <cite>floats</cite> representing direction and speed. Ex: <code class="docutils literal notranslate"><span class="pre">[270.0,</span> <span class="pre">25.0]</span></code> where ‘270.0’ is the <em>direction in degrees</em> and ‘25.0’ is the <em>speed in kts</em>. See the <a class="reference internal" href="plottingdata.html#storm-motions"><span class="std std-ref">Storm Motion Logic</span></a> section for more details.</p></li>
+<li><p><strong>modify_sfc</strong> (<em>None</em><em> or </em><em>dict</em><em>, </em><em>optional</em><em>, </em><em>default is None</em>) – a <cite>dict</cite> in the format <code class="docutils literal notranslate"><span class="pre">{'T':</span> <span class="pre">25,</span> <span class="pre">'Td':</span> <span class="pre">21,</span> <span class="pre">'ws':</span> <span class="pre">20,</span> <span class="pre">'wd':</span> <span class="pre">270}</span></code> to modify the surface values of the <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> dict.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>prints a number of thermodynamic and kinematic variables to the console.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>data print out to the console</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">THERMODYNAMICS</span> <span class="o">---------------------------------------------</span>
+<span class="o">---</span> <span class="n">SBCAPE</span><span class="p">:</span> <span class="mf">2090.8</span> <span class="o">|</span> <span class="n">MUCAPE</span><span class="p">:</span> <span class="mf">2090.8</span> <span class="o">|</span> <span class="n">MLCAPE</span><span class="p">:</span> <span class="mf">1878.3</span> <span class="o">|</span> <span class="n">MUECAPE</span><span class="p">:</span> <span class="mf">1651.9</span>
+<span class="o">---</span> <span class="n">MU</span> <span class="mi">0</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span> <span class="mf">71.1</span> <span class="o">|</span> <span class="n">MU</span> <span class="mi">0</span><span class="o">-</span><span class="mi">6</span><span class="p">:</span> <span class="mf">533.0</span> <span class="o">|</span> <span class="n">SB</span> <span class="mi">0</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span> <span class="mf">71.1</span> <span class="o">|</span> <span class="n">SB</span> <span class="mi">0</span><span class="o">-</span><span class="mi">6</span><span class="p">:</span> <span class="mf">533.0</span>
+
+<span class="o">&gt;</span> <span class="n">KINEMATICS</span> <span class="o">-------------------------------------------------</span>
+<span class="o">---</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SRW</span><span class="p">:</span> <span class="mf">35.0</span> <span class="n">knot</span> <span class="o">|</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SWV</span><span class="p">:</span> <span class="mf">0.019</span> <span class="o">|</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SHEAR</span><span class="p">:</span> <span class="mf">21.8</span> <span class="o">|</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SRH</span><span class="p">:</span> <span class="mf">186.2</span>
+<span class="o">---</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SRW</span><span class="p">:</span> <span class="mf">20.9</span> <span class="n">knot</span> <span class="o">|</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SWV</span><span class="p">:</span> <span class="mf">0.005</span> <span class="o">|</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SHEAR</span><span class="p">:</span> <span class="mf">14.1</span> <span class="o">|</span> <span class="o">|</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SRH</span><span class="p">:</span> <span class="mf">54.0</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="returning-a-dictionary-of-profile-parameters">
+<h2>Returning a dictionary of profile parameters<a class="headerlink" href="#returning-a-dictionary-of-profile-parameters" title="Link to this heading"></a></h2>
+<p>Return a dictionary of common calculated sounding paramters and special variables for a given vertical profile.</p>
 <dl class="simple">
 <dt>Data returned in this dictionary include…</dt><dd><ul class="simple">
 <li><p>an interpolated version of the profile</p></li>
 <li><p>basic parameters such as mixing ratio, theta-e, wet-bulb, etc</p></li>
-<li><p>Thermodynamic parameters such as SB, MU, ML parcel properties (LCL, LFC, EL, CAPE, CIN, etc)</p></li>
-<li><p>Kinematic parameters such as storm motion, storm-relative wind, streamwise vorticity, SRH, etc.</p></li>
+<li><p>Thermodynamic parameters such as SB, MU, ML parcel properties (LCL, LFC, EL, CAPE, CIN, etc), Entrainment CAPE, etc</p></li>
+<li><p>Kinematic parameters such as storm motion, storm-relative wind, streamwise vorticity, SRH, composite parameters, etc</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="sounding_params">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sounding_params</span></span><a class="headerlink" href="#sounding_params" title="Link to this definition"></a></dt>
-<dd><blockquote>
-<div><dl class="field-list simple">
-<dt class="field-odd">param clean_data<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a dictionary of SounderPy data (see <a class="reference internal" href="gettingdata.html"><span class="doc">🌐 Tools for Getting Data</span></a>)</p>
-</dd>
-<dt class="field-even">type clean_data<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict, required</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sounding_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clean_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storm_motion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'right_moving'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modify_sfc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sounding_params" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clean_data</strong> (<em>dict</em><em>, </em><em>required</em>) – the dictionary of profile data to calculate profile parameters for (see <a class="reference internal" href="gettingdata.html"><span class="doc">🌐 Tools for Getting Data</span></a>)</p></li>
+<li><p><strong>storm_motion</strong> (<em>str</em><em> or </em><em>list</em><em> of </em><em>floats</em><em>, </em><em>optional</em>) – the storm motion used for calculations. Default is ‘right_moving’. Custom storm motions are accepted as a <cite>list</cite> of <cite>floats</cite> representing direction and speed. Ex: <code class="docutils literal notranslate"><span class="pre">[270.0,</span> <span class="pre">25.0]</span></code> where ‘270.0’ is the <em>direction in degrees</em> and ‘25.0’ is the <em>speed in kts</em>. See the <a class="reference internal" href="plottingdata.html#storm-motions"><span class="std std-ref">Storm Motion Logic</span></a> section for more details.</p></li>
+<li><p><strong>modify_sfc</strong> (<em>None</em><em> or </em><em>dict</em><em>, </em><em>optional</em><em>, </em><em>default is None</em>) – a <cite>dict</cite> in the format <code class="docutils literal notranslate"><span class="pre">{'T':</span> <span class="pre">25,</span> <span class="pre">'Td':</span> <span class="pre">21,</span> <span class="pre">'ws':</span> <span class="pre">20,</span> <span class="pre">'wd':</span> <span class="pre">270}</span></code> to modify the surface values of the <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> dict.</p></li>
+</ul>
 </dd>
 </dl>
-</div></blockquote>
 <dl class="py function">
 <dt class="sig sig-object py" id="sounding_params..calc">
 <span class="sig-prename descclassname"><span class="pre">.</span></span><span class="sig-name descname"><span class="pre">calc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sounding_params..calc" title="Link to this definition"></a></dt>
