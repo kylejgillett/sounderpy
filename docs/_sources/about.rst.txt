@@ -12,7 +12,7 @@ SounderPy: A sounding visualization tool for severe-weather analysis and forecas
 ***************************************************************
 
 
-**ABSTRACT:** SounderPy is a simple, open-source Python package for retrieving and plotting 
+**ABSTRACT:** SounderPy is a simple, open-source Python package for retrieving and plotting
 vertical profile (sounding) data. Built for simplicity and reliability for all uses and users, this 
 project’s goal is to provide a uniform method for sounding analysis across multiple data types. 
 Severe weather analysis and forecasting requires a sound comprehension of thermodynamic and 
@@ -25,10 +25,19 @@ observation data, and model reanalysis data. All of this functionality can be co
 simple lines of code or less, making SounderPy an accessible tool for both Python experts and 
 novices. A number of scientific Python libraries build the base of SounderPy’s efficient and 
 durable functionality, such as NumPy, Matplotlib, xarray, Metpy, and SHARPpy. SounderPy is 
-available through GitHub and PyPi and is distributed under an MIT license. 
+available through GitHub and PyPi and is distributed under an MIT license.
 
 
-SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines, Columbia, and Grand Rapids National Weather Service Offices, the State University of New York at Albany, Mississippi State University, the University of North Dakota, and others. Many students at various universities have used SounderPy in projects and papers, such as students at Ohio State University, Central Michigan University, Iowa State University, & Rizal Technological University.
+.. image:: _static/images/sounderpy_poster.png
+   :width: 500 px
+   :align: center
+
+
+
+<br>
+
+
+SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines, Columbia, Grand Forks, Little Rock, Omaha, & Grand Rapids National Weather Service Offices, the State University of New York at Albany, Mississippi State University, the University of North Dakota, and others. Many students at various universities have used SounderPy in projects, posters, and papers, such as students at The University of Oklahoma, Ohio State University, Central Michigan University, Iowa State University, & Rizal Technological University.
 
 ☕ SounderPy is an open-source package developed on my own time. If you would you like to support continued SounderPy development, consider "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"! ☕
 
@@ -113,7 +122,7 @@ Citing SounderPy
 
 
 	in AMS format:
-	     Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.4). Py-Pi, https://pypi.org/project/sounderpy/
+	     Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.5). Py-Pi, https://pypi.org/project/sounderpy/
 
 
 ***************************************************************

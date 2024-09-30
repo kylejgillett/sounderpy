@@ -10,7 +10,7 @@ Initially, SounderPy was a tool meant for getting and parsing data with not as m
 
 SounderPy can create general :ref:`sounding<soundings>` and :ref:`hodograph<hodographs>` plots as well as :ref:`composite sounding<compsoundings>` plots! 
 
-The `full` sounding plots that SounderPy creates are complex figures with unique design geared towards severe convective storm enviroment analysis. 
+The `full` sounding plot that SounderPy creates is a complex figure with unique design geared towards severe convective storm enviroment analysis.
 
 These sounding plots are 'my baby' and I hope you find them useful! :)
 
@@ -27,41 +27,39 @@ Check out SounderPy's :doc:`examplegallery` & :doc:`examplescripts`
 Building Soundings
 ----------------------------------
 
-We can use the simple ``spy.build_sounding()`` function:
+While this function may appear complicated at first glance, there is actually only *one* required argument for this function. The other arguments are simply optional settings for the plot!
 
-.. py:function:: spy.build_sounding(clean_data, style='full', color_blind=False, dark_mode=False, storm_motion='right_moving', special_parcels=None, show_radar=True, radar_time='sounding', map_zoom=2, modify_sfc=None, save=False, filename='sounderpy_sounding')
+.. py:function:: spy.build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion='right_moving', special_parcels=None, show_radar=True, radar_time='sounding', map_zoom=2, modify_sfc=None, save=False, filename='sounderpy_sounding')
 
 
    Return a full sounding plot of SounderPy data, ``plt`` 
 
    :param clean_data: the dictionary of data to be plotted (see :doc:`gettingdata`)
    :type clean_data: dict, required
-   :param style: may be `simple` or `full`. Default is `full`.
-   :type style: str, optional
-   :param color_blind: whether or not to change the dewpoint trace line from green to blue for improved readability for color deficient users/readers. Default is ``False``
-   :type color_blind: bool, optional
-   :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding. Default is ``False``.
-   :type dark_mode: bool, optional
-   :param storm_motion: the storm motion used for plotting and calculations. Default is 'right_moving'. Custom storm motions are accepted as a `list` of `floats` representing direction and speed. Ex: ``[270.0, 25.0]`` where '270.0' is the *direction in degrees* and '25.0' is the *speed in kts*. See the :ref:`storm_motions` section for more details.
-   :type storm_motion: str or list of floats, optional
+   :param color_blind: whether or not to change the dewpoint trace line from green to blue for improved readability for color deficient users/readers.
+   :type color_blind: bool, optional, Default is ``False``
+   :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding.
+   :type dark_mode: bool, optional, Default is ``False``.
+   :param storm_motion: the storm motion used for plotting and calculations. Custom storm motions are accepted as a `list` of `floats` representing direction and speed. Ex: ``[270.0, 25.0]`` where '270.0' is the *direction in degrees* and '25.0' is the *speed in kts*. See the :ref:`storm_motions` section for more details.
+   :type storm_motion: str or list of floats, optional, Default is 'right_moving'.
    :param special_parcels: a nested list of special parcels from the ``ecape_parcels`` library. The nested list should be a list of two lists (`[[a, b], [c, d]]`) where the first list should include 'highlight parcels' and second list should include 'background parcels'. For more details, see the :ref:`parcels_logic` section. Another option is 'simple', which removes all advanced parcels making the plot quicker.
-   :type special_parcels: nested `list` of two `lists`, optional
-   :param show_radar: whether or not to display mosaic radar data on the map inset. Default is ``True``
-   :type special_parcels: bool, optional
-   :param radar_time: radar mosaic data valid time. May be ``sounding`` (uses the valid time of the sounding data), or ``now`` (current time/date). Default is ``sounding``. **Note: radar mosaic data only goes back 1 month from current date**
-   :type radar_time: str, optional
-   :param map_zoom: a 'zoom' level for the map inset as an `int`. Default is ``2``. **Note: Setting ``map_zoom=0`` will hide the map**
-   :type map_zoom: int, optional 
-   :param modify_sfc: a `list` in the format ``[temperature, dewpoint]`` to modify the surface values of the ``clean_data`` param. Default is False.
-   :type modify_sfc: bool or list, optional
-   :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
-   :type save: bool, optional
-   :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
-   :type filename: str, optional
-   :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
+   :type special_parcels: nested `list` of two `lists`, optional, Default is None
+   :param show_radar: whether or not to display mosaic radar data on the map inset.
+   :type show_radar: bool, optional, Default is ``True``
+   :param radar_time: radar mosaic data valid time. May be ``sounding`` (uses the valid time of the sounding data), or ``now`` (current time/date). **Note: radar mosaic data only goes back 1 month from current date**
+   :type radar_time: str, optional, Default is ``sounding``.
+   :param map_zoom: a 'zoom' level for the map inset as an `int`. **Note: Setting ``map_zoom=0`` will hide the map**
+   :type map_zoom: int, optional, Default is ``2``.
+   :param modify_sfc: a `dict` in the format ``{'T': 25, 'Td': 21, 'ws': 20, 'wd': 270}`` to modify the surface values of the ``clean_data`` dict. See the :ref:`modify_sfc` section for more details.
+   :type modify_sfc: None or dict, optional, default is None
+   :param save: whether to show the plot inline or save to a file.
+   :type save: bool, optional, Default is ``False``.
+   :param filename: the filename by which a file should be saved to if ``save = True``.
+   :type filename: str, optional, Default is `sounderpy_sounding`.
+   :return: plt, a SounderPy sounding figure.
    :rtype: plt
 
-Examples
+Example
 ^^^^^^^^^^
 
 .. code-block:: python
@@ -92,29 +90,30 @@ Building Hodographs
 
 Very similarly to soundings, we can use the simple ``spy.build_hodograph()`` function:
 
-.. py:function:: spy.build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr_hodo=False, save=False, filename='sounderpy_sounding')
+.. py:function:: spy.build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr_hodo=False, modify_sfc=None, save=False, filename='sounderpy_sounding')
 
 
    Return a full hodograph plot of SounderPy data, ``plt`` 
 
    :param clean_data: the dictionary of data to be plotted (see :doc:`gettingdata`)
    :type clean_data: dict, required
-   :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding. Default is ``False``.
-   :type dark_mode: bool, optional
-   :param storm_motion: the storm motion used for plotting and calculations. Default is 'right_moving'. Custom storm motions are accepted as a `list` of `floats` representing direction and speed. Ex: ``[270.0, 25.0]`` where '270.0' is the *direction in degrees* and '25.0' is the *speed in kts*. See the :ref:`storm_motions` section for more details.
-   :type storm_motion: str or list of floats, optional
+   :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding.
+   :type dark_mode: bool, optional, Default is ``False``.
+   :param storm_motion: the storm motion used for plotting and calculations. Custom storm motions are accepted as a `list` of `floats` representing direction and speed. Ex: ``[270.0, 25.0]`` where '270.0' is the *direction in degrees* and '25.0' is the *speed in kts*. See the :ref:`storm_motions` section for more details.
+   :type storm_motion: str or list of floats, optional, Default is 'right_moving'.
    :param sr_hodo: transform the hodograph from ground relative to storm relative 
    :type sr_hodo: bool, optional, default is ``False``
-   :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
-   :type save: bool, optional
-   :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
-   :type filename: str, optional
-   :return: plt, a SounderPy hodograph built with Matplotlib, MetPy, SharpPy, & SounderPy.
+   :param modify_sfc: a `dict` in the format ``{'T': 25, 'Td': 21, 'ws': 20, 'wd': 270}`` to modify the surface values of the ``clean_data`` dict.
+   :type modify_sfc: None or dict, optional, default is None
+   :param save: whether to show the plot inline or save to a file.
+   :type save: bool, optional, Default is ``False``.
+   :param filename: the filename by which a file should be saved to if ``save = True``.
+   :type filename: str, optional, Default is `sounderpy_sounding`.
+   :return: plt, a SounderPy hodograph figure
    :rtype: plt
 
 
-
-Examples
+Example
 ^^^^^^^^^^
 
 .. code-block:: python
@@ -135,6 +134,10 @@ Examples
 
 
 
+
+
+
+
 .. _compsoundings:
 
 Building Composite Soundings
@@ -149,27 +152,27 @@ To do so, a list of :ref:`'clean_data' dicts<datadescription>` is needed. If you
 
    Return a composite sounding plot of multiple profiles, ``plt`` 
 
-   :param data_list: a list of data dictionaries for each profile to be plotted
+   :param data_list: a list of ``clean_data`` dictionaries for each profile to be plotted
    :type data_list: list of dicts, required
-   :param shade_between: Lightly shade between the dewpoint & temperature trace. In many cases, this improves readability. Default is ``True``.
-   :type shade_between: bool, optional
-   :param cmap: a linear colormap, may be any custom or matplotlib cmap. Default is 'viridis'. If ``colors_to_use`` kwarg is provided, ``colors_to_use`` will be used instead.
-   :type cmap: `matplotlib.colors.LinearSegmentedColormap` or `str` representing the name of a matplotlib cmap, optional
-   :param colors_to_use: A list of custom matplotlib color name stings. List length must match the number of profiles listed in ``data_list``. Default is 'none'.
-   :type colors_to_use: list of strings, optional
-   :param alphas_to_use: A list of custom alphas (0.0-1.0). List length must match the number of profiles listed in ``data_list``. Default is 'none'. Default alpha is 1.
-   :type alphas_to_use: list of floats, optional
-   :param ls_to_use: A list of custom matplotlib linestyles. List length must match the number of profiles listed in ``data_list``. Default is 'none'. Default linestyle is '-'.
-   :type ls_to_use: list of stings, optional
-   :param lw_to_use: A list of custom linewidths. List length must match the number of profiles listed in ``data_list``. Default is 'none'. Default linewidth is 3.
-   :type lw_to_use: list of floats, optional
-   :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding. Default is ``False``.
-   :type dark_mode: bool, optional
-   :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
-   :type save: bool, optional
-   :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
-   :type filename: str, optional
-   :return: plt, a SounderPy composite sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
+   :param shade_between: Lightly shade between the dewpoint & temperature trace. In many cases, this improves readability.
+   :type shade_between: bool, optional, Default is ``True``.
+   :param cmap: a linear colormap, may be any custom or matplotlib cmap. If ``colors_to_use`` kwarg is provided, ``colors_to_use`` will be used instead.
+   :type cmap: `matplotlib.colors.LinearSegmentedColormap` or `str` representing the name of a matplotlib cmap, optional, Default is 'viridis'.
+   :param colors_to_use: A list of custom matplotlib color name stings. List length must match the number of profiles listed in ``data_list``.
+   :type colors_to_use: list of strings, optional, Default is 'none'.
+   :param alphas_to_use: A list of custom alphas (0.0-1.0). List length must match the number of profiles listed in ``data_list``.
+   :type alphas_to_use: list of floats, optional, Default is 'none' (sets alpha to 1)
+   :param ls_to_use: A list of custom matplotlib linestyles. List length must match the number of profiles listed in ``data_list``.
+   :type ls_to_use: list of stings, optional, Default is 'none' (sets linestyle to '-')
+   :param lw_to_use: A list of custom linewidths. List length must match the number of profiles listed in ``data_list``.
+   :type lw_to_use: list of floats, optional, Default is 'none' (sets linewidth to 3).
+   :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding.
+   :type dark_mode: bool, optional, Default is ``False``.
+   :param save: whether to show the plot inline or save to a file.
+   :type save: bool, optional, Default is ``False``
+   :param filename: the filename by which a file should be saved to if ``save = True``.
+   :type filename: str, optional, Default is `sounderpy_sounding`.
+   :return: plt, a SounderPy composite sounding figure
    :rtype: plt
 
 
@@ -225,7 +228,7 @@ Examples
 Building VAD Hodographs
 ----------------------------------
 
-*Coming soon -- function is still in development*
+*Experimental function, but available for use. Errors are possible.*
 
 SounderPy now offers the ability to plot NEXRAD radar VAD data on a hodograph using the ``spy.build_vad_hodograph()`` function:
 
@@ -235,16 +238,16 @@ SounderPy now offers the ability to plot NEXRAD radar VAD data on a hodograph us
 
    :param vad_data: the dictionary of VAD data to be plotted
    :type vad_data: dict, required
-   :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding. Default is ``False``.
-   :type dark_mode: bool, optional
-   :param storm_motion: the storm motion used for plotting and calculations. Default is 'right_moving'. Custom storm motions are accepted as a `list` of `floats` representing direction and speed. Ex: ``[270.0, 25.0]`` where '270.0' is the *direction in degrees* and '25.0' is the *speed in kts*. See the :ref:`storm_motions` section for more details.
-   :type storm_motion: str or list of floats, optional
+   :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding.
+   :type dark_mode: bool, optional,  Default is ``False``.
+   :param storm_motion: the storm motion used for plotting and calculations. Custom storm motions are accepted as a `list` of `floats` representing direction and speed. Ex: ``[270.0, 25.0]`` where '270.0' is the *direction in degrees* and '25.0' is the *speed in kts*. See the :ref:`storm_motions` section for more details.
+   :type storm_motion: str or list of floats, optional, Default is 'right_moving'.
    :param sr_hodo: transform the hodograph from ground relative to storm relative 
    :type sr_hodo: bool, optional, default is ``False``
-   :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
-   :type save: bool, optional
-   :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
-   :type filename: str, optional
+   :param save: whether to show the plot inline or save to a file.
+   :type save: bool, optional,  Default is ``False``
+   :param filename: the filename by which a file should be saved to if ``save = True``.
+   :type filename: str, optional, Default is `sounderpy_sounding`.
    :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
    :rtype: plt
 
@@ -252,24 +255,54 @@ SounderPy now offers the ability to plot NEXRAD radar VAD data on a hodograph us
 Examples
 ^^^^^^^^^^
 
-.. code-block:: python
-
-   import sounderpy as spy
-   import datetime as dt
-     
-   # get VAD data using `pyart_radar_profile()`
-   vad_data = spy.pyart_radar_profile('kgrr', dt.datetime(2023, 8, 25, 0, 20, 30))
-
-   # build the hodograph! 
-   spy.build_vad_hodograph(vad_data)
-
-
 .. image:: _static/images/example_vad-hodograph.png
    :width: 800 px
 
 
 
 **************************************************
+
+
+
+
+
+
+
+
+.. _modify_sfc:
+
+Surface Modification Logic
+---------------------------
+
+Users may override the zeroth (surface) value of the `clean_data` dict, when creating a plot or returning sounding parameters, using the ``modify_sfc`` kwarg. This argument is a python dictionary.
+
+SounderPy takes the users requested surface modifications and preforms an "Barnes style" interpolation of the new surface values with the existing profile up several points. Please note that as of release v3.0.5, this is to be considered a "beta" version of the feature. As such, it may not always perform as expected.
+
+The ``modify_sfc`` dict
+^^^^^^^^^^^^^^^^^^^^^^^^
+   - ``T``: Temperature, degrees Celsius
+   - ``Td``: Dewpoint, degrees Celsius
+   - ``ws``: Wind speed, knots
+   - ``wd``: Wind direction, meteorological degrees (north=0)
+
+   Examples:
+
+   .. code-block:: python
+
+      spy.build_sounding(clean_data, modify_sfc={'T':21, 'Td':19, 'ws': 30, 'wd':270})
+
+      spy.build_sounding(clean_data, modify_sfc={'T':21, 'Td':19})
+
+      spy.build_sounding(clean_data, modify_sfc={'ws': 30, 'wd':270})
+
+
+
+**************************************************
+
+
+
+
+
 
 
 
@@ -381,34 +414,6 @@ Note the struture of the 'parcel key': ``sb_ia_ecape``. This is broken into thre
 
 **************************************************
 
-
-
-Printing data to the console
------------------------------
-
-.. py:function:: spy.print_variables(clean_data, storm_motion='right_moving')
-
-   :param clean_data: the dictionary of profile data to calculate profile parameters for (see :doc:`gettingdata`)
-   :type clean_data: dict, required
-   :param storm_motion: the storm motion used for calculations. Default is 'right_moving'. Custom storm motions are accepted as a `list` of `floats` representing direction and speed. Ex: ``[270.0, 25.0]`` where '270.0' is the *direction in degrees* and '25.0' is the *speed in kts*. See the :ref:`storm_motions` section for more details.
-   :type storm_motion: str or list of floats, optional
-   :return: prints a number of thermodynamic and kinematic variables to the console.
-   :rtype: data print out to the console
-
-.. code-block:: python
-
-   > THERMODYNAMICS --------------------------------------------- 
-   --- SBCAPE: 2090.8 | MUCAPE: 2090.8 | MLCAPE: 1878.3 | MUECAPE: 1651.9
-   --- MU 0-3: 71.1 | MU 0-6: 533.0 | SB 0-3: 71.1 | SB 0-6: 533.0
-    
-   > KINEMATICS ------------------------------------------------- 
-   --- 0-500 SRW: 35.0 knot | 0-500 SWV: 0.019 | 0-500 SHEAR: 21.8 | 0-500 SRH: 186.2
-   --- 1-3km SRW: 20.9 knot | 1-3km SWV: 0.005 | 1-3km SHEAR: 14.1 | | 1-3km SRH: 54.0
-
-
-
-
-**************************************************
 
 
 

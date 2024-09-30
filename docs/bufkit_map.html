@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 
     <title>BUFKIT Site Locations Map</title>
     <style>
@@ -15,6 +15,7 @@
           margin: 0;
           padding: 0;
         }
+
 
         .info-box {
             background-color: white;
@@ -40,15 +41,17 @@
                 { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
                 { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
                 { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
+
                 {
-                    featureType: 'administrative',
-                    elementType: 'geometry.stroke',
-                    stylers: [{ color: '#ffffff' }]
+                featureType: 'administrative',
+                elementType: 'geometry.stroke',
+                stylers: [{ color: '#ffffff' }]
                 },
+
                 {
                     featureType: 'administrative.locality',
                     elementType: 'labels.text.fill',
-                    stylers: [{ color: '#d59563', alpha: 0.5 }]
+                    stylers: [{ color: '#d59563', alpha: 0.5}]
                 },
                 {
                     featureType: 'poi',
@@ -128,6 +131,7 @@
                 zoom: 4,
                 styles: nightModeStyles // Apply night mode styles
             });
+
 
             // Array of BUFKIT site locations
             var bufkitSites = [
@@ -2227,31 +2231,55 @@
                 { lat: 33.5, lng: -106.18,  name: 'OSCURA RANGE CAMP, NM', id: 'OSC'}
             ];
 
+            // Create markers for each BUFKIT site
             bufkitSites.forEach(function(site) {
                 var marker = new google.maps.Marker({
                     position: {lat: site.lat, lng: site.lng},
                     title: site.id
                 });
+
+                // Push marker to markers array
                 markers.push(marker);
             });
 
-            const markerCluster = new markerClusterer.MarkerClusterer({ 
-                map: map, 
-                markers: markers 
+            // Create marker clusterer
+            var markerCluster = new MarkerClusterer(map, markers, {
+                imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+                gridSize: 50,
+                minimumClusterSize: 2
             });
 
+            // Event listener for marker click
             markers.forEach(function(marker, index) {
                 marker.addListener('click', function() {
+                    // Close the previous info window if it exists
                     if (infoWindow) {
                         infoWindow.close();
                     }
+                    // Create content for the info window
                     var contentString = '<div><p>Site Name: ' + bufkitSites[index].name + '</p><p>Site ID: <b>' + bufkitSites[index].id + '</b></p></div>';
+                    // Create a new info window
                     infoWindow = new google.maps.InfoWindow({
                         content: contentString
                     });
+                    // Open the info window at the marker's position
                     infoWindow.open(map, marker);
                 });
+
             });
+            var tileNEX = new google.maps.ImageMapType({
+                getTileUrl: function(tile, zoom) {
+                    return "http://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/nexrad-n0q-900913/" + zoom + "/" + tile.x + "/" + tile.y + ".png?" + (new Date()).getTime();
+                },
+                tileSize: new google.maps.Size(256, 256),
+                opacity: 0.4,
+                name: 'NEXRAD',
+                isPng: true
+            });
+
+        map.overlayMapTypes.push(tileNEX);
+        
+
 
             // Add credit box
             var creditBox = document.createElement('div');
@@ -2269,7 +2297,11 @@
 
             map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push(creditBox);
         }
+        
+
+
     </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDqWc25TEkPO2o49Rhnh3u1E66CKamuCZA&callback=initMap"></script>
+    <!-- Replace YOUR_API_KEY with your actual Google Maps API key -->
 </body>
 </html>

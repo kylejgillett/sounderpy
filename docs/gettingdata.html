@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🌐 Tools for Getting Data &mdash; SounderPy v3.0.4 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+  <title>🌐 Tools for Getting Data &mdash; SounderPy v3.0.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
   
@@ -16,15 +16,15 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=ab02ba7d"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/documentation_options.js?v=0f7a3e64"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="📈 Tools for Plotting Data" href="plottingdata.html" />
+    <link rel="next" title="✏️ Custom Data Sources" href="customdatasources.html" />
     <link rel="prev" title="❓ Troubleshooting" href="troubleshooting.html" /> 
 </head>
 
@@ -76,19 +76,18 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#observed-data-acars-aircraft-obs">Observed Data | ACARS Aircraft Obs</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#acars_data"><code class="docutils literal notranslate"><span class="pre">acars_data</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#acars_data..list_profiles"><code class="docutils literal notranslate"><span class="pre">acars_data..list_profiles()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#acars_data..get_profile"><code class="docutils literal notranslate"><span class="pre">acars_data..get_profile()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#acars-data-retrieval-example">ACARS Data Retrieval Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acars_data"><code class="docutils literal notranslate"><span class="pre">acars_data</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acars_data..list_profiles"><code class="docutils literal notranslate"><span class="pre">acars_data..list_profiles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acars_data..get_profile"><code class="docutils literal notranslate"><span class="pre">acars_data..get_profile()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#observed-data-vad-radar-data">Observed Data | VAD radar data</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#pyart_radar_profile"><code class="docutils literal notranslate"><span class="pre">pyart_radar_profile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acars-data-retrieval-example">ACARS Data Retrieval Example</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#what-does-the-data-look-like">What does the data look like?</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="customdatasources.html">✏️ Custom Data Sources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helpertools.html">🛠️ Helper Tools</a></li>
 </ul>
@@ -173,7 +172,7 @@
 <tr class="row-odd"><td><p>OU ACARS Archive</p></td>
 <td><p>acars_data()</p></td>
 <td><p>Observations</p></td>
-<td><p>2019-present</p></td>
+<td><p>2019-06/2024</p></td>
 </tr>
 <tr class="row-even"><td><p>The Unv. of WY RAOB Archive</p></td>
 <td><p>get_obs_data()</p></td>
@@ -184,11 +183,6 @@
 <td><p>get_obs_data()</p></td>
 <td><p>Observations</p></td>
 <td><p>1905-present</p></td>
-</tr>
-<tr class="row-even"><td><p>NWS NEXRAD AWS Archive</p></td>
-<td><p>pyart_radar_profile()</p></td>
-<td><p>Observations</p></td>
-<td><p>1990s-present</p></td>
 </tr>
 </tbody>
 </table>
@@ -201,24 +195,25 @@
 <p>We can use the simple <code class="docutils literal notranslate"><span class="pre">spy.get_model_data()</span></code> function:</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="spy.get_model_data">
-<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">get_model_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latlon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hour</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box_avg_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.get_model_data" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">get_model_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latlon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hour</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box_avg_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean_it</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.get_model_data" title="Link to this definition"></a></dt>
 <dd><p>Return a <code class="docutils literal notranslate"><span class="pre">dict</span></code> of ‘cleaned up’ model reanalysis data from a given model, for a given location, date, and time</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>str</em><em>, </em><em>required</em>) – the model <a class="reference internal" href="#reanalysiskeys"><span class="std std-ref">‘key’</span></a> name to request data from</p></li>
-<li><p><strong>latlon</strong> (<em>list</em><em>, </em><em>required</em>) – the <a class="reference internal" href="#latlonpairs"><span class="std std-ref">latitude &amp; longitude pair</span></a> for sounding in a <cite>list</cite></p></li>
+<li><p><strong>model</strong> (<em>str</em><em>, </em><em>required</em>) – the requested model to use (“rap-ruc”, “era5”, “ncep”)</p></li>
+<li><p><strong>latlon</strong> (<em>list</em><em>, </em><em>required</em>) – the latitude &amp; longitude pair for sounding ([44.92, -84.72])</p></li>
 <li><p><strong>year</strong> (<em>str</em><em>, </em><em>required</em>) – valid year</p></li>
 <li><p><strong>month</strong> (<em>str</em><em>, </em><em>required</em>) – valid month</p></li>
 <li><p><strong>day</strong> (<em>str</em><em>, </em><em>required</em>) – valid day</p></li>
 <li><p><strong>hour</strong> (<em>str</em><em>, </em><em>required</em>) – required, valid hour</p></li>
-<li><p><strong>dataset</strong> (<em>str</em><em>, </em><em>optional</em>) – optional, target a specific <a class="reference internal" href="#datasetkeys"><span class="std std-ref">dataset</span></a> instead of searching for the first one with data.</p></li>
-<li><p><strong>box_avg_size</strong> (<em>int</em><em>, </em><em>optional</em>) – optional, determine an area-averaged box size in degrees, default is 0.10 degrees.</p></li>
+<li><p><strong>dataset</strong> (str, optional, default is <cite>None</cite>) – target a specific dataset instead of searching for the first one with data (“rap-ruc” only).</p></li>
+<li><p><strong>box_avg_size</strong> (int, optional, Default is <cite>0.10</cite>) – determine an area-averaged box size, in degrees, by which gridded model data will be averaged to find a single vertical porfile.</p></li>
 <li><p><strong>hush</strong> (bool, optional, default is <cite>False</cite>) – whether to ‘hush’ a read-out of thermodynamic and kinematic parameters when getting data.</p></li>
+<li><p><strong>clean_it</strong> (bool, optional, default is <cite>True</cite>) – whether to return the raw_data object or a clean_data dict.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#datadescription"><span class="std std-ref">clean_data</span></a>, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, &amp; model information</p>
+<dd class="field-even"><p>clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, omega &amp; model information</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
@@ -230,10 +225,10 @@
 <span id="reanalysiskeys"></span><h3>Model key names<a class="headerlink" href="#model-key-names" title="Link to this heading"></a></h3>
 <blockquote>
 <div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">'era5'</span></code>: ECMWF ReAnalysis v5 (ERA5), reanalysis</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'rap'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'rap-ruc'</span></code>: RAPid refresh (RAP) / Rapid Update Cycle (RUC), reanalysis</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'ncep'</span></code>: NCEP Global Data Assimilation System/Final 0.25 degree, reanalysis</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'rap-now'</span></code>: RAPid refresh, latest analysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'era5'</span></code>: ECMWF renalysis v5 (ERA5), reanalysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'rap'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'rap-ruc'</span></code>: NCEP Rapid Refresh model (RAP) / Rapid Update Cycle model (RUC), reanalysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'ncep'</span></code>: NCEP Global Data Assimilation System/Final 0.25 degree (ncep-fnl), reanalysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'rap-now'</span></code>: NCEP Rapid Refresh model, latest analysis</p></li>
 </ul>
 </div></blockquote>
 </section>
@@ -269,7 +264,15 @@
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p><strong>To access ERA5 data</strong> you must set up an account through the CDS to use their API: See: <a class="reference external" href="https://cds.climate.copernicus.eu/api-how-to">https://cds.climate.copernicus.eu/api-how-to</a></p>
+<p><strong>To access ERA5 data</strong> you -must- set API access to the ECMWF Climate Data Store (CDS). This includes….</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>creating a CDS API account</p></li>
+<li><p>Setting up a CDS API personal access token</p></li>
+<li><p>Creating a $HOME/.cdsapirc file</p></li>
+</ul>
+</div></blockquote>
+<p>Follow the instructions on the CDSAPI “how to” documentation – See: <a class="reference external" href="https://cds.climate.copernicus.eu/how-to-api">https://cds.climate.copernicus.eu/how-to-api</a></p>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -280,10 +283,10 @@
 </section>
 <section id="model-forecast-data-bufkit">
 <span id="bufkitdata"></span><h2>Model Forecast Data | BUFKIT<a class="headerlink" href="#model-forecast-data-bufkit" title="Link to this heading"></a></h2>
-<p><strong>A function used to access BUFKIT model forecast vertical profile data</strong></p>
+<p><strong>A function used to access BUFKIT model forecast vertical profile data for a given BUFKIT site</strong></p>
 <dl class="py function">
 <dt class="sig sig-object py" id="spy.get_bufkit_data">
-<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">get_bufkit_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fcst_hour</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_month</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_day</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_hour</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.get_bufkit_data" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">get_bufkit_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fcst_hour</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_month</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_day</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_hour</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean_it</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.get_bufkit_data" title="Link to this definition"></a></dt>
 <dd><p>Return a <code class="docutils literal notranslate"><span class="pre">dict</span></code> of ‘cleaned up’ model forecast data from a <a class="reference internal" href="#forecastmodels"><span class="std std-ref">given model</span></a>, for a given BUFKIT <a class="reference internal" href="#forecastsites"><span class="std std-ref">site identifier</span></a>, forecast hour, &amp; model-run-date</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -291,15 +294,16 @@
 <li><p><strong>model</strong> (<em>str</em><em>, </em><em>required</em>) – the model <a class="reference internal" href="#forecastkeys"><span class="std std-ref">‘key’</span></a> name to request data from</p></li>
 <li><p><strong>station</strong> (<em>str</em><em>, </em><em>required</em>) – a 3-4 digit BUFKIT site identifier</p></li>
 <li><p><strong>fcst_hour</strong> (<em>int</em><em>, </em><em>required</em>) – valid forecast hour</p></li>
-<li><p><strong>year</strong> (<em>str</em><em>, </em><em>required</em>) – valid year</p></li>
-<li><p><strong>month</strong> (<em>str</em><em>, </em><em>required</em>) – valid month</p></li>
-<li><p><strong>day</strong> (<em>str</em><em>, </em><em>required</em>) – valid day</p></li>
-<li><p><strong>hour</strong> (<em>str</em><em>, </em><em>required</em>) – valid hour</p></li>
+<li><p><strong>run_year</strong> (<em>str</em><em>, </em><em>optional</em><em>, </em><em>Default=None</em>) – valid year</p></li>
+<li><p><strong>run_month</strong> (<em>str</em><em>, </em><em>optional</em><em>, </em><em>Default=None</em>) – valid month</p></li>
+<li><p><strong>run_day</strong> (<em>str</em><em>, </em><em>optional</em><em>, </em><em>Default=None</em>) – valid day</p></li>
+<li><p><strong>run_hour</strong> (<em>str</em><em>, </em><em>optional</em><em>, </em><em>Default=None</em>) – valid hour</p></li>
 <li><p><strong>hush</strong> (bool, optional, default is <cite>False</cite>) – whether to ‘hush’ a read-out of thermodynamic and kinematic parameters when getting data.</p></li>
+<li><p><strong>clean_it</strong> (bool, optional, default is <cite>True</cite>) – whether to return the raw_data object or a clean_data dict.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#datadescription"><span class="std std-ref">clean_data</span></a>, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, &amp; model information</p>
+<dd class="field-even"><p><a class="reference internal" href="#datadescription"><span class="std std-ref">clean_data</span></a>, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, omega, &amp; model information</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
@@ -340,15 +344,24 @@
 <span id="id1"></span><h3>Model key names<a class="headerlink" href="#forecastkeys" title="Link to this heading"></a></h3>
 <blockquote>
 <div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">hrrr</span></code>: High Resolution Rapid Refresh, analysis (F00) &amp; forecast</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">rap</span></code>: RAPid refresh, analysis (F00) &amp; forecast</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">nam</span></code>: North American Mesoscale model, analysis (F00) &amp; forecast</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">namnest</span></code>: Nested North American Mesoscale model, analysis (F00) &amp; forecast</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">gfs</span></code>: Global Forecast System, analysis (F00) &amp; forecast</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">sref</span></code>: Short Range Ensemble Forecast, analysis (F00) &amp; forecast</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">hiresw</span></code>: High RESolution Window forecast system, analysis (F00) &amp; forecast</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hrrr</span></code>: High Resolution Rapid Refresh, analysis (F00) &amp; forecast; out to forecast hour 48</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rap</span></code>: Rapid Refresh Model, analysis (F00) &amp; forecast; out to forecast hour 51</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nam</span></code>: North American Mesoscale Model, analysis (F00) &amp; forecast; out to forecast hour 48</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">namnest</span></code>: Nested North American Mesoscale model, analysis (F00) &amp; forecast; out to forecast hour 60</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gfs</span></code>: Global Forecast System, analysis (F00) &amp; forecast; out to forecast hour 180</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sref</span></code>: Short Range Ensemble Forecast, analysis (F00) &amp; forecast; out to forecast hour 84</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hiresw</span></code>: High Resolution Window Forecast System, analysis (F00) &amp; forecast; out to forecast hour 48</p></li>
 </ul>
 </div></blockquote>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Running the <code class="docutils literal notranslate"><span class="pre">get_bufkit_data()</span></code> function without date kwargs will return the latest available forecast.
+Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="c1"># RAP model for site KGFK at forecast hour 5</span>
+<span class="linenos">2</span><span class="n">spy</span><span class="o">.</span><span class="n">get_bufkit_data</span><span class="p">(</span><span class="s1">&#39;rap&#39;</span><span class="p">,</span> <span class="s1">&#39;kgfk&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <ul class="simple">
@@ -365,21 +378,22 @@
 - This function will determine which dataset the user would like to access (RAOB from the University of Wyoming, or IGRAv2 from the IGRAv2 dataset) based on the provided station identifier, then search the appropriate dataset.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="spy.get_obs_data">
-<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">get_obs_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hour</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.get_obs_data" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">get_obs_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hour</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean_it</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.get_obs_data" title="Link to this definition"></a></dt>
 <dd><p>Return a <code class="docutils literal notranslate"><span class="pre">dict</span></code> of ‘cleaned up’ observed profile data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>station</strong> (<em>str</em><em>, </em><em>required</em>) – a three digit RAOB identifier (such as: ‘DTX’) or 11 digit IGRAv2 identifier (such as: ‘GMM00010393’)</p></li>
+<li><p><strong>station</strong> (<em>str</em><em>, </em><em>required</em>) – may be a three digit RAOB identifier (such as: ‘DTX’), 5 digit WMO identifier (such as: ‘72317’), or 11 digit IGRAv2 identifier (such as: ‘GMM00010393’)</p></li>
 <li><p><strong>year</strong> (<em>str</em><em>, </em><em>required</em>) – launch year</p></li>
 <li><p><strong>month</strong> (<em>str</em><em>, </em><em>required</em>) – launch month</p></li>
 <li><p><strong>day</strong> (<em>str</em><em>, </em><em>required</em>) – launch day</p></li>
 <li><p><strong>hour</strong> (<em>str</em><em>, </em><em>required</em>) – launch hour</p></li>
 <li><p><strong>hush</strong> (bool, optional, default is <cite>False</cite>) – whether to ‘hush’ a read-out of thermodynamic and kinematic parameters when getting data.</p></li>
+<li><p><strong>clean_it</strong> (bool, optional, default is <cite>True</cite>) – whether to return the raw_data object or a clean_data dict.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#datadescription"><span class="std std-ref">clean_data</span></a>, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, &amp; model information</p>
+<dd class="field-even"><p><a class="reference internal" href="#datadescription"><span class="std std-ref">clean_data</span></a>, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, &amp; profile information</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
@@ -389,7 +403,7 @@
 
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Some data in these archives may be missing, incomplete or on occasion mislabled.</p>
+<p>Some data in these archives may be missing, incomplete or on occasion mislabled. If you can’t find a RAOB you know for sure exists, try increasing or decreasing the launch_hour by 1 hour.</p>
 </div>
 <section id="available-raob-sites">
 <span id="raobsites"></span><h3>Available RAOB Sites:<a class="headerlink" href="#available-raob-sites" title="Link to this heading"></a></h3>
@@ -433,24 +447,25 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="acars_data..get_profile">
-<span class="sig-prename descclassname"><span class="pre">.</span></span><span class="sig-name descname"><span class="pre">get_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#acars_data..get_profile" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">.</span></span><span class="sig-name descname"><span class="pre">get_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean_it</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#acars_data..get_profile" title="Link to this definition"></a></dt>
 <dd><p>Return a <code class="docutils literal notranslate"><span class="pre">dict</span></code> of ‘cleaned up’ ACARS observation profile data. Do so by selecting one of the profile string <a class="reference internal" href="#acarslists"><span class="std std-ref">“IDs”</span></a> listed by <code class="docutils literal notranslate"><span class="pre">list_profiles()</span></code> and pasting it as an argument in <code class="docutils literal notranslate"><span class="pre">get_profile()</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>profile</strong> (<em>str</em><em>, </em><em>required</em>) – profile <a class="reference internal" href="#acarslists"><span class="std std-ref">“ID”</span></a></p></li>
-<li><p><strong>hush</strong> (bool, optional, default is <cite>False</cite>) – whether to ‘hush’ a read-out of thermodynamic and kinematic parameters when getting data.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#datadescription"><span class="std std-ref">clean_data</span></a>, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, &amp; model information</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
+<dd class="field-odd"><p><strong>profile</strong> (<em>str</em><em>, </em><em>required</em>) – profile <a class="reference internal" href="#acarslists"><span class="std std-ref">“ID”</span></a></p>
 </dd>
 </dl>
 </dd></dl>
 
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hush</strong> (bool, optional, default is <cite>False</cite>) – whether to ‘hush’ a read-out of thermodynamic and kinematic parameters when getting data.</p></li>
+<li><p><strong>clean_it</strong> (bool, optional, default is <cite>True</cite>
+:return: <a class="reference internal" href="#datadescription"><span class="std std-ref">clean_data</span></a>, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, &amp; profile/flight information
+:rtype: dict) – whether to return the raw_data object or a clean_data dict.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <section id="acars-data-retrieval-example">
@@ -482,29 +497,8 @@
 <p class="admonition-title">Note</p>
 <p>ACARS data is aircraft observation data, thus these profiles are typically not ‘full’ profiles (i.e., up to 100 hPa). Often times these profiles extend to only 500 hPa or less. They may also contain various errors such as unreasonably dry dewpoints and unreasonably high wind velocities.</p>
 </div>
-</section>
-</section>
 <hr class="docutils" />
-<section id="observed-data-vad-radar-data">
-<h2>Observed Data | VAD radar data<a class="headerlink" href="#observed-data-vad-radar-data" title="Link to this heading"></a></h2>
-<dl class="py function" id="vaddata">
-<dt class="sig sig-object py" id="pyart_radar_profile">
-<span class="sig-name descname"><span class="pre">pyart_radar_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nexrad_site</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan_dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyart_radar_profile" title="Link to this definition"></a></dt>
-<dd><p>Return a <code class="docutils literal notranslate"><span class="pre">dict</span></code> of ‘cleaned up’ radar VAD data. This radar data loader and VWP creator function is powered by PyArt
-(<a class="reference external" href="https://arm-doe.github.io/pyart/">https://arm-doe.github.io/pyart/</a>)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>nexrad_site</strong> (<em>str</em><em>, </em><em>required</em>) – station ID (<code class="docutils literal notranslate"><span class="pre">'KDTX'</span></code>)</p></li>
-<li><p><strong>scan_dt</strong> (<em>datetime obj</em><em>, </em><em>required</em>) – the date and time of the requested scan (<code class="docutils literal notranslate"><span class="pre">datetime(2021,</span> <span class="pre">12,</span> <span class="pre">11,</span> <span class="pre">4,</span> <span class="pre">24)</span></code>)</p></li>
-<li><p><strong>from_file</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to search the NEXRAD AWS database or look for a local file, default is False</p></li>
-<li><p><strong>data_file</strong> (<em>str</em><em>, </em><em>optional</em>) – the filename of the local radar file to use</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<hr class="docutils" />
+</section>
 </section>
 <section id="what-does-the-data-look-like">
 <span id="datadescription"></span><h2>What does the data look like?<a class="headerlink" href="#what-does-the-data-look-like" title="Link to this heading"></a></h2>
@@ -517,6 +511,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">clean_data['Td']</span></code>: an <cite>array</cite> of dewpoint data</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">clean_data['u']</span></code>: an <cite>array</cite> of u-component of wind data</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">clean_data['v']</span></code>: an <cite>array</cite> of v-component of wind data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">clean_data['omega']</span></code>: an <cite>array</cite> of vertical velocity – model data only</p></li>
 </ul>
 </dd>
 <dt>The profile metadata this <cite>dict</cite> contains (via <cite>clean_data[‘site_info’]</cite>)…</dt><dd><ul class="simple">
@@ -587,99 +582,62 @@
 </ul>
 </dd>
 </dl>
+<p><strong>New to v3.0.5, profile metadata also contains pre-built plot titles (via `clean_data[‘titles’]`). This will make creating titles manually for custom data sources easier.</strong></p>
 <p>Below is an example:</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">944.</span> <span class="p">,</span> <span class="mf">926.4</span><span class="p">,</span> <span class="mf">925.</span> <span class="p">,</span> <span class="mf">894.5</span><span class="p">,</span> <span class="mf">863.5</span><span class="p">,</span> <span class="mf">850.</span> <span class="p">,</span> <span class="mf">848.</span> <span class="p">,</span> <span class="mf">833.4</span><span class="p">,</span> <span class="mf">804.1</span><span class="p">,</span>
-        <span class="mf">795.</span> <span class="p">,</span> <span class="mf">775.7</span><span class="p">,</span> <span class="mf">774.</span> <span class="p">,</span> <span class="mf">748.</span> <span class="p">,</span> <span class="mf">721.2</span><span class="p">,</span> <span class="mf">720.</span> <span class="p">,</span> <span class="mf">700.</span> <span class="p">,</span> <span class="mf">685.</span> <span class="p">,</span> <span class="mf">674.</span> <span class="p">,</span>
-        <span class="mf">670.</span> <span class="p">,</span> <span class="mf">651.</span> <span class="p">,</span> <span class="mf">645.1</span><span class="p">,</span> <span class="mf">630.</span> <span class="p">,</span> <span class="mf">621.3</span><span class="p">,</span> <span class="mf">621.</span> <span class="p">,</span> <span class="mf">598.2</span><span class="p">,</span> <span class="mf">591.</span> <span class="p">,</span> <span class="mf">587.</span> <span class="p">,</span>
-        <span class="mf">583.</span> <span class="p">,</span> <span class="mf">572.</span> <span class="p">,</span> <span class="mf">554.</span> <span class="p">,</span> <span class="mf">509.</span> <span class="p">,</span> <span class="mf">500.</span> <span class="p">,</span> <span class="mf">473.6</span><span class="p">,</span> <span class="mf">471.</span> <span class="p">,</span> <span class="mf">446.</span> <span class="p">,</span> <span class="mf">442.</span> <span class="p">,</span>
-        <span class="mf">425.</span> <span class="p">,</span> <span class="mf">418.</span> <span class="p">,</span> <span class="mf">402.</span> <span class="p">,</span> <span class="mf">400.</span> <span class="p">,</span> <span class="mf">399.</span> <span class="p">,</span> <span class="mf">395.</span> <span class="p">,</span> <span class="mf">386.</span> <span class="p">,</span> <span class="mf">382.</span> <span class="p">,</span> <span class="mf">370.</span> <span class="p">,</span>
-        <span class="mf">354.7</span><span class="p">,</span> <span class="mf">354.</span> <span class="p">,</span> <span class="mf">336.</span> <span class="p">,</span> <span class="mf">311.2</span><span class="p">,</span> <span class="mf">300.</span> <span class="p">,</span> <span class="mf">297.</span> <span class="p">,</span> <span class="mf">279.</span> <span class="p">,</span> <span class="mf">250.</span> <span class="p">,</span> <span class="mf">241.</span> <span class="p">,</span>
-        <span class="mf">239.</span> <span class="p">,</span> <span class="mf">237.6</span><span class="p">,</span> <span class="mf">232.</span> <span class="p">,</span> <span class="mf">200.</span> <span class="p">,</span> <span class="mf">194.</span> <span class="p">,</span> <span class="mf">190.</span> <span class="p">,</span> <span class="mf">188.</span> <span class="p">,</span> <span class="mf">170.</span> <span class="p">,</span> <span class="mf">168.9</span><span class="p">,</span>
-        <span class="mf">165.</span> <span class="p">,</span> <span class="mf">162.</span> <span class="p">,</span> <span class="mf">161.</span> <span class="p">,</span> <span class="mf">160.6</span><span class="p">,</span> <span class="mf">155.</span> <span class="p">,</span> <span class="mf">152.8</span><span class="p">,</span> <span class="mf">150.</span> <span class="p">,</span> <span class="mf">138.2</span><span class="p">,</span> <span class="mf">135.</span> <span class="p">,</span>
-        <span class="mf">131.3</span><span class="p">,</span> <span class="mf">131.</span> <span class="p">,</span> <span class="mf">130.</span> <span class="p">,</span> <span class="mf">127.</span> <span class="p">,</span> <span class="mf">125.</span> <span class="p">,</span> <span class="mf">124.8</span><span class="p">,</span> <span class="mf">122.</span> <span class="p">,</span> <span class="mf">118.7</span><span class="p">,</span> <span class="mf">118.</span> <span class="p">,</span>
-        <span class="mf">113.</span> <span class="p">,</span> <span class="mf">112.</span> <span class="p">,</span> <span class="mf">111.</span> <span class="p">,</span> <span class="mf">108.</span> <span class="p">,</span> <span class="mf">103.</span> <span class="p">,</span> <span class="mf">102.</span> <span class="p">,</span> <span class="mf">101.</span> <span class="p">,</span> <span class="mf">100.</span> <span class="p">])</span> <span class="o">&lt;</span><span class="n">Unit</span><span class="p">(</span><span class="s1">&#39;hectopascal&#39;</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
- <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span>  <span class="mi">446</span><span class="p">,</span>   <span class="mi">610</span><span class="p">,</span>   <span class="mi">623</span><span class="p">,</span>   <span class="mi">914</span><span class="p">,</span>  <span class="mi">1219</span><span class="p">,</span>  <span class="mi">1356</span><span class="p">,</span>  <span class="mi">1376</span><span class="p">,</span>  <span class="mi">1524</span><span class="p">,</span>  <span class="mi">1829</span><span class="p">,</span>
-         <span class="mi">1926</span><span class="p">,</span>  <span class="mi">2134</span><span class="p">,</span>  <span class="mi">2152</span><span class="p">,</span>  <span class="mi">2438</span><span class="p">,</span>  <span class="mi">2743</span><span class="p">,</span>  <span class="mi">2757</span><span class="p">,</span>  <span class="mi">2990</span><span class="p">,</span>  <span class="mi">3168</span><span class="p">,</span>  <span class="mi">3300</span><span class="p">,</span>
-         <span class="mi">3349</span><span class="p">,</span>  <span class="mi">3584</span><span class="p">,</span>  <span class="mi">3658</span><span class="p">,</span>  <span class="mi">3850</span><span class="p">,</span>  <span class="mi">3962</span><span class="p">,</span>  <span class="mi">3966</span><span class="p">,</span>  <span class="mi">4267</span><span class="p">,</span>  <span class="mi">4364</span><span class="p">,</span>  <span class="mi">4419</span><span class="p">,</span>
-         <span class="mi">4473</span><span class="p">,</span>  <span class="mi">4625</span><span class="p">,</span>  <span class="mi">4877</span><span class="p">,</span>  <span class="mi">5542</span><span class="p">,</span>  <span class="mi">5680</span><span class="p">,</span>  <span class="mi">6096</span><span class="p">,</span>  <span class="mi">6137</span><span class="p">,</span>  <span class="mi">6550</span><span class="p">,</span>  <span class="mi">6617</span><span class="p">,</span>
-         <span class="mi">6911</span><span class="p">,</span>  <span class="mi">7035</span><span class="p">,</span>  <span class="mi">7323</span><span class="p">,</span>  <span class="mi">7360</span><span class="p">,</span>  <span class="mi">7378</span><span class="p">,</span>  <span class="mi">7452</span><span class="p">,</span>  <span class="mi">7620</span><span class="p">,</span>  <span class="mi">7696</span><span class="p">,</span>  <span class="mi">7925</span><span class="p">,</span>
-         <span class="mi">8230</span><span class="p">,</span>  <span class="mi">8243</span><span class="p">,</span>  <span class="mi">8612</span><span class="p">,</span>  <span class="mi">9144</span><span class="p">,</span>  <span class="mi">9400</span><span class="p">,</span>  <span class="mi">9470</span><span class="p">,</span>  <span class="mi">9900</span><span class="p">,</span> <span class="mi">10640</span><span class="p">,</span> <span class="mi">10880</span><span class="p">,</span>
-        <span class="mi">10935</span><span class="p">,</span> <span class="mi">10973</span><span class="p">,</span> <span class="mi">11128</span><span class="p">,</span> <span class="mi">12070</span><span class="p">,</span> <span class="mi">12260</span><span class="p">,</span> <span class="mi">12389</span><span class="p">,</span> <span class="mi">12454</span><span class="p">,</span> <span class="mi">13067</span><span class="p">,</span> <span class="mi">13106</span><span class="p">,</span>
-        <span class="mi">13246</span><span class="p">,</span> <span class="mi">13356</span><span class="p">,</span> <span class="mi">13394</span><span class="p">,</span> <span class="mi">13411</span><span class="p">,</span> <span class="mi">13628</span><span class="p">,</span> <span class="mi">13716</span><span class="p">,</span> <span class="mi">13830</span><span class="p">,</span> <span class="mi">14326</span><span class="p">,</span> <span class="mi">14466</span><span class="p">,</span>
-        <span class="mi">14630</span><span class="p">,</span> <span class="mi">14645</span><span class="p">,</span> <span class="mi">14690</span><span class="p">,</span> <span class="mi">14831</span><span class="p">,</span> <span class="mi">14927</span><span class="p">,</span> <span class="mi">14935</span><span class="p">,</span> <span class="mi">15075</span><span class="p">,</span> <span class="mi">15240</span><span class="p">,</span> <span class="mi">15278</span><span class="p">,</span>
-        <span class="mi">15544</span><span class="p">,</span> <span class="mi">15599</span><span class="p">,</span> <span class="mi">15655</span><span class="p">,</span> <span class="mi">15826</span><span class="p">,</span> <span class="mi">16123</span><span class="p">,</span> <span class="mi">16184</span><span class="p">,</span> <span class="mi">16247</span><span class="p">,</span> <span class="mi">16310</span><span class="p">])</span> <span class="o">&lt;</span><span class="n">Unit</span><span class="p">(</span><span class="s1">&#39;meter&#39;</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
- <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span> <span class="mf">26.</span> <span class="p">,</span>  <span class="mf">24.3</span><span class="p">,</span>  <span class="mf">24.2</span><span class="p">,</span>  <span class="mf">21.7</span><span class="p">,</span>  <span class="mf">19.2</span><span class="p">,</span>  <span class="mf">18.</span> <span class="p">,</span>  <span class="mf">17.4</span><span class="p">,</span>  <span class="mf">16.4</span><span class="p">,</span>  <span class="mf">14.3</span><span class="p">,</span>
-         <span class="mf">13.6</span><span class="p">,</span>  <span class="mf">13.4</span><span class="p">,</span>  <span class="mf">13.4</span><span class="p">,</span>  <span class="mf">10.9</span><span class="p">,</span>   <span class="mf">8.3</span><span class="p">,</span>   <span class="mf">8.2</span><span class="p">,</span>   <span class="mf">6.4</span><span class="p">,</span>   <span class="mf">5.2</span><span class="p">,</span>   <span class="mf">5.8</span><span class="p">,</span>
-          <span class="mf">6.</span> <span class="p">,</span>   <span class="mf">4.2</span><span class="p">,</span>   <span class="mf">3.6</span><span class="p">,</span>   <span class="mf">2.</span> <span class="p">,</span>   <span class="mf">2.4</span><span class="p">,</span>   <span class="mf">2.4</span><span class="p">,</span>   <span class="mf">0.2</span><span class="p">,</span>  <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span>  <span class="o">-</span><span class="mf">0.7</span><span class="p">,</span>
-         <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span>  <span class="o">-</span><span class="mf">0.9</span><span class="p">,</span>  <span class="o">-</span><span class="mf">3.1</span><span class="p">,</span>  <span class="o">-</span><span class="mf">9.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">10.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">14.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">14.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">16.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">16.7</span><span class="p">,</span>
-        <span class="o">-</span><span class="mf">19.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">19.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">22.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">22.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">22.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">22.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">23.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">24.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">26.7</span><span class="p">,</span>
-        <span class="o">-</span><span class="mf">29.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">29.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">32.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">36.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">37.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">37.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">41.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">47.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">49.3</span><span class="p">,</span>
-        <span class="o">-</span><span class="mf">49.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">49.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">51.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">59.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">61.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">62.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">62.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">68.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">68.3</span><span class="p">,</span>
-        <span class="o">-</span><span class="mf">68.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">68.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">63.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">63.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">62.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">62.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">63.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">68.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">69.9</span><span class="p">,</span>
-        <span class="o">-</span><span class="mf">70.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">70.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">68.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">66.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">65.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">65.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">65.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">63.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">63.5</span><span class="p">,</span>
-        <span class="o">-</span><span class="mf">62.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">61.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">60.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">59.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">58.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">57.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">55.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">55.3</span><span class="p">])</span> <span class="o">&lt;</span><span class="n">Unit</span><span class="p">(</span><span class="s1">&#39;degree_Celsius&#39;</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
- <span class="s1">&#39;Td&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span> <span class="mf">17.</span> <span class="p">,</span>  <span class="mf">16.3</span><span class="p">,</span>  <span class="mf">16.2</span><span class="p">,</span>  <span class="mf">15.6</span><span class="p">,</span>  <span class="mf">15.</span> <span class="p">,</span>  <span class="mf">14.7</span><span class="p">,</span>  <span class="mf">14.8</span><span class="p">,</span>  <span class="mf">14.2</span><span class="p">,</span>  <span class="mf">13.</span> <span class="p">,</span>
-         <span class="mf">12.6</span><span class="p">,</span>  <span class="mf">10.</span> <span class="p">,</span>   <span class="mf">9.8</span><span class="p">,</span>   <span class="mf">8.7</span><span class="p">,</span>   <span class="mf">7.5</span><span class="p">,</span>   <span class="mf">7.4</span><span class="p">,</span>   <span class="mf">5.3</span><span class="p">,</span>   <span class="mf">4.1</span><span class="p">,</span>  <span class="o">-</span><span class="mf">1.2</span><span class="p">,</span>
-         <span class="o">-</span><span class="mf">3.</span> <span class="p">,</span>  <span class="o">-</span><span class="mf">3.8</span><span class="p">,</span>  <span class="o">-</span><span class="mf">3.6</span><span class="p">,</span>  <span class="o">-</span><span class="mf">3.</span> <span class="p">,</span>  <span class="o">-</span><span class="mf">4.5</span><span class="p">,</span>  <span class="o">-</span><span class="mf">4.6</span><span class="p">,</span>  <span class="o">-</span><span class="mf">4.4</span><span class="p">,</span>  <span class="o">-</span><span class="mf">4.3</span><span class="p">,</span>  <span class="o">-</span><span class="mf">5.3</span><span class="p">,</span>
-         <span class="o">-</span><span class="mf">8.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">12.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">14.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">17.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">17.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">17.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">17.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">20.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">22.7</span><span class="p">,</span>
-        <span class="o">-</span><span class="mf">26.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">29.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">31.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">31.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">31.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">35.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">37.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">38.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">36.8</span><span class="p">,</span>
-        <span class="o">-</span><span class="mf">34.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">34.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">36.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">39.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">41.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">41.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">45.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">50.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">53.</span> <span class="p">,</span>
-        <span class="o">-</span><span class="mf">54.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">54.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">56.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">64.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">66.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">67.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">66.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">72.</span> <span class="p">,</span> <span class="o">-</span><span class="mf">72.2</span><span class="p">,</span>
-        <span class="o">-</span><span class="mf">72.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">72.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">68.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">68.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">67.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">67.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">68.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">73.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">74.9</span><span class="p">,</span>
-        <span class="o">-</span><span class="mf">75.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">75.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">74.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">74.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">74.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">74.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">76.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">76.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">76.5</span><span class="p">,</span>
-        <span class="o">-</span><span class="mf">78.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">78.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">78.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">79.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">83.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">83.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">83.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">83.3</span><span class="p">])</span> <span class="o">&lt;</span><span class="n">Unit</span><span class="p">(</span><span class="s1">&#39;degree_Celsius&#39;</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
- <span class="s1">&#39;u&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span> <span class="mf">10.7246222</span> <span class="p">,</span>  <span class="mf">10.60660172</span><span class="p">,</span>  <span class="mf">10.60660172</span><span class="p">,</span>  <span class="mf">17.</span>        <span class="p">,</span>
-         <span class="mf">22.36948102</span><span class="p">,</span>  <span class="mf">26.99707961</span><span class="p">,</span>  <span class="mf">26.99707961</span><span class="p">,</span>  <span class="mf">27.63986722</span><span class="p">,</span>
-         <span class="mf">31.81980515</span><span class="p">,</span>  <span class="mf">34.37362398</span><span class="p">,</span>  <span class="mf">39.83431104</span><span class="p">,</span>  <span class="mf">39.83431104</span><span class="p">,</span>
-         <span class="mf">42.13244437</span><span class="p">,</span>  <span class="mf">45.05336244</span><span class="p">,</span>  <span class="mf">45.05336244</span><span class="p">,</span>  <span class="mf">39.83431104</span><span class="p">,</span>
-         <span class="mf">39.99960775</span><span class="p">,</span>  <span class="mf">40.12982058</span><span class="p">,</span>  <span class="mf">40.22445359</span><span class="p">,</span>  <span class="mf">40.28302882</span><span class="p">,</span>
-         <span class="mf">40.30508653</span><span class="p">,</span>  <span class="mf">40.30508653</span><span class="p">,</span>  <span class="mf">40.30508653</span><span class="p">,</span>  <span class="mf">40.30508653</span><span class="p">,</span>
-         <span class="mf">55.92124435</span><span class="p">,</span>  <span class="mf">56.73165519</span><span class="p">,</span>  <span class="mf">56.73165519</span><span class="p">,</span>  <span class="mf">57.52478501</span><span class="p">,</span>
-         <span class="mf">57.50175672</span><span class="p">,</span>  <span class="mf">58.97894719</span><span class="p">,</span>  <span class="mf">60.00171105</span><span class="p">,</span>  <span class="mf">60.62177826</span><span class="p">,</span>
-         <span class="mf">64.08587988</span><span class="p">,</span>  <span class="mf">64.08587988</span><span class="p">,</span>  <span class="mf">58.51531863</span><span class="p">,</span>  <span class="mf">58.51531863</span><span class="p">,</span>
-         <span class="mf">55.35225748</span><span class="p">,</span>  <span class="mf">53.05840464</span><span class="p">,</span>  <span class="mf">49.9682747</span> <span class="p">,</span>  <span class="mf">49.9682747</span> <span class="p">,</span>
-         <span class="mf">49.9682747</span> <span class="p">,</span>  <span class="mf">48.32997061</span><span class="p">,</span>  <span class="mf">44.23421039</span><span class="p">,</span>  <span class="mf">43.93899135</span><span class="p">,</span>
-         <span class="mf">44.16729559</span><span class="p">,</span>  <span class="mf">50.78742675</span><span class="p">,</span>  <span class="mf">50.78742675</span><span class="p">,</span>  <span class="mf">50.78742675</span><span class="p">,</span>
-         <span class="mf">51.60657879</span><span class="p">,</span>  <span class="mf">51.09549882</span><span class="p">,</span>  <span class="mf">51.09549882</span><span class="p">,</span>  <span class="mf">53.85980316</span><span class="p">,</span>
-         <span class="mf">57.09739058</span><span class="p">,</span>  <span class="mf">55.28477501</span><span class="p">,</span>  <span class="mf">54.37846722</span><span class="p">,</span>  <span class="mf">54.37846722</span><span class="p">,</span>
-         <span class="mf">55.28477501</span><span class="p">,</span>  <span class="mf">61.62892952</span><span class="p">,</span>  <span class="mf">64.34785288</span><span class="p">,</span>  <span class="mf">67.06677624</span><span class="p">,</span>
-         <span class="mf">67.97308403</span><span class="p">,</span>  <span class="mf">77.94246969</span><span class="p">,</span>  <span class="mf">78.84877747</span><span class="p">,</span>  <span class="mf">91.15018422</span><span class="p">,</span>
-         <span class="mf">99.6074178</span> <span class="p">,</span> <span class="mf">102.42649567</span><span class="p">,</span> <span class="mf">102.42649567</span><span class="p">,</span>  <span class="mf">80.39200027</span><span class="p">,</span>
-         <span class="mf">71.59831518</span><span class="p">,</span>  <span class="mf">69.53725394</span><span class="p">,</span>  <span class="mf">67.61480784</span><span class="p">,</span>  <span class="mf">52.13005469</span><span class="p">,</span>
-         <span class="mf">33.7059555</span> <span class="p">,</span>  <span class="mf">34.47199994</span><span class="p">,</span>  <span class="mf">37.03650542</span><span class="p">,</span>  <span class="mf">45.28821067</span><span class="p">,</span>
-         <span class="mf">51.09549882</span><span class="p">,</span>  <span class="mf">51.09549882</span><span class="p">,</span>  <span class="mf">45.033321</span>  <span class="p">,</span>  <span class="mf">37.23909236</span><span class="p">,</span>
-         <span class="mf">37.60864741</span><span class="p">,</span>  <span class="mf">37.74069899</span><span class="p">,</span>  <span class="mf">38.27679749</span><span class="p">,</span>  <span class="mf">37.58770483</span><span class="p">,</span>
-         <span class="mf">37.48920614</span><span class="p">,</span>  <span class="mf">36.5444686</span> <span class="p">,</span>  <span class="mf">36.63991854</span><span class="p">,</span>  <span class="mf">35.80278823</span><span class="p">,</span>
-         <span class="mf">35.86300913</span><span class="p">])</span> <span class="o">&lt;</span><span class="n">Unit</span><span class="p">(</span><span class="s1">&#39;knot&#39;</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
- <span class="s1">&#39;v&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span> <span class="mf">8.99902654</span><span class="p">,</span> <span class="mf">10.60660172</span><span class="p">,</span> <span class="mf">10.60660172</span><span class="p">,</span> <span class="mf">29.44486373</span><span class="p">,</span> <span class="mf">31.94692973</span><span class="p">,</span>
-        <span class="mf">32.17386661</span><span class="p">,</span> <span class="mf">32.17386661</span><span class="p">,</span> <span class="mf">32.93991105</span><span class="p">,</span> <span class="mf">31.81980515</span><span class="p">,</span> <span class="mf">32.05392292</span><span class="p">,</span>
-        <span class="mf">33.4249557</span> <span class="p">,</span> <span class="mf">33.4249557</span> <span class="p">,</span> <span class="mf">35.35331853</span><span class="p">,</span> <span class="mf">31.546704</span>  <span class="p">,</span> <span class="mf">31.546704</span>  <span class="p">,</span>
-        <span class="mf">33.4249557</span> <span class="p">,</span> <span class="mf">34.77112854</span><span class="p">,</span> <span class="mf">36.13305274</span><span class="p">,</span> <span class="mf">37.5099098</span> <span class="p">,</span> <span class="mf">38.90086875</span><span class="p">,</span>
-        <span class="mf">40.30508653</span><span class="p">,</span> <span class="mf">40.30508653</span><span class="p">,</span> <span class="mf">40.30508653</span><span class="p">,</span> <span class="mf">40.30508653</span><span class="p">,</span> <span class="mf">46.92349551</span><span class="p">,</span>
-        <span class="mf">45.94038855</span><span class="p">,</span> <span class="mf">45.94038855</span><span class="p">,</span> <span class="mf">44.9432877</span> <span class="p">,</span> <span class="mf">43.33068167</span><span class="p">,</span> <span class="mf">41.29750342</span><span class="p">,</span>
-        <span class="mf">36.05266524</span><span class="p">,</span> <span class="mf">35.</span>        <span class="p">,</span> <span class="mf">37.</span>        <span class="p">,</span> <span class="mf">37.</span>        <span class="p">,</span> <span class="mf">36.56442923</span><span class="p">,</span>
-        <span class="mf">36.56442923</span><span class="p">,</span> <span class="mf">35.94617631</span><span class="p">,</span> <span class="mf">35.78834582</span><span class="p">,</span> <span class="mf">34.98816262</span><span class="p">,</span> <span class="mf">34.98816262</span><span class="p">,</span>
-        <span class="mf">34.98816262</span><span class="p">,</span> <span class="mf">33.84100974</span><span class="p">,</span> <span class="mf">30.97312756</span><span class="p">,</span> <span class="mf">29.63722388</span><span class="p">,</span> <span class="mf">25.5</span>       <span class="p">,</span>
-        <span class="mf">35.56173905</span><span class="p">,</span> <span class="mf">35.56173905</span><span class="p">,</span> <span class="mf">35.56173905</span><span class="p">,</span> <span class="mf">36.13531549</span><span class="p">,</span> <span class="mf">29.5</span>       <span class="p">,</span>
-        <span class="mf">29.5</span>       <span class="p">,</span> <span class="mf">28.63776533</span><span class="p">,</span> <span class="mf">26.62495049</span><span class="p">,</span> <span class="mf">25.77971397</span><span class="p">,</span> <span class="mf">25.3570957</span> <span class="p">,</span>
-        <span class="mf">25.3570957</span> <span class="p">,</span> <span class="mf">25.77971397</span><span class="p">,</span> <span class="mf">28.7380418</span> <span class="p">,</span> <span class="mf">30.00589658</span><span class="p">,</span> <span class="mf">31.27375137</span><span class="p">,</span>
-        <span class="mf">31.69636963</span><span class="p">,</span> <span class="mf">36.34517051</span><span class="p">,</span> <span class="mf">36.76778877</span><span class="p">,</span> <span class="mf">33.1759539</span> <span class="p">,</span> <span class="mf">36.25413519</span><span class="p">,</span>
-        <span class="mf">37.28019562</span><span class="p">,</span> <span class="mf">37.28019562</span><span class="p">,</span> <span class="mf">35.79282459</span><span class="p">,</span> <span class="mf">33.38684268</span><span class="p">,</span> <span class="mf">25.30949061</span><span class="p">,</span>
-        <span class="mf">18.11733316</span><span class="p">,</span> <span class="mf">25.42552651</span><span class="p">,</span> <span class="mf">28.28265483</span><span class="p">,</span> <span class="mf">28.92544244</span><span class="p">,</span> <span class="mf">28.93608934</span><span class="p">,</span>
-        <span class="mf">29.41050789</span><span class="p">,</span> <span class="mf">29.5</span>       <span class="p">,</span> <span class="mf">29.5</span>       <span class="p">,</span> <span class="mf">26.</span>        <span class="p">,</span> <span class="mf">21.5</span>       <span class="p">,</span>
-        <span class="mf">20.84681367</span><span class="p">,</span> <span class="mf">16.01997627</span><span class="p">,</span> <span class="mf">14.69308593</span><span class="p">,</span> <span class="mf">13.68080573</span><span class="p">,</span> <span class="mf">10.74985688</span><span class="p">,</span>
-         <span class="mf">5.78807521</span><span class="p">,</span>  <span class="mf">5.14940474</span><span class="p">,</span>  <span class="mf">3.76302468</span><span class="p">,</span>  <span class="mf">3.13760674</span><span class="p">])</span> <span class="o">&lt;</span><span class="n">Unit</span><span class="p">(</span><span class="s1">&#39;knot&#39;</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
- <span class="s1">&#39;site_info&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;site-id&#39;</span><span class="p">:</span> <span class="s1">&#39;KAPX&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;site-name&#39;</span><span class="p">:</span> <span class="s1">&#39;GAYLORD&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;site-lctn&#39;</span><span class="p">:</span> <span class="s1">&#39;MI US&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;site-latlon&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">44.92</span><span class="p">,</span> <span class="o">-</span><span class="mf">84.72</span><span class="p">],</span>
-  <span class="s1">&#39;site-elv&#39;</span><span class="p">:</span> <span class="mf">446.0</span><span class="p">,</span>
-  <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;RAOB OBSERVED PROFILE&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="s1">&#39;no-model&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;fcst-hour&#39;</span><span class="p">:</span> <span class="s1">&#39;no-fcst-hour&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;run-time&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;no-run-time&#39;</span><span class="p">],</span>
-  <span class="s1">&#39;valid-time&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2022&#39;</span><span class="p">,</span> <span class="s1">&#39;05&#39;</span><span class="p">,</span> <span class="s1">&#39;20&#39;</span><span class="p">,</span> <span class="s1">&#39;18&#39;</span><span class="p">]}}</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">Quantity</span><span class="p">([</span><span class="mf">984.7</span> <span class="mf">981.8</span> <span class="mf">976.4</span> <span class="mf">967.1</span> <span class="mf">953.4</span> <span class="mf">935.8</span> <span class="mf">914.8</span> <span class="mf">892.</span>  <span class="mf">867.2</span> <span class="mf">839.6</span> <span class="mf">809.2</span> <span class="mf">775.8</span>
+  <span class="mf">739.6</span> <span class="mf">700.4</span> <span class="mf">658.4</span> <span class="mf">613.4</span> <span class="mf">566.1</span> <span class="mf">520.1</span> <span class="mf">478.7</span> <span class="mf">441.6</span> <span class="mf">408.1</span> <span class="mf">377.8</span> <span class="mf">350.5</span> <span class="mf">325.8</span>
+  <span class="mf">303.6</span> <span class="mf">283.6</span> <span class="mf">265.5</span> <span class="mf">248.7</span> <span class="mf">233.5</span> <span class="mf">219.6</span> <span class="mf">205.7</span> <span class="mf">191.7</span> <span class="mf">177.7</span> <span class="mf">163.8</span> <span class="mf">149.8</span> <span class="mf">135.9</span>
+  <span class="mf">121.9</span> <span class="mf">108.</span>   <span class="mf">94.</span>   <span class="mf">81.</span>   <span class="mf">70.6</span>  <span class="mf">62.2</span>  <span class="mf">54.3</span><span class="p">],</span> <span class="s1">&#39;hectopascal&#39;</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">Quantity</span><span class="p">([</span>  <span class="mf">262.29</span>   <span class="mf">287.38</span>   <span class="mf">334.72</span>   <span class="mf">417.39</span>   <span class="mf">540.9</span>    <span class="mf">701.94</span>   <span class="mf">897.92</span>  <span class="mf">1116.39</span>
+   <span class="mf">1360.38</span>  <span class="mf">1638.85</span>  <span class="mf">1954.13</span>  <span class="mf">2311.53</span>  <span class="mf">2712.99</span>  <span class="mf">3165.6</span>   <span class="mf">3673.36</span>  <span class="mf">4247.56</span>
+   <span class="mf">4889.99</span>  <span class="mf">5558.47</span>  <span class="mf">6202.</span>    <span class="mf">6817.56</span>  <span class="mf">7410.43</span>  <span class="mf">7981.44</span>  <span class="mf">8527.44</span>  <span class="mf">9050.51</span>
+   <span class="mf">9548.</span>   <span class="mf">10021.78</span> <span class="mf">10474.5</span>  <span class="mf">10917.67</span> <span class="mf">11339.77</span> <span class="mf">11745.44</span> <span class="mf">12172.28</span> <span class="mf">12626.51</span>
+  <span class="mf">13109.32</span> <span class="mf">13623.36</span> <span class="mf">14184.85</span> <span class="mf">14794.86</span> <span class="mf">15466.97</span> <span class="mf">16205.52</span> <span class="mf">17052.44</span> <span class="mf">17961.73</span>
+  <span class="mf">18802.02</span> <span class="mf">19579.02</span> <span class="mf">20415.56</span><span class="p">],</span> <span class="s1">&#39;meter&#39;</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">Quantity</span><span class="p">([</span> <span class="mf">14.84</span>  <span class="mf">17.54</span>  <span class="mf">20.04</span>  <span class="mf">21.34</span>  <span class="mf">21.44</span>  <span class="mf">20.44</span>  <span class="mf">21.44</span>  <span class="mf">22.74</span>  <span class="mf">21.64</span>  <span class="mf">19.94</span>
+   <span class="mf">17.54</span>  <span class="mf">14.84</span>  <span class="mf">11.94</span>   <span class="mf">8.64</span>   <span class="mf">5.24</span>   <span class="mf">1.84</span>  <span class="o">-</span><span class="mf">1.86</span>  <span class="o">-</span><span class="mf">6.06</span> <span class="o">-</span><span class="mf">10.56</span> <span class="o">-</span><span class="mf">14.66</span>
+  <span class="o">-</span><span class="mf">18.36</span> <span class="o">-</span><span class="mf">22.36</span> <span class="o">-</span><span class="mf">26.66</span> <span class="o">-</span><span class="mf">30.66</span> <span class="o">-</span><span class="mf">34.06</span> <span class="o">-</span><span class="mf">37.26</span> <span class="o">-</span><span class="mf">40.06</span> <span class="o">-</span><span class="mf">43.06</span> <span class="o">-</span><span class="mf">45.96</span> <span class="o">-</span><span class="mf">48.76</span>
+  <span class="o">-</span><span class="mf">51.56</span> <span class="o">-</span><span class="mf">54.46</span> <span class="o">-</span><span class="mf">56.86</span> <span class="o">-</span><span class="mf">58.26</span> <span class="o">-</span><span class="mf">58.66</span> <span class="o">-</span><span class="mf">59.66</span> <span class="o">-</span><span class="mf">64.26</span> <span class="o">-</span><span class="mf">65.26</span> <span class="o">-</span><span class="mf">64.26</span> <span class="o">-</span><span class="mf">64.66</span>
+  <span class="o">-</span><span class="mf">63.86</span> <span class="o">-</span><span class="mf">63.36</span> <span class="o">-</span><span class="mf">62.16</span><span class="p">],</span> <span class="s1">&#39;degree_Celsius&#39;</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="s1">&#39;Td&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">Quantity</span><span class="p">([</span>   <span class="mf">9.3</span>     <span class="mf">8.79</span>    <span class="mf">8.32</span>    <span class="mf">7.88</span>    <span class="mf">7.01</span>    <span class="mf">6.38</span>   <span class="o">-</span><span class="mf">2.2</span>   <span class="o">-</span><span class="mf">13.24</span>  <span class="o">-</span><span class="mf">14.49</span>
+   <span class="o">-</span><span class="mf">24.86</span>  <span class="o">-</span><span class="mf">17.51</span>   <span class="o">-</span><span class="mf">9.57</span>   <span class="o">-</span><span class="mf">7.31</span>   <span class="o">-</span><span class="mf">9.9</span>   <span class="o">-</span><span class="mf">12.11</span>  <span class="o">-</span><span class="mf">12.99</span>  <span class="o">-</span><span class="mf">16.41</span>  <span class="o">-</span><span class="mf">20.62</span>
+   <span class="o">-</span><span class="mf">25.37</span>  <span class="o">-</span><span class="mf">30.93</span>  <span class="o">-</span><span class="mf">36.12</span>  <span class="o">-</span><span class="mf">40.09</span>  <span class="o">-</span><span class="mf">42.47</span>  <span class="o">-</span><span class="mf">45.57</span>  <span class="o">-</span><span class="mf">49.39</span>  <span class="o">-</span><span class="mf">52.06</span>  <span class="o">-</span><span class="mf">54.3</span>
+   <span class="o">-</span><span class="mf">55.81</span>  <span class="o">-</span><span class="mf">58.64</span>  <span class="o">-</span><span class="mf">62.27</span>  <span class="o">-</span><span class="mf">64.93</span>  <span class="o">-</span><span class="mf">65.45</span>  <span class="o">-</span><span class="mf">68.93</span>  <span class="o">-</span><span class="mf">74.24</span>  <span class="o">-</span><span class="mf">74.84</span> <span class="o">-</span><span class="mf">101.09</span>
+  <span class="o">-</span><span class="mf">101.6</span>  <span class="o">-</span><span class="mf">102.16</span> <span class="o">-</span><span class="mf">102.8</span>  <span class="o">-</span><span class="mf">103.49</span> <span class="o">-</span><span class="mf">104.11</span> <span class="o">-</span><span class="mf">104.68</span> <span class="o">-</span><span class="mf">105.28</span><span class="p">],</span> <span class="s1">&#39;degree_Celsius&#39;</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="s1">&#39;u&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">Quantity</span><span class="p">([</span><span class="o">-</span><span class="mf">2.33041109</span> <span class="o">-</span><span class="mf">2.91567705</span> <span class="o">-</span><span class="mf">2.3323691</span>   <span class="mf">0.77626972</span>  <span class="mf">3.5007069</span>   <span class="mf">5.63835178</span>
+   <span class="mf">9.13497097</span> <span class="mf">10.6914363</span>  <span class="mf">13.41432206</span> <span class="mf">20.79403892</span> <span class="mf">23.12721208</span> <span class="mf">21.57710061</span>
+  <span class="mf">20.41478107</span> <span class="mf">21.38502534</span> <span class="mf">22.54815854</span> <span class="mf">23.51844683</span> <span class="mf">24.29878342</span> <span class="mf">23.71105505</span>
+  <span class="mf">20.98924152</span> <span class="mf">22.35724617</span> <span class="mf">28.57257978</span> <span class="mf">28.18931303</span> <span class="mf">25.65927737</span> <span class="mf">28.56994968</span>
+  <span class="mf">28.57863291</span> <span class="mf">29.73848546</span> <span class="mf">31.87877692</span> <span class="mf">31.48766321</span> <span class="mf">29.74415098</span> <span class="mf">27.98817845</span>
+  <span class="mf">27.59730449</span> <span class="mf">26.43360693</span> <span class="mf">23.32832754</span> <span class="mf">21.76679295</span> <span class="mf">23.12850533</span> <span class="mf">25.85409643</span>
+  <span class="mf">33.62524652</span> <span class="mf">19.4383033</span>   <span class="mf">8.94253878</span>  <span class="mf">9.13760323</span>  <span class="mf">6.0283743</span>   <span class="mf">6.02452813</span>
+   <span class="mf">0.38886559</span><span class="p">],</span> <span class="s1">&#39;knot&#39;</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="s1">&#39;v&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">Quantity</span><span class="p">([</span> <span class="mf">3.88459575</span>  <span class="mf">9.13602361</span> <span class="mf">12.24993691</span> <span class="mf">13.79818123</span> <span class="mf">13.99892679</span> <span class="mf">13.41310886</span>
+  <span class="mf">10.68811982</span>  <span class="mf">9.33002089</span>  <span class="mf">9.33014275</span>  <span class="mf">6.99796725</span>  <span class="mf">2.91344493</span>  <span class="mf">1.36129697</span>
+  <span class="o">-</span><span class="mf">1.35952707</span> <span class="o">-</span><span class="mf">4.85855855</span> <span class="o">-</span><span class="mf">5.83135029</span> <span class="o">-</span><span class="mf">5.44263343</span> <span class="o">-</span><span class="mf">4.85978647</span> <span class="o">-</span><span class="mf">4.08282603</span>
+  <span class="o">-</span><span class="mf">4.27412453</span> <span class="o">-</span><span class="mf">5.44184192</span> <span class="o">-</span><span class="mf">4.46923758</span> <span class="o">-</span><span class="mf">0.19680173</span> <span class="o">-</span><span class="mf">0.19257433</span> <span class="o">-</span><span class="mf">4.0813693</span>
+  <span class="o">-</span><span class="mf">2.52543878</span> <span class="o">-</span><span class="mf">1.75116608</span> <span class="o">-</span><span class="mf">3.49692463</span> <span class="o">-</span><span class="mf">2.13557144</span>  <span class="mf">0.97112424</span>  <span class="mf">2.71960789</span>
+   <span class="mf">2.13803291</span>  <span class="mf">0.5813991</span>   <span class="mf">1.55355538</span>  <span class="mf">5.2458388</span>   <span class="mf">6.21890192</span> <span class="mf">20.41100923</span>
+  <span class="mf">13.40831073</span>  <span class="mf">9.91285856</span> <span class="mf">15.74811418</span>  <span class="mf">9.3310132</span>   <span class="mf">9.72277241</span>  <span class="mf">7.38416961</span>
+   <span class="mf">6.99920592</span><span class="p">],</span> <span class="s1">&#39;knot&#39;</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="s1">&#39;omega&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">Quantity</span><span class="p">([</span> <span class="mf">0.</span>   <span class="mf">0.</span>   <span class="mf">0.</span>   <span class="mf">0.</span>   <span class="mf">0.</span>   <span class="mf">0.1</span>  <span class="mf">0.1</span>  <span class="mf">0.1</span> <span class="o">-</span><span class="mf">0.1</span> <span class="o">-</span><span class="mf">0.3</span> <span class="o">-</span><span class="mf">0.4</span> <span class="o">-</span><span class="mf">0.2</span> <span class="o">-</span><span class="mf">0.1</span>  <span class="mf">0.</span>
+   <span class="mf">0.</span>   <span class="mf">0.1</span>  <span class="mf">0.1</span>  <span class="mf">0.</span>   <span class="mf">0.</span>   <span class="mf">0.</span>   <span class="mf">0.</span>   <span class="mf">0.</span>   <span class="mf">0.</span>   <span class="mf">0.1</span>  <span class="mf">0.1</span>  <span class="mf">0.</span>   <span class="mf">0.</span>   <span class="mf">0.</span>
+  <span class="o">-</span><span class="mf">0.1</span>  <span class="mf">0.</span>   <span class="mf">0.</span>   <span class="mf">0.1</span>  <span class="mf">0.1</span>  <span class="mf">0.</span>   <span class="mf">0.</span>   <span class="mf">0.</span>   <span class="mf">0.</span>   <span class="mf">0.</span>   <span class="mf">0.</span>   <span class="mf">0.</span>   <span class="mf">0.</span>   <span class="mf">0.</span>
+   <span class="mf">0.</span> <span class="p">],</span> <span class="s1">&#39;pascal / second&#39;</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="s1">&#39;site_info&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;site-id&#39;</span><span class="p">:</span> <span class="s1">&#39;KGFK&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;site-name&#39;</span><span class="p">:</span> <span class="s1">&#39;GRAND FORKS INTL&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;site-lctn&#39;</span><span class="p">:</span> <span class="s1">&#39;ND&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;site-latlon&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">47.95</span><span class="p">,</span> <span class="o">-</span><span class="mf">97.18</span><span class="p">],</span>
+  <span class="s1">&#39;site-elv&#39;</span><span class="p">:</span> <span class="mi">257</span><span class="p">,</span>
+  <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;BUFKIT FORECAST PROFILE&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="s1">&#39;RAP&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;fcst-hour&#39;</span><span class="p">:</span> <span class="s1">&#39;F00&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;run-time&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2024&#39;</span><span class="p">,</span> <span class="s1">&#39;09&#39;</span><span class="p">,</span> <span class="s1">&#39;28&#39;</span><span class="p">,</span> <span class="s1">&#39;04&#39;</span><span class="p">],</span>
+  <span class="s1">&#39;valid-time&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2024&#39;</span><span class="p">,</span> <span class="s1">&#39;09&#39;</span><span class="p">,</span> <span class="s1">&#39;28&#39;</span><span class="p">,</span> <span class="s1">&#39;04&#39;</span><span class="p">]},</span>
+ <span class="s1">&#39;titles&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;top_title&#39;</span><span class="p">:</span> <span class="s1">&#39;BUFKIT MODEL FORECAST PROFILE | 04Z RAP F00&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;left_title&#39;</span><span class="p">:</span> <span class="s1">&#39; RUN: 09/28/2024 04Z  |  VALID: 09/28/2024 04Z&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;right_title&#39;</span><span class="p">:</span> <span class="s1">&#39;KGFK - GRAND FORKS INTL, ND | 47.95, -97.18    &#39;</span><span class="p">}}</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -691,7 +649,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="troubleshooting.html" class="btn btn-neutral float-left" title="❓ Troubleshooting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="plottingdata.html" class="btn btn-neutral float-right" title="📈 Tools for Plotting Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="customdatasources.html" class="btn btn-neutral float-right" title="✏️ Custom Data Sources" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
