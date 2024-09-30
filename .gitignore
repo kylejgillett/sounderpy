@@ -1,0 +1,10 @@
+/build
+/dist
+/MANIFEST
+**/*.egg-info/
+/.pytest_cache/
+/docs/build
+/.eggs
+/cov.xml
+**/__pycache__/
+notes.txt

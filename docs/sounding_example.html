@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creating Sounding Plots &mdash; SounderPy v3.0.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=ab02ba7d"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SounderPy
+              <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">❓ Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpertools.html">🛠️ Helper Tools</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SounderPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Creating Sounding Plots</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/sounding_example.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Creating-Sounding-Plots">
+<h1>Creating Sounding Plots<a class="headerlink" href="#Creating-Sounding-Plots" title="Link to this heading"></a></h1>
+<p>This tutorial creates SounderPy Sounding plots!</p>
+<section id="Here-we-will-explore:">
+<h2>Here we will explore:<a class="headerlink" href="#Here-we-will-explore:" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Full Soundings</p></li>
+<li><p>Simple Soundings</p></li>
+<li><p>Plots in Dark Mode</p></li>
+<li><p>Color blind friendly settings</p></li>
+<li><p>Saving soundings to a file</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># First lets import SounderPy. Its fun to import as &#39;spy&#39;!</span>
+<span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+## ---------------------------------- SOUNDERPY ----------------------------------- ##
+##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
+##                     v3.0.2 | Mar. 2024 | (C) Kyle J Gillett                      ##
+##                 Docs: https://kylejgillett.github.io/sounderpy/                  ##
+## --------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------ ##
+
+</pre></div></div>
+</div>
+<section id="Load-some-data-to-plot">
+<h3>Load some data to plot<a class="headerlink" href="#Load-some-data-to-plot" title="Link to this heading"></a></h3>
+<p>Here we can load some data with SounderPy.</p>
+<p>Let’s investigate OUN (Norman, OK) observations for El-Reno 2013. We can use the <code class="docutils literal notranslate"><span class="pre">get_obs_data()</span></code> function to do this</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clean_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s1">&#39;oun&#39;</span><span class="p">,</span> <span class="s1">&#39;2013&#39;</span><span class="p">,</span> <span class="s1">&#39;05&#39;</span><span class="p">,</span> <span class="s1">&#39;31&#39;</span><span class="p">,</span> <span class="s1">&#39;18&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; OBSERVED DATA ACCESS FUNCTION --
+-----------------------------------
+&gt; PROFILE FOUND: OUN on 05/31/2013 at 18z | From UW
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:03
+&gt; SUMMARY: 18Z Launch for KOUN, NORMAN at 05-31-2013-18Z
+
+&gt; THERMODYNAMICS ---------------------------------------------
+--- SBCAPE: 5232.3 | MUCAPE: 5232.3 | MLCAPE: 4032.7 | MUECAPE: 4128.6
+--- MU 0-3: 131.9 | MU 0-6: 1135.3 | SB 0-3: 131.9 | SB 0-6: 1135.3
+
+&gt; KINEMATICS -------------------------------------------------
+--- 0-500 SRW: 24.8 knot | 0-500 SWV: 0.011 | 0-500 SHEAR: 9.0 | 0-500 SRH: 60.2
+--- 1-3km SRW: 17.0 knot | 1-3km SWV: 0.005 | 1-3km SHEAR: 16.2 | | 1-3km SRH: 69.7
+==============================================================
+
+</pre></div></div>
+</div>
+</section>
+<section id="Build-a-full-sounding-plot">
+<h3>Build a full sounding plot<a class="headerlink" href="#Build-a-full-sounding-plot" title="Link to this heading"></a></h3>
+<p>Here we use the most basic version of the <code class="docutils literal notranslate"><span class="pre">build_sounding()</span></code> function to build a ‘full sounding’</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># lets make a full sounding!</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">clean_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; SOUNDING PLOTTER FUNCTION --
+---------------------------------
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:19
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/sounding_example_5_1.png" src="_images/sounding_example_5_1.png" />
+</div>
+</div>
+</section>
+<section id="Build-a-simple-sounding-plot">
+<h3>Build a simple sounding plot<a class="headerlink" href="#Build-a-simple-sounding-plot" title="Link to this heading"></a></h3>
+<p>Here we add the <code class="docutils literal notranslate"><span class="pre">style</span></code> argument to the <code class="docutils literal notranslate"><span class="pre">build_sounding()</span></code> function.</p>
+<p>Set <code class="docutils literal notranslate"><span class="pre">style</span></code> = ‘simple’</p>
+<p>This setting can be useful for quicker plotting and a simple layout</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Simple Sounding!</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">clean_data</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;simple&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; SOUNDING PLOTTER FUNCTION --
+---------------------------------
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:01
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/sounding_example_7_1.png" src="_images/sounding_example_7_1.png" />
+</div>
+</div>
+</section>
+<section id="Playing-with-sounding-settings">
+<h3>Playing with sounding settings<a class="headerlink" href="#Playing-with-sounding-settings" title="Link to this heading"></a></h3>
+<p>Great! We made two easy sounding plots, both of which required a single, simple line of code.</p>
+<p>Now we can adjust a few settings to customize the plot a little bit.</p>
+<p>To do so, let’s first study the <code class="docutils literal notranslate"><span class="pre">build_sounding()</span></code> function…</p>
+<section id="build_sounding(clean_data,-style='full',-color_blind=False,-dark_mode=False,-storm_motion='right_moving',-special_parcels=None,-save=False,-filename='sounderpy_sounding')">
+<h4><code class="docutils literal notranslate"><span class="pre">build_sounding(clean_data,</span> <span class="pre">style='full',</span> <span class="pre">color_blind=False,</span> <span class="pre">dark_mode=False,</span> <span class="pre">storm_motion='right_moving',</span> <span class="pre">special_parcels=None,</span> <span class="pre">save=False,</span> <span class="pre">filename='sounderpy_sounding')</span></code><a class="headerlink" href="#build_sounding(clean_data,-style='full',-color_blind=False,-dark_mode=False,-storm_motion='right_moving',-special_parcels=None,-save=False,-filename='sounderpy_sounding')" title="Link to this heading"></a></h4>
+<p>where:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">clean_data</span></code> (dict, required) – the dictionary of data to be plotted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">style</span></code> (str, optional) – may be ‘simple’ or ‘full’. Default is ‘full’.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">color_blind</span></code> (bool, optional) – whether or not to change the dewpoint trace line from green to blue for improved readability for color deficient users/readers. Default is False</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dark_mode</span></code> (bool, optional) – True will invert the color scheme for a ‘dark-mode’ sounding. Default is False.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">storm_motion</span></code> (str or list of floats, optional) – the storm motion used for plotting and calculations. Default is ‘right_moving’. Custom storm motions are accepted as a list of floats representing direction and speed. Ex: [270.0, 25.0] where ‘270.0’ is the direction in degrees and ‘25.0’ is the speed in kts.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">special_parcels</span></code> (nested list of two lists, optional) – a nested list of special parcels from the ecape_parcels library. The nested list should be a list of two lists ([[a, b], [c, d]]) where the first list should include ‘highlight parcels’ and second list should include ‘background parcels’. Another option is ‘simple’, which removes all advanced parcels making the plot quicker.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">save</span></code> (bool, optional) – whether to show the plot inline or save to a file. Default is False which displays the file inline.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">filename</span></code> (str, optional) – the filename by which a file should be saved to if save = True. Default is ‘sounderpy_sounding’.</p></li>
+</ul>
+<p>Lets try the color_blind setting:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># color_blind turned on!</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">clean_data</span><span class="p">,</span> <span class="n">color_blind</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; SOUNDING PLOTTER FUNCTION --
+---------------------------------
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:23
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/sounding_example_9_1.png" src="_images/sounding_example_9_1.png" />
+</div>
+</div>
+<p>And now, for probably the coolest part: dark mode!</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># dark_mode turned on!</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">clean_data</span><span class="p">,</span> <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; SOUNDING PLOTTER FUNCTION --
+---------------------------------
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:19
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/sounding_example_11_1.png" src="_images/sounding_example_11_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># dark_mode and color_blind turned on!</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">clean_data</span><span class="p">,</span> <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color_blind</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; SOUNDING PLOTTER FUNCTION --
+---------------------------------
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:18
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/sounding_example_12_1.png" src="_images/sounding_example_12_1.png" />
+</div>
+</div>
+<p>and we can use all of these settings for both full and simple soundings!</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># simple sounding with dark_mode and color_blind turned on!</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">clean_data</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;simple&#39;</span><span class="p">,</span> <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color_blind</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; SOUNDING PLOTTER FUNCTION --
+---------------------------------
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:01
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/sounding_example_14_1.png" src="_images/sounding_example_14_1.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Saving-plots-as-a-file">
+<h3>Saving plots as a file<a class="headerlink" href="#Saving-plots-as-a-file" title="Link to this heading"></a></h3>
+<p>By default, SounderPy is set to show plots inline. If you want/need to save them to a file, SounderPy offers that option!</p>
+<p>Just set the <code class="docutils literal notranslate"><span class="pre">save</span></code> kwarg to True, and give it a file name using the <code class="docutils literal notranslate"><span class="pre">filename</span></code> kwarg!</p>
+<section id="IMPORTANT-NOTE!!!">
+<h4>IMPORTANT NOTE!!!<a class="headerlink" href="#IMPORTANT-NOTE!!!" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>If your plots come out with a funky layout when displaying them inline, it may be due to your screen resolution.</p></li>
+<li><p>In the event that this is the case, simply use the <code class="docutils literal notranslate"><span class="pre">save=True</span></code> option to save plots to a file!</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#spy.build_sounding(clean_data, save=True, filename=&#39;sounderpy_2013051318z_OUN&#39;)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Kyle J Gillett.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

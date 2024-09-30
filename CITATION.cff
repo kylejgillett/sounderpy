@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+title: SounderPy
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - affiliation: University of North Dakota
+    email: kyle.gillett@und.edu
+    family-names: Gillett
+    given-names: Kyle
+    orcid: 'https://orcid.org/0009-0001-5528-5037'
+identifiers:
+  - type: url
+    value: https://kylejgillett.github.io/sounderpy/
+    description: SounderPy Documentation
+repository-code: 'https://github.com/kylejgillett/sounderpy'
+url: 'https://kylegillettwx.wordpress.com/'
+repository: 'https://pypi.org/project/sounderpy/'
+doi: "10.5281/zenodo.10011851"
+keywords:
+  - meteorology
+  - science
+  - python
+  - atmospheric science
+abstract: >-
+  A python package that helps you to access and plot
+  vertical profile data for meteorological analysis 
+license: MIT
+version: v3.0.5
+date-released: '2024-09-30'

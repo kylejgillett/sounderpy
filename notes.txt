@@ -5,7 +5,7 @@ UPDATE NOTES
 ================================================================================================================
 	- Checks                                 DONE?          DOC-ed?          LOCAL CHECK          PyPi-CHECK
 	------------------------------------------------------------------------------------------------------------
-	- interp bad UW hgt......................DONE...........na/fix...........DONE..............
+	- interp bad UW hgt......................DONE...........na/fix...........DONE...............DONE
 	- add 'titles' to clean_data.............DONE...........done.............DONE...............DONE
 	- interp sfc modification................DONE...........done.............DONE...............DONE
 	- add sfc wind modification..............DONE...........done.............DONE...............DONE
@@ -15,7 +15,7 @@ UPDATE NOTES
 	- update/fix cdsapi era5 access..........DONE...........done.............DONE...............DONE
 	- NWS GFK requests? (dcin)...............DONE...........na/fix...........DONE...............DONE
 	- "classic" params box?..................DONE...........na/fix...........DONE...............DONE
-	- correct cm1 sfc data output............DONE...........na/fix...........
+	- correct cm1 sfc data output............DONE...........na/fix...........DONE...............DONE
 
 	- check and correct/update docs
 	- check and correct/update example nbs

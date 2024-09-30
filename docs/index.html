@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎈 SounderPy &mdash; SounderPy v3.0.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=ab02ba7d"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="📖 About" href="about.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            SounderPy
+              <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">❓ Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpertools.html">🛠️ Helper Tools</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">SounderPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">🎈 SounderPy</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sounderpy">
+<h1>🎈 SounderPy<a class="headerlink" href="#sounderpy" title="Link to this heading"></a></h1>
+<a class="reference internal image-reference" href="_images/example-sounding_light.png"><img alt="_images/example-sounding_light.png" class="align-left" src="_images/example-sounding_light.png" style="width: 300px;" /></a>
+<p>SounderPy is an open-source atmospheric science Python package for vertical profile analysis. This tool is designed to get data, ‘clean it up’ for simple use, and plot the data on advanced-sounding plots. SounderPy was developed with the goal in mind to keep the code simple and efficient for users of all experience levels and for reliability in all use cases.</p>
+<p>SounderPy is supported for Python &gt;= 3.9. Examples of SounderPy use are available on the <a class="reference internal" href="examplescripts.html"><span class="doc">📝 Usage Examples</span></a> page</p>
+<a class="reference external image-reference" href="https://pypi.python.org/pypi/sounderpy/"><img alt="PyPI Package" src="https://img.shields.io/pypi/v/sounderpy.svg" /></a>
+<a class="reference external image-reference" href="https://pypi.python.org/pypi/sounderpy/"><img alt="PyPI Downloads" src="https://img.shields.io/pypi/dm/sounderpy.svg" /></a>
+<a class="reference external image-reference" href="https://github.com/kylejgillett/sounderpy/blob/main/LICENSE.txt"><img alt="PyPI License" src="https://img.shields.io/pypi/l/ansicolortags.svg" /></a>
+<a class="reference external image-reference" href="https://pypi.python.org/pypi/sounderpy/"><img alt="PyPI Python Versions" src="https://img.shields.io/pypi/pyversions/sounderpy.svg" /></a>
+<a class="reference external image-reference" href="https://GitHub.com/kylejgillett/sounderpy/commit/"><img alt="GitHub Commits" src="https://badgen.net/github/commits/kylejgillett/sounderpy" /></a>
+<a class="reference external image-reference" href="https://github.com/kylejgillett"><img alt="Maintainer" src="https://img.shields.io/badge/maintainer-kylejgillett-blue" /></a>
+<a class="reference external image-reference" href="https://www.python.org/"><img alt="Made with Python" src="https://img.shields.io/badge/Made%20with-Python-1f425f.svg" /></a>
+<section id="why-sounderpy">
+<h2>Why SounderPy?<a class="headerlink" href="#why-sounderpy" title="Link to this heading"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Sometimes data is tough to find, and often times it’s even tougher to get it in the format you like. SounderPy gets you this data!</p></li>
+<li><p>The code needed for loading and parsing meteorological data, especially from models, can be large and messy. SounderPy keeps it hidden away in a PyPi package – just import and call sounderPy functions to keep your code clean!</p></li>
+<li><p>SounderPy functions are designed to be simple and quick making for reliable use in research, forecast/analysis operations, and simply for fun!</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="what-exactly-can-sounderpy-do">
+<h2>What exactly can SounderPy do?<a class="headerlink" href="#what-exactly-can-sounderpy-do" title="Link to this heading"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Retrieves vertical profile data</p></li>
+<li><p>‘Cleans up’ the data for analysis</p></li>
+<li><dl class="simple">
+<dt>Plots the data on advanced but easy to read sounding and hodograph plots.</dt><dd><ul>
+<li><p>See what kind of plots SounderPy can create <a class="reference internal" href="examplegallery.html#gallery"><span class="std std-ref">here</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</section>
+<section id="what-data-can-sounderpy-work-with">
+<h2>What data can SounderPy work with?<a class="headerlink" href="#what-data-can-sounderpy-work-with" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>DATA</strong></p></th>
+<th class="head"><p><strong>FUNCTION</strong></p></th>
+<th class="head"><p><strong>TYPE</strong></p></th>
+<th class="head"><p><strong>TIME RANGE</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ECMWF CDS ERA5 reanalysis*</p></td>
+<td><p>get_model_data()</p></td>
+<td><p>Reanalysis</p></td>
+<td><p>1940-present</p></td>
+</tr>
+<tr class="row-odd"><td><p>UNIDATA THREDDS TDS RAP</p></td>
+<td><p>get_model_data()</p></td>
+<td><p>Reanalysis</p></td>
+<td><p>2005-present</p></td>
+</tr>
+<tr class="row-even"><td><p>UNIDATA THREDDS TDS RUC</p></td>
+<td><p>get_model_data()</p></td>
+<td><p>Reanalysis</p></td>
+<td><p>2005-2020</p></td>
+</tr>
+<tr class="row-odd"><td><p>UNIDATA THREDDS NCEP-FNL</p></td>
+<td><p>get_model_data()</p></td>
+<td><p>Reanalysis</p></td>
+<td><p>2005-2020</p></td>
+</tr>
+<tr class="row-even"><td><p>ISU’s BUFKIT archive</p></td>
+<td><p>get_bufkit_data()</p></td>
+<td><p>Model Forecast</p></td>
+<td><p>2011-present</p></td>
+</tr>
+<tr class="row-odd"><td><p>PSU’s BUFKIT feed</p></td>
+<td><p>get_bufkit_data()</p></td>
+<td><p>Model Forecast</p></td>
+<td><p>Most recent runs</p></td>
+</tr>
+<tr class="row-even"><td><p>UNIDATA THREDDS TDS RAP</p></td>
+<td><p>get_model_data()</p></td>
+<td><p>Model Analysis</p></td>
+<td><p>Most recent run</p></td>
+</tr>
+<tr class="row-odd"><td><p>OU ACARS Archive</p></td>
+<td><p>acars_data()</p></td>
+<td><p>Observations</p></td>
+<td><p>2019-present</p></td>
+</tr>
+<tr class="row-even"><td><p>The Unv. of WY RAOB Archive</p></td>
+<td><p>get_obs_data()</p></td>
+<td><p>Observations</p></td>
+<td><p>1973-present</p></td>
+</tr>
+<tr class="row-odd"><td><p>IGRAv2 Observation Archive</p></td>
+<td><p>get_obs_data()</p></td>
+<td><p>Observations</p></td>
+<td><p>1905-present</p></td>
+</tr>
+<tr class="row-even"><td><p>NWS NEXRAD AWS Archive</p></td>
+<td><p>pyart_radar_profile()</p></td>
+<td><p>Observations</p></td>
+<td><p>1990s-present</p></td>
+</tr>
+</tbody>
+</table>
+<p>☕ SounderPy is a open-source package developed on my own time. Would you like to support continued SounderPy development? Consider “<a class="reference external" href="https://www.buymeacoffee.com/kylejgillett">Buying me a coffee</a>”! ☕</p>
+</section>
+</section>
+<section id="directory">
+<h1>Directory<a class="headerlink" href="#directory" title="Link to this heading"></a></h1>
+<blockquote>
+<div><div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="about.html#sounderpy-a-sounding-visualization-tool-for-severe-weather-analysis-and-forecasting">SounderPy: A sounding visualization tool for severe-weather analysis and forecasting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#sample-basic-use">Sample Basic Use</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#authors-and-contributors">Authors and Contributors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#citing-sounderpy">Citing SounderPy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#references">References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#about-the-author">About the Author</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">❓ Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#funky-plot-scaling">Funky Plot Scaling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="troubleshooting.html#the-fix-saving-the-plot-to-a-file">The Fix: saving the plot to a file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#goofy-acars-profiles">Goofy ACARS Profiles</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gettingdata.html#model-reanalysis-data-rap-era5-ncep">Model Reanalysis Data | RAP, ERA5, NCEP</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#spy.get_model_data"><code class="docutils literal notranslate"><span class="pre">spy.get_model_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#model-key-names">Model key names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#dataset-key-names">Dataset key names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#latitude-longitude-pairs">Latitude-Longitude pairs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gettingdata.html#model-forecast-data-bufkit">Model Forecast Data | BUFKIT</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#spy.get_bufkit_data"><code class="docutils literal notranslate"><span class="pre">spy.get_bufkit_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#available-bufkit-sites">Available BUFKIT Sites:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#available-models">Available Models:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#forecastkeys">Model key names</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gettingdata.html#observed-data-raob-igrav2">Observed Data | RAOB &amp; IGRAv2</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#spy.get_obs_data"><code class="docutils literal notranslate"><span class="pre">spy.get_obs_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#available-raob-sites">Available RAOB Sites:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gettingdata.html#observed-data-acars-aircraft-obs">Observed Data | ACARS Aircraft Obs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#acars_data"><code class="docutils literal notranslate"><span class="pre">acars_data</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#acars_data..list_profiles"><code class="docutils literal notranslate"><span class="pre">acars_data..list_profiles()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#acars_data..get_profile"><code class="docutils literal notranslate"><span class="pre">acars_data..get_profile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#acars-data-retrieval-example">ACARS Data Retrieval Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gettingdata.html#observed-data-vad-radar-data">Observed Data | VAD radar data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gettingdata.html#pyart_radar_profile"><code class="docutils literal notranslate"><span class="pre">pyart_radar_profile()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gettingdata.html#what-does-the-data-look-like">What does the data look like?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plottingdata.html#building-soundings">Building Soundings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#spy.build_sounding"><code class="docutils literal notranslate"><span class="pre">spy.build_sounding()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plottingdata.html#building-hodographs">Building Hodographs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#spy.build_hodograph"><code class="docutils literal notranslate"><span class="pre">spy.build_hodograph()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#id1">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plottingdata.html#building-composite-soundings">Building Composite Soundings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#spy.build_composite"><code class="docutils literal notranslate"><span class="pre">spy.build_composite()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#id2">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plottingdata.html#building-vad-hodographs">Building VAD Hodographs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#spy.build_vad_hodograph"><code class="docutils literal notranslate"><span class="pre">spy.build_vad_hodograph()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#id3">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plottingdata.html#storm-motion-logic">Storm Motion Logic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#storm-motion-keys">Storm Motion Keys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#custom-storm-motions">Custom Storm Motions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plottingdata.html#parcel-logic">Parcel Logic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#how-to-use-this-feature">How to use this feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#parcel-keys">Parcel Keys</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plottingdata.html#printing-data-to-the-console">Printing data to the console</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plottingdata.html#spy.print_variables"><code class="docutils literal notranslate"><span class="pre">spy.print_variables()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plottingdata.html#about-these-plots">About These Plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="helpertools.html">🛠️ Helper Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="helpertools.html#printing-a-dictionary-of-profile-parameters">Printing a dictionary of profile parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="helpertools.html#sounding_params"><code class="docutils literal notranslate"><span class="pre">sounding_params</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="helpertools.html#sounding_params..calc"><code class="docutils literal notranslate"><span class="pre">sounding_params..calc()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="helpertools.html#finding-site-lat-lon-pairs">Finding site lat/lon pairs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="helpertools.html#spy.get_latlon"><code class="docutils literal notranslate"><span class="pre">spy.get_latlon()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="helpertools.html#saving-data-to-a-file">Saving data to a file</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="helpertools.html#spy.to_file"><code class="docutils literal notranslate"><span class="pre">spy.to_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="helpertools.html#interpolating-a-vertical-profile">Interpolating a vertical profile</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="helpertools.html#spy.interp_data"><code class="docutils literal notranslate"><span class="pre">spy.interp_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="helpertools.html#finding-a-nearest-value">Finding a ‘nearest’ value</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="helpertools.html#spy.find_nearest"><code class="docutils literal notranslate"><span class="pre">spy.find_nearest()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examplegallery.html#sounding-types">Sounding Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examplegallery.html#sounding-settings">Sounding Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examplegallery.html#hodographs">Hodographs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examplegallery.html#composite-soundings">Composite Soundings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examplegallery.html#other-examples">Other Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
+</ul>
+</div>
+</div></blockquote>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="about.html" class="btn btn-neutral float-right" title="📖 About" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Kyle J Gillett.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
