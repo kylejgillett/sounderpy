@@ -383,10 +383,16 @@ class sounding_params:
 
         #--- DOWNDRAFT CAPE ---#
         # ---------------------------------------------------------------
-        thermo['dcape'], thermo['dcin'], thermo['dparcel_p'], thermo['dparcel_T'] = dcape_calc(sounding_data['p'],
-                                                                                               sounding_data['T'],
-                                                                                               sounding_data['Td'])
 
+        if not np.any(np.isnan(sounding_data['Td'])):
+            thermo['dcape'], thermo['dcin'], thermo['dparcel_p'], thermo['dparcel_T'] = dcape_calc(sounding_data['p'],
+                                                                                                   sounding_data['T'],
+                                                                                                   sounding_data['Td'])
+        else:
+            thermo['dcape'] = ma.masked
+            thermo['dcin'] = ma.masked
+            thermo['dparcel_p'] = ma.masked
+            thermo['dparcel_T'] = ma.masked
 
 
 

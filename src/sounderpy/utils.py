@@ -337,8 +337,8 @@ def to_file(file_type, clean_data, filename=None):
             line_str += "%12s" % str(format(np.around(clean_data["z"][idx].m, 6), "0.6f")) + delimiter + str("\t")
             line_str += "%12s" % str(format(np.around(clean_data["theta"][idx].m, 6), "0.6f")) + delimiter + str("\t")
             line_str += "%12s" % str(format(np.around(clean_data["mixrt"][idx].m, 6), "0.6f")) + delimiter + str("\t")
-            line_str += "%12s" % str(format(np.around(clean_data["u"][idx]/1.94384.m, 6), "0.6f")) + delimiter + str("\t")
-            line_str += "%12s" % str(format(np.around(clean_data["v"][idx]/1.94384.m, 6), "0.6f")) + str("\n")
+            line_str += "%12s" % str(format(np.around(clean_data["u"][idx].m/1.94384, 6), "0.6f")) + delimiter + str("\t")
+            line_str += "%12s" % str(format(np.around(clean_data["v"][idx].m/1.94384, 6), "0.6f")) + str("\n")
             outfile.write(line_str)
 
         outfile.close()

@@ -25,7 +25,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="🛠️ Helper Tools" href="helpertools.html" />
-    <link rel="prev" title="🌐 Tools for Getting Data" href="gettingdata.html" /> 
+    <link rel="prev" title="✏️ Custom Data Sources" href="customdatasources.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -56,6 +56,7 @@
 <p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customdatasources.html">✏️ Custom Data Sources</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">📈 Tools for Plotting Data</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#building-soundings">Building Soundings</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#spy.build_sounding"><code class="docutils literal notranslate"><span class="pre">spy.build_sounding()</span></code></a></li>
@@ -333,6 +334,7 @@
 <section id="surface-modification-logic">
 <span id="modify-sfc"></span><h2>Surface Modification Logic<a class="headerlink" href="#surface-modification-logic" title="Link to this heading"></a></h2>
 <p>Users may override the zeroth (surface) value of the <cite>clean_data</cite> dict, when creating a plot or returning sounding parameters, using the <code class="docutils literal notranslate"><span class="pre">modify_sfc</span></code> kwarg. This argument is a python dictionary.</p>
+<p>SounderPy takes the users requested surface modifications and preforms an “Barnes style” interpolation of the new surface values with the existing profile up several points. Please note that as of release v3.0.5, this is to be considered a “beta” version of the feature. As such, it may not always perform as expected.</p>
 <section id="the-modify-sfc-dict">
 <h3>The <code class="docutils literal notranslate"><span class="pre">modify_sfc</span></code> dict<a class="headerlink" href="#the-modify-sfc-dict" title="Link to this heading"></a></h3>
 <blockquote>
@@ -475,7 +477,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="gettingdata.html" class="btn btn-neutral float-left" title="🌐 Tools for Getting Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="customdatasources.html" class="btn btn-neutral float-left" title="✏️ Custom Data Sources" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="helpertools.html" class="btn btn-neutral float-right" title="🛠️ Helper Tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

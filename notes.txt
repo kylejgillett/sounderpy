@@ -6,10 +6,10 @@ UPDATE NOTES
 	- Checks                                 DONE?          DOC-ed?          LOCAL CHECK          PyPi-CHECK
 	------------------------------------------------------------------------------------------------------------
 	- interp bad UW hgt......................DONE...........na/fix...........DONE..............
-	- add 'titles' to clean_data.............DONE...........done.............DONE..............
-	- interp sfc modification................DONE...........done.............DONE..............
+	- add 'titles' to clean_data.............DONE...........done.............DONE...............DONE
+	- interp sfc modification................DONE...........done.............DONE...............DONE
 	- add sfc wind modification..............DONE...........done.............DONE...............DONE
-	- add "return dirty data" kwarg..........DONE...........done.............DONE...............
+	- add "return dirty data" kwarg..........DONE...........done.............DONE...............DONE
 	- add omega plots for model data.........DONE...........done.............DONE...............DONE
 	- separate get_data funcs to py files....DONE...........na/fix...........DONE...............DONE
 	- update/fix cdsapi era5 access..........DONE...........done.............DONE...............DONE
@@ -24,10 +24,12 @@ UPDATE NOTES
 
 
 	POSSIBLE/FUTURE -----------------------------
+
 	- Add dropsonde_data() function ? 
 	- Add build_dropsonde() function ?
 	- Add new ACARS data source ?
     - add sounding param timeseries?
+    - map on hodograph
 
 
 

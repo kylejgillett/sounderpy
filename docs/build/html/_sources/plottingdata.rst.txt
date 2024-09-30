@@ -276,6 +276,8 @@ Surface Modification Logic
 
 Users may override the zeroth (surface) value of the `clean_data` dict, when creating a plot or returning sounding parameters, using the ``modify_sfc`` kwarg. This argument is a python dictionary.
 
+SounderPy takes the users requested surface modifications and preforms an "Barnes style" interpolation of the new surface values with the existing profile up several points. Please note that as of release v3.0.5, this is to be considered a "beta" version of the feature. As such, it may not always perform as expected.
+
 The ``modify_sfc`` dict
 ^^^^^^^^^^^^^^^^^^^^^^^^
    - ``T``: Temperature, degrees Celsius
