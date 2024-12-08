@@ -1,6 +1,21 @@
 UPDATE NOTES 
 
 
+- TODO v3.0.6
+================================================================================================================
+	- Checks                                 DONE?          DOC-ed?          LOCAL CHECK          PyPi-CHECK
+	------------------------------------------------------------------------------------------------------------
+	- correct RUC vert-lv-pres levels
+	- fix modify_sfc interp
+	- add sounderpy-wrf
+	- update sounderpy-cm1
+
+	- Check all docs
+	- Add Cookbook to docs
+
+
+
+
 - TODO v3.0.5
 ================================================================================================================
 	- Checks                                 DONE?          DOC-ed?          LOCAL CHECK          PyPi-CHECK

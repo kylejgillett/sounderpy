@@ -15,7 +15,7 @@ import copy
 
 
 """
-    SOUNDERPY MODEL REANALYSIS 'GET-DATA' FUNCTIONS  
+    SOUNDERPY UTILITY FUNCTIONS 
 
     Purpose of module: 
 
@@ -299,8 +299,6 @@ def to_file(file_type, clean_data, filename=None):
     else:
         filename = filename
 
-
-
     ####################################### CM1 #######################################
     if file_type == 'cm1':
         '''
@@ -319,7 +317,7 @@ def to_file(file_type, clean_data, filename=None):
         clean_data['theta'] = mpcalc.potential_temperature(clean_data['p'], clean_data['T'])
         clean_data['relhm'] = mpcalc.relative_humidity_from_dewpoint(clean_data['T'], clean_data['Td'])
         clean_data['mixrt'] = mpcalc.mixing_ratio_from_relative_humidity(clean_data['p'], clean_data['T'],
-                                                                         clean_data['relhm'])*1000
+                                                                         clean_data['relhm']) * 1000
 
         # create the sfc values line
         top_line = (
@@ -332,13 +330,14 @@ def to_file(file_type, clean_data, filename=None):
         outfile.write(top_line)
 
         # add data to lines
-        for idx in range(num_lines):
+        for idx in range(1, num_lines):
             line_str = ""
             line_str += "%12s" % str(format(np.around(clean_data["z"][idx].m, 6), "0.6f")) + delimiter + str("\t")
             line_str += "%12s" % str(format(np.around(clean_data["theta"][idx].m, 6), "0.6f")) + delimiter + str("\t")
             line_str += "%12s" % str(format(np.around(clean_data["mixrt"][idx].m, 6), "0.6f")) + delimiter + str("\t")
-            line_str += "%12s" % str(format(np.around(clean_data["u"][idx].m/1.94384, 6), "0.6f")) + delimiter + str("\t")
-            line_str += "%12s" % str(format(np.around(clean_data["v"][idx].m/1.94384, 6), "0.6f")) + str("\n")
+            line_str += "%12s" % str(format(np.around(clean_data["u"][idx].m / 1.94384, 6), "0.6f")) + delimiter + str(
+                "\t")
+            line_str += "%12s" % str(format(np.around(clean_data["v"][idx].m / 1.94384, 6), "0.6f")) + str("\n")
             outfile.write(line_str)
 
         outfile.close()
