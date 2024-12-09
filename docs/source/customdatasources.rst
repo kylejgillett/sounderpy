@@ -1,15 +1,101 @@
 ✏️ Custom Data Sources
 =======================
 
-A neat and very usesul aspect of SounderPy is the ``clean_data`` dictionary that stores sounding data. This dictionary is fed into a SounderPy plotting function. The plotting functions are designed in such a way that *any* data can be passed to it, so long as its in the SounderPy ``clean_data`` dictionary format.
+A neat and very useful aspect of SounderPy is the "``clean_data`` dictionary" that stores sounding data. This dictionary is fed into a SounderPy plotting function. The plotting functions are designed in such a way that *any* data can be passed to it, so long as the data maintains the SounderPy "``clean_data`` dictionary" format.
 
-So if you have custom data that you want to plot with SounderPy, you can manually create a ``clean_data`` dictionary and pass it to a plot!
+***************************************************************
 
-Your data could be field campaign observations, a CM1 input_sounding, WRF output, and anything else in between. So long as you set it up right, it can be integrated into SounderPy.
+Built-in Custom Data Ingestion Tools
+-------------------------------------
+As of v3.0.6, SounderPy has some integrated custom data ingestion tools. These include ``make_wrf_profile()`` & ``make_cm1_profile()``.
+
+
+Ingesting WRF Output Data
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. py:function:: spy.make_wrf_profile(ds, latlon, model_name='WRF-ARW', run_name='CONTROL RUN')
+
+
+   Return a ``dict`` of 'cleaned up' WRF output profile data for a given location
+
+   :param ds: a netcdf4 dataset object of your wrfout*.nc file
+   :type ds: netCDF4.Dataset(), required
+   :param latlon: the latitude & longitude pair for sounding (ex: [44.92, -84.72])
+   :type latlon: list, required
+   :param model_name: the name of your model for plot titles
+   :type model_name: str, recommended, default is "WRF-ARW"
+   :param run_name: the name of your run for plot titles
+   :type run_name: str, optional, default is "CONTROL"
+   :return: clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information
+   :rtype: dict
+
+
+.. _wrfexample:
+.. code-block:: python
+
+   import sounderpy as spy
+   import netcdf4
+
+   # open your `wrfout*.nc` file as a netCDF4 dataset
+   wrf_ds = netCDF4.Dataset(filename_of_wrf_data)
+
+   # use `make_wrf_profile()` to create a `clean_data` dictionary of sounding data
+   clean_data = make_wrf_profile(wrf_ds, [48.978, -100.861])
+
+   # Now, pass the 'clean_data' dictionary into the SounderPy `build_sounding` function
+   spy.build_sounding(clean_data)
+
+
+
+Ingesting CM1 input_sounding Data
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. py:function:: spy.make_cm1_profile(filename, meta_data_dict)
+
+   Return a ``dict`` of CM1 `input_sounding` data
+
+   :param filename: the filename of an `input_sounding` file
+   :type filename: str, required
+   :param meta_data_dict: a simple dictionary of metadata for the profile (see :ref:`'CM1 Example' <cm1example>`)
+   :type meta_data_dict: dict, required
+   :return: clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information
+   :rtype: dict
+
+
+.. _cm1example:
+.. code-block:: python
+
+   import sounderpy as spy
+
+   # create this simple dict of information for your profile
+   # latitude, longitude, elevation, and top, right & left titles are required
+   meta_data_dict = {
+    'latlon': [45.100, -100.89],
+    'elev': 358,
+    'top_title': f"CUSTOM CM1 COMPOSITE SOUNDING",
+    'left_title': f"Near-storm inflow RUC sounding for the El-Reno EF3 tornado",
+    'right_title': f"May 24, 2011"}
+
+   # use `make_cm1_profile()` to create a `clean_data` dictionary of sounding data
+   clean_data = make_cm1_profile(input_sounding_filename, meta_data_dict)
+
+   # Now, pass the 'clean_data' dictionary into the SounderPy `build_sounding` function
+   spy.build_sounding(clean_data)
+
+***************************************************************
+
+
+
+
+Ingesting your own data into SounderPy
+--------------------------------------
+
+If you have custom data that you want to plot with SounderPy, you can just manually create a "``clean_data`` dictionary" and pass it to a plot!
+
+Your data could be field campaign observations, custom model output, university soundings, and anything else in between. So long as you set it up right, it can be integrated into SounderPy.
 
 
 Understanding the SounderPy data format
-----------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 What's contained in the ``clean_data`` dictionary...
 
 The actual profile data...
@@ -118,11 +204,11 @@ Below is an example:
 
 
 Building a custom clean_data dictionary
-----------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 After importing your custom sounding data, (perhaps using ``pandas`` or ``numpy``) you can define a ``clean_data`` dictionary with it.
 
-Here is an example. ``raw_data`` would be your custom data.
+Here is an example. ``raw_data`` represents some obj with your data. Using ``raw_data[2]`` is simply referencing some "column of data", in whatever format ``raw_data`` is. I.e., if the 2nd index in raw_data holds pressure values, ``raw_data[2]`` goes into ``clean_data['p']``.
 
 
       .. code-block:: python
@@ -131,6 +217,8 @@ Here is an example. ``raw_data`` would be your custom data.
         clean_data = {}
 
         # add profile data | make sure you have p, z, T, Td, u, & v
+        # use metpy.units to add units to each array -- make sure they are in the same
+        # units as show below!
         clean_data['p']  = np.array(raw_data[2])*units.hPa
         clean_data['z']  = np.array(raw_data[7])*units.m
         clean_data['T']  = np.array(raw_data[3])*units.degC
@@ -138,7 +226,7 @@ Here is an example. ``raw_data`` would be your custom data.
         clean_data['u']  = np.array(raw_data[5])*units.kts
         clean_data['v']  = np.array(raw_data[6])*units.kts
 
-        # declare site metadata
+        # declare some profile metadata
         clean_data['site_info'] = {
                     'site-id'     : 'UND',                              # could be a station ID, site ID, launch ID, mission ID, etc
                     'site-name'   : 'GRAND FORKS'                       # a location's "name", usually the city or town

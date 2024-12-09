@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sounderpy"
-version = "3.0.5"
+version = "3.0.6dev2"
 authors = [
   { name="Kyle J Gillett, University of North Dakota", email="kyle.gillett@und.edu" },
 ]
@@ -16,6 +16,7 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Atmospheric Science",
     "Intended Audience :: Science/Research",

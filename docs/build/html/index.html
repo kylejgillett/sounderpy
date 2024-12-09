@@ -20,6 +20,8 @@
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
@@ -61,6 +63,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="beginners_sounderpy_cookbook.html">👨‍🍳Beginner’s SounderPy Cookbook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
 </ul>
@@ -119,7 +122,7 @@
 <li><p>‘Cleans up’ the data for analysis</p></li>
 <li><dl class="simple">
 <dt>Plots the data on advanced but easy to read sounding and hodograph plots.</dt><dd><ul>
-<li><p>See what kind of plots SounderPy can create <a class="reference internal" href="examplegallery.html#gallery"><span class="std std-ref">here</span></a></p></li>
+<li><p>See what kind of plots SounderPy can create <span class="xref std std-ref">here</span></p></li>
 </ul>
 </dd>
 </dl>
@@ -207,6 +210,7 @@
 <li class="toctree-l2"><a class="reference internal" href="about.html#citing-sounderpy">Citing SounderPy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about.html#references">References</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about.html#about-the-author">About the Author</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#useful-links">Useful Links</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">❓ Troubleshooting</a><ul>
@@ -258,8 +262,22 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="customdatasources.html">✏️ Custom Data Sources</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="customdatasources.html#understanding-the-sounderpy-data-format">Understanding the SounderPy data format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="customdatasources.html#building-a-custom-clean-data-dictionary">Building a custom clean_data dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="customdatasources.html#built-in-custom-data-ingestion-tools">Built-in Custom Data Ingestion Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="customdatasources.html#ingesting-wrf-output-data">Ingesting WRF Output Data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="customdatasources.html#spy.make_wrf_profile"><code class="docutils literal notranslate"><span class="pre">spy.make_wrf_profile()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="customdatasources.html#ingesting-cm1-input-sounding-data">Ingesting CM1 input_sounding Data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="customdatasources.html#spy.make_cm1_profile"><code class="docutils literal notranslate"><span class="pre">spy.make_cm1_profile()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="customdatasources.html#ingesting-your-own-data-into-sounderpy">Ingesting your own data into SounderPy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="customdatasources.html#understanding-the-sounderpy-data-format">Understanding the SounderPy data format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="customdatasources.html#building-a-custom-clean-data-dictionary">Building a custom clean_data dictionary</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a><ul>
@@ -335,12 +353,61 @@
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="beginners_sounderpy_cookbook.html">👨‍🍳Beginner’s SounderPy Cookbook</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="beginners_sounderpy_cookbook.html#A-collection-of-simple-SounderPy-recipies-for-accessing-and-analyzing-vertical-profile-data.">A collection of simple SounderPy recipies for accessing and analyzing vertical profile data.</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Before-we-get-started..."><strong>Before we get started…</strong></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Definitions"><strong>Definitions</strong></a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Additional-Resources"><strong>Additional Resources</strong></a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Pre-requisites"><strong>Pre-requisites</strong></a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#What-is-SounderPy?"><strong>What is SounderPy?</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Set-Up"><strong>Set Up</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="beginners_sounderpy_cookbook.html#RECIPE-1:-SounderPy's-integrated-data-sources-&amp;-how-to-load-them"><strong>RECIPE 1</strong>: SounderPy’s <em>integrated</em> data sources &amp; how to load them</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Objectives"><strong>Objectives</strong></a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Integrated-Data-Sources"><strong>Integrated Data Sources</strong></a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Loading-data"><strong>Loading data</strong></a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Load-Observation-Data">Load Observation Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Load-Reanalysis-Data">Load Reanalysis Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Load-BUFKIT-forecast-model-data">Load BUFKIT forecast model data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Investigate-the-SounderPy-'clean_data'-dictionary">Investigate the SounderPy ‘clean_data’ dictionary</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="beginners_sounderpy_cookbook.html#RECIPE-2:-Plotting-soundings"><strong>RECIPE 2</strong>: Plotting soundings</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#id1"><strong>Objectives</strong></a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Building-Soundings-with-SounderPy"><strong>Building Soundings with SounderPy</strong></a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Build-a-plot,-with-default-settings,-of-our-observations-data">Build a plot, with default settings, of our observations data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Customizing-sounding-figures"><strong>Customizing sounding figures</strong></a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Setting-#1:-special_parcels">Setting #1: <code class="docutils literal notranslate"><span class="pre">special_parcels</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Build-a-sounding-figure-with-special_parcels='simple'-using-our-reanalysis-data-object">Build a sounding figure with <code class="docutils literal notranslate"><span class="pre">special_parcels='simple'</span></code> using our reanalysis data object</a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Setting-#2:-map_zoom">Setting #2: <code class="docutils literal notranslate"><span class="pre">map_zoom</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Build-a-sounding-figure-with-a-zoomed-out-map-using-our-BUFKIT-forecast-data-object">Build a sounding figure with a zoomed-out map using our BUFKIT forecast data object</a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Setting-#3:-color_blind">Setting #3: <code class="docutils literal notranslate"><span class="pre">color_blind</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Setting-#4:-dark_mode">Setting #4: <code class="docutils literal notranslate"><span class="pre">dark_mode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Build-a-dark-mode-sounding-with-colorblind-settings-on-using-our-observations-again">Build a dark-mode sounding with colorblind settings on using our observations again</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="beginners_sounderpy_cookbook.html#RECIPE-3:-Plotting-hodographs"><strong>RECIPE 3</strong>: Plotting hodographs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#id2"><strong>Objectives</strong></a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Build-a-hodograph-plot-using-our-reanalysis-data">Build a hodograph plot using our reanalysis data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Hodograph-settings:-dark_mode-&amp;-sr_hodo">Hodograph settings: <code class="docutils literal notranslate"><span class="pre">dark_mode</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">sr_hodo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Build-a-storm-relative-dark-mode-hodograph-figure-using-our-BUFKIT-forecast-data">Build a storm-relative dark-mode hodograph figure using our BUFKIT forecast data</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="beginners_sounderpy_cookbook.html#RECIPE-4:-Plotting-sounding-composites"><strong>RECIPE 4</strong>: Plotting sounding composites</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#id3"><strong>Objectives</strong></a></li>
+<li class="toctree-l4"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Build-a-dark-mode-composite-sounding-with-custom-colors-to-compare-our-observation-data,-reanalysis-model-data,-and-forecast-model-data,-all-valid-for-the-same-time-&amp;-location">Build a dark mode composite sounding with custom colors to compare our observation data, reanalysis model data, and forecast model data, all valid for the same time &amp; location</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="beginners_sounderpy_cookbook.html#Congrats!-You-finished-this-Beginners-SounderPy-Cookbook!"><strong>Congrats!</strong> You finished this Beginners SounderPy Cookbook!</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examplegallery.html#sounding-types">Sounding Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examplegallery.html#sounding-settings">Sounding Settings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examplegallery.html#hodographs">Hodographs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examplegallery.html#soundings">Soundings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examplegallery.html#composite-soundings">Composite Soundings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examplegallery.html#other-examples">Other Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examplegallery.html#hodographs">Hodographs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>

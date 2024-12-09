@@ -5,13 +5,13 @@ UPDATE NOTES
 ================================================================================================================
 	- Checks                                 DONE?          DOC-ed?          LOCAL CHECK          PyPi-CHECK
 	------------------------------------------------------------------------------------------------------------
-	- correct RUC vert-lv-pres levels
-	- fix modify_sfc interp
-	- add sounderpy-wrf
-	- update sounderpy-cm1
+	- correct RUC vert-lv-pres levels........DONE...........na/fix...........DONE.................DONE
+	- fix modify_sfc interp..................REMOVED........
+	- add sounderpy-wrf......................DONE...........DONE.............DONE.................DONE
+	- update sounderpy-cm1...................DONE...........DONE.............DONE.................DONE
 
 	- Check all docs
-	- Add Cookbook to docs
+	- Add Cookbook to docs...................DONE.....................................................
 
 
 

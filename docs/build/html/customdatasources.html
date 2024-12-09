@@ -57,8 +57,22 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">✏️ Custom Data Sources</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#understanding-the-sounderpy-data-format">Understanding the SounderPy data format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#building-a-custom-clean-data-dictionary">Building a custom clean_data dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#built-in-custom-data-ingestion-tools">Built-in Custom Data Ingestion Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ingesting-wrf-output-data">Ingesting WRF Output Data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spy.make_wrf_profile"><code class="docutils literal notranslate"><span class="pre">spy.make_wrf_profile()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#ingesting-cm1-input-sounding-data">Ingesting CM1 input_sounding Data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spy.make_cm1_profile"><code class="docutils literal notranslate"><span class="pre">spy.make_cm1_profile()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ingesting-your-own-data-into-sounderpy">Ingesting your own data into SounderPy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#understanding-the-sounderpy-data-format">Understanding the SounderPy data format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#building-a-custom-clean-data-dictionary">Building a custom clean_data dictionary</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
@@ -66,6 +80,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="beginners_sounderpy_cookbook.html">👨‍🍳Beginner’s SounderPy Cookbook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
 </ul>
@@ -96,11 +111,98 @@
              
   <section id="custom-data-sources">
 <h1>✏️ Custom Data Sources<a class="headerlink" href="#custom-data-sources" title="Link to this heading"></a></h1>
-<p>A neat and very usesul aspect of SounderPy is the <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> dictionary that stores sounding data. This dictionary is fed into a SounderPy plotting function. The plotting functions are designed in such a way that <em>any</em> data can be passed to it, so long as its in the SounderPy <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> dictionary format.</p>
-<p>So if you have custom data that you want to plot with SounderPy, you can manually create a <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> dictionary and pass it to a plot!</p>
-<p>Your data could be field campaign observations, a CM1 input_sounding, WRF output, and anything else in between. So long as you set it up right, it can be integrated into SounderPy.</p>
+<p>A neat and very useful aspect of SounderPy is the “<code class="docutils literal notranslate"><span class="pre">clean_data</span></code> dictionary” that stores sounding data. This dictionary is fed into a SounderPy plotting function. The plotting functions are designed in such a way that <em>any</em> data can be passed to it, so long as the data maintains the SounderPy “<code class="docutils literal notranslate"><span class="pre">clean_data</span></code> dictionary” format.</p>
+<hr class="docutils" />
+<section id="built-in-custom-data-ingestion-tools">
+<h2>Built-in Custom Data Ingestion Tools<a class="headerlink" href="#built-in-custom-data-ingestion-tools" title="Link to this heading"></a></h2>
+<p>As of v3.0.6, SounderPy has some integrated custom data ingestion tools. These include <code class="docutils literal notranslate"><span class="pre">make_wrf_profile()</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">make_cm1_profile()</span></code>.</p>
+<section id="ingesting-wrf-output-data">
+<h3>Ingesting WRF Output Data<a class="headerlink" href="#ingesting-wrf-output-data" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="spy.make_wrf_profile">
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">make_wrf_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latlon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'WRF-ARW'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CONTROL</span> <span class="pre">RUN'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.make_wrf_profile" title="Link to this definition"></a></dt>
+<dd><p>Return a <code class="docutils literal notranslate"><span class="pre">dict</span></code> of ‘cleaned up’ WRF output profile data for a given location</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ds</strong> (<em>netCDF4.Dataset</em><em>(</em><em>)</em><em>, </em><em>required</em>) – a netcdf4 dataset object of your wrfout*.nc file</p></li>
+<li><p><strong>latlon</strong> (<em>list</em><em>, </em><em>required</em>) – the latitude &amp; longitude pair for sounding (ex: [44.92, -84.72])</p></li>
+<li><p><strong>model_name</strong> (<em>str</em><em>, </em><em>recommended</em><em>, </em><em>default is &quot;WRF-ARW&quot;</em>) – the name of your model for plot titles</p></li>
+<li><p><strong>run_name</strong> (<em>str</em><em>, </em><em>optional</em><em>, </em><em>default is &quot;CONTROL&quot;</em>) – the name of your run for plot titles</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, &amp; model information</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-python notranslate" id="wrfexample"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
+<span class="kn">import</span> <span class="nn">netcdf4</span>
+
+<span class="c1"># open your `wrfout*.nc` file as a netCDF4 dataset</span>
+<span class="n">wrf_ds</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">filename_of_wrf_data</span><span class="p">)</span>
+
+<span class="c1"># use `make_wrf_profile()` to create a `clean_data` dictionary of sounding data</span>
+<span class="n">clean_data</span> <span class="o">=</span> <span class="n">make_wrf_profile</span><span class="p">(</span><span class="n">wrf_ds</span><span class="p">,</span> <span class="p">[</span><span class="mf">48.978</span><span class="p">,</span> <span class="o">-</span><span class="mf">100.861</span><span class="p">])</span>
+
+<span class="c1"># Now, pass the &#39;clean_data&#39; dictionary into the SounderPy `build_sounding` function</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">clean_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="ingesting-cm1-input-sounding-data">
+<h3>Ingesting CM1 input_sounding Data<a class="headerlink" href="#ingesting-cm1-input-sounding-data" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="spy.make_cm1_profile">
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">make_cm1_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_data_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.make_cm1_profile" title="Link to this definition"></a></dt>
+<dd><p>Return a <code class="docutils literal notranslate"><span class="pre">dict</span></code> of CM1 <cite>input_sounding</cite> data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em><em>, </em><em>required</em>) – the filename of an <cite>input_sounding</cite> file</p></li>
+<li><p><strong>meta_data_dict</strong> (<em>dict</em><em>, </em><em>required</em>) – a simple dictionary of metadata for the profile (see <a class="reference internal" href="#cm1example"><span class="std std-ref">‘CM1 Example’</span></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, &amp; model information</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-python notranslate" id="cm1example"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
+
+<span class="c1"># create this simple dict of information for your profile</span>
+<span class="c1"># latitude, longitude, elevation, and top, right &amp; left titles are required</span>
+<span class="n">meta_data_dict</span> <span class="o">=</span> <span class="p">{</span>
+ <span class="s1">&#39;latlon&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">45.100</span><span class="p">,</span> <span class="o">-</span><span class="mf">100.89</span><span class="p">],</span>
+ <span class="s1">&#39;elev&#39;</span><span class="p">:</span> <span class="mi">358</span><span class="p">,</span>
+ <span class="s1">&#39;top_title&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;CUSTOM CM1 COMPOSITE SOUNDING&quot;</span><span class="p">,</span>
+ <span class="s1">&#39;left_title&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Near-storm inflow RUC sounding for the El-Reno EF3 tornado&quot;</span><span class="p">,</span>
+ <span class="s1">&#39;right_title&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;May 24, 2011&quot;</span><span class="p">}</span>
+
+<span class="c1"># use `make_cm1_profile()` to create a `clean_data` dictionary of sounding data</span>
+<span class="n">clean_data</span> <span class="o">=</span> <span class="n">make_cm1_profile</span><span class="p">(</span><span class="n">input_sounding_filename</span><span class="p">,</span> <span class="n">meta_data_dict</span><span class="p">)</span>
+
+<span class="c1"># Now, pass the &#39;clean_data&#39; dictionary into the SounderPy `build_sounding` function</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">clean_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ingesting-your-own-data-into-sounderpy">
+<h2>Ingesting your own data into SounderPy<a class="headerlink" href="#ingesting-your-own-data-into-sounderpy" title="Link to this heading"></a></h2>
+<p>If you have custom data that you want to plot with SounderPy, you can just manually create a “<code class="docutils literal notranslate"><span class="pre">clean_data</span></code> dictionary” and pass it to a plot!</p>
+<p>Your data could be field campaign observations, custom model output, university soundings, and anything else in between. So long as you set it up right, it can be integrated into SounderPy.</p>
 <section id="understanding-the-sounderpy-data-format">
-<h2>Understanding the SounderPy data format<a class="headerlink" href="#understanding-the-sounderpy-data-format" title="Link to this heading"></a></h2>
+<h3>Understanding the SounderPy data format<a class="headerlink" href="#understanding-the-sounderpy-data-format" title="Link to this heading"></a></h3>
 <p>What’s contained in the <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> dictionary…</p>
 <dl class="simple">
 <dt>The actual profile data…</dt><dd><ul class="simple">
@@ -268,14 +370,16 @@
 </section>
 <hr class="docutils" />
 <section id="building-a-custom-clean-data-dictionary">
-<h2>Building a custom clean_data dictionary<a class="headerlink" href="#building-a-custom-clean-data-dictionary" title="Link to this heading"></a></h2>
+<h3>Building a custom clean_data dictionary<a class="headerlink" href="#building-a-custom-clean-data-dictionary" title="Link to this heading"></a></h3>
 <p>After importing your custom sounding data, (perhaps using <code class="docutils literal notranslate"><span class="pre">pandas</span></code> or <code class="docutils literal notranslate"><span class="pre">numpy</span></code>) you can define a <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> dictionary with it.</p>
-<p>Here is an example. <code class="docutils literal notranslate"><span class="pre">raw_data</span></code> would be your custom data.</p>
+<p>Here is an example. <code class="docutils literal notranslate"><span class="pre">raw_data</span></code> represents some obj with your data. Using <code class="docutils literal notranslate"><span class="pre">raw_data[2]</span></code> is simply referencing some “column of data”, in whatever format <code class="docutils literal notranslate"><span class="pre">raw_data</span></code> is. I.e., if the 2nd index in raw_data holds pressure values, <code class="docutils literal notranslate"><span class="pre">raw_data[2]</span></code> goes into <code class="docutils literal notranslate"><span class="pre">clean_data['p']</span></code>.</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># declare the clean_data dictionary, leave it empty for the moment</span>
 <span class="n">clean_data</span> <span class="o">=</span> <span class="p">{}</span>
 
 <span class="c1"># add profile data | make sure you have p, z, T, Td, u, &amp; v</span>
+<span class="c1"># use metpy.units to add units to each array -- make sure they are in the same</span>
+<span class="c1"># units as show below!</span>
 <span class="n">clean_data</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">raw_data</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="n">units</span><span class="o">.</span><span class="n">hPa</span>
 <span class="n">clean_data</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">raw_data</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span><span class="o">*</span><span class="n">units</span><span class="o">.</span><span class="n">m</span>
 <span class="n">clean_data</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">raw_data</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span><span class="o">*</span><span class="n">units</span><span class="o">.</span><span class="n">degC</span>
@@ -283,7 +387,7 @@
 <span class="n">clean_data</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">raw_data</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span><span class="o">*</span><span class="n">units</span><span class="o">.</span><span class="n">kts</span>
 <span class="n">clean_data</span><span class="p">[</span><span class="s1">&#39;v&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">raw_data</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span><span class="o">*</span><span class="n">units</span><span class="o">.</span><span class="n">kts</span>
 
-<span class="c1"># declare site metadata</span>
+<span class="c1"># declare some profile metadata</span>
 <span class="n">clean_data</span><span class="p">[</span><span class="s1">&#39;site_info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;site-id&#39;</span>     <span class="p">:</span> <span class="s1">&#39;UND&#39;</span><span class="p">,</span>                              <span class="c1"># could be a station ID, site ID, launch ID, mission ID, etc</span>
             <span class="s1">&#39;site-name&#39;</span>   <span class="p">:</span> <span class="s1">&#39;GRAND FORKS&#39;</span>                       <span class="c1"># a location&#39;s &quot;name&quot;, usually the city or town</span>
@@ -309,6 +413,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">clean_data</span> <span class="o">*</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
 </section>
 </section>
 

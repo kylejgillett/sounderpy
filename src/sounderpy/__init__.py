@@ -8,6 +8,8 @@ from .sounderpy import build_hodograph
 from .sounderpy import build_vad_hodograph
 from .sounderpy import build_composite
 from .sounderpy import print_variables
+from .sounderpy import make_cm1_profile
+from .sounderpy import make_wrf_profile
 from .utils import interp_data
 from .utils import find_nearest
 from .utils import get_sfc_index

@@ -9,6 +9,8 @@ from .model_data import fetch_model
 from .bufkit_data import fetch_bufkit
 from .obs_data import fetch_obs
 from .acars_data import *
+from .wrf_utils import make_wrf_profile
+from .cm1_utils import make_cm1_profile
 #########################################################################################################
 
 
@@ -26,7 +28,7 @@ from .acars_data import *
 
     THIS RELEASE
     -------
-    Version: 3.0.5 | September 2024
+    Version: 3.0.6 | December 2024
 
 
     DOCUMENTATION
@@ -48,7 +50,7 @@ from .acars_data import *
 citation_text = f"""
 ## ---------------------------------- SOUNDERPY ----------------------------------- ##
 ##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
-##                     v3.0.5 | Sept 2024 | (C) Kyle J Gillett                      ##
+##                      v3.0.6 | Dec 2024 | (C) Kyle J Gillett                      ##
 ##                 Docs: https://kylejgillett.github.io/sounderpy/                  ##
 ## --------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------ ##
 """

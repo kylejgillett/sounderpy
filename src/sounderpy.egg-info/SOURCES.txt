@@ -6,12 +6,14 @@ src/sounderpy/__init__.py
 src/sounderpy/acars_data.py
 src/sounderpy/bufkit_data.py
 src/sounderpy/calc.py
+src/sounderpy/cm1_utils.py
 src/sounderpy/model_data.py
 src/sounderpy/obs_data.py
 src/sounderpy/plot.py
 src/sounderpy/sounderpy.py
 src/sounderpy/timeseries.py
 src/sounderpy/utils.py
+src/sounderpy/wrf_utils.py
 src/sounderpy.egg-info/PKG-INFO
 src/sounderpy.egg-info/SOURCES.txt
 src/sounderpy.egg-info/dependency_links.txt

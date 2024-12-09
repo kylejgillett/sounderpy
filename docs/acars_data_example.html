@@ -63,6 +63,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="beginners_sounderpy_cookbook.html">👨‍🍳Beginner’s SounderPy Cookbook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
 </ul>
@@ -97,7 +98,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># first, import sounderpy! Its fun to import as &#39;spy&#39;!</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import sounderpy</span>
 <span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
 </pre></div>
 </div>
@@ -110,23 +111,25 @@
 
 ## ---------------------------------- SOUNDERPY ----------------------------------- ##
 ##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
-##                     v3.0.3 | Mar. 2024 | (C) Kyle J Gillett                      ##
+##                     v3.0.5 | Sept 2024 | (C) Kyle J Gillett                      ##
 ##                 Docs: https://kylejgillett.github.io/sounderpy/                  ##
 ## --------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------ ##
 
 </pre></div></div>
 </div>
-<section id="Understanding-SounderPy-Functionality">
-<h2><strong>Understanding SounderPy Functionality</strong><a class="headerlink" href="#Understanding-SounderPy-Functionality" title="Link to this heading"></a></h2>
-<p><strong>To get ACARS data, we need to use the ``acars_data()`` class</strong></p>
-<p><strong>Reading the documentation on ACARS data access may prove useful before using this notebook: https://kylejgillett.github.io/sounderpy/gettingdata.html#observed-data-acars-aircraft-obs</strong></p>
+<section id="Understanding-ACARS-functionality">
+<h2><strong>Understanding ACARS functionality</strong><a class="headerlink" href="#Understanding-ACARS-functionality" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>To get ACARS data, we need to use the ``acars_data()`` class</strong></p></li>
+<li><p><strong>Reading the documentation on ACARS data access may prove useful before using this notebook: https://kylejgillett.github.io/sounderpy/gettingdata.html#observed-data-acars-aircraft-obs</strong></p></li>
+</ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># First we need to set up a &#39;connection&#39; to the ACARS data.</span>
 <span class="c1"># We do this by creating a variable called `acars_conn` which is set equal</span>
-<span class="c1"># to the `acars_data()` class which needs a year, month, day and hour as strings.</span>
+<span class="c1"># to the `acars_data()` class. The class needs a year, month, day and hour as strs.</span>
 
 <span class="c1"># Lets look for flights on Dec. 30th 2023 at 12 UTC</span>
 <span class="n">acars_conn</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">acars_data</span><span class="p">(</span><span class="s1">&#39;2024&#39;</span><span class="p">,</span> <span class="s1">&#39;02&#39;</span><span class="p">,</span> <span class="s1">&#39;28&#39;</span><span class="p">,</span> <span class="s1">&#39;01&#39;</span><span class="p">)</span>
@@ -142,15 +145,15 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&gt; LIST ACARS PROFILES FUNCTION --
----------------------------------
+&gt; LIST ACARS PROFILES FUNCTION
+  ---------------------------------
 &gt; AVAILABLE ACARS PROFILES FOR 2024-02-28 01Z...
 &gt; COMPLETE --------
 &gt; RUNTIME: 00:00:00
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -201,13 +204,13 @@
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># These are all the available flights we can get data from across the ACARS network</span>
 <span class="c1"># on Dec. 30th 2023 at 12 UTC. Now we can pick one and add it to the function</span>
 <span class="c1"># `.get_profile()` to actually get the data. Lets try &#39;DAL_1210&#39;:</span>
-<span class="n">clean_data</span> <span class="o">=</span> <span class="n">acars_conn</span><span class="o">.</span><span class="n">get_profile</span><span class="p">(</span><span class="s1">&#39;MDW_0150&#39;</span><span class="p">)</span>
+<span class="n">clean_data</span> <span class="o">=</span> <span class="n">acars_conn</span><span class="o">.</span><span class="n">get_profile</span><span class="p">(</span><span class="s1">&#39;SJC_0130&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -216,25 +219,25 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&gt; ACARS DATA ACCESS FUNCTION --
----------------------------------
-&gt; COMPLETE --------
-&gt; RUNTIME: 00:00:00
-&gt; SUMMARY: 01:48Z Flight from MDW, Chicago Midway International Airport at 02-28-2024-01:48Z
+&gt; ACARS DATA ACCESS FUNCTION
+  ---------------------------------
+    &gt; COMPLETE --------
+    &gt; RUNTIME: 00:00:01
+    &gt; SUMMARY: 01:30Z Flight from SJC, Norman Y. Mineta San Jose International Airport at 02-28-2024-01:30Z
 
-&gt; THERMODYNAMICS ---------------------------------------------
---- SBCAPE: 161.5 | MUCAPE: 266.5 | MLCAPE: 174.8 | MUECAPE: --
---- MU 0-3: 203.6 | MU 0-6: -- | SB 0-3: 114.6 | SB 0-6: --
+    &gt; THERMODYNAMICS ---------------------------------------------
+    --- SBCAPE: 0.0 | MUCAPE: 0.0 | MLCAPE: 0.0 | MUECAPE: --
+    --- MU 0-3: 0.0 | MU 0-6: 0.0 | SB 0-3: 0.0 | SB 0-6: 0.0
 
-&gt; KINEMATICS -------------------------------------------------
---- 0-500 SRW: -- | 0-500 SWV: -- | 0-500 SHEAR: 31.7 | 0-500 SRH: --
---- 1-3km SRW: -- | 1-3km SWV: -- | 1-3km SHEAR: 14.9 | | 1-3km SRH: --
-==============================================================
+    &gt; KINEMATICS -------------------------------------------------
+    --- 0-500 SRW: 17.9 knot | 0-500 SWV: 0.002 | 0-500 SHEAR: 3.4 | 0-500 SRH: -10.0
+    --- 1-3km SRW: 11.9 knot | 1-3km SWV: 0.006 | 1-3km SHEAR: 10.5 | | 1-3km SRH: 17.5
+    ==============================================================
 
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Lets check out the ACARS data that we just accessed</span>
@@ -244,59 +247,60 @@
 <span class="c1"># it comes with temperature, dewpoint, pressure, height, u and v</span>
 <span class="c1"># as well as a number of useful &#39;meta data&#39;</span>
 
-<span class="c1"># note how these data only goes up to ~640 hPa</span>
 <span class="n">clean_data</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{&#39;p&#39;: array([963.94, 957.16, 947.45, 936.69, 925.47, 915.02, 907.31, 902.15,
-        896.92, 891.81, 888.57, 886.84, 886.52, 886.41, 885.22, 882.64,
-        877.07, 861.79, 831.77, 798.73, 759.98, 715.57, 674.59, 643.88,
-        633.88]) &lt;Unit(&#39;hectopascal&#39;)&gt;,
- &#39;z&#39;: array([ 421.,  480.,  565.,  660.,  760.,  854.,  924.,  971., 1019.,
-        1066., 1096., 1112., 1115., 1116., 1127., 1151., 1203., 1347.,
-        1636., 1964., 2363., 2841., 3304., 3666., 3787.]) &lt;Unit(&#39;meter&#39;)&gt;,
- &#39;T&#39;: array([19.05, 18.35, 17.75, 17.05, 16.85, 16.05, 15.05, 15.05, 15.25,
-        15.05, 15.05, 15.05, 15.05, 15.05, 15.05, 14.85, 14.85, 13.85,
-        12.35,  9.55,  6.05,  1.55, -2.75, -5.75, -6.95]) &lt;Unit(&#39;degree_Celsius&#39;)&gt;,
- &#39;Td&#39;: array([ 14.32,  14.21,  14.03,  13.81,  13.63,  13.48,  13.36,  13.34,
-         13.47,  13.4 ,  13.4 ,  13.3 ,  13.28,  13.23,  13.2 ,  13.06,
-         12.83,  11.72,   7.42,   1.42,   0.05,  -2.35,  -5.87, -10.96,
-        -11.29]) &lt;Unit(&#39;degree_Celsius&#39;)&gt;,
- &#39;u&#39;: array([-7.39615389, -8.69869788, -8.171829  , -6.28453171, -4.14735841,
-        -4.98239701, -1.97829915,  2.14054061,  6.85182957,  7.77943836,
-         9.85285618, 11.79727883, 11.79727883, 12.51350896, 12.51350896,
-        12.94781206, 14.33064401, 17.04226534, 20.45      , 26.36852438,
-        31.30372473, 35.69006064, 33.73703664, 26.52973621, 27.71686898]) &lt;Unit(&#39;knot&#39;)&gt;,
- &#39;v&#39;: array([ 6.42937848,  9.66088273, 16.03811744, 21.91676667, 29.50998845,
-        35.45159686, 37.74819641, 40.84394797, 43.26074932, 44.11938733,
-        42.67740884, 41.14200059, 41.14200059, 40.92984356, 40.92984356,
-        39.84926803, 39.37312081, 38.27755468, 35.42043901, 32.56241579,
-        33.5691349 , 33.28151997, 32.57947757, 28.44965899, 28.70165803]) &lt;Unit(&#39;knot&#39;)&gt;,
- &#39;site_info&#39;: {&#39;site-id&#39;: &#39;MDW&#39;,
-  &#39;site-name&#39;: &#39;Chicago Midway International Airport&#39;,
+{&#39;p&#39;: &lt;Quantity([1010.28  985.84  954.98  919.68  880.71  845.17  808.79  769.16  732.87
+   704.22  693.73  640.81  584.25  529.53  481.79  435.84  385.14  327.46
+   286.74  251.86  230.16  225.53  204.27], &#39;hectopascal&#39;)&gt;,
+ &#39;z&#39;: &lt;Quantity([   27.   233.   499.   812.  1169.  1506.  1863.  2267.  2652.  2967.
+   3085.  3703.  4411.  5151.  5849.  6576.  7454.  8575.  9467. 10317.
+  10895. 11024. 11652.], &#39;meter&#39;)&gt;,
+ &#39;T&#39;: &lt;Quantity([ 1.485e+01  1.325e+01  1.075e+01  9.550e+00  8.850e+00  6.850e+00
+   7.350e+00  4.350e+00  2.350e+00  5.000e-02 -4.500e-01 -4.750e+00
+  -9.450e+00 -1.515e+01 -2.015e+01 -2.645e+01 -3.375e+01 -4.325e+01
+  -5.145e+01 -5.715e+01 -6.095e+01 -6.195e+01 -5.845e+01], &#39;degree_Celsius&#39;)&gt;,
+ &#39;Td&#39;: &lt;Quantity([ 1.580e+00  1.290e+00  1.380e+00 -1.050e+00  6.000e-02 -1.621e+01
+  -1.345e+01 -1.392e+01 -1.544e+01 -1.637e+01 -1.795e+01 -1.826e+01
+  -2.478e+01 -2.652e+01 -3.330e+01 -4.003e+01 -4.773e+01 -5.463e+01
+  -5.647e+01 -6.508e+01 -7.121e+01 -7.205e+01 -7.650e+01], &#39;degree_Celsius&#39;)&gt;,
+ &#39;u&#39;: &lt;Quantity([ 5.99102939  5.33746254  3.33868427  3.34518638 -6.77322757 -2.24763956
+  -6.30252506 -0.62819094 -3.9860191  -0.96961499 -3.59758473  2.21285231
+   4.9813145   5.23710976  2.97225484  0.87248742  0.43631016  0.76429898
+  -4.20808711 -7.72542486 -0.90738691 -3.88292952 14.32675907], &#39;knot&#39;)&gt;,
+ &#39;v&#39;: &lt;Quantity([ -9.22537625  -8.21897157  -7.15983152  -6.03487598  -1.31658207
+   -5.56310313 -11.37005619 -17.98903489  -8.95274548 -13.8661403
+  -13.42636899 -15.74526229 -12.97676793 -18.26397222 -18.76607847
+  -24.98477068 -24.99619238 -21.88665911 -26.56881636 -23.77641291
+  -25.9841615  -27.62847912 -30.72383398], &#39;knot&#39;)&gt;,
+ &#39;site_info&#39;: {&#39;site-id&#39;: np.str_(&#39;SJC&#39;),
+  &#39;site-name&#39;: &#39;Norman Y. Mineta San Jose International Airport&#39;,
   &#39;site-lctn&#39;: &#39;United States&#39;,
-  &#39;site-latlon&#39;: [41.79, -87.75],
-  &#39;site-elv&#39;: &#39;620&#39;,
+  &#39;site-latlon&#39;: [np.float64(37.36), np.float64(-121.93)],
+  &#39;site-elv&#39;: &#39;62&#39;,
   &#39;source&#39;: &#39;ACARS OBSERVED AIRCRAFT PROFILE&#39;,
   &#39;model&#39;: &#39;no-model&#39;,
   &#39;fcst-hour&#39;: &#39;no-fcst-hour&#39;,
   &#39;run-time&#39;: [&#39;none&#39;, &#39;none&#39;, &#39;none&#39;, &#39;none&#39;],
-  &#39;valid-time&#39;: [&#39;2024&#39;, &#39;02&#39;, &#39;28&#39;, &#39;01:48&#39;]}}
+  &#39;valid-time&#39;: [&#39;2024&#39;, &#39;02&#39;, &#39;28&#39;, &#39;01:30&#39;]},
+ &#39;titles&#39;: {&#39;top_title&#39;: &#39;ACARS AIRCRAFT OBSERVATION VERTICAL PROFILE&#39;,
+  &#39;left_title&#39;: &#39;VALID: 02-28-2024 01:30Z&#39;,
+  &#39;right_title&#39;: &#39;SJC - Norman Y. Mineta San Jose International Airport, United States | 37.36, -121.93    &#39;}}
 </pre></div></div>
 </div>
 <hr class="docutils" />
 </section>
-<section id="LETS-PLOT-THE-DATA-ON-A-SOUNDING-AND-HODOGRAPH">
-<h2><strong>LETS PLOT THE DATA ON A SOUNDING AND HODOGRAPH</strong><a class="headerlink" href="#LETS-PLOT-THE-DATA-ON-A-SOUNDING-AND-HODOGRAPH" title="Link to this heading"></a></h2>
+<section id="Build-a-plot-of-the-data">
+<h2><strong>Build a plot of the data</strong><a class="headerlink" href="#Build-a-plot-of-the-data" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># lets make a sounding!</span>
@@ -309,10 +313,11 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&gt; SOUNDING PLOTTER FUNCTION --
----------------------------------
-&gt; COMPLETE --------
-&gt; RUNTIME: 00:00:01
+&gt; SOUNDING PLOTTER FUNCTION
+  ---------------------------------
+- no radar data available -
+    &gt; COMPLETE --------
+    &gt; RUNTIME: 00:00:01
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -320,6 +325,31 @@
 </div>
 <div class="output_area docutils container">
 <img alt="_images/acars_data_example_8_1.png" src="_images/acars_data_example_8_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_hodograph</span><span class="p">(</span><span class="n">clean_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; HODOGRAPH PLOTTER FUNCTION --
+-------------------------------
+&gt; RUNTIME: 00:00:01
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/acars_data_example_9_1.png" src="_images/acars_data_example_9_1.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">

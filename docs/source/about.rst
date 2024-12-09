@@ -1,7 +1,7 @@
 📖 About
 =========
 
-SounderPy: A sounding visualization tool for severe-weather analysis and forecasting 
+SounderPy: A sounding visualization tool for severe-weather analysis and forecasting
 --------------------------------------------------------------------------------------
 
 
@@ -32,12 +32,12 @@ available through GitHub and PyPi and is distributed under an MIT license.
    :width: 500 px
    :align: center
 
+.. raw:: html
+
+    <br>
 
 
-<br>
-
-
-SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines, Columbia, Grand Forks, Little Rock, Omaha, & Grand Rapids National Weather Service Offices, the State University of New York at Albany, Mississippi State University, the University of North Dakota, and others. Many students at various universities have used SounderPy in projects, posters, and papers, such as students at The University of Oklahoma, Ohio State University, Central Michigan University, Iowa State University, & Rizal Technological University.
+SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines, Columbia, Grand Forks, Little Rock, Omaha, & Grand Rapids National Weather Service Offices; the State University of New York at Albany, Mississippi State University, the University of North Dakota, and others. Many students at various universities have used SounderPy in projects, posters, and papers, such as students at The University of Oklahoma, Ohio State University, Central Michigan University, Iowa State University, Texas A&M University, & Rizal Technological University.
 
 ☕ SounderPy is an open-source package developed on my own time. If you would you like to support continued SounderPy development, consider "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"! ☕
 
@@ -46,18 +46,18 @@ Installation
 
 SounderPy is available on PyPi and can be installed via ``pip``:
 
-	.. code-block:: console
+    .. code-block:: console
 
-	   pip install sounderpy 
+        pip install sounderpy
 
 or via ``conda forge`` by first setting up the ``conda-forge`` channel:
 
-	.. code-block:: console
+    .. code-block:: console
 
-	   conda config --add channels conda-forge
-	   conda config --set channel_priority strict
+        conda config --add channels conda-forge
+        conda config --set channel_priority strict
 
-	then you can install sounderpy via:
+    then you can install sounderpy via:
 
 	.. code-block:: console
 
@@ -122,7 +122,7 @@ Citing SounderPy
 
 
 	in AMS format:
-	     Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.5). Py-Pi, https://pypi.org/project/sounderpy/
+	     Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.6). Py-Pi, https://pypi.org/project/sounderpy/
 
 
 ***************************************************************
@@ -159,19 +159,25 @@ About the Author
 
 Hey! 
 
-Thank you so much for checking out and using SounderPy. My name is Kyle Gillett and I'm a master's student of Atmospheric Science at the University of North Dakota, and the developer of SounderPy. This tool started out as a way for me to internally house all of my data retrieval functions for plotting soundings. As you can see, it has since blossomed into a full-scale Python package.
+Thanks for checking out and using SounderPy. My name is Kyle Gillett and I'm a master's student of Atmospheric Science at the University of North Dakota, and the developer of SounderPy. This tool started out as a way for me to internally house all of my data retrieval functions for plotting soundings. As you can see, it has since blossomed into a full-scale Python package.
 
 SounderPy is published on PyPi and the source code is available on GitHub -- this tool is an open source project. If you have found SounderPy useful in your work, I'd love to hear about it! The coolest part of this project has been hearing how many folks have been using this software. If you'd like to support continued SounderPy development, consider "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"! ☕. 
 
 *Have an issue?* You can `open a GitHub Issue <https://github.com/kylejgillett/sounderpy/issues>`_ or just shoot me a DM on `Twitter <https://twitter.com/wxkylegillett>`_!
 
-**Useful Links**
+
+****************************************
+
+
+Useful Links
+------------
 
 + Check out the operational `SounderPy Sounding Analysis Site! <https://sounderpysoundings.anvil.app/>`_
 + Check out SounderPy `on GitHub <https://github.com/kylejgillett/sounderpy>`_
 + Check out SounderPy `on PyPi <https://pypi.org/project/sounderpy/>`_
-+ Check out my `website <https://kylegillettphoto.com>`_
++ Check out the author's `website <https://kylegillettphoto.com>`_
 + Get updates on SounderPy development on `Twitter <https://twitter.com/wxkylegillett>`_
++ Get updates on SounderPy development on `BlueSky <https://bsky.app/profile/wxkylegillett.bsky.social>`_
 + Support SounderPy by "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"
 
 

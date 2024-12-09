@@ -45,17 +45,17 @@ def modify_surface(clean_data, modify_sfc):
 
     # Modify arrays based on the provided modifications
     if 'T' in modify_sfc:
-        sounding_data['T'] = barnes_interp(modify_sfc['T'], clean_data['T'], clean_data['p'])*units.degC
+        sounding_data['T'][0] = modify_sfc['T']*units.degC
 
     if 'Td' in modify_sfc:
-        sounding_data['Td'] = barnes_interp(modify_sfc['Td'], clean_data['Td'], clean_data['p'])*units.degC
+        sounding_data['Td'][0] = modify_sfc['Td']*units.degC
 
     if 'ws' in modify_sfc:
         if 'wd' in modify_sfc:
             new_u, new_v = mpcalc.wind_components(modify_sfc['ws'] * units.kts, modify_sfc['wd'] * units.deg)
 
-            sounding_data['u'] = barnes_interp(new_u.m, clean_data['u'], clean_data['p']) * units.kts
-            sounding_data['v'] = barnes_interp(new_v.m, clean_data['v'], clean_data['p']) * units.kts
+            sounding_data['u'][0] = new_u
+            sounding_data['v'][0] = new_v
 
     return sounding_data
 
@@ -75,6 +75,8 @@ def barnes_interp(new_val, xarr, yarr, kappa=0.5, num_points=5):
     - yarr: The pressure levels corresponding to the data.
     - kappa: Smoothing parameter for Barnes interpolation.
     - num_points: The number of lowest points to apply the interpolation to (default is 5).
+
+    Currently not being used, considered a beta feature.
     """
 
     xarr = np.array(xarr)

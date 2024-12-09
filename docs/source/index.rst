@@ -115,6 +115,7 @@ Directory
      :maxdepth: 5
      :caption: Tutorials:  
 
+     beginners_sounderpy_cookbook
      examplegallery
      examplescripts
 

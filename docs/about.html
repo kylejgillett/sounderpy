@@ -58,6 +58,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#citing-sounderpy">Citing SounderPy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#about-the-author">About the Author</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#useful-links">Useful Links</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">❓ Troubleshooting</a></li>
@@ -71,6 +72,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="beginners_sounderpy_cookbook.html">👨‍🍳Beginner’s SounderPy Cookbook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
 </ul>
@@ -120,8 +122,7 @@ novices. A number of scientific Python libraries build the base of SounderPy’s
 durable functionality, such as NumPy, Matplotlib, xarray, Metpy, and SHARPpy. SounderPy is
 available through GitHub and PyPi and is distributed under an MIT license.</p>
 <a class="reference internal image-reference" href="_images/sounderpy_poster.png"><img alt="_images/sounderpy_poster.png" class="align-center" src="_images/sounderpy_poster.png" style="width: 500px;" /></a>
-<p>&lt;br&gt;</p>
-<p>SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines, Columbia, Grand Forks, Little Rock, Omaha, &amp; Grand Rapids National Weather Service Offices, the State University of New York at Albany, Mississippi State University, the University of North Dakota, and others. Many students at various universities have used SounderPy in projects, posters, and papers, such as students at The University of Oklahoma, Ohio State University, Central Michigan University, Iowa State University, &amp; Rizal Technological University.</p>
+<br><p>SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines, Columbia, Grand Forks, Little Rock, Omaha, &amp; Grand Rapids National Weather Service Offices; the State University of New York at Albany, Mississippi State University, the University of North Dakota, and others. Many students at various universities have used SounderPy in projects, posters, and papers, such as students at The University of Oklahoma, Ohio State University, Central Michigan University, Iowa State University, Texas A&amp;M University, &amp; Rizal Technological University.</p>
 <p>☕ SounderPy is an open-source package developed on my own time. If you would you like to support continued SounderPy development, consider “<a class="reference external" href="https://www.buymeacoffee.com/kylejgillett">Buying me a coffee</a>”! ☕</p>
 </section>
 <section id="installation">
@@ -139,13 +140,15 @@ available through GitHub and PyPi and is distributed under an MIT license.</p>
 </pre></div>
 </div>
 <p>then you can install sounderpy via:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda install sounderpy</span>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda install sounderpy</span>
 </pre></div>
 </div>
 <p>or</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">mamba install sounderpy</span>
 </pre></div>
 </div>
+</div></blockquote>
 </div></blockquote>
 <p>In your Python document, its fun to import SounderPy as <code class="docutils literal notranslate"><span class="pre">spy</span></code>!:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
@@ -181,7 +184,7 @@ available through GitHub and PyPi and is distributed under an MIT license.</p>
 <blockquote>
 <div><a class="reference external image-reference" href="https://doi.org/10.5281/zenodo.10443609"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.10443609.svg" /></a>
 <dl class="simple">
-<dt>in AMS format:</dt><dd><p>Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval &amp; Analysis Tool for Python (Version 3.0.5). Py-Pi, <a class="reference external" href="https://pypi.org/project/sounderpy/">https://pypi.org/project/sounderpy/</a></p>
+<dt>in AMS format:</dt><dd><p>Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval &amp; Analysis Tool for Python (Version 3.0.6). Py-Pi, <a class="reference external" href="https://pypi.org/project/sounderpy/">https://pypi.org/project/sounderpy/</a></p>
 </dd>
 </dl>
 </div></blockquote>
@@ -211,16 +214,20 @@ available through GitHub and PyPi and is distributed under an MIT license.</p>
 <section id="about-the-author">
 <h2>About the Author<a class="headerlink" href="#about-the-author" title="Link to this heading"></a></h2>
 <p>Hey!</p>
-<p>Thank you so much for checking out and using SounderPy. My name is Kyle Gillett and I’m a master’s student of Atmospheric Science at the University of North Dakota, and the developer of SounderPy. This tool started out as a way for me to internally house all of my data retrieval functions for plotting soundings. As you can see, it has since blossomed into a full-scale Python package.</p>
+<p>Thanks for checking out and using SounderPy. My name is Kyle Gillett and I’m a master’s student of Atmospheric Science at the University of North Dakota, and the developer of SounderPy. This tool started out as a way for me to internally house all of my data retrieval functions for plotting soundings. As you can see, it has since blossomed into a full-scale Python package.</p>
 <p>SounderPy is published on PyPi and the source code is available on GitHub – this tool is an open source project. If you have found SounderPy useful in your work, I’d love to hear about it! The coolest part of this project has been hearing how many folks have been using this software. If you’d like to support continued SounderPy development, consider “<a class="reference external" href="https://www.buymeacoffee.com/kylejgillett">Buying me a coffee</a>”! ☕.</p>
 <p><em>Have an issue?</em> You can <a class="reference external" href="https://github.com/kylejgillett/sounderpy/issues">open a GitHub Issue</a> or just shoot me a DM on <a class="reference external" href="https://twitter.com/wxkylegillett">Twitter</a>!</p>
-<p><strong>Useful Links</strong></p>
+</section>
+<hr class="docutils" />
+<section id="useful-links">
+<h2>Useful Links<a class="headerlink" href="#useful-links" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Check out the operational <a class="reference external" href="https://sounderpysoundings.anvil.app/">SounderPy Sounding Analysis Site!</a></p></li>
 <li><p>Check out SounderPy <a class="reference external" href="https://github.com/kylejgillett/sounderpy">on GitHub</a></p></li>
 <li><p>Check out SounderPy <a class="reference external" href="https://pypi.org/project/sounderpy/">on PyPi</a></p></li>
-<li><p>Check out my <a class="reference external" href="https://kylegillettphoto.com">website</a></p></li>
+<li><p>Check out the author’s <a class="reference external" href="https://kylegillettphoto.com">website</a></p></li>
 <li><p>Get updates on SounderPy development on <a class="reference external" href="https://twitter.com/wxkylegillett">Twitter</a></p></li>
+<li><p>Get updates on SounderPy development on <a class="reference external" href="https://bsky.app/profile/wxkylegillett.bsky.social">BlueSky</a></p></li>
 <li><p>Support SounderPy by “<a class="reference external" href="https://www.buymeacoffee.com/kylejgillett">Buying me a coffee</a>”</p></li>
 </ul>
 <p>Thanks for using SounderPy!</p>

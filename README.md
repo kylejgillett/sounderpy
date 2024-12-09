@@ -4,7 +4,7 @@
 </div>
 
 # SounderPy, the vertical profile data retrieval and analysis tool for Python
-LATEST VERSION: v3.0.5 |  RELEASED: Sept, 2024  |  COPYRIGHT Kyle J Gillett, 2023, 2024
+LATEST VERSION: v3.0.6 |  RELEASED: Dec, 2024  |  COPYRIGHT Kyle J Gillett, 2023, 2024
 
 A Python package that helps you to access and plot vertical profile data for meteorological analysis 
 
@@ -21,7 +21,7 @@ A Python package that helps you to access and plot vertical profile data for met
 
 <div align="center">
    
-#### [VISIT SOUNDERPY DOCUMENTATION](https://kylejgillett.github.io/sounderpy/) | [CHECK OUT AN EXAMPLES & TUTORIALS](https://kylejgillett.github.io/sounderpy/examplescripts.html) 
+#### [VISIT SOUNDERPY DOCUMENTATION](https://kylejgillett.github.io/sounderpy/) | [CHECK OUT EXAMPLES & TUTORIALS](https://kylejgillett.github.io/sounderpy/examplescripts.html) 
 
 ### [VISIT THE OPERATIONAL SOUNDERPY SOUNDING ANALYSIS SITE](https://sounderpysoundings.anvil.app/)
 </div>
@@ -157,7 +157,7 @@ SounderPy has been used by several institutions. For example, this tool has been
 
 in AMS format:
 
-- Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.5). Py-Pi, https://pypi.org/project/sounderpy/
+- Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.6). Py-Pi, https://pypi.org/project/sounderpy/
 
 ------
 
