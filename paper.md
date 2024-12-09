@@ -21,8 +21,8 @@ bibliography: paper.bib
 
 # Summary
 
-SounderPy is a simple, open-source Python package for retrieving and plotting 
-vertical profile (sounding) data. Built for simplicity and reliability for all 
+SounderPy is a simple, open-source Python package for retrieving, processing, & 
+plotting vertical profile (sounding) data. Built for simplicity and reliability for all 
 uses and users, this project’s goal is to provide a uniform method for sounding 
 analysis across multiple data types. Severe weather analysis and forecasting 
 requires a sound comprehension of thermodynamic and kinematic properties of the 
@@ -41,16 +41,8 @@ MIT license.
 
 # Statement of need
 
-`Gala` is an Astropy-affiliated Python package for galactic dynamics. Python
-enables wrapping low-level languages (e.g., C) for speed without losing
-flexibility or ease-of-use in the user-interface. The API for `Gala` was
-designed to provide a class-based and user-friendly interface to fast (C or
-Cython-optimized) implementations of common operations such as gravitational
-potential and force evaluation, orbit integration, dynamical transformations,
-and chaos indicators for nonlinear dynamics. `Gala` also relies heavily on and
-interfaces well with the implementations of physical units and astronomical
-coordinate systems in the `Astropy` package [@astropy] (`astropy.units` and
-`astropy.coordinates`).
+Severe weather analysis and forecasting requires a sound comprehension of thermodynamic and kinematic properties of the 
+environment. Quaility analysis offers insight 
 
 `Gala` was designed to be used by both astronomical researchers and by
 students in courses on gravitational dynamics or astronomy. It has already been
