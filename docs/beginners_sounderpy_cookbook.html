@@ -202,7 +202,7 @@
 <li><p>To use SounderPy and it’s tools, we need to import the SounderPy library and its tools into our workspace. Import it and use <code class="docutils literal notranslate"><span class="pre">spy</span></code> as a shorthand ‘alias’</p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
@@ -217,7 +217,7 @@
 
 ## ---------------------------------- SOUNDERPY ----------------------------------- ##
 ##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
-##                     v3.0.5 | Sept 2024 | (C) Kyle J Gillett                      ##
+##                      v3.0.6 | Dec 2024 | (C) Kyle J Gillett                      ##
 ##                 Docs: https://kylejgillett.github.io/sounderpy/                  ##
 ## --------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------ ##
 
@@ -284,7 +284,7 @@
 <li><p>where <code class="docutils literal notranslate"><span class="pre">station</span></code> is a RAOB or IGRA site identifier. See: <a class="reference external" href="https://kylejgillett.github.io/sounderpy/gettingdata.html#available-raob-sites">https://kylejgillett.github.io/sounderpy/gettingdata.html#available-raob-sites</a></p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">obs_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s1">&#39;OUN&#39;</span><span class="p">,</span> <span class="s1">&#39;2024&#39;</span><span class="p">,</span> <span class="s1">&#39;05&#39;</span><span class="p">,</span> <span class="s1">&#39;07&#39;</span><span class="p">,</span> <span class="s1">&#39;00&#39;</span><span class="p">)</span>
@@ -300,7 +300,7 @@
   -----------------------------------
     &gt; PROFILE FOUND: OUN on 05/07/2024 at 00z | From UW
     &gt; COMPLETE --------
-    &gt; RUNTIME: 00:00:02
+    &gt; RUNTIME: 00:00:01
     &gt; SUMMARY: 00Z Launch for KOUN, NORMAN at 05-07-2024-00Z
 
     &gt; THERMODYNAMICS ---------------------------------------------
@@ -321,7 +321,7 @@
 <li><p>where <code class="docutils literal notranslate"><span class="pre">model</span></code> is the name of a valid reanalysis data model. See: <a class="reference external" href="https://kylejgillett.github.io/sounderpy/gettingdata.html#model-key-names">https://kylejgillett.github.io/sounderpy/gettingdata.html#model-key-names</a></p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">reanl_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_model_data</span><span class="p">(</span><span class="s1">&#39;rap&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">35.22</span><span class="p">,</span> <span class="o">-</span><span class="mf">97.44</span><span class="p">],</span> <span class="s1">&#39;2024&#39;</span><span class="p">,</span> <span class="s1">&#39;05&#39;</span><span class="p">,</span> <span class="s1">&#39;07&#39;</span><span class="p">,</span> <span class="s1">&#39;00&#39;</span><span class="p">)</span>
@@ -335,9 +335,9 @@
 <div class="highlight"><pre>
 &gt; RAP REANALYSIS DATA ACCESS FUNCTION
   -----------------------------------------
-    &gt; DATASET USED: RAP_25km
+    &gt; DATASET USED: RAP_25km_anl
     &gt; COMPLETE --------
-    &gt; RUNTIME: 00:00:05
+    &gt; RUNTIME: 00:00:34
     &gt; SUMMARY: 00Z RAP F00 for[35.22, -97.44] at 05-07-2024-00Z
 
     &gt; THERMODYNAMICS ---------------------------------------------
@@ -359,7 +359,7 @@
 <li><p>where <code class="docutils literal notranslate"><span class="pre">station</span></code> is a valid BUFKIT site identifier. See: <a class="reference external" href="https://kylejgillett.github.io/sounderpy/gettingdata.html#available-bufkit-sites">https://kylejgillett.github.io/sounderpy/gettingdata.html#available-bufkit-sites</a></p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bufkit_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_bufkit_data</span><span class="p">(</span><span class="s1">&#39;hrrr&#39;</span><span class="p">,</span> <span class="s1">&#39;OUN&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;2024&#39;</span><span class="p">,</span> <span class="s1">&#39;05&#39;</span><span class="p">,</span> <span class="s1">&#39;07&#39;</span><span class="p">,</span> <span class="s1">&#39;00&#39;</span><span class="p">)</span>
@@ -396,7 +396,7 @@
 <li><p>Each data object will contain an array of pressure, height, temperature, dewpoint, u-wind, v-wind and omega (if its model data). Additionally, the dictionary will hold two more “nested” dictionaries of meta data and pre-configured plot titles for the plotting tools.</p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">obs_data</span>
@@ -404,7 +404,7 @@
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -477,7 +477,7 @@
   &#39;site-name&#39;: &#39;NORMAN&#39;,
   &#39;site-lctn&#39;: &#39;OK US&#39;,
   &#39;site-latlon&#39;: [35.23, -97.47],
-  &#39;site-elv&#39;: 362.0,
+  &#39;site-elv&#39;: np.float64(362.0),
   &#39;source&#39;: &#39;RAOB OBSERVED PROFILE&#39;,
   &#39;model&#39;: &#39;no-model&#39;,
   &#39;fcst-hour&#39;: &#39;no-fcst-hour&#39;,
@@ -504,7 +504,7 @@
 </section>
 <section id="Building-Soundings-with-SounderPy">
 <h4><strong>Building Soundings with SounderPy</strong><a class="headerlink" href="#Building-Soundings-with-SounderPy" title="Link to this heading"></a></h4>
-<p>This, of course, is SounderPy’s bread and butter. SounderPy offers the most advanced, easy-to-read, and easy-to-build full sounding figures of any Python library.</p>
+<p>This, of course, is SounderPy’s bread and butter. SounderPy offers advanced, easy-to-read, and easy-to-build full sounding figures.</p>
 <p>The full sounding plot that SounderPy creates is a complex figure with unique design geared towards severe convective storm enviroment analysis.</p>
 <ul class="simple">
 <li><p>To accomplish this task, we use the <code class="docutils literal notranslate"><span class="pre">.build_sounding(clean_data)</span></code> tool.</p>
@@ -519,7 +519,7 @@
 <section id="Build-a-plot,-with-default-settings,-of-our-observations-data">
 <h4>Build a plot, with default settings, of our observations data<a class="headerlink" href="#Build-a-plot,-with-default-settings,-of-our-observations-data" title="Link to this heading"></a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">obs_data</span><span class="p">)</span>
@@ -535,28 +535,14 @@
   ---------------------------------
 - no radar data available -
     &gt; COMPLETE --------
-    &gt; RUNTIME: 00:00:29
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-WARNING:matplotlib.text:posx and posy should be finite values
-Downloading file &#39;us_counties_20m.cpg&#39; from &#39;https://github.com/Unidata/MetPy/raw/v1.6.3/staticdata/us_counties_20m.cpg&#39; to &#39;/root/.cache/metpy/v1.6.3&#39;.
-Downloading file &#39;us_counties_20m.dbf&#39; from &#39;https://github.com/Unidata/MetPy/raw/v1.6.3/staticdata/us_counties_20m.dbf&#39; to &#39;/root/.cache/metpy/v1.6.3&#39;.
-Downloading file &#39;us_counties_20m.prj&#39; from &#39;https://github.com/Unidata/MetPy/raw/v1.6.3/staticdata/us_counties_20m.prj&#39; to &#39;/root/.cache/metpy/v1.6.3&#39;.
-Downloading file &#39;us_counties_20m.shx&#39; from &#39;https://github.com/Unidata/MetPy/raw/v1.6.3/staticdata/us_counties_20m.shx&#39; to &#39;/root/.cache/metpy/v1.6.3&#39;.
-Downloading file &#39;us_counties_20m.shp&#39; from &#39;https://github.com/Unidata/MetPy/raw/v1.6.3/staticdata/us_counties_20m.shp&#39; to &#39;/root/.cache/metpy/v1.6.3&#39;.
-WARNING:matplotlib.text:posx and posy should be finite values
+    &gt; RUNTIME: 00:00:14
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/beginners_sounderpy_cookbook_16_2.png" src="_images/beginners_sounderpy_cookbook_16_2.png" />
+<img alt="_images/beginners_sounderpy_cookbook_16_1.png" src="_images/beginners_sounderpy_cookbook_16_1.png" />
 </div>
 </div>
 <p>Its as easy as that! Making the plot above can be done with just <em>two lines</em> of code!!</p>
@@ -584,7 +570,7 @@ WARNING:matplotlib.text:posx and posy should be finite values
 <section id="Build-a-sounding-figure-with-special_parcels='simple'-using-our-reanalysis-data-object">
 <h4>Build a sounding figure with <code class="docutils literal notranslate"><span class="pre">special_parcels='simple'</span></code> using our reanalysis data object<a class="headerlink" href="#Build-a-sounding-figure-with-special_parcels='simple'-using-our-reanalysis-data-object" title="Link to this heading"></a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">reanl_data</span><span class="p">,</span> <span class="n">special_parcels</span><span class="o">=</span><span class="s1">&#39;simple&#39;</span><span class="p">)</span>
@@ -600,23 +586,14 @@ WARNING:matplotlib.text:posx and posy should be finite values
   ---------------------------------
 - no radar data available -
     &gt; COMPLETE --------
-    &gt; RUNTIME: 00:00:03
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-WARNING:matplotlib.text:posx and posy should be finite values
-WARNING:matplotlib.text:posx and posy should be finite values
+    &gt; RUNTIME: 00:00:02
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/beginners_sounderpy_cookbook_19_2.png" src="_images/beginners_sounderpy_cookbook_19_2.png" />
+<img alt="_images/beginners_sounderpy_cookbook_19_1.png" src="_images/beginners_sounderpy_cookbook_19_1.png" />
 </div>
 </div>
 <p>Much faster!</p>
@@ -630,7 +607,7 @@ WARNING:matplotlib.text:posx and posy should be finite values
 <section id="Build-a-sounding-figure-with-a-zoomed-out-map-using-our-BUFKIT-forecast-data-object">
 <h4>Build a sounding figure with a zoomed-out map using our BUFKIT forecast data object<a class="headerlink" href="#Build-a-sounding-figure-with-a-zoomed-out-map-using-our-BUFKIT-forecast-data-object" title="Link to this heading"></a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">bufkit_data</span><span class="p">,</span> <span class="n">special_parcels</span><span class="o">=</span><span class="s1">&#39;simple&#39;</span><span class="p">,</span> <span class="n">map_zoom</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
@@ -646,7 +623,7 @@ WARNING:matplotlib.text:posx and posy should be finite values
   ---------------------------------
 - no radar data available -
     &gt; COMPLETE --------
-    &gt; RUNTIME: 00:00:03
+    &gt; RUNTIME: 00:00:02
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -673,7 +650,7 @@ WARNING:matplotlib.text:posx and posy should be finite values
 <section id="Build-a-dark-mode-sounding-with-colorblind-settings-on-using-our-observations-again">
 <h4>Build a dark-mode sounding with colorblind settings on using our observations again<a class="headerlink" href="#Build-a-dark-mode-sounding-with-colorblind-settings-on-using-our-observations-again" title="Link to this heading"></a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">special_parcels</span><span class="o">=</span><span class="s1">&#39;simple&#39;</span><span class="p">,</span> <span class="n">map_zoom</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">color_blind</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -689,23 +666,14 @@ WARNING:matplotlib.text:posx and posy should be finite values
   ---------------------------------
 - no radar data available -
     &gt; COMPLETE --------
-    &gt; RUNTIME: 00:00:03
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-WARNING:matplotlib.text:posx and posy should be finite values
-WARNING:matplotlib.text:posx and posy should be finite values
+    &gt; RUNTIME: 00:00:02
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/beginners_sounderpy_cookbook_23_2.png" src="_images/beginners_sounderpy_cookbook_23_2.png" />
+<img alt="_images/beginners_sounderpy_cookbook_23_1.png" src="_images/beginners_sounderpy_cookbook_23_1.png" />
 </div>
 </div>
 <hr class="docutils" />
@@ -731,7 +699,7 @@ WARNING:matplotlib.text:posx and posy should be finite values
 <section id="Build-a-hodograph-plot-using-our-reanalysis-data">
 <h4>Build a hodograph plot using our reanalysis data<a class="headerlink" href="#Build-a-hodograph-plot-using-our-reanalysis-data" title="Link to this heading"></a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_hodograph</span><span class="p">(</span><span class="n">reanl_data</span><span class="p">)</span>
@@ -773,7 +741,7 @@ WARNING:matplotlib.text:posx and posy should be finite values
 <section id="Build-a-storm-relative-dark-mode-hodograph-figure-using-our-BUFKIT-forecast-data">
 <h4>Build a storm-relative dark-mode hodograph figure using our BUFKIT forecast data<a class="headerlink" href="#Build-a-storm-relative-dark-mode-hodograph-figure-using-our-BUFKIT-forecast-data" title="Link to this heading"></a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_hodograph</span><span class="p">(</span><span class="n">bufkit_data</span><span class="p">,</span> <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sr_hodo</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -787,7 +755,7 @@ WARNING:matplotlib.text:posx and posy should be finite values
 <div class="highlight"><pre>
 &gt; HODOGRAPH PLOTTER FUNCTION --
 -------------------------------
-&gt; RUNTIME: 00:00:02
+&gt; RUNTIME: 00:00:01
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -816,7 +784,7 @@ WARNING:matplotlib.text:posx and posy should be finite values
 <section id="Build-a-dark-mode-composite-sounding-with-custom-colors-to-compare-our-observation-data,-reanalysis-model-data,-and-forecast-model-data,-all-valid-for-the-same-time-&amp;-location">
 <h4>Build a dark mode composite sounding with custom colors to compare our observation data, reanalysis model data, and forecast model data, all valid for the same time &amp; location<a class="headerlink" href="#Build-a-dark-mode-composite-sounding-with-custom-colors-to-compare-our-observation-data,-reanalysis-model-data,-and-forecast-model-data,-all-valid-for-the-same-time-&-location" title="Link to this heading"></a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># list of data objects</span>
@@ -849,7 +817,7 @@ WARNING:matplotlib.text:posx and posy should be finite values
 &gt; COMPOSITE SOUNDING FUNCTION
   -------------------------------
 &gt; COMPLETE --------
-&gt; RUNTIME: 00:00:00
+&gt; RUNTIME: 00:00:01
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -866,14 +834,6 @@ WARNING:matplotlib.text:posx and posy should be finite values
 <section id="Congrats!-You-finished-this-Beginners-SounderPy-Cookbook!">
 <h2><strong>Congrats!</strong> You finished this Beginners SounderPy Cookbook!<a class="headerlink" href="#Congrats!-You-finished-this-Beginners-SounderPy-Cookbook!" title="Link to this heading"></a></h2>
 <p>Want to learn more and do more with SounderPy? Check out the documentation and examples incuded here: <a class="reference external" href="https://kylejgillett.github.io/sounderpy/index.html">https://kylejgillett.github.io/sounderpy/index.html</a></p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-</div>
 </section>
 </section>
 

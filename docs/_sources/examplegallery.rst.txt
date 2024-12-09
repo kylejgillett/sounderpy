@@ -3,103 +3,114 @@
 
 Examples of plots that can be created by SounderPy.
 
-.. _gallery:
 
-Sounding Types
---------------
+Soundings
+----------
+.. raw:: html
 
-.. figure:: _static/images/example-sounding_light3.png
-   :width: 300 px
-   :align: left
+    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
 
-   SounderPy Full Sounding Plot
+        <div style="flex: 1 0 30%; text-align: center;">
+            <a href="_static/images/example-sounding_light3.png" target="_blank">
+                <img src="_static/images/example-sounding_light3.png" alt="Image 1" style="width: 100%;">
+            </a>
+            <p>Full Sounding</p>
+        </div>
 
-.. figure:: _static/images/example-sounding_simple.png
-   :width: 300 px
-   :align: right
+        <div style="flex: 1 0 30%; text-align: center;">
+            <a href="_static/images/example-sounding_dark.png" target="_blank">
+                <img src="_static/images/example-sounding_dark.png" alt="Image 2" style="width: 100%;">
+            </a>
+            <p>Dark-mode Sounding</p>
+        </div>
 
-   SounderPy Simple Sounding Plot
-
-
-Sounding Settings
------------------
-
-.. figure:: _static/images/example-sounding_dark.png
-   :width: 300 px
-   :align: left
-
-   SounderPy Full Sounding Plot in 'dark mode'
-
-.. figure:: _static/images/example-sounding_light.png
-   :width: 300 px
-   :align: right
-
-   SounderPy with Color Blind friendly settings
+    </div>
 
 
-Hodographs 
------------
 
-.. figure:: _static/images/example-hodograph_light.png
-   :width: 300 px
-   :align: left
+    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        <div style="flex: 1 0 30%; text-align: center;">
+            <a href="_static/images/example-sounding_light.png" target="_blank">
+                <img src="_static/images/example-sounding_light.png" alt="Image 3" style="width: 100%;">
+            </a>
+            <p>Colorblind-friendly settings</p>
+        </div>
 
-   SounderPy Hodograph in 'light mode'
+        <div style="flex: 1 0 30%; text-align: center;">
+            <a href="_static/images/custom_data_wrf_example.jpg" target="_blank">
+                <img src="_static/images/custom_data_wrf_example.jpg" alt="Image 1" style="width: 100%;">
+            </a>
+            <p>WRF output sounding</p>
+        </div>
 
-.. figure:: _static/images/example-hodograph_dark.png
-   :width: 300 px
-   :align: right
+        <div style="flex: 1 0 30%; text-align: center;">
+            <a href="_static/images/example-sounding_dark-torus.png" target="_blank">
+                <img src="_static/images/example-sounding_dark-torus.png" alt="Image 2" style="width: 100%;">
+            </a>
+            <p>TORUS Field Campaign Sounding</p>
+        </div>
 
-   SounderPy Hodograph in 'dark-mode'
+    </div>
 
+***************************************
 
 
 Composite Soundings
 --------------------
+.. raw:: html
 
-.. figure:: _static/images/example-composite_light.png
-   :width: 300 px
-   :align: left
+    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
 
-   SounderPy Composite Sounding Plot
+        <div style="flex: 1 0 30%; text-align: center;">
+            <a href="_static/images/example-composite_light.png" target="_blank">
+                <img src="_static/images/example-composite_light.png" alt="Image 1" style="width: 100%;">
+            </a>
+            <p>Basic Composite Sounding</p>
+        </div>
 
-.. figure:: _static/images/example-composite_dark.png
-   :width: 300 px
-   :align: right
+        <div style="flex: 1 0 30%; text-align: center;">
+            <a href="_static/images/example-composite_dark.png" target="_blank">
+                <img src="_static/images/example-composite_dark.png" alt="Image 2" style="width: 100%;">
+            </a>
+            <p>Dark-mode Composite Sounding</p>
+        </div>
 
-   Composite Plot in 'dark mode'
+        <div style="flex: 1 0 30%; text-align: center;">
+            <a href="_static/images/example-composite_dark_model-preformance.png" target="_blank">
+                <img src="_static/images/example-composite_dark_model-preformance.png" alt="Image 3" style="width: 100%;">
+            </a>
+            <p>Multi-data Composite Example</p>
+        </div>
 
+    </div>
 
-.. figure:: _static/images/example-composite_dark_model-preformance.png
-   :width: 300 px
-   :align: right
+***************************************
 
-   Comparing Models to an Observed Profile
+Hodographs
+-----------
+.. raw:: html
 
+    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
 
+        <div style="flex: 1 0 30%; text-align: center;">
+            <a href="_static/images/example-hodograph_light.png" target="_blank">
+                <img src="_static/images/example-hodograph_light.png" alt="Image 1" style="width: 100%;">
+            </a>
+            <p>Full Hodograph</p>
+        </div>
 
+        <div style="flex: 1 0 30%; text-align: center;">
+            <a href="_static/images/example-hodograph_dark.png" target="_blank">
+                <img src="_static/images/example-hodograph_dark.png" alt="Image 2" style="width: 100%;">
+            </a>
+            <p>Dark-mode Hodograph</p>
+        </div>
 
-Other Examples
---------------
+        <div style="flex: 1 0 30%; text-align: center;">
+            <a href="_static/images/example_vad-hodograph.png" target="_blank">
+                <img src="_static/images/example_vad-hodograph.png" alt="Image 3" style="width: 100%;">
+            </a>
+            <p>VAD hodograph</p>
+        </div>
 
-.. figure:: _static/images/custom_data_wrf_example.jpg
-   :width: 300 px
-   :align: left
-
-   SounderPy Custom Plot using WRF data
-
-
-
-.. figure:: _static/images/example-sounding_dark-torus.png
-   :width: 300 px
-   :align: left
-
-   SounderPy Custom Plot using TORUS data
-
-
-
-.. figure:: _static/images/example_vad-hodograph.png
-   :width: 300 px
-   :align: left
-
-   SounderPy VAD Hodograph
+    </div>
