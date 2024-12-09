@@ -1,5 +1,5 @@
 ---
-title: 'SounderPy: A sounding visualization tool for severe-weather analysis and forecasting'
+title: "SounderPy: A sounding visualization tool for severe-weather analysis and forecasting"
 tags:
   - Python
   - meteorology
@@ -12,24 +12,32 @@ authors:
     affiliation: 1
     ror: 04a5szx83
 affiliations:
- - name: College of Aerospace Sciences, University of North Dakota, United States
-   index: 1
-
+  - name: College of Aerospace Sciences, University of North Dakota, United States
+    index: 1
 date: 9 December 2024
 bibliography: paper.bib
+---
 
 
 # Summary
 
-The forces on stars, galaxies, and dark matter under external gravitational
-fields lead to the dynamical evolution of structures in the universe. The orbits
-of these bodies are therefore key to understanding the formation, history, and
-future state of galaxies. The field of "galactic dynamics," which aims to model
-the gravitating components of galaxies to study their structure and evolution,
-is now well-established, commonly taught, and frequently used in astronomy.
-Aside from toy problems and demonstrations, the majority of problems require
-efficient numerical tools, many of which require the same base code (e.g., for
-performing numerical orbit integration).
+SounderPy is a simple, open-source Python package for retrieving and plotting 
+vertical profile (sounding) data. Built for simplicity and reliability for all 
+uses and users, this project’s goal is to provide a uniform method for sounding 
+analysis across multiple data types. Severe weather analysis and forecasting 
+requires a sound comprehension of thermodynamic and kinematic properties of the 
+environment. SounderPy makes this possible with robust access to data and custom 
+visualizations. The tool creates complex yet effective sounding and hodograph 
+plots with high readability which are designed specifically for severe weather 
+analysis and forecasting. SounderPy is capable of retrieving and plotting model 
+forecast data, observed radiosonde data, Aircraft Communications Addressing and 
+Reporting System (ACARS) observation data, and model reanalysis data. All of 
+this functionality can be completed in three simple lines of code or less, 
+making SounderPy an accessible tool for both Python experts and novices. A number
+of scientific Python libraries build the base of SounderPy’s efficient and 
+durable functionality, such as NumPy, Matplotlib, xarray, Metpy, and SHARPpy. 
+SounderPy is available through GitHub and PyPi and is distributed under an 
+MIT license.
 
 # Statement of need
 
