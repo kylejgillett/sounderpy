@@ -60,8 +60,9 @@ from .utils import modify_surface, find_nearest, mag, mag_round
 #########################################################################
 ########################## FULL SOUNDING ################################
 
-def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels=None, 
-                    show_radar=True, radar_time='sounding', map_zoom=2, modify_sfc=None):
+def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels=None,
+                    show_radar=True, radar_time='sounding', map_zoom=2, modify_sfc=None,
+                    show_inflow=False):
     
     
     # record process time 
@@ -214,7 +215,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     ws = mpcalc.wind_speed(u, v) 
     
     # calculate other sounding parameters using SounderPy Calc
-    general, thermo, kinem, intrp = sounding_params(sounding_data, storm_motion).calc()
+    general, thermo, kinem, intrp = sounding_params(sounding_data, storm_motion, include_all_parcels=bool(show_inflow)).calc()
     #################################################################
     
     
@@ -242,7 +243,8 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     # create master figure
     fig = plt.figure(figsize=(22,13), linewidth=10, edgecolor=brdr_clr)         
     # create skew-t obj and axes params
-    skew = SkewT(fig, rotation=47, rect=(0.1124, 0.1005, 0.60, 0.85))  
+    rect = (0.1124, 0.1005, 0.60, 0.85)
+    skew = SkewT(fig, rotation=47, rect=rect)  
     skew.ax.set_box_aspect(0.87)
     skew.ax.zorder = 5
     # Define axis bounds, temp axis based on data
@@ -591,6 +593,55 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     plt.text((x_start+0.01), (kinem['eil'][1]-8), "EIL", weight='bold',color='lightblue', alpha=0.4, ha='center', fontsize=13, transform=skew.ax.get_yaxis_transform())
     EIL_line = plt.Line2D([x_mid, x_mid], (kinem['eil'][0], kinem['eil'][1]), color='lightblue', linewidth=3, alpha=0.4, transform=skew.ax.get_yaxis_transform())
     skew.ax.add_artist(EIL_line)
+
+    # DETAILED INFLOW VISUALIZATION------------------------------
+    if show_inflow and thermo['mucape'] > 0:
+        x_inflow_mid = .26
+        x_cin_scale = 0.0003
+        x_cape_scale = x_cin_scale * .1
+        cin_color, cape_color = 'teal', 'tab:orange'
+        # CIN
+        plt.fill_betweenx(
+            p,
+            x_inflow_mid,
+            x_inflow_mid + thermo['cin_profile'] * x_cin_scale,
+            color=cin_color,
+            alpha=0.5,
+            linewidth=0,
+            transform=skew.ax.get_yaxis_transform(),
+        )
+        # CAPE
+        plt.fill_betweenx(
+            p,
+            x_inflow_mid,
+            x_inflow_mid + thermo['cape_profile'] * x_cape_scale,
+            color=cape_color,
+            alpha=0.5,
+            linewidth=0,
+            transform=skew.ax.get_yaxis_transform(),
+        )
+        # 3CAPE (overlayed on top of CAPE)
+        plt.fill_betweenx(
+            p,
+            x_inflow_mid,
+            x_inflow_mid + thermo['3cape_profile'] * x_cape_scale,
+            color=cape_color,
+            alpha=0.5,
+            linewidth=0,
+            transform=skew.ax.get_yaxis_transform(),
+        )
+        # Caret lines
+        mlcin = thermo['mlcin']
+        mlcape = thermo['mlcape']
+        x_mlcin = x_inflow_mid + mlcin * x_cin_scale
+        x_mlcape = x_inflow_mid + mlcape * x_cape_scale
+        skew.ax.add_artist(plt.Line2D([x_mlcin, x_mlcin], (p[0], p[1] - 10 * units.mbar), color='.5', alpha=0.75, transform=skew.ax.get_yaxis_transform()))
+        skew.ax.add_artist(plt.Line2D([x_mlcape, x_mlcape], (p[0], p[1] - 10 * units.mbar), color='.5', alpha=0.75, transform=skew.ax.get_yaxis_transform()))
+        # Labels
+        if mlcin < 0:
+            plt.text(x_mlcin - 0.01, p[0], f"{mag(mlcin)}", fontsize=13, horizontalalignment="right", verticalalignment="bottom", color=cin_color, transform=skew.ax.get_yaxis_transform())
+        if mlcape > 0:
+            plt.text(x_mlcape + 0.01, p[0], f"{mag(mlcape)} J/kg", fontsize=13, horizontalalignment="left", verticalalignment="bottom", color=cape_color, transform=skew.ax.get_yaxis_transform())
 
     # DGZ ANNOTATION-------------------------------
     if T[0].m < 5:
