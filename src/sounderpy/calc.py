@@ -139,10 +139,11 @@ def dcape_calc(pressure, temperature, dewpoint):
 class sounding_params:
 
 
-    def __init__(self, clean_data, storm_motion='right_moving', modify_sfc=None):
+    def __init__(self, clean_data, storm_motion='right_moving', modify_sfc=None, include_all_parcels=False):
             self.clean_data = clean_data 
             self.storm_motion = storm_motion
             self.modify_sfc = modify_sfc
+            self.include_all_parcels = include_all_parcels
 
             
     ######################################################################################################
@@ -394,6 +395,14 @@ class sounding_params:
             thermo['dparcel_p'] = ma.masked
             thermo['dparcel_T'] = ma.masked
 
+        #--- PARCEL PROFILES ---#
+        # ---------------------------------------------------------------
+
+        if self.include_all_parcels:
+            parcels = [parcelx(prof, pres=p[i].m, tmpc=T[i].m, dwpc=Td[i].m) for i in range(len(p))]
+            thermo['cape_profile'] = np.array([pcl.bplus for pcl in parcels])
+            thermo['cin_profile'] = np.array([pcl.bminus for pcl in parcels])
+            thermo['3cape_profile'] = np.array([pcl.b3km for pcl in parcels])
 
 
         # ENTRAINING CAPE NOW LOCATED BELOW KINEMATICS SECTION SO 
