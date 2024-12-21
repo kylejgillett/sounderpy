@@ -215,7 +215,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     ws = mpcalc.wind_speed(u, v) 
     
     # calculate other sounding parameters using SounderPy Calc
-    general, thermo, kinem, intrp = sounding_params(sounding_data, storm_motion, include_all_parcels=bool(show_inflow)).calc()
+    general, thermo, kinem, intrp = sounding_params(sounding_data, storm_motion, include_all_parcels=show_inflow).calc()
     #################################################################
     
     
