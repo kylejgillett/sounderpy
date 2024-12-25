@@ -61,7 +61,8 @@ from .utils import modify_surface, find_nearest, mag, mag_round
 ########################## FULL SOUNDING ################################
 
 def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels=None, 
-                    show_radar=True, radar_time='sounding', map_zoom=2, modify_sfc=None):
+                    show_radar=True, radar_time='sounding', map_zoom=2, modify_sfc=None,
+                    show_theta=False):
     
     
     # record process time 
@@ -214,7 +215,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     ws = mpcalc.wind_speed(u, v) 
     
     # calculate other sounding parameters using SounderPy Calc
-    general, thermo, kinem, intrp = sounding_params(sounding_data, storm_motion).calc()
+    general, thermo, kinem, intrp = sounding_params(sounding_data, storm_motion, include_all_parcels=not show_theta).calc()
     #################################################################
     
     
@@ -1202,44 +1203,86 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     
     
     
-    #################################################################
-    ### THETA & THETA E W/HGT ###
-    #################################################################
-    #PLOT AXES/LOC
-    theta_ax = plt.axes((1.141, -0.13, 0.0653, 0.23))
-    plt.figtext(1.175, 0.06, f'Theta-e &\nTheta (K)', weight='bold', color=gen_txt_clr, fontsize=12, ha='center', alpha=0.7)
-    theta_ax.spines["top"].set_color(brdr_clr)
-    theta_ax.spines["left"].set_color(brdr_clr)
-    theta_ax.spines["right"].set_color(brdr_clr)
-    theta_ax.spines["bottom"].set_color(brdr_clr)
-    theta_ax.spines["bottom"].set_color(brdr_clr)   
-    theta_ax.set_facecolor(bckgrnd_clr) 
+    if show_theta:
+        #############################################################
+        ### THETA & THETA E W/HGT ###
+        #############################################################
+        #PLOT AXES/LOC
+        theta_ax = plt.axes((1.141, -0.13, 0.0653, 0.23))
+        plt.figtext(1.175, 0.06, f'Theta-e &\nTheta (K)', weight='bold', color=gen_txt_clr, fontsize=12, ha='center', alpha=0.7)
+        theta_ax.spines["top"].set_color(brdr_clr)
+        theta_ax.spines["left"].set_color(brdr_clr)
+        theta_ax.spines["right"].set_color(brdr_clr)
+        theta_ax.spines["bottom"].set_color(brdr_clr)
+        theta_ax.spines["bottom"].set_color(brdr_clr)   
+        theta_ax.set_facecolor(bckgrnd_clr) 
 
-    maxtheta = intrp['thetaeINTRP'][0:30].max()
-    mintheta = intrp['thetaINTRP'][0:30].min()
+        maxtheta = intrp['thetaeINTRP'][0:30].max()
+        mintheta = intrp['thetaINTRP'][0:30].min()
 
-    #YTICKS
-    theta_ax.set_ylim(intrp['zINTRP'][0], 3000)
-    theta_ax.set_yticklabels([])
-    plt.ylabel(' ')
-    theta_ax.tick_params(axis='y', length = 0)
-    theta_ax.grid(True, axis='y')
+        #YTICKS
+        theta_ax.set_ylim(intrp['zINTRP'][0], 3000)
+        theta_ax.set_yticklabels([])
+        plt.ylabel(' ')
+        theta_ax.tick_params(axis='y', length = 0)
+        theta_ax.grid(True, axis='y')
 
-    #XTICKS
-    theta_ax.set_xlim(mintheta - 5, maxtheta + 5)
-    theta_ax.set_xticks([(mintheta), (maxtheta)])
-    theta_ax.set_xticklabels([int(mintheta), int(maxtheta)], weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
+        #XTICKS
+        theta_ax.set_xlim(mintheta - 5, maxtheta + 5)
+        theta_ax.set_xticks([(mintheta), (maxtheta)])
+        theta_ax.set_xticklabels([int(mintheta), int(maxtheta)], weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
 
-    theta_ax.tick_params(axis="x", direction="in", pad=-12)
-    theta_ax.set_xlabel(' ')
+        theta_ax.tick_params(axis="x", direction="in", pad=-12)
+        theta_ax.set_xlabel(' ')
 
-    #PLOT THETA VS HGT
-    plt.plot(intrp['thetaINTRP'], intrp['zINTRP'], color='purple', linewidth=3.5, alpha=0.5, clip_on=True)
-    plt.plot(intrp['thetaeINTRP'], intrp['zINTRP'], color='purple', linewidth=3.5, alpha=0.8, clip_on=True)
+        #PLOT THETA VS HGT
+        plt.plot(intrp['thetaINTRP'], intrp['zINTRP'], color='purple', linewidth=3.5, alpha=0.5, clip_on=True)
+        plt.plot(intrp['thetaeINTRP'], intrp['zINTRP'], color='purple', linewidth=3.5, alpha=0.8, clip_on=True)
 
-    if ma.is_masked(kinem['eil_z'][0]) == False:
-        theta_ax.fill_between(x=(mintheta - 5, maxtheta + 5), y1=kinem['eil_z'][0], 
-                              y2=kinem['eil_z'][1], color='lightblue', alpha=0.2)
+        if ma.is_masked(kinem['eil_z'][0]) == False:
+            theta_ax.fill_between(x=(mintheta - 5, maxtheta + 5), y1=kinem['eil_z'][0], 
+                                y2=kinem['eil_z'][1], color='lightblue', alpha=0.2)
+    else:
+        #############################################################
+        ### CIN & 3CAPE W/HGT ###
+        #############################################################
+        cin_color, cape_color = 'teal', 'tab:orange'
+        #PLOT AXES/LOC
+        inflow_ax = plt.axes((1.141, -0.13, 0.0653, 0.23))
+        plt.figtext(1.175, 0.06, f'CIN & 3CAPE\n(J/kg)', weight='bold', color=gen_txt_clr, fontsize=12, ha='center', alpha=0.7)
+        inflow_ax.spines["top"].set_color(brdr_clr)
+        inflow_ax.spines["left"].set_color(brdr_clr)
+        inflow_ax.spines["right"].set_color(brdr_clr)
+        inflow_ax.spines["bottom"].set_color(brdr_clr)
+        inflow_ax.spines["bottom"].set_color(brdr_clr)   
+        inflow_ax.set_facecolor(bckgrnd_clr) 
+
+        mincin = intrp['cin_profileINTRP'][0:30].min()
+        max3cape = intrp['3cape_profileINTRP'][0:30].max()
+
+        #YTICKS
+        inflow_ax.set_ylim(intrp['zINTRP'][0], 3000)
+        inflow_ax.set_yticklabels([])
+        plt.ylabel(' ')
+        inflow_ax.tick_params(axis='y', length = 0)
+        inflow_ax.grid(True, axis='y')
+        inflow_ax.axvline(0, linestyle=':', alpha=.5)
+
+        #XTICKS
+        inflow_ax.set_xlim(mincin - 5, max3cape + 5)
+        inflow_ax.set_xticks([mincin, max3cape])
+        inflow_ax.set_xticklabels([int(mincin), int(max3cape)], weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
+
+        inflow_ax.tick_params(axis="x", direction="in", pad=-12)
+        inflow_ax.set_xlabel(' ')
+
+        #PLOT CIN / 3CAPE VS HGT
+        plt.fill_betweenx(intrp['zINTRP'], intrp['cin_profileINTRP'], color=cin_color, linewidth=0, alpha=0.5, clip_on=True)
+        plt.fill_betweenx(intrp['zINTRP'], intrp['3cape_profileINTRP'], color=cape_color, linewidth=0, alpha=0.8, clip_on=True)
+
+        if ma.is_masked(kinem['eil_z'][0]) == False:
+            inflow_ax.fill_between(x=(mincin - 5, max3cape + 5), y1=kinem['eil_z'][0],
+                                y2=kinem['eil_z'][1], color='lightblue', alpha=0.2)
     #################################################################
 
 
