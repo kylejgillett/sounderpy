@@ -94,7 +94,9 @@ def make_cm1_profile(filename, meta_data_dict):
             3]  # cm1 input has no surface hgt, use quadratic extrapolation to estimate sfc z
     else:
         elev = meta_data_dict['elev']
+
     full_z[0] = elev
+
     full_th[0] = float(sfc_th)
     full_qv[0] = float(sfc_qv) / 1000.  # convert to g/kg
     full_u[0] = 1.75 * full_u[1] - full_u[2] + 0.25 * full_u[
@@ -122,6 +124,9 @@ def make_cm1_profile(filename, meta_data_dict):
 
     check_sfc_hgt(full_z)
     check_latlon(meta_data_dict)
+
+    # convert hgt values to include elevation
+    full_z[1:] = full_z[1:] + elev
 
     #############################################
     # CONSTRUCT CLEAN_DATA DICTIONARY

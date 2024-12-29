@@ -21,7 +21,7 @@ from .calc import *
 
     Purpose of module: 
 
-    House function for loading and parsing ACARS profiles and 
+    House functions for loading and parsing ACARS profiles and 
     ACARS profile data. Functions here are explicitly called by
     the user.
 
