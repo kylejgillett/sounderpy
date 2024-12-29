@@ -17,7 +17,7 @@ from .calc import *
 
     Purpose of module: 
 
-    House function for loading and parsing BUFKIT model forecast data.
+    House functions for loading and parsing BUFKIT model forecast data.
     Functions here are referenced by sounderpy.py
 
 

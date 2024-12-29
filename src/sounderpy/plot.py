@@ -61,7 +61,8 @@ from .utils import modify_surface, find_nearest, mag, mag_round
 ########################## FULL SOUNDING ################################
 
 def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels=None, 
-                    show_radar=True, radar_time='sounding', map_zoom=2, modify_sfc=None):
+                    show_radar=True, radar_time='sounding', map_zoom=2, modify_sfc=None,
+                    show_theta=False):
     
     
     # record process time 
@@ -214,7 +215,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     ws = mpcalc.wind_speed(u, v) 
     
     # calculate other sounding parameters using SounderPy Calc
-    general, thermo, kinem, intrp = sounding_params(sounding_data, storm_motion).calc()
+    general, thermo, kinem, intrp = sounding_params(sounding_data, storm_motion, include_all_parcels=not show_theta).calc()
     #################################################################
     
     
@@ -1067,7 +1068,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     #################################################################
     # PLOT AXIS/LOC
     strmws_ax = plt.axes((0.945, -0.13, 0.065, 0.23))
-    plt.figtext(0.978, 0.07, f'SW ζ (%)', color=gen_txt_clr, weight='bold', fontsize=12, ha='center', alpha=0.7)
+    plt.figtext(0.978, 0.07, f'Streamwiseness\n of ζ (%)', color=gen_txt_clr, weight='bold', fontsize=10, ha='center', alpha=0.9)
     strmws_ax.spines["top"].set_color(brdr_clr)
     strmws_ax.spines["left"].set_color(brdr_clr)
     strmws_ax.spines["right"].set_color(brdr_clr)
@@ -1085,20 +1086,23 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
 
     #XTICKS
     strmws_ax.set_xlim(40, 102)
-    strmws_ax.set_xticks([50, 90])
-    strmws_ax.set_xticklabels([50, 90], weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
+    strmws_ax.set_xticks([50, 70, 90])
+    strmws_ax.set_xticklabels([50, 70, 90], weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
     strmws_ax.set_xlabel(' ')
 
     #HGT LABLES 
-    strmws_ax.text(47, 502 , '0.5km', fontsize=8, alpha=0.6, color=gen_txt_clr)
-    strmws_ax.text(47, 1002, '1.0km', fontsize=8, alpha=0.6, color=gen_txt_clr)
-    strmws_ax.text(47, 1502, '1.5km', fontsize=8, alpha=0.6, color=gen_txt_clr)
-    strmws_ax.text(47, 2002, '2.0km', fontsize=8, alpha=0.6, color=gen_txt_clr)
-    strmws_ax.text(47, 2502, '2.5km', fontsize=8, alpha=0.6, color=gen_txt_clr)
+    strmws_ax.text(47, 502 , '.5 km', fontsize=10, weight='bold', alpha=1, color=gen_txt_clr)
+    strmws_ax.text(47, 1002, '1 km', fontsize=10, weight='bold', alpha=1, color=gen_txt_clr)
+    strmws_ax.text(47, 1502, '1.5 km', fontsize=10, weight='bold', alpha=1, color=gen_txt_clr)
+    strmws_ax.text(47, 2002, '2 km', fontsize=10, weight='bold', alpha=1, color=gen_txt_clr)
+    #strmws_ax.text(47, 2502, '2.5 km', fontsize=9, weight='bold', alpha=0.9, color=gen_txt_clr)
 
     if ma.is_masked(kinem['sm_u']) == False:
-        plt.plot(kinem['swv_perc'][0:11],  intrp['zINTRP'][0:11],  color=hodo_color[0], lw=3, clip_on=True)
-        plt.plot(kinem['swv_perc'][10:30], intrp['zINTRP'][10:30], color=hodo_color[1], lw=3, clip_on=True)
+        strmws_ax.plot(kinem['swv_perc'][0:11],  intrp['zINTRP'][0:11],  color=hodo_color[0], lw=3, clip_on=True)
+        strmws_ax.plot(kinem['swv_perc'][10:31], intrp['zINTRP'][10:31], color=hodo_color[1], lw=3, clip_on=True)
+        strmws_ax.fill_betweenx(intrp['zINTRP'][0:31], kinem['swv_perc'][0:31],
+                                color='cornflowerblue', linewidth=0, alpha=0.2, clip_on=True)
+
     
         if ma.is_masked(kinem['eil_z'][0]) == False:
             strmws_ax.fill_between(x=(40,102), y1=kinem['eil_z'][0], y2=kinem['eil_z'][1], color='lightblue', alpha=0.2)
@@ -1113,7 +1117,8 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     ### VORTICITY W/HGT ###
     #################################################################
     vort_ax = plt.axes((1.01, -0.13, 0.066, 0.23))
-    plt.figtext(1.045, 0.06, f'ζₜₒₜ & ζSW\n(/sec)', color=gen_txt_clr, weight='bold', fontsize=12, ha='center', alpha=0.7)
+    plt.figtext(1.043, 0.05, f'Total ζ &\n Streamwise ζ \n(/sec)', color=gen_txt_clr, weight='bold',
+                fontsize=12, ha='center', alpha=0.9)
     vort_ax.spines["top"].set_color(brdr_clr)
     vort_ax.spines["left"].set_color(brdr_clr)
     vort_ax.spines["right"].set_color(brdr_clr)
@@ -1132,19 +1137,21 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     if ma.is_masked(kinem['sm_u']) == False: 
         #XTICKS
         vort_ax.set_xlabel(' ')
-        vort_max = kinem['vort'][0:30].max()+0.005
-        vort_min = kinem['vort'][0:30].min()-0.005
     
-        vort_ax.set_xlim(vort_min-0.002, vort_max+0.002)
-        vort_ax.set_xticks([(vort_min+0.005),(vort_max-0.005)])
-        vort_ax.set_xticklabels([(np.round(vort_min+0.002,2)),(np.round(vort_max-0.002,2))], 
+        vort_ax.set_xlim(0, 0.06)
+        vort_ax.set_xticks([.01, .03, .05])
+        vort_ax.set_xticklabels([".01", ".03", ".05"],
                                 weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
  
-        vort_ax.plot(kinem['swv'][0:30],  intrp['zINTRP'][0:30], color='orange', linewidth=3, alpha=0.8, label='SW ζ')
-        vort_ax.plot(kinem['vort'][0:30], intrp['zINTRP'][0:30], color=gen_txt_clr,  linewidth=4, alpha=0.4, label='Total ζ')
+        vort_ax.plot(kinem['swv'][0:31],  intrp['zINTRP'][0:31], color='orange', linewidth=3, alpha=0.8, label='SW ζ')
+        vort_ax.plot(kinem['vort'][0:31], intrp['zINTRP'][0:31], color=gen_txt_clr,  linewidth=4, alpha=0.4, label='Total ζ')
+        vort_ax.fill_betweenx(intrp['zINTRP'][0:31], kinem['vort'][0:31], where=(kinem['vort'][0:31] > kinem['swv'][0:31]),
+                                color=gen_txt_clr, linewidth=0, alpha=0.1, clip_on=True)
+        vort_ax.fill_betweenx(intrp['zINTRP'][0:31], kinem['swv'][0:31],
+                                color='orange', linewidth=0, alpha=0.2, clip_on=True)
         
         if ma.is_masked(kinem['eil_z'][0]) == False:
-            vort_ax.fill_between(x=(vort_min-0.002, vort_max+0.002), y1=kinem['eil_z'][0], 
+            vort_ax.fill_between(x=(0, 0.065), y1=kinem['eil_z'][0],
                                  y2=kinem['eil_z'][1], color='lightblue', alpha=0.2)
     else:
         warnings.warn("Total Vorticity could not be plotted (no valid storm motion/not enough data)", Warning)
@@ -1158,7 +1165,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     ### SRW W/HGT ###
     #################################################################
     wind_ax = plt.axes((1.0755, -0.13, 0.066, 0.23))
-    plt.figtext(1.108, 0.06, f'SR Wind\n(kts)', weight='bold', color=gen_txt_clr, fontsize=12, ha='center', alpha=0.7)
+    plt.figtext(1.108, 0.06, f'Storm Relative\nWind (kts)', weight='bold', color=gen_txt_clr, fontsize=12, ha='center', alpha=0.9)
     wind_ax.spines["top"].set_color(brdr_clr)
     wind_ax.spines["left"].set_color(brdr_clr)
     wind_ax.spines["right"].set_color(brdr_clr)
@@ -1175,23 +1182,30 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     wind_ax.tick_params(axis='y', length = 0)
     wind_ax.tick_params(axis="x",direction="in", pad=-12)
 
+    wind_ax.text(40, thermo['sb_lcl_z'], '-LCL-', fontsize=10, weight='bold',
+                 alpha=1, color=gen_txt_clr, clip_on=True)
+    if thermo['mu_lfc_z'] < 2500:
+        wind_ax.text(40, thermo['mu_lfc_z'], '-LFC-', fontsize=10, weight='bold',
+                     alpha=1, color=gen_txt_clr, clip_on=True)
+
+
     if ma.is_masked(kinem['sm_u']) == False:
         #XTICKS
-        wind_max = kinem['srw'][0:30].max()+1
-        wind_min = kinem['srw'][0:30].min()-1
-        wind_ax.set_xlim(wind_min-5, wind_max+5)
-        wind_ax.set_xticks([(wind_min)+2, (wind_max)-2])
-        wind_ax.set_xticklabels([(int(wind_min)+2), (int(wind_max)-2)], weight='bold', 
+        wind_ax.set_xlim(10, 50)
+        wind_ax.set_xticks([20, 30, 40])
+        wind_ax.set_xticklabels([20, 30, 40], weight='bold',
                                 alpha=0.5, fontstyle='italic', color=gen_txt_clr)
 
         #PLOT SR WIND  
         wind_ax.plot(kinem['srw'][0:11],  intrp['zINTRP'][0:11],  color=hodo_color[0], clip_on=True, 
                      linewidth=3, alpha=0.8, label='0-1 SR Wind')
-        wind_ax.plot(kinem['srw'][10:30], intrp['zINTRP'][10:30], color=hodo_color[1], clip_on=True, 
+        wind_ax.plot(kinem['srw'][10:31], intrp['zINTRP'][10:31], color=hodo_color[1], clip_on=True,
                      linewidth=3, alpha=0.8, label='1-3 SR Wind')
+        wind_ax.fill_betweenx(intrp['zINTRP'][0:31], kinem['srw'][0:31],
+                                color='cornflowerblue', linewidth=0, alpha=0.2, clip_on=True)
         
         if ma.is_masked(kinem['eil_z'][0]) == False:
-            wind_ax.fill_between(x=(wind_min-5, wind_max+5), y1=kinem['eil_z'][0], y2=kinem['eil_z'][1], 
+            wind_ax.fill_between(x=(5, 55), y1=kinem['eil_z'][0], y2=kinem['eil_z'][1],
                                  color='lightblue', alpha=0.2)
     else:
         warnings.warn("Storm Relative Wind could not be plotted (no valid storm motion/not enough data)", Warning)
@@ -1202,48 +1216,121 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     
     
     
-    #################################################################
-    ### THETA & THETA E W/HGT ###
-    #################################################################
-    #PLOT AXES/LOC
-    theta_ax = plt.axes((1.141, -0.13, 0.0653, 0.23))
-    plt.figtext(1.175, 0.06, f'Theta-e &\nTheta (K)', weight='bold', color=gen_txt_clr, fontsize=12, ha='center', alpha=0.7)
-    theta_ax.spines["top"].set_color(brdr_clr)
-    theta_ax.spines["left"].set_color(brdr_clr)
-    theta_ax.spines["right"].set_color(brdr_clr)
-    theta_ax.spines["bottom"].set_color(brdr_clr)
-    theta_ax.spines["bottom"].set_color(brdr_clr)   
-    theta_ax.set_facecolor(bckgrnd_clr) 
+    if show_theta:
+        #############################################################
+        ### THETA & THETA E W/HGT ###
+        #############################################################
+        #PLOT AXES/LOC
+        theta_ax = plt.axes((1.141, -0.13, 0.0653, 0.23))
+        plt.figtext(1.175, 0.06, f'Theta-e &\nTheta (K)', weight='bold', color=gen_txt_clr, fontsize=12, ha='center', alpha=0.9)
+        theta_ax.spines["top"].set_color(brdr_clr)
+        theta_ax.spines["left"].set_color(brdr_clr)
+        theta_ax.spines["right"].set_color(brdr_clr)
+        theta_ax.spines["bottom"].set_color(brdr_clr)
+        theta_ax.spines["bottom"].set_color(brdr_clr)   
+        theta_ax.set_facecolor(bckgrnd_clr) 
 
-    maxtheta = intrp['thetaeINTRP'][0:30].max()
-    mintheta = intrp['thetaINTRP'][0:30].min()
+        maxtheta = intrp['thetaeINTRP'][0:31].max()
+        mintheta = intrp['thetaINTRP'][0:31].min()
 
-    #YTICKS
-    theta_ax.set_ylim(intrp['zINTRP'][0], 3000)
-    theta_ax.set_yticklabels([])
-    plt.ylabel(' ')
-    theta_ax.tick_params(axis='y', length = 0)
-    theta_ax.grid(True, axis='y')
+        #YTICKS
+        theta_ax.set_ylim(intrp['zINTRP'][0], 3000)
+        theta_ax.set_yticklabels([])
+        plt.ylabel(' ')
+        theta_ax.tick_params(axis='y', length = 0)
+        theta_ax.grid(True, axis='y')
 
-    #XTICKS
-    theta_ax.set_xlim(mintheta - 5, maxtheta + 5)
-    theta_ax.set_xticks([(mintheta), (maxtheta)])
-    theta_ax.set_xticklabels([int(mintheta), int(maxtheta)], weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
+        #XTICKS
+        theta_ax.set_xlim(mintheta - 5, maxtheta + 5)
+        theta_ax.set_xticks([(mintheta), (maxtheta)])
+        theta_ax.set_xticklabels([int(mintheta), int(maxtheta)], weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
 
-    theta_ax.tick_params(axis="x", direction="in", pad=-12)
-    theta_ax.set_xlabel(' ')
+        theta_ax.tick_params(axis="x", direction="in", pad=-12)
+        theta_ax.set_xlabel(' ')
 
-    #PLOT THETA VS HGT
-    plt.plot(intrp['thetaINTRP'], intrp['zINTRP'], color='purple', linewidth=3.5, alpha=0.5, clip_on=True)
-    plt.plot(intrp['thetaeINTRP'], intrp['zINTRP'], color='purple', linewidth=3.5, alpha=0.8, clip_on=True)
+        #PLOT THETA VS HGT
+        plt.plot(intrp['thetaINTRP'], intrp['zINTRP'], color='purple', linewidth=3.5, alpha=0.5, clip_on=True)
+        plt.plot(intrp['thetaeINTRP'], intrp['zINTRP'], color='purple', linewidth=3.5, alpha=0.8, clip_on=True)
 
-    if ma.is_masked(kinem['eil_z'][0]) == False:
-        theta_ax.fill_between(x=(mintheta - 5, maxtheta + 5), y1=kinem['eil_z'][0], 
-                              y2=kinem['eil_z'][1], color='lightblue', alpha=0.2)
-    #################################################################
+        if ma.is_masked(kinem['eil_z'][0]) == False:
+            theta_ax.fill_between(x=(mintheta - 5, maxtheta + 5), y1=kinem['eil_z'][0], 
+                                y2=kinem['eil_z'][1], color='lightblue', alpha=0.2)
+    else:
+        #############################################################
+        ### CIN & 3CAPE W/HGT ###
+        #############################################################
+        cin_color, cape_color = 'teal', 'tab:orange'
 
+        mincin = intrp['cin_profileINTRP'][0:31].min()
+        max3cape = intrp['3cape_profileINTRP'][0:31].max()
 
-    
+        # PLOT AXES/LOC
+        inflow_ax = plt.axes((1.141, -0.13, 0.0653, 0.23))
+        plt.figtext(1.173, 0.05, f'Stepwise\n CIN & CAPE\n (J/kg)', weight='bold',
+                    color=gen_txt_clr, fontsize=12, ha='center', alpha=0.9)
+        inflow_ax.spines["top"].set_color(brdr_clr)
+        inflow_ax.spines["left"].set_color(brdr_clr)
+        inflow_ax.spines["right"].set_color(brdr_clr)
+        inflow_ax.spines["bottom"].set_color(brdr_clr)
+        inflow_ax.set_facecolor(bckgrnd_clr)
+
+        ### AXIS 1 -- CIN ###
+
+        # YAXIS PARAMS AX1 & AX2
+        inflow_ax.set_ylim(intrp['zINTRP'][0], 3000)
+        inflow_ax.set_yticklabels([])
+        inflow_ax.set_ylabel(' ')
+        inflow_ax.tick_params(axis='y', length=0)
+        inflow_ax.grid(True, axis='y')
+        inflow_ax.axvline(0, linestyle=':', alpha=.8)
+
+        # XAXIS PARAMS AX1
+        inflow_ax.set_xlim(-300, 300)
+        inflow_ax.set_xticks([-200, -100])
+        inflow_ax.set_xticklabels([-200, -100], weight='bold', alpha=0.5, rotation=60,
+                                  fontstyle='italic', color=gen_txt_clr, zorder=10)
+        inflow_ax.tick_params(axis="x", direction="in", pad=-25)
+        inflow_ax.set_xlabel(' ')
+        plt.xticks(rotation=45)
+
+        # PLOT CIN VS HGT
+        inflow_ax.fill_betweenx(intrp['zINTRP'], intrp['cin_profileINTRP'],
+                                color=cin_color, linewidth=0, alpha=0.5, clip_on=True)
+
+        if ma.is_masked(kinem['eil_z'][0]) == False:
+            inflow_ax.fill_between(x=(-305, 305), y1=kinem['eil_z'][0],
+                                   y2=kinem['eil_z'][1], color='lightblue', alpha=0.2)
+
+        ### AXIS 2 -- CAPE ###
+        inflow_ax2 = inflow_ax.twiny()
+        inflow_ax2.spines["top"].set_color(brdr_clr)
+        inflow_ax2.spines["left"].set_color(brdr_clr)
+        inflow_ax2.spines["right"].set_color(brdr_clr)
+        inflow_ax2.spines["bottom"].set_color(brdr_clr)
+        inflow_ax2.set_facecolor(bckgrnd_clr)
+
+        # XAXIS PARAMS AX2
+        inflow_ax2.set_xlim(-3000, 3000)
+        inflow_ax2.set_xticks([0, 1000, 2000])
+        inflow_ax2.set_xticklabels(['0 ', '1k', '2k'], weight='bold', alpha=0.5,
+                                  fontstyle='italic', color=gen_txt_clr, zorder=10)
+        inflow_ax2.xaxis.set_ticks_position('bottom')
+        inflow_ax2.tick_params(axis="x", direction="in", pad=-20)
+        inflow_ax2.set_xlabel(' ')
+        plt.xticks(rotation=45)
+
+        # YAXIS PARAMS AX2
+        inflow_ax2.set_ylim(intrp['zINTRP'][0], 3000)
+        inflow_ax2.set_yticklabels([])
+        inflow_ax2.set_ylabel(' ')
+        inflow_ax2.tick_params(axis="y", length=0)
+        inflow_ax2.grid(True, axis='y')
+
+        # PLOT 3CAPE VS HGT
+        inflow_ax2.fill_betweenx(intrp['zINTRP'], intrp['cape_profileINTRP'],
+                                 color=cape_color, linewidth=0, alpha=0.8, clip_on=True)
+        #############################################################
+
     #########################################################################
     ############################## TEXT PLOTS ###############################
     #########################################################################
@@ -1919,6 +2006,7 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc):
     vort_ax.set_yticklabels([])
     vort_ax.set_ylabel(' ')
     vort_ax.tick_params(axis="x",direction="in", pad=-12)
+
         
     if ma.is_masked(kinem['sm_u']) == False: 
         #XTICKS

@@ -28,7 +28,7 @@ from .cm1_utils import make_cm1_profile
 
     THIS RELEASE
     -------
-    Version: 3.0.6 | December 2024
+    Version: 3.0.7 | December 2024
 
 
     DOCUMENTATION
@@ -50,7 +50,7 @@ from .cm1_utils import make_cm1_profile
 citation_text = f"""
 ## ---------------------------------- SOUNDERPY ----------------------------------- ##
 ##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
-##                      v3.0.6 | Dec 2024 | (C) Kyle J Gillett                      ##
+##                   v3.0.7dev | Dec 2024 | (C) Kyle J Gillett                      ##
 ##                 Docs: https://kylejgillett.github.io/sounderpy/                  ##
 ## --------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------ ##
 """
@@ -206,7 +206,7 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
 #########################################################################
 def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False, storm_motion='right_moving',
                    special_parcels=None, show_radar=True, radar_time='sounding', map_zoom=2, modify_sfc=None,
-                   save=False, filename='sounderpy_sounding'):
+                   show_theta=False, save=False, filename='sounderpy_sounding'):
     
     '''
     Return a full sounding plot of SounderPy data, ``plt``
@@ -223,6 +223,7 @@ def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False,
     :type storm_motion: str or list of floats, optional
     :param special_parcels: a nested list of special parcels from the ``ecape_parcels`` library. The nested list should be a list of two lists (`[[a, b], [c, d]]`) where the first list should include 'highlight parcels' and second list should include 'background parcels'. For more details, see the :ref:`parcels_logic` section.
     :type special_parcels: nested `list` of two `lists`, optional
+    :param show_theta: bool, optional
     :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
     :type save: bool, optional
     :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
@@ -233,10 +234,11 @@ def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False,
     
     print(f'> SOUNDING PLOTTER FUNCTION\n  ---------------------------------')
 
+    plt = __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, show_radar, radar_time, map_zoom, modify_sfc, show_theta)
     if save:
-        __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, show_radar, radar_time, map_zoom, modify_sfc).savefig(filename, bbox_inches='tight')
+        plt.savefig(filename, bbox_inches='tight')
     else:
-        __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, show_radar, radar_time, map_zoom, modify_sfc).show()
+        plt.show()
 
 
 
