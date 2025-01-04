@@ -12,7 +12,7 @@ from metpy.units import units
      input_sounding files.
 
 
-    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2025
 """
 
 
@@ -108,6 +108,10 @@ def make_cm1_profile(filename, meta_data_dict):
     #############################################
     # COMPUTE NECESSARY DATA
     #############################################
+
+    # convert hgt values to include elevation
+    full_z[1:] = full_z[1:] + elev
+    
     # compute remaining pressure values above the surface assuming hydrostatic balance
     # where dp = -rho*g*dz
     for k in np.arange(1, num_vals):
@@ -122,11 +126,8 @@ def make_cm1_profile(filename, meta_data_dict):
         # compute dewpoint from vapor pressure
         full_Td[k] = mpcalc.dewpoint(full_vp[k] * units.Pa).m
 
-    check_sfc_hgt(full_z)
+    #check_sfc_hgt(full_z)
     check_latlon(meta_data_dict)
-
-    # convert hgt values to include elevation
-    full_z[1:] = full_z[1:] + elev
 
     #############################################
     # CONSTRUCT CLEAN_DATA DICTIONARY

@@ -1438,8 +1438,8 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     plt.figtext( 0.62,  -0.08, f"{mag_round(general['w_6_9000'],1)} g/kg", fontsize=15, color='forestgreen',alpha=0.64, weight='bold')
 
     plt.figtext( 0.54,  -0.102, f"PWAT:", fontsize=12, weight='bold', color=gen_txt_clr)
-    plt.figtext( 0.59, -0.102, f"{mag_round(general['pwat'], 2, mag=True)}in", fontsize=12, color='darkgreen', ha='center', weight='bold')
-    
+    plt.figtext( 0.59, -0.102, f"{str(general['pwat'])} in", fontsize=12, color='darkgreen', ha='center', weight='bold')
+
     plt.figtext( 0.625, -0.102, f"WB:", fontsize=12, weight='bold', color=gen_txt_clr, ha='center')
     plt.figtext( 0.655,  -0.102, f"{mag(general['wet_bulb'][0])} °C", fontsize=12, color='darkgreen', ha='center', weight='bold')
     

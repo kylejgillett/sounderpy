@@ -27,5 +27,5 @@ abstract: >-
   A python package that helps you to access and plot
   vertical profile data for meteorological analysis 
 license: MIT
-version: v3.0.5
-date-released: '2024-09-30'
+version: v3.0.7
+date-released: '2025-01-04'

@@ -219,7 +219,7 @@ class sounding_params:
         general['theta']         = mpcalc.potential_temperature(p, T)
         general['theta_e']       = mpcalc.equivalent_potential_temperature(p, T, Td)
         try:
-            general['pwat']      = mpcalc.precipitable_water(p, Td).to('in')
+            general['pwat']      = np.round((mpcalc.precipitable_water(p, Td).to('in')).m, 3)
             if general['pwat'] < 0:
                 general['pwat'] = ma.masked
         except:

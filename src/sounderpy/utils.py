@@ -282,7 +282,7 @@ def make_sfc_based_3D(arr, sfc_arr):
 # FILE CREATION FUNCTIONS
 #########################################################################
 
-def to_file(file_type, clean_data, filename=None):
+def to_file(file_type, clean_data, filename=None, convert_to_AGL=True):
     '''
     Create a file of 'cleaned' SounderPy data
 
@@ -334,7 +334,11 @@ def to_file(file_type, clean_data, filename=None):
         # add data to lines
         for idx in range(1, num_lines):
             line_str = ""
-            line_str += "%12s" % str(format(np.around(clean_data["z"][idx].m, 6), "0.6f")) + delimiter + str("\t")
+            if convert_to_AGL:
+                line_str += "%12s" % str(format(np.around(clean_data["z"][idx].m - clean_data["z"][0].m, 6), "0.6f")) + delimiter + str("\t")
+            else:
+                line_str += "%12s" % str(
+                    format(np.around(clean_data["z"][idx].m, 6), "0.6f")) + delimiter + str("\t")
             line_str += "%12s" % str(format(np.around(clean_data["theta"][idx].m, 6), "0.6f")) + delimiter + str("\t")
             line_str += "%12s" % str(format(np.around(clean_data["mixrt"][idx].m, 6), "0.6f")) + delimiter + str("\t")
             line_str += "%12s" % str(format(np.around(clean_data["u"][idx].m / 1.94384, 6), "0.6f")) + delimiter + str(
