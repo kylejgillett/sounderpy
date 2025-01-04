@@ -111,6 +111,7 @@ Authors and Contributors
 	*CONTRIBUTOR: Scott Thomas, NWS Grand Rapids | VWP Hodograph, Buoy-sites listing*
 	*CONTRIBUTOR: Amelia R H Urquhart, University of Oklahoma | ecape-parcels library*
 	*CONTRIBUTOR: Daryl Herzmann, Iowa State University | SounderPy Feedstock for conda-forge*
+	*CONTRIBUTOR: Ryan Vandersmith | Stepwise CAPE/CIN plot*
 
 ***************************************************************
 
@@ -122,7 +123,7 @@ Citing SounderPy
 
 
 	in AMS format:
-	     Gillett, K., 2024: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.6). Py-Pi, https://pypi.org/project/sounderpy/
+	     Gillett, K., 2025: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.7). Py-Pi, https://pypi.org/project/sounderpy/
 
 
 ***************************************************************

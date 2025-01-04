@@ -80,6 +80,11 @@ Ingesting CM1 input_sounding Data
    # Now, pass the 'clean_data' dictionary into the SounderPy `build_sounding` function
    spy.build_sounding(clean_data)
 
+
+.. note::
+   CM1 input_sounding height data *should* be "AGL", or "above ground level". This means you'll need an elevation value to plot your profile correctly. Find the elevation of where this profile is "supposed to be" and add it to the `meta_data_dict`.
+
+
 ***************************************************************
 
 

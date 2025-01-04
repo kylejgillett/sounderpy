@@ -24,7 +24,7 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="📊 Plot Gallery" href="examplegallery.html" />
+    <link rel="next" title="👨‍🍳Beginner’s SounderPy Cookbook" href="beginners_sounderpy_cookbook.html" />
     <link rel="prev" title="📈 Tools for Plotting Data" href="plottingdata.html" /> 
 </head>
 
@@ -91,6 +91,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="beginners_sounderpy_cookbook.html">👨‍🍳Beginner’s SounderPy Cookbook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
 </ul>
@@ -239,7 +240,7 @@
 <h2>Saving data to a file<a class="headerlink" href="#saving-data-to-a-file" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="spy.to_file">
-<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.to_file" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to_AGL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.to_file" title="Link to this definition"></a></dt>
 <dd><p>Create a file of ‘cleaned’ SounderPy data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -247,6 +248,7 @@
 <li><p><strong>file_type</strong> (<em>str</em><em>, </em><em>required</em>) – a <cite>str</cite> representing the file type you’d like to export data to.</p></li>
 <li><p><strong>clean_data</strong> (<em>dict</em><em>, </em><em>required</em>) – ‘cleaned’ SounderPy data <cite>dict</cite></p></li>
 <li><p><strong>filename</strong> (<em>str</em><em>, </em><em>required</em>) – the name you’d like to give the file</p></li>
+<li><p><strong>convert_to_AGL</strong> (bool, optional, default is <cite>True</cite>) – whether or not to convert height values to “above ground level” when saving to a file. Useful for CM1.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -333,7 +335,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="plottingdata.html" class="btn btn-neutral float-left" title="📈 Tools for Plotting Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="examplegallery.html" class="btn btn-neutral float-right" title="📊 Plot Gallery" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="beginners_sounderpy_cookbook.html" class="btn btn-neutral float-right" title="👨‍🍳Beginner’s SounderPy Cookbook" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -138,7 +138,7 @@ Example:
 Saving data to a file
 ----------------------
 
-.. py:function:: spy.to_file(file_type, clean_data, filename=None)
+.. py:function:: spy.to_file(file_type, clean_data, filename=None, convert_to_AGL=True)
 
 
    Create a file of 'cleaned' SounderPy data
@@ -149,6 +149,8 @@ Saving data to a file
    :type clean_data: dict, required
    :param filename: the name you'd like to give the file
    :type filename: str, required
+   :param convert_to_AGL: whether or not to convert height values to "above ground level" when saving to a file. Useful for CM1.
+   :type convert_to_AGL: bool, optional, default is `True`
    :return: a file of SounderPy data.
 
 Example:
