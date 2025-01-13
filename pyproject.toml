@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sounderpy"
-version = "3.0.7"
+version = "3.0.8"
 authors = [
   { name="Kyle J Gillett, University of North Dakota", email="kyle.gillett@und.edu" },
 ]

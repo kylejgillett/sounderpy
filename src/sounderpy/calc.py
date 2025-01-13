@@ -386,14 +386,24 @@ class sounding_params:
         # ---------------------------------------------------------------
 
         if not np.any(np.isnan(sounding_data['Td'])):
-            thermo['dcape'], thermo['dcin'], thermo['dparcel_p'], thermo['dparcel_T'] = dcape_calc(sounding_data['p'],
+            try:
+                thermo['dcape'], thermo['dcin'], thermo['dparcel_p'], thermo['dparcel_T'] = dcape_calc(sounding_data['p'],
                                                                                                    sounding_data['T'],
                                                                                                    sounding_data['Td'])
+            except ValueError:
+                # skip calculation if there is insufficient data (i.e., most ACARS profiles)
+                thermo['dcape'] = ma.masked
+                thermo['dcin'] = ma.masked
+                thermo['dparcel_p'] = ma.masked
+                thermo['dparcel_T'] = ma.masked
+                warnings.warn("This sounding doesn't have enough data to compute DCAPE & DCIN", Warning)
+                pass
         else:
             thermo['dcape'] = ma.masked
             thermo['dcin'] = ma.masked
             thermo['dparcel_p'] = ma.masked
             thermo['dparcel_T'] = ma.masked
+            warnings.warn("DCAPE & DCIN could not be calculated for this sounding", Warning)
 
         #--- PARCEL PROFILES ---#
         # ---------------------------------------------------------------

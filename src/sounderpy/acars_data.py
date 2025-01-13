@@ -138,7 +138,7 @@ class acars_data:
             header = loadtxt(urlopen(profile_url).readlines()[0:3], dtype='str', comments="%", unpack=True)
         except HTTPError as err:
             if err.code == 404:
-                sys.exit('! ERROR ! -- Invalid profile, try again with a valid profile (ex: BNA_2320)')
+                sys.exit('! ERROR ! -- Invalid profile OR profile does not exist. Try again with a valid profile (ex: BNA_2320)')
             else:
                 raise
 

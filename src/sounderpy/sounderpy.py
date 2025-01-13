@@ -28,7 +28,7 @@ from .cm1_utils import make_cm1_profile
 
     THIS RELEASE
     -------
-    Version: 3.0.7 | January 2025
+    Version: 3.0.8 | January 2025
 
 
     DOCUMENTATION
@@ -50,7 +50,7 @@ from .cm1_utils import make_cm1_profile
 citation_text = f"""
 ## ---------------------------------- SOUNDERPY ----------------------------------- ##
 ##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
-##                      v3.0.7 | Jan 2025 | (C) Kyle J Gillett                      ##
+##                      v3.0.8 | Jan 2025 | (C) Kyle J Gillett                      ##
 ##                 Docs: https://kylejgillett.github.io/sounderpy/                  ##
 ## --------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------ ##
 """
