@@ -64,14 +64,6 @@ most integrated data sources. The simplicity of these "tools" in SounderPy's "to
 allows quick and easy use for researchers, students, and hobbyists alike. After importing
 the library, two lines of code create Figure 1. 
 
-```py 
-import sounderpy as spy
-
-sounding_data = spy.get_model_data("rap", [45.7101, -100.1666], 
-                                   "2024", "08", "29", "00")
-
-spy.build_sounding(sounding_data, color_blind=True)
-```
 
 ![Figure 1: A sounding figure of NCEP RAP reanalysis data for a severe weather event in northern South Dakota on August 28th, 2024](figure_1.jpg)
 
