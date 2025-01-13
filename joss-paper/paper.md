@@ -79,9 +79,3 @@ Amelia R.H. Urquhart (University of Oklahoma), Ryan Vandersmith, and many others
 This project also extends its graditude to the researchers, institutions, and 
 individuals who have utilized SounderPy in their work and publications, driving
 its growth and application within the meteorological community.
-
-
-
-# References
-
-
