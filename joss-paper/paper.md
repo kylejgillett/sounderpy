@@ -48,20 +48,28 @@ SounderPy addresses these challenges by providing simple access to multiple data
 including National Weather Service radiosonde observations (RAOBs), Aircraft Communications 
 Addressing and Reporting System (ACARS) data, NWP forecast data, and reanalysis datasets.
 Each of these data types come from unique file formats and structures, which SounderPy
-processes to normalize and streamline analysis and visualization of soundings.
+processes to normalize and streamline analysis and visualization of soundings. After requesting
+data, SounderPy will process and output the data as a Python dictionary, coined a "SounderPy
+`clean_data` dictionary". Doing so means that every data source ends up in a uniform format for 
+analysis.
 
 
 # High-level API overview
 
 Simple, intuitive classes and functions make SounderPy's API easy to understand and
 use. The procedure for creating sounding figures requires only a few lines of 
-straightforward API calls that first retrieve data from a source and plot the data 
-on a figure. While internally this involves sophisticated data retrieval and processing
-methods, extensive manipulations and calculations, and intricate plotting routines, the
-user-facing interface allows this process to be completed in just two lines of code for
-most integrated data sources. The simplicity of these "tools" in SounderPy's "toolbox"
-allows quick and easy use for researchers, students, and hobbyists alike. After importing
-the library, two lines of code create Figure 1. 
+straightforward API calls that first retrieve data from a source, output the `clean_data`
+dictionary and plot the data on a figure. While internally this involves sophisticated
+data retrieval and processing methods, extensive manipulations and calculations, and
+intricate plotting routines, the user-facing interface allows this process to be completed
+in just two lines of code for most integrated data sources. The simplicity of these "tools"
+in SounderPy's "toolbox"allows quick and easy use for researchers, students, and hobbyists
+alike. After importing the library, two lines of code create Figure 1. On top of the many
+integrated data sources, SounderPy also allows users to utilize their own custom data. So 
+long as a user's custom data can be manually sorted into a `clean_data` dictionary, it can
+be used with SounderPy's analysis and plotting functionality. 
+
+
 
 
 ![Figure 1: A sounding figure of NCEP RAP reanalysis data for a severe weather event in northern South Dakota on August 28th, 2024](figure_1.jpg)
@@ -78,3 +86,5 @@ Amelia R.H. Urquhart (University of Oklahoma), Ryan Vandersmith, and many others
 This project also extends its graditude to the researchers, institutions, and 
 individuals who have utilized SounderPy in their work and publications, driving
 its growth and application within the meteorological community.
+
+# References
