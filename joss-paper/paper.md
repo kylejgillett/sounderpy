@@ -35,8 +35,7 @@ efficient data processing. This diversity complicates the thorough analysis of
 atmospheric properties, which is vital in describing the past, current, and future
 state of the atmosphere. The need for thorough analysis of the atmosphere's 
 vertical properties has been recognized since the early 20th century, during the 
-advent of "free-air" observations (soundings) using kites, balloons, and aircraft 
-[@Byers:1934].
+advent of "free-air" observations (soundings) using kites, balloons, and aircraft.
 
 Normalizing the analysis of meteorological data ensures that meaningful comparisons 
 can be drawn across different datasets. Reliable statistics and analogs can then be 
