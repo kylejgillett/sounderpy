@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -6,20 +8,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>❓ Troubleshooting &mdash; SounderPy v3.0.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
     <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=0f7a3e64"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=0f7a3e64"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
@@ -72,6 +70,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="beginners_sounderpy_cookbook.html">👨‍🍳Beginner’s SounderPy Cookbook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
 </ul>
@@ -106,7 +105,8 @@
 <p>If you have an error that you don’t see on this page, you can <a class="reference external" href="https://github.com/kylejgillett/sounderpy/issues">open a GitHub Issue</a> or feel free to shoot me a DM on <a class="reference external" href="https://twitter.com/wxkylegillett">Twitter</a>!</p>
 <section id="funky-plot-scaling">
 <h2>Funky Plot Scaling<a class="headerlink" href="#funky-plot-scaling" title="Link to this heading"></a></h2>
-<a class="reference internal image-reference" href="_images/funky_layout_example.jpg"><img alt="_images/funky_layout_example.jpg" class="align-left" src="_images/funky_layout_example.jpg" style="width: 300px;" /></a>
+<a class="reference internal image-reference" href="_images/funky_layout_example.jpg"><img alt="_images/funky_layout_example.jpg" class="align-left" src="_images/funky_layout_example.jpg" style="width: 300px;" />
+</a>
 <p>When using SounderPy’s plot function, sometimes the matplotlib formatting operations the plot functions use (<code class="docutils literal notranslate"><span class="pre">build_sounding()</span></code>, <code class="docutils literal notranslate"><span class="pre">build_hodograph()</span></code>, <code class="docutils literal notranslate"><span class="pre">build_composite()</span></code>) don’t agree with some screen sizes. This throws off the scaling of the plots when plotting them ‘inline’. Thankfully there is a fix!</p>
 <p>Each of SounderPy’s plotting functions have a <code class="docutils literal notranslate"><span class="pre">save</span></code> key-word-argument (kwarg). By default these are set to <em>False</em>, but when setting the kwarg to <em>True</em> you can save the plot to a .png file.</p>
 <p>When the plot is saved to a file it will preserve the correct scaling and dimensions.</p>
@@ -121,7 +121,8 @@
 <hr class="docutils" />
 <section id="goofy-acars-profiles">
 <h2>Goofy ACARS Profiles<a class="headerlink" href="#goofy-acars-profiles" title="Link to this heading"></a></h2>
-<a class="reference internal image-reference" href="_images/example-goofy-acars.png"><img alt="_images/example-goofy-acars.png" class="align-left" src="_images/example-goofy-acars.png" style="width: 300px;" /></a>
+<a class="reference internal image-reference" href="_images/example-goofy-acars.png"><img alt="_images/example-goofy-acars.png" class="align-left" src="_images/example-goofy-acars.png" style="width: 300px;" />
+</a>
 <p>Sometimes ACARS data just comes with errors that can not be fixed. Because these observations are taken by aircraft during arrivals and departures, they can be prone to errors such as too-dry dewpoints, too-strong wind velocity, and strange height data. Unfortunately these errors can not be fixed.</p>
 <p>The best way to check if ACARS observations are correct is by comparing them to recent forecast model profiles (at forecast hour 0) for that location.</p>
 </section>

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -6,23 +8,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Plotting Soundings with BUFKIT Forecast Model Data &mdash; SounderPy v3.0.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
     <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=0f7a3e64"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=0f7a3e64"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
@@ -98,8 +96,8 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import sounderpy</span>
-<span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># import sounderpy
+import sounderpy as spy
 </pre></div>
 </div>
 </div>
@@ -125,37 +123,37 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">################################ THE FUNCTION ###################################</span>
-<span class="c1"># to get bufkit data, we need to use the `get_bufkit_data()` function</span>
-<span class="c1"># `get_bufkit_data(model, station, fcst_hr, run_year, run_month, run_day, run_hour)`</span>
-<span class="c1">################################################################################</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>################################ THE FUNCTION ###################################
+# to get bufkit data, we need to use the `get_bufkit_data()` function
+# `get_bufkit_data(model, station, fcst_hr, run_year, run_month, run_day, run_hour)`
+################################################################################
 
 
-<span class="c1">########################## TYPES OF BUFKIT DATA ################################</span>
-<span class="c1"># we can access archived model forecasts from the GFS, NAM, RAP &amp; HRRR</span>
-<span class="c1"># or most recent run forecasts from the GFS, NAM, NAMNEST, RAP, HRRR, SREF, &amp; HIRESW</span>
-<span class="c1">################################################################################</span>
+########################## TYPES OF BUFKIT DATA ################################
+# we can access archived model forecasts from the GFS, NAM, RAP &amp; HRRR
+# or most recent run forecasts from the GFS, NAM, NAMNEST, RAP, HRRR, SREF, &amp; HIRESW
+################################################################################
 
 
-<span class="c1">########################## WHERE DATA IS AVAILABLE #############################</span>
-<span class="c1"># NOTE: bufkit forecast data is *only available at specific BUFKIT site locations*</span>
-<span class="c1"># you can find them here: http://www.meteo.psu.edu/bufkit/DomainNAMRAP_NAM_12.html</span>
-<span class="c1">################################################################################</span>
+########################## WHERE DATA IS AVAILABLE #############################
+# NOTE: bufkit forecast data is *only available at specific BUFKIT site locations*
+# you can find them here: http://www.meteo.psu.edu/bufkit/DomainNAMRAP_NAM_12.html
+################################################################################
 
 
-<span class="c1">############################# LETS GET SOME DATA ###############################</span>
-<span class="c1"># to get archived forecasts we need every kwarg. (a kwarg is a Keyword Argument, like &#39;year&#39;, and &#39;station&#39;)</span>
-<span class="c1"># the line below will get us a 12z GFS forecast from 08/05/2023 at forecast hour 6 for bufkit site KMOP:</span>
+############################# LETS GET SOME DATA ###############################
+# to get archived forecasts we need every kwarg. (a kwarg is a Keyword Argument, like &#39;year&#39;, and &#39;station&#39;)
+# the line below will get us a 12z GFS forecast from 08/05/2023 at forecast hour 6 for bufkit site KMOP:
 
-<span class="c1"># clean_data = spy.get_bufkit_data(&#39;gfs&#39;, &#39;kmop&#39;, 6, &#39;2023&#39;, &#39;08&#39;, &#39;05&#39;, &#39;12&#39;)</span>
+# clean_data = spy.get_bufkit_data(&#39;gfs&#39;, &#39;kmop&#39;, 6, &#39;2023&#39;, &#39;08&#39;, &#39;05&#39;, &#39;12&#39;)
 
-<span class="c1"># to get the most recent forecasts we use the same function, but we *don&#39;t need a year, month, day or hour kwarg!*</span>
-<span class="c1"># you just need a model, station and forecast hour.</span>
-<span class="c1"># this will get you the most recent HRRR run, at forecast hour 6, for</span>
-<span class="c1"># site `KAMA` (AMARILLO ARPT(AWOS)):</span>
+# to get the most recent forecasts we use the same function, but we *don&#39;t need a year, month, day or hour kwarg!*
+# you just need a model, station and forecast hour.
+# this will get you the most recent HRRR run, at forecast hour 6, for
+# site `KAMA` (AMARILLO ARPT(AWOS)):
 
 
-<span class="n">clean_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_bufkit_data</span><span class="p">(</span><span class="s1">&#39;hrrr&#39;</span><span class="p">,</span> <span class="s1">&#39;kama&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+clean_data = spy.get_bufkit_data(&#39;hrrr&#39;, &#39;kama&#39;, 6)
 </pre></div>
 </div>
 </div>
@@ -185,14 +183,14 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Lets check out the BUFKIT data that we just accessed</span>
-<span class="c1"># and stored in the `clean_data` variable:</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Lets check out the BUFKIT data that we just accessed
+# and stored in the `clean_data` variable:
 
-<span class="c1"># `clean_data` is a python dictionary of &#39;clean&#39; vertical profile data</span>
-<span class="c1"># it comes with temperature, dewpoint, pressure, height, u and v</span>
-<span class="c1"># as well as a number of useful &#39;meta data&#39;</span>
+# `clean_data` is a python dictionary of &#39;clean&#39; vertical profile data
+# it comes with temperature, dewpoint, pressure, height, u and v
+# as well as a number of useful &#39;meta data&#39;
 
-<span class="n">clean_data</span>
+clean_data
 </pre></div>
 </div>
 </div>
@@ -275,8 +273,8 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># lets make a sounding!</span>
-<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">clean_data</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># lets make a sounding!
+spy.build_sounding(clean_data)
 </pre></div>
 </div>
 </div>

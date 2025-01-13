@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -6,23 +8,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>👨‍🍳Beginner’s SounderPy Cookbook &mdash; SounderPy v3.0.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
     <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=0f7a3e64"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=0f7a3e64"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
@@ -266,8 +264,12 @@
 </section>
 <section id="Loading-data">
 <h4><strong>Loading data</strong><a class="headerlink" href="#Loading-data" title="Link to this heading"></a></h4>
-<p>Loading data in SounderPy is very simple. You need to know 4 things: - What data you want to investigate - The tool you need to use to do so - A date &amp; time to investigate - A location to “pluck” the sounding from</p>
+<p>Loading data in SounderPy is very simple. You need to know 4 things:</p>
 <ul>
+<li><p>What data you want to investigate</p></li>
+<li><p>The tool you need to use to do so</p></li>
+<li><p>A date &amp; time to investigate</p></li>
+<li><p>A location to “pluck” the sounding from</p></li>
 <li><p class="rubric" id="sounderpy-data-access-tools"><strong>SounderPy Data Access Tools</strong></p>
 <p>The basic tools for accessing data are included below. ACARS data is slightly more complicated and is not included here. See: <a class="reference external" href="https://kylejgillett.github.io/sounderpy/acars_data_example.html">https://kylejgillett.github.io/sounderpy/acars_data_example.html</a></p>
 <ul class="simple">
@@ -776,10 +778,24 @@
 <ol class="arabic simple">
 <li><p>Learn how to build and customize composite sounding figures using a few basic settings</p></li>
 </ol>
-<p><strong>Motivation</strong>: There are generally 2 downsides to sounding data analysis: 1. Soundings represent a single time and point in space. 2. Soundings can be very hard to compare to one another (in time, or in reference to the past, analogs, etc), and in meteorology, <strong>context is key</strong>.</p>
-<p>These issues can be alleviated using SounderPy’s <code class="docutils literal notranslate"><span class="pre">.build_composite(data_list)</span></code> tool. - where <code class="docutils literal notranslate"><span class="pre">data_list</span></code> is a Python list of SounderPy data objects.</p>
-<p>Some custom settings include… - <code class="docutils literal notranslate"><span class="pre">colors_to_use</span></code>: a list of color names, matching the size of <code class="docutils literal notranslate"><span class="pre">data_list</span></code> <strong>OR</strong> <code class="docutils literal notranslate"><span class="pre">cmap</span></code>: the colormap used to plot profiles. The colors of each profile. - <code class="docutils literal notranslate"><span class="pre">lw_to_use</span></code>: a list of linewidths, matching the size of <code class="docutils literal notranslate"><span class="pre">data_list</span></code>. The linewidth of ech profile. - <code class="docutils literal notranslate"><span class="pre">ls_to_use</span></code>: a list of matplotlib line styles, matching the size of <code class="docutils literal notranslate"><span class="pre">data_list</span></code>. The line style for each profile. - <code class="docutils literal notranslate"><span class="pre">alphas_to_use</span></code>: a list of alphas, matching the size of
-‘data_list<code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">The</span> <span class="pre">alpha</span> <span class="pre">of</span> <span class="pre">each</span> <span class="pre">profile.</span> <span class="pre">-</span></code>shade_between<code class="docutils literal notranslate"><span class="pre">:</span> <span class="pre">whether</span> <span class="pre">to</span> <span class="pre">shade</span> <span class="pre">between</span> <span class="pre">the</span> <span class="pre">dewpoint</span> <span class="pre">and</span> <span class="pre">temperature</span> <span class="pre">traces</span> <span class="pre">-</span></code>dark_mode`</p>
+<p><strong>Motivation</strong>: There are generally 2 downsides to sounding data analysis:</p>
+<ol class="arabic simple">
+<li><p>Soundings represent a single time and point in space.</p></li>
+<li><p>Soundings can be very hard to compare to one another (in time, or in reference to the past, analogs, etc), and in meteorology, <strong>context is key</strong>.</p></li>
+</ol>
+<p>These issues can be alleviated using SounderPy’s <code class="docutils literal notranslate"><span class="pre">.build_composite(data_list)</span></code> tool.</p>
+<ul class="simple">
+<li><p>where <code class="docutils literal notranslate"><span class="pre">data_list</span></code> is a Python list of SounderPy data objects.</p></li>
+</ul>
+<p>Some custom settings include…</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">colors_to_use</span></code>: a list of color names, matching the size of <code class="docutils literal notranslate"><span class="pre">data_list</span></code> <strong>OR</strong> <code class="docutils literal notranslate"><span class="pre">cmap</span></code>: the colormap used to plot profiles. The colors of each profile.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lw_to_use</span></code>: a list of linewidths, matching the size of <code class="docutils literal notranslate"><span class="pre">data_list</span></code>. The linewidth of ech profile.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ls_to_use</span></code>: a list of matplotlib line styles, matching the size of <code class="docutils literal notranslate"><span class="pre">data_list</span></code>. The line style for each profile.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">alphas_to_use</span></code>: a list of alphas, matching the size of ‘data_list`. The alpha of each profile.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shade_between</span></code>: whether to shade between the dewpoint and temperature traces</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dark_mode</span></code></p></li>
+</ul>
 </section>
 <section id="Build-a-dark-mode-composite-sounding-with-custom-colors-to-compare-our-observation-data,-reanalysis-model-data,-and-forecast-model-data,-all-valid-for-the-same-time-&amp;-location">
 <h4>Build a dark mode composite sounding with custom colors to compare our observation data, reanalysis model data, and forecast model data, all valid for the same time &amp; location<a class="headerlink" href="#Build-a-dark-mode-composite-sounding-with-custom-colors-to-compare-our-observation-data,-reanalysis-model-data,-and-forecast-model-data,-all-valid-for-the-same-time-&-location" title="Link to this heading"></a></h4>

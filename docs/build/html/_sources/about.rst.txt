@@ -123,7 +123,7 @@ Citing SounderPy
 
 
 	in AMS format:
-	     Gillett, K., 2025: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.7). Py-Pi, https://pypi.org/project/sounderpy/
+	     Gillett, K., 2025: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.8). Py-Pi, https://pypi.org/project/sounderpy/
 
 
 ***************************************************************

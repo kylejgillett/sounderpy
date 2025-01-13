@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -6,23 +8,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Plotting Soundings with Model Reanalysis Data &mdash; SounderPy v3.0.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
     <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=0f7a3e64"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=0f7a3e64"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
@@ -63,6 +61,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="beginners_sounderpy_cookbook.html">👨‍🍳Beginner’s SounderPy Cookbook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
 </ul>
@@ -97,8 +96,8 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># first, import sounderpy! Its fun to import as &#39;spy&#39;!</span>
-<span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># first, import sounderpy! Its fun to import as &#39;spy&#39;!
+import sounderpy as spy
 </pre></div>
 </div>
 </div>
@@ -124,34 +123,34 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">################################ THE FUNCTION ###################################</span>
-<span class="c1"># To get reanalysis data from the ERA5, NCEP-FNL, RAP or RUC, we use</span>
-<span class="c1"># `get_model_data(model, latlon, year, month, day, hour, dataset=None, box_avg_size=0.10, hush=False)`</span>
-<span class="c1"># see more details: https://kylejgillett.github.io/sounderpy/gettingdata.html#model-reanalysis-data-rap-era5-ncep</span>
-<span class="c1">#################################################################################</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>################################ THE FUNCTION ###################################
+# To get reanalysis data from the ERA5, NCEP-FNL, RAP or RUC, we use
+# `get_model_data(model, latlon, year, month, day, hour, dataset=None, box_avg_size=0.10, hush=False)`
+# see more details: https://kylejgillett.github.io/sounderpy/gettingdata.html#model-reanalysis-data-rap-era5-ncep
+#################################################################################
 
 
-<span class="c1">########################## UNDERSTANDING THE KWARGS #############################</span>
-<span class="c1"># `model` is a str with the name of the model we want to use, &#39;era5&#39;, &#39;ncep&#39;, or &#39;rap-ruc&#39;</span>
-<span class="c1"># `latlon` is a list of a lat &amp; lon point, such as: `[33.19, -87.46]`</span>
-<span class="c1"># the &#39;date&#39; kwargs are all str for the date &amp; time that you want to &#39;reanalize&#39;</span>
-<span class="c1">#################################################################################</span>
+########################## UNDERSTANDING THE KWARGS #############################
+# `model` is a str with the name of the model we want to use, &#39;era5&#39;, &#39;ncep&#39;, or &#39;rap-ruc&#39;
+# `latlon` is a list of a lat &amp; lon point, such as: `[33.19, -87.46]`
+# the &#39;date&#39; kwargs are all str for the date &amp; time that you want to &#39;reanalize&#39;
+#################################################################################
 
 
-<span class="c1">########################### SETTING UP ERA5 DATA ################################</span>
-<span class="c1"># NOTE: to use ERA5 data, you must set up an account with the Climate Data Store</span>
-<span class="c1"># to receive an API key which gives you access to the data. Do so here:</span>
-<span class="c1"># https://cds.climate.copernicus.eu/api-how-to</span>
-<span class="c1">#################################################################################</span>
+########################### SETTING UP ERA5 DATA ################################
+# NOTE: to use ERA5 data, you must set up an account with the Climate Data Store
+# to receive an API key which gives you access to the data. Do so here:
+# https://cds.climate.copernicus.eu/api-how-to
+#################################################################################
 
 
-<span class="c1">############################# LETS GET SOME DATA ################################</span>
-<span class="c1"># this function will get us a 22z RAP profile on 4/27/2011 at the point [33.19, -87.46]</span>
-<span class="n">clean_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_model_data</span><span class="p">(</span><span class="s1">&#39;rap-ruc&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">33.19</span><span class="p">,</span> <span class="o">-</span><span class="mf">87.46</span><span class="p">],</span> <span class="s1">&#39;2011&#39;</span><span class="p">,</span> <span class="s1">&#39;04&#39;</span><span class="p">,</span> <span class="s1">&#39;27&#39;</span><span class="p">,</span> <span class="s1">&#39;22&#39;</span><span class="p">)</span>
+############################# LETS GET SOME DATA ################################
+# this function will get us a 22z RAP profile on 4/27/2011 at the point [33.19, -87.46]
+clean_data = spy.get_model_data(&#39;rap-ruc&#39;, [33.19, -87.46], &#39;2011&#39;, &#39;04&#39;, &#39;27&#39;, &#39;22&#39;)
 
-<span class="c1"># you can run this for ERA5 and NCEP-FNL data too:</span>
-<span class="c1">#clean_data = spy.get_model_data(&#39;ncep&#39;, [33.19, -87.46], &#39;2015&#39;, &#39;04&#39;, &#39;27&#39;, &#39;18&#39;)</span>
-<span class="c1"># clean_data = spy.get_model_data(&#39;era5&#39;, [33.19, -87.46], &#39;2011&#39;, &#39;04&#39;, &#39;27&#39;, &#39;22&#39;)</span>
+# you can run this for ERA5 and NCEP-FNL data too:
+#clean_data = spy.get_model_data(&#39;ncep&#39;, [33.19, -87.46], &#39;2015&#39;, &#39;04&#39;, &#39;27&#39;, &#39;18&#39;)
+# clean_data = spy.get_model_data(&#39;era5&#39;, [33.19, -87.46], &#39;2011&#39;, &#39;04&#39;, &#39;27&#39;, &#39;22&#39;)
 </pre></div>
 </div>
 </div>
@@ -182,14 +181,14 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Lets check out the BUFKIT data that we just accessed</span>
-<span class="c1"># and stored in the `clean_data` variable:</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Lets check out the BUFKIT data that we just accessed
+# and stored in the `clean_data` variable:
 
-<span class="c1"># `clean_data` is a python dictionary of &#39;clean&#39; vertical profile data</span>
-<span class="c1"># it comes with temperature, dewpoint, pressure, height, u and v</span>
-<span class="c1"># as well as a number of useful &#39;meta data&#39;</span>
+# `clean_data` is a python dictionary of &#39;clean&#39; vertical profile data
+# it comes with temperature, dewpoint, pressure, height, u and v
+# as well as a number of useful &#39;meta data&#39;
 
-<span class="n">clean_data</span>
+clean_data
 </pre></div>
 </div>
 </div>
@@ -322,8 +321,8 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># lets make a sounding!</span>
-<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">clean_data</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># lets make a sounding!
+spy.build_sounding(clean_data)
 </pre></div>
 </div>
 </div>

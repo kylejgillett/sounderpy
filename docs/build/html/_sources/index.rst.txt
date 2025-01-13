@@ -81,7 +81,7 @@ What data can SounderPy work with?
 +--------------------------------+-----------------------+------------------+------------------+
 |  UNIDATA THREDDS TDS RAP       | get_model_data()      | Model Analysis   | Most recent run  |
 +--------------------------------+-----------------------+------------------+------------------+
-|   OU ACARS Archive             | acars_data()          | Observations     | 2019-06/2024     |
+|   OU ACARS Archive             | acars_data()          | Observations     | 2019-present     |
 +--------------------------------+-----------------------+------------------+------------------+
 |  The Unv. of WY RAOB Archive   | get_obs_data()        | Observations     | 1973-present     |
 +--------------------------------+-----------------------+------------------+------------------+

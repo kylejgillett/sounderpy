@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -6,20 +8,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>📈 Tools for Plotting Data &mdash; SounderPy v3.0.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
     <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=0f7a3e64"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=0f7a3e64"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
@@ -130,7 +128,8 @@
              
   <section id="tools-for-plotting-data">
 <h1>📈 Tools for Plotting Data<a class="headerlink" href="#tools-for-plotting-data" title="Link to this heading"></a></h1>
-<a class="reference internal image-reference" href="_images/example-sounding_dark3.png"><img alt="_images/example-sounding_dark3.png" class="align-right" src="_images/example-sounding_dark3.png" style="width: 300px;" /></a>
+<a class="reference internal image-reference" href="_images/example-sounding_dark3.png"><img alt="_images/example-sounding_dark3.png" class="align-right" src="_images/example-sounding_dark3.png" style="width: 300px;" />
+</a>
 <p>Initially, SounderPy was a tool meant for getting and parsing data with not as much focus on plotting said data. However, recent releases have put more emphasis on plotting capabilites. Version 3.0.0+ features a number of significant &amp; exciting upgrades to SounderPy’s plotting abilities.</p>
 <p>SounderPy can create general <a class="reference internal" href="#soundings"><span class="std std-ref">sounding</span></a> and <a class="reference internal" href="#hodographs"><span class="std std-ref">hodograph</span></a> plots as well as <a class="reference internal" href="#compsoundings"><span class="std std-ref">composite sounding</span></a> plots!</p>
 <p>The <cite>full</cite> sounding plot that SounderPy creates is a complex figure with unique design geared towards severe convective storm enviroment analysis.</p>
@@ -184,7 +183,8 @@
 <span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">clean_data</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/example-sounding_light.png"><img alt="_images/example-sounding_light.png" src="_images/example-sounding_light.png" style="width: 800px;" /></a>
+<a class="reference internal image-reference" href="_images/example-sounding_light.png"><img alt="_images/example-sounding_light.png" src="_images/example-sounding_light.png" style="width: 800px;" />
+</a>
 <hr class="docutils" />
 </section>
 </section>
@@ -227,7 +227,8 @@
 <span class="n">spy</span><span class="o">.</span><span class="n">build_hodograph</span><span class="p">(</span><span class="n">clean_data</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/example-hodograph_light.png"><img alt="_images/example-hodograph_light.png" src="_images/example-hodograph_light.png" style="width: 800px;" /></a>
+<a class="reference internal image-reference" href="_images/example-hodograph_light.png"><img alt="_images/example-hodograph_light.png" src="_images/example-hodograph_light.png" style="width: 800px;" />
+</a>
 <hr class="docutils" />
 </section>
 </section>
@@ -280,7 +281,8 @@
 <span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span><span class="n">data_list</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/example-composite_light.png"><img alt="_images/example-composite_light.png" src="_images/example-composite_light.png" style="width: 800px;" /></a>
+<a class="reference internal image-reference" href="_images/example-composite_light.png"><img alt="_images/example-composite_light.png" src="_images/example-composite_light.png" style="width: 800px;" />
+</a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
 
 <span class="c1"># get data | Note: any sounderpy data will work!</span>
@@ -294,7 +296,8 @@
 <span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span><span class="n">data_list</span><span class="p">,</span> <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">lw_to_use</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span> <span class="k">for</span> <span class="n">cd</span> <span class="ow">in</span> <span class="n">data_list</span><span class="p">])</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/example-composite_dark.png"><img alt="_images/example-composite_dark.png" src="_images/example-composite_dark.png" style="width: 800px;" /></a>
+<a class="reference internal image-reference" href="_images/example-composite_dark.png"><img alt="_images/example-composite_dark.png" src="_images/example-composite_dark.png" style="width: 800px;" />
+</a>
 <hr class="docutils" />
 </section>
 </section>
@@ -328,7 +331,8 @@
 
 <section id="id2">
 <h3>Examples<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
-<a class="reference internal image-reference" href="_images/example_vad-hodograph.png"><img alt="_images/example_vad-hodograph.png" src="_images/example_vad-hodograph.png" style="width: 800px;" /></a>
+<a class="reference internal image-reference" href="_images/example_vad-hodograph.png"><img alt="_images/example_vad-hodograph.png" src="_images/example_vad-hodograph.png" style="width: 800px;" />
+</a>
 <hr class="docutils" />
 </section>
 </section>

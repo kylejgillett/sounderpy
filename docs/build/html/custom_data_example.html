@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -6,23 +8,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Plotting Soundings From Custom Data Sources &mdash; SounderPy v3.0.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
     <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=0f7a3e64"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=0f7a3e64"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
@@ -63,6 +61,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="beginners_sounderpy_cookbook.html">👨‍🍳Beginner’s SounderPy Cookbook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
 </ul>
@@ -270,13 +269,13 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># lets make a few imports</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">metpy.units</span> <span class="kn">import</span> <span class="n">units</span>
-<span class="kn">import</span> <span class="nn">metpy.calc</span> <span class="k">as</span> <span class="nn">mpcalc</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># lets make a few imports
+import pandas as pd
+from metpy.units import units
+import metpy.calc as mpcalc
 
-<span class="c1"># Its fun to import as &#39;spy&#39;!</span>
-<span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
+# Its fun to import as &#39;spy&#39;!
+import sounderpy as spy
 <br/></pre></div>
 </div>
 </div>
@@ -303,15 +302,15 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># declare file</span>
-<span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/kylejgillett/sounderpy/main/test_data/Far_Field_MW41_output_20190520_214246.csv&#39;</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># declare file
+file = &#39;https://raw.githubusercontent.com/kylejgillett/sounderpy/main/test_data/Far_Field_MW41_output_20190520_214246.csv&#39;
 
-<span class="c1"># There may be a better way to do this, but because of the file&#39;s</span>
-<span class="c1"># format, here I will parse the CSV in two seperate pandas dataframes.</span>
-<span class="c1"># One is for the actual profile data (obs_df), and the other will be</span>
-<span class="c1"># to access the header information (info_df)</span>
-<span class="n">obs_df</span>  <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">info_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+# There may be a better way to do this, but because of the file&#39;s
+# format, here I will parse the CSV in two seperate pandas dataframes.
+# One is for the actual profile data (obs_df), and the other will be
+# to access the header information (info_df)
+obs_df  = pd.read_csv(file, skiprows=2)
+info_df = pd.read_csv(file)
 </pre></div>
 </div>
 </div>
@@ -322,62 +321,62 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># here we need to parse out the necessary data from the TORUS obs</span>
-<span class="c1"># into the clean_data dict.</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># here we need to parse out the necessary data from the TORUS obs
+# into the clean_data dict.
 
 
-<span class="c1"># we need pressure, height, temperature, dewpoint, u &amp; v in the clean_data dict.</span>
-<span class="c1"># In my file of TORUS data, it has pressure, altitude, temperature, and dewpoint.</span>
-<span class="c1"># It does NOT have u and v wind components. It has a wind speed and direction though,</span>
-<span class="c1"># so we will have to calculate u and v.</span>
+# we need pressure, height, temperature, dewpoint, u &amp; v in the clean_data dict.
+# In my file of TORUS data, it has pressure, altitude, temperature, and dewpoint.
+# It does NOT have u and v wind components. It has a wind speed and direction though,
+# so we will have to calculate u and v.
 
 
-<span class="c1"># declare keys to pandas df of TORUS data that hold data we need</span>
-<span class="n">old_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Filtered Pressure (mb)&#39;</span><span class="p">,</span> <span class="s1">&#39;Filtered Altitude (m)&#39;</span><span class="p">,</span> <span class="s1">&#39;Filtered Temperature (K)&#39;</span><span class="p">,</span> <span class="s1">&#39;Filtered Dewpoint (K)&#39;</span><span class="p">]</span>
-<span class="c1"># declare keys for the new clean_data dict -- !! SounderPy will expect these keys !!</span>
-<span class="n">new_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;Td&#39;</span><span class="p">]</span>
-<span class="c1"># declare a list of units for each of the keys</span>
-<span class="c1"># (in accordance to MetPy Units https://unidata.github.io/MetPy/latest/tutorials/unit_tutorial.html)</span>
-<span class="n">units_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;hPa&#39;</span><span class="p">,</span> <span class="s1">&#39;meter&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">]</span>
+# declare keys to pandas df of TORUS data that hold data we need
+old_keys = [&#39;Filtered Pressure (mb)&#39;, &#39;Filtered Altitude (m)&#39;, &#39;Filtered Temperature (K)&#39;, &#39;Filtered Dewpoint (K)&#39;]
+# declare keys for the new clean_data dict -- !! SounderPy will expect these keys !!
+new_keys = [&#39;p&#39;, &#39;z&#39;, &#39;T&#39;, &#39;Td&#39;]
+# declare a list of units for each of the keys
+# (in accordance to MetPy Units https://unidata.github.io/MetPy/latest/tutorials/unit_tutorial.html)
+units_list = [&#39;hPa&#39;, &#39;meter&#39;, &#39;K&#39;, &#39;K&#39;]
 
 
-<span class="c1"># create a loop that parses the data into the new `clean_data` dict:</span>
-<span class="c1"># create clean_data, leave it empty for now</span>
-<span class="n">clean_data</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="c1"># loop through the dataframe by `old_keys` and add the data to the</span>
-<span class="c1"># `clean_data` dict by the `new_keys`. Add units using our `unit_list`</span>
-<span class="c1"># you&#39;ll note the [0 :: 20] use below, that will old add every 20 data</span>
-<span class="c1"># points, starting at point 0, to clean_data. Whether or not this is needed</span>
-<span class="c1"># will depend on how much data there is. SounderPy doesn&#39;t need 3000+ data</span>
-<span class="c1"># points.</span>
-<span class="k">for</span> <span class="n">old_key</span><span class="p">,</span> <span class="n">new_key</span><span class="p">,</span> <span class="n">unit</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">old_keys</span><span class="p">,</span> <span class="n">new_keys</span><span class="p">,</span> <span class="n">units_list</span><span class="p">):</span>
-    <span class="n">clean_data</span><span class="p">[</span><span class="n">new_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">obs_df</span><span class="p">[</span><span class="n">old_key</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span> <span class="p">::</span> <span class="mi">20</span><span class="p">])</span><span class="o">*</span><span class="n">units</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+# create a loop that parses the data into the new `clean_data` dict:
+# create clean_data, leave it empty for now
+clean_data = {}
+# loop through the dataframe by `old_keys` and add the data to the
+# `clean_data` dict by the `new_keys`. Add units using our `unit_list`
+# you&#39;ll note the [0 :: 20] use below, that will old add every 20 data
+# points, starting at point 0, to clean_data. Whether or not this is needed
+# will depend on how much data there is. SounderPy doesn&#39;t need 3000+ data
+# points.
+for old_key, new_key, unit in zip(old_keys, new_keys, units_list):
+    clean_data[new_key] = (obs_df[old_key].values[0 :: 20])*units(unit)
 
-<span class="c1"># Now we can create the u and v components using the MetPy `wind_components()` function.</span>
-<span class="c1"># Because we created clean_data above, we can just add to it now.</span>
-<span class="n">clean_data</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">],</span> <span class="n">clean_data</span><span class="p">[</span><span class="s1">&#39;v&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mpcalc</span><span class="o">.</span><span class="n">wind_components</span><span class="p">(((</span><span class="n">obs_df</span><span class="p">[</span><span class="s1">&#39;Filtered Wind Spd (m/s)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span> <span class="p">::</span> <span class="mi">20</span><span class="p">])</span><span class="o">*</span><span class="mf">1.94384</span><span class="p">)</span><span class="o">*</span><span class="n">units</span><span class="p">(</span><span class="s1">&#39;kts&#39;</span><span class="p">),</span>
-                                                          <span class="p">(</span><span class="n">obs_df</span><span class="p">[</span><span class="s1">&#39;Filtered Wind Dir&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span> <span class="p">::</span> <span class="mi">20</span><span class="p">])</span><span class="o">*</span><span class="n">units</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+# Now we can create the u and v components using the MetPy `wind_components()` function.
+# Because we created clean_data above, we can just add to it now.
+clean_data[&#39;u&#39;], clean_data[&#39;v&#39;] = mpcalc.wind_components(((obs_df[&#39;Filtered Wind Spd (m/s)&#39;].values[0 :: 20])*1.94384)*units(&#39;kts&#39;),
+                                                          (obs_df[&#39;Filtered Wind Dir&#39;].values[0 :: 20])*units.deg)
 
 
 
-<span class="c1"># Thats it for the actual data!</span>
-<span class="c1"># Now we need to add another `dict`, containing metadata, to the `clean_data` `dict`.</span>
-<span class="c1"># this `dict` must be called `site_info`. Here we can add whatever we want, as long</span>
-<span class="c1"># as we follow the structure of this dictionary as defined here:</span>
-<span class="c1"># https://kylejgillett.github.io/sounderpy/plottingdata.html</span>
-<span class="n">clean_data</span><span class="p">[</span><span class="s1">&#39;site_info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;site-id&#39;</span>   <span class="p">:</span> <span class="n">info_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>                           <span class="c1"># could be a station, site, or launch ID</span>
-            <span class="s1">&#39;site-name&#39;</span> <span class="p">:</span> <span class="s1">&#39;Far_Field_MW41&#39;</span><span class="p">,</span>                             <span class="c1"># a site, station, launch or campaign name</span>
-            <span class="s1">&#39;site-lctn&#39;</span> <span class="p">:</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span>                                       <span class="c1"># could be another name, or none</span>
-            <span class="s1">&#39;site-latlon&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="n">obs_df</span><span class="p">[</span><span class="s1">&#39;Filtered Latitude&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>            <span class="c1"># a lat/lon pair **in a list**</span>
-                 <span class="n">obs_df</span><span class="p">[</span><span class="s1">&#39;Filtered Longitude&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]],</span>
-            <span class="s1">&#39;site-elv&#39;</span>  <span class="p">:</span> <span class="n">obs_df</span><span class="p">[</span><span class="s1">&#39;Filtered Altitude (m)&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>           <span class="c1"># the profile&#39;s elevation</span>
-            <span class="s1">&#39;source&#39;</span>    <span class="p">:</span> <span class="s1">&#39;TORUS-2019 FIELD CAMPAIGN OBSERVED PROFILE&#39;</span><span class="p">,</span> <span class="c1"># the &#39;source&#39; which will be the main title component of the plot</span>
-            <span class="s1">&#39;model&#39;</span>     <span class="p">:</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span>                                       <span class="c1"># model name if a model was involved</span>
-            <span class="s1">&#39;fcst-hour&#39;</span> <span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>                                      <span class="c1"># forecast hour if a model was involved</span>
-            <span class="s1">&#39;run-time&#39;</span>  <span class="p">:</span> <span class="p">[</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="s1">&#39;none&#39;</span><span class="p">],</span>             <span class="c1"># model run date if a model was involved</span>
-            <span class="s1">&#39;valid-time&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">info_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span> <span class="n">info_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">6</span><span class="p">:</span><span class="mi">8</span><span class="p">],</span>
-                           <span class="n">info_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">9</span><span class="p">:</span><span class="mi">11</span><span class="p">],</span> <span class="n">info_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">12</span><span class="p">:</span><span class="mi">17</span><span class="p">]]}</span> <span class="c1"># the profile&#39;s valid date/time.</span>
+# Thats it for the actual data!
+# Now we need to add another `dict`, containing metadata, to the `clean_data` `dict`.
+# this `dict` must be called `site_info`. Here we can add whatever we want, as long
+# as we follow the structure of this dictionary as defined here:
+# https://kylejgillett.github.io/sounderpy/plottingdata.html
+clean_data[&#39;site_info&#39;] = {
+            &#39;site-id&#39;   : info_df.iloc[0][0],                           # could be a station, site, or launch ID
+            &#39;site-name&#39; : &#39;Far_Field_MW41&#39;,                             # a site, station, launch or campaign name
+            &#39;site-lctn&#39; : &#39;none&#39;,                                       # could be another name, or none
+            &#39;site-latlon&#39; : [obs_df[&#39;Filtered Latitude&#39;][0],            # a lat/lon pair **in a list**
+                 obs_df[&#39;Filtered Longitude&#39;][0]],
+            &#39;site-elv&#39;  : obs_df[&#39;Filtered Altitude (m)&#39;][0],           # the profile&#39;s elevation
+            &#39;source&#39;    : &#39;TORUS-2019 FIELD CAMPAIGN OBSERVED PROFILE&#39;, # the &#39;source&#39; which will be the main title component of the plot
+            &#39;model&#39;     : &#39;none&#39;,                                       # model name if a model was involved
+            &#39;fcst-hour&#39; : f&#39;none&#39;,                                      # forecast hour if a model was involved
+            &#39;run-time&#39;  : [&#39;none&#39;, &#39;none&#39;, &#39;none&#39;, &#39;none&#39;],             # model run date if a model was involved
+            &#39;valid-time&#39;: [info_df.iloc[2][0][1:5], info_df.iloc[2][0][6:8],
+                           info_df.iloc[2][0][9:11], info_df.iloc[2][0][12:17]]} # the profile&#39;s valid date/time.
 <br/></pre></div>
 </div>
 </div>
@@ -385,8 +384,8 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># lets take a look!</span>
-<span class="n">clean_data</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># lets take a look!
+clean_data
 </pre></div>
 </div>
 </div>
@@ -592,8 +591,8 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># lets make a sounding!</span>
-<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">clean_data</span><span class="p">,</span> <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color_blind</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># lets make a sounding!
+spy.build_sounding(clean_data, dark_mode=True, color_blind=True)
 </pre></div>
 </div>
 </div>
