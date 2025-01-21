@@ -2531,29 +2531,32 @@
             });
 
 
-            // Event listener for marker click
-            markers.forEach(function(marker, index) {
-                marker.addListener('click', function() {
-                    // Close the previous info window if it exists
-                    if (infoWindow) {
-                        infoWindow.close();
-                    }
-                    // Create content for the info window
-                    var contentString = '<div><p>Site Name: ' + bufkitSites[index].name + '</p><p>Site ID: <b>' + bufkitSites[index].id + '</b></p></div>';
+            // Ensure that event listener only runs when the content is loaded
+            google.maps.event.addListenerOnce(map, 'idle', function() {
+                markers.forEach(function(marker, index) {
+                    marker.addListener('click', function() {
+                        // Close the previous info window if it exists
+                        if (infoWindow) {
+                            infoWindow.close();
+                        }
 
-                    // Create a new info window
-                    infoWindow = new google.maps.InfoWindow({
-                        content: contentString
-                    });
+                        // Create content for the info window
+                        var contentString = '<div><p>Site Name: ' + raobSites[index].name + '</p><p>Site ID: <b>' + raobSites[index].id + '</b></p></div>';
 
-                    // Open the info window at the marker's position
-                    infoWindow.open(map, marker);
+                        // Create a new info window
+                        infoWindow = new google.maps.InfoWindow({
+                            content: contentString
+                        });
 
-                    // Copy the Site ID to the clipboard automatically
-                    navigator.clipboard.writeText(bufkitSites[index].id).then(function() {
-                        alert('Site ID copied to clipboard!');
-                    }).catch(function(err) {
-                        console.error('Failed to copy text: ', err);
+                        // Open the info window at the marker's position
+                        infoWindow.open(map, marker);
+
+                        // Trigger clipboard copy action on user interaction
+                        navigator.clipboard.writeText(raobSites[index].id).then(function() {
+                            alert('Site ID copied to clipboard!');
+                        }).catch(function(err) {
+                            console.error('Failed to copy text: ', err);
+                        });
                     });
                 });
             });

@@ -31,6 +31,7 @@
             font-size: 14px;
             border: 1px solid #ccc;
             font-weight: bold;
+            display: none;
         }
     </style>
 </head>
@@ -41,13 +42,11 @@
     <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
 
     <script>
-        var map;
-
         // Function to initialize Google Map
         function initMap() {
-            // Create a map object and specify the DOM element for display.
-            map = new google.maps.Map(document.getElementById('map'), {
-                center: {lat: 38, lng: -97},
+            // Create a map object and specify the DOM element for display
+            const map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 38, lng: -97 },
                 zoom: 4,
                 mapId: 'ee41750e2f9e7bed'
             });
@@ -62,17 +61,27 @@
                 const coordinates = `Latitude: ${clickedLat}, Longitude: ${clickedLng}`;
                 document.getElementById('coordinates').textContent = coordinates;
 
+                // Show the confirmation message in the top-left corner
+                const coordinatesDiv = document.getElementById('coordinates');
+                coordinatesDiv.style.display = 'block'; // Make it visible
+
                 // Copy the coordinates to clipboard
                 const textToCopy = `${clickedLat}, ${clickedLng}`;
                 navigator.clipboard.writeText(textToCopy).then(function() {
-                    alert('Coordinates copied to clipboard!');
+                    // No alert after copying, just the message
                 }).catch(function(err) {
                     console.error('Failed to copy text: ', err);
                 });
+
+                // Hide the coordinates message after 3 seconds
+                setTimeout(function () {
+                    coordinatesDiv.style.display = 'none';
+                }, 3000); // Message disappears after 3 seconds
             });
         }
     </script>
 
+    <!-- Include Google Maps API with initMap callback -->
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDqWc25TEkPO2o49Rhnh3u1E66CKamuCZA&callback=initMap&libraries=marker"></script>
 </body>
 </html>
