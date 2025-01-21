@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>BUFKIT Site Locations Map</title>
+    <style>
+        #map {
+            height: 100%;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .info-box {
+            background-color: white;
+            padding: 5px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        #coordinates {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: white;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="coordinates"></div>
+
+    <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
+
+    <script>
+        var map;
+
+        // Function to initialize Google Map
+        function initMap() {
+            // Create a map object and specify the DOM element for display.
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: 38, lng: -97},
+                zoom: 4,
+                mapId: 'ee41750e2f9e7bed'
+            });
+
+            // Event listener for map click
+            google.maps.event.addListener(map, 'click', function(event) {
+                // Get the clicked coordinates
+                const clickedLat = event.latLng.lat();
+                const clickedLng = event.latLng.lng();
+
+                // Display the coordinates on the page
+                const coordinates = `Latitude: ${clickedLat}, Longitude: ${clickedLng}`;
+                document.getElementById('coordinates').textContent = coordinates;
+
+                // Copy the coordinates to clipboard
+                const textToCopy = `${clickedLat}, ${clickedLng}`;
+                navigator.clipboard.writeText(textToCopy).then(function() {
+                    alert('Coordinates copied to clipboard!');
+                }).catch(function(err) {
+                    console.error('Failed to copy text: ', err);
+                });
+            });
+        }
+    </script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDqWc25TEkPO2o49Rhnh3u1E66CKamuCZA&callback=initMap&libraries=marker"></script>
+</body>
+</html>
