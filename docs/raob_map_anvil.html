@@ -2552,7 +2552,7 @@
                         infoWindow.open(map, marker);
 
                         // Trigger clipboard copy action on user interaction
-                        navigator.clipboard.writeText(raobSites[index].id).then(function() {
+                        navigator.clipboard.writeText(raobSites[index].id.split(' | ')[0]).then(function() {
                             alert('Site ID copied to clipboard!');
                         }).catch(function(err) {
                             console.error('Failed to copy text: ', err);
