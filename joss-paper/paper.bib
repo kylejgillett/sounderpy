@@ -1,71 +1,116 @@
-@article{Maier.2023,
-author = {Laura Maier and David Jansen and Fabian Wüllhorst and Martin Kremer and Alexander Kümpel and Tobias Blacha and Dirk Müller},
-title = {AixLib: an open-source Modelica library for compound building energy systems from component to district level with automated quality management},
-journal = {Journal of Building Performance Simulation},
-volume = {0},
-number = {0},
-pages = {1-24},
-year = {2023},
-publisher = {Taylor & Francis},
-doi = {10.1080/19401493.2023.2250521},
-URL = {https://doi.org/10.1080/19401493.2023.2250521},
-eprint = {https://doi.org/10.1080/19401493.2023.2250521}
+@Article{numpy,
+ title         = {Array programming with {NumPy}},
+ author        = {Charles R. Harris and K. Jarrod Millman and St{\'{e}}fan J.
+                 van der Walt and Ralf Gommers and Pauli Virtanen and David
+                 Cournapeau and Eric Wieser and Julian Taylor and Sebastian
+                 Berg and Nathaniel J. Smith and Robert Kern and Matti Picus
+                 and Stephan Hoyer and Marten H. van Kerkwijk and Matthew
+                 Brett and Allan Haldane and Jaime Fern{\'{a}}ndez del
+                 R{\'{i}}o and Mark Wiebe and Pearu Peterson and Pierre
+                 G{\'{e}}rard-Marchant and Kevin Sheppard and Tyler Reddy and
+                 Warren Weckesser and Hameer Abbasi and Christoph Gohlke and
+                 Travis E. Oliphant},
+ year          = {2020},
+ month         = sep,
+ journal       = {Nature},
+ volume        = {585},
+ number        = {7825},
+ pages         = {357--362},
+ doi           = {10.1038/s41586-020-2649-2},
+ publisher     = {Springer Science and Business Media {LLC}},
+ url           = {https://doi.org/10.1038/s41586-020-2649-2}
 }
 
-@Article{WetterZuoNouiduiPang.2014,
-  author  =  {Michael Wetter and Wangda Zuo and Thierry S. Nouidui and Xiufeng Pang},
-  title   =  {Modelica {Buildings} library},
-  journal =  {Journal of Building Performance Simulation},
-  volume  =  {7},
-  number  =  {4},
-  pages   =  {253--270},
-  year    =  {2014},
-  doi     =  {10.1080/19401493.2013.765506},
-  url     = "https://doi.org/10.1080/19401493.2013.765506"
+@article{xarray,
+  author   = {Hoyer, S. and Hamman, J.},
+  title    = {xarray: N-D labeled Arrays and Datasets in Python},
+  journal  = {Journal of Open Research Software},
+  volume   = {5},
+  number   = {1},
+  pages    = {10},
+  year     = {2017},
+  doi      = {10.5281/zenodo.59499},
+  url      = {https://doi.org/10.5281/zenodo.59499}
 }
 
-@Article{PVGIS.2023,
-AUTHOR = {Huld, Thomas and Paietta, Elena and Zangheri, Paolo and Pinedo Pascua, Irene},
-TITLE = {Assembling Typical Meteorological Year Data Sets for Building Energy Performance Using Reanalysis and Satellite-Based Data},
-JOURNAL = {Atmosphere},
-VOLUME = {9},
-YEAR = {2018},
-NUMBER = {2},
-ARTICLE-NUMBER = {53},
-URL = {https://www.mdpi.com/2073-4433/9/2/53},
-ISSN = {2073-4433},
-ABSTRACT = {We present a method to generate Typical Meteorological Year (TMY) data sets for use in calculations of the energy performance of buildings, based on satellite derived solar radiation data and other meteorological parameters obtained from reanalysis products. The great advantage of this method is the availability of data over large geographical regions, giving global coverage for the reanalysis and continental-scale coverage for the solar radiation data, making it possible to generate TMY data for nearly any location, independent of the availability of meteorological measurement stations in the area. The TMY data generated with this method have been validated against 487 meteorological stations in Europe, by calculating heating and cooling degree days, and by running building energy performance simulations using EnergyPlus. Results show that the generated data sets using a long time series perform better than the TMY data generated from station measurements for building heating calculations and nearly as well for cooling calculations, with relative standard deviations remaining below 6% for heating calculations. TMY data constructed using the proposed method yield somewhat larger deviations compared to TMY data constructed from station data. We outline a number of possibilities for further improvement using data sets that will become available in the near future.},
-DOI = {10.3390/atmos9020053}
+@Article{Hunter:2007,
+  Author    = {Hunter, J. D.},
+  Title     = {Matplotlib: A 2D graphics environment},
+  Journal   = {Computing in Science \& Engineering},
+  Volume    = {9},
+  Number    = {3},
+  Pages     = {90--95},
+  abstract  = {Matplotlib is a 2D graphics package used for Python for
+  application development, interactive scripting, and publication-quality
+  image generation across user interfaces and operating systems.},
+  publisher = {IEEE COMPUTER SOC},
+  doi       = {10.1109/MCSE.2007.55},
+  year      = 2007
 }
 
-@article{EnergyPlus.2001,
-title = {EnergyPlus: creating a new-generation building energy simulation program},
-journal = {Energy and Buildings},
-volume = {33},
-number = {4},
-pages = {319-331},
-year = {2001},
-note = {Special Issue: BUILDING SIMULATION'99},
-issn = {0378-7788},
-doi = {10.1016/S0378-7788(00)00114-6},
-url = {https://www.sciencedirect.com/science/article/pii/S0378778800001146},
-author = {Drury B. Crawley and Linda K. Lawrie and Frederick C. Winkelmann and W.F. Buhl and Y.Joe Huang and Curtis O. Pedersen and Richard K. Strand and Richard J. Liesen and Daniel E. Fisher and Michael J. Witte and Jason Glazer},
-keywords = {Building performance, Simulation, Energy performance, Heat balance, Mass balance, Modular simulation},
-abstract = {Many of the popular building energy simulation programs around the world are reaching maturity — some use simulation methods (and even code) that originated in the 1960s. For more than two decades, the US government supported development of two hourly building energy simulation programs, BLAST and DOE-2. Designed in the days of mainframe computers, expanding their capabilities further has become difficult, time-consuming, and expensive. At the same time, the 30 years have seen significant advances in analysis and computational methods and power — providing an opportunity for significant improvement in these tools. In 1996, a US federal agency began developing a new building energy simulation tool, EnergyPlus, building on development experience with two existing programs: DOE-2 and BLAST. EnergyPlus includes a number of innovative simulation features — such as variable time steps, user-configurable modular systems that are integrated with a heat and mass balance-based zone simulation — and input and output data structures tailored to facilitate third party module and interface development. Other planned simulation capabilities include multizone airflow, and electric power and solar thermal and photovoltaic simulation. Beta testing of EnergyPlus began in late 1999 and the first release is scheduled for early 2001.}
+
+@article{metpy,
+  author = {Ryan M. May and Kevin H. Goebbert and Jonathan E. Thielen and John R. Leeman and
+            M. Drew Camron and Zachary Bruick and Eric C. Bruning and Russell P. Manser and
+            Sean C. Arms and Patrick T. Marsh},
+  title = {MetPy: A Meteorological Python Library for Data Analysis and Visualization},
+  journal = {Bulletin of the American Meteorological Society},
+  year = {2022},
+  publisher = {American Meteorological Society},
+  address = {Boston MA, USA},
+  volume = {103},
+  number = {10},
+  doi = {10.1175/BAMS-D-21-0125.1},
+  pages = {E2273 - E2284},
+  url = {https://journals.ametsoc.org/view/journals/bams/103/10/BAMS-D-21-0125.1.xml}
 }
 
-@misc{Meteonorm.2023,
-    author = {Meteotest AG},
-    title = {Meteonorm: Global Climate Data for Solar Applications and Building Design},
-    year = {2023},
-    publisher = {Meteotest AG},
-    url = {https://meteonorm.com/},
+
+@software{siphon,
+  author = {May, Ryan and Arms, Sean and Leeman, John and Chastang, Julien },
+  organization = {Unidata},
+  title = {Siphon: A collection of {Python} Utilities for Accessing Remote Atmospheric and Oceanic Datasets},
+  year = {2014 - 2017},
+  version = {0.5.1},
+  doi = {10.5065/D6CN72NW},
+  url = {https://github.com/Unidata/siphon},
+  address = {Boulder, Colorado}
 }
 
-@misc{Elements.2016,
-    title = {Elements: Weather File Tool},
-    year = {2016},
-    publisher = {Big Ladder Software},
-    url = {https://bigladdersoftware.com/projects/elements/},
-    organization = {Big Ladder Software}
+
+@article{scipy,
+  author  = {Virtanen, Pauli and Gommers, Ralf and Oliphant, Travis E. and
+            Haberland, Matt and Reddy, Tyler and Cournapeau, David and
+            Burovski, Evgeni and Peterson, Pearu and Weckesser, Warren and
+            Bright, Jonathan and {van der Walt}, St{\'e}fan J. and
+            Brett, Matthew and Wilson, Joshua and Millman, K. Jarrod and
+            Mayorov, Nikolay and Nelson, Andrew R. J. and Jones, Eric and
+            Kern, Robert and Larson, Eric and Carey, C J and
+            Polat, {\.I}lhan and Feng, Yu and Moore, Eric W. and
+            {VanderPlas}, Jake and Laxalde, Denis and Perktold, Josef and
+            Cimrman, Robert and Henriksen, Ian and Quintero, E. A. and
+            Harris, Charles R. and Archibald, Anne M. and
+            Ribeiro, Ant{\^o}nio H. and Pedregosa, Fabian and
+            {van Mulbregt}, Paul and {SciPy 1.0 Contributors}},
+  title   = {{{SciPy} 1.0: Fundamental Algorithms for Scientific
+            Computing in Python}},
+  journal = {Nature Methods},
+  year    = {2020},
+  volume  = {17},
+  pages   = {261--272},
+  adsurl  = {https://rdcu.be/b08Wh},
+  doi     = {10.1038/s41592-019-0686-2},
+}
+
+
+@article{sharppy,
+  title={SHARPpy: An open-source sounding analysis toolkit for the atmospheric sciences},
+  author={Blumberg, William G and Halbert, Kelton T and Supinie, Timothy A and Marsh, Patrick T and Thompson, Richard L and Hart, John A},
+  journal={Bulletin of the American Meteorological Society},
+  volume={98},
+  number={8},
+  pages={1625--1636},
+  year={2017}
+  doi={10.1175/BAMS-D-15-00309.1},
+  url={https://github.com/sharppy/SHARPpy},
 }
