@@ -79,7 +79,7 @@ several foundational Python libraries, including MetPy, NumPy, Matplotlib,
 xarray, Cartopy, SHARPpy, SciPy, and others. SounderPy gratefully acknowledges the
 valuable contributions of individuals who have enhanced this project, including
 Scott Thomas (National Weather Service), Daryl Herzmann (Iowa State University),
-Amelia R.H. Urquhart (University of Oklahoma), Ryan Vandersmith, and many others.
+Amelia R.H. Urquhart (University of Oklahoma), Ryan Vandersmith, and many others. [@Elements.2016]
 
 This project also extends its graditude to the researchers, institutions, and 
 individuals who have utilized SounderPy in their work and publications, driving
