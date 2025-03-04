@@ -15,7 +15,7 @@ identifiers:
     value: https://kylejgillett.github.io/sounderpy/
     description: SounderPy Documentation
 repository-code: 'https://github.com/kylejgillett/sounderpy'
-url: 'https://kylegillettwx.wordpress.com/'
+url: 'https://kylegillettphoto.com/'
 repository: 'https://pypi.org/project/sounderpy/'
 doi: "10.5281/zenodo.10011851"
 keywords:
@@ -24,8 +24,7 @@ keywords:
   - python
   - atmospheric science
 abstract: >-
-  A python package that helps you to access and plot
-  vertical profile data for meteorological analysis 
+SounderPy is an open-source Python package for retrieving, processing, and visualizing atmospheric sounding data.
 license: MIT
-version: v3.0.7
-date-released: '2025-01-04'
+version: v3.0.8
+date-released: '2025-01-13'
