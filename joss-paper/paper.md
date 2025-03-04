@@ -32,9 +32,7 @@ Meteorological data from diverse sources are often stored in various file
 formats and structured in various ways, posing challenges for consistent and
 efficient data processing. This complexity and diversity complicates the thorough
 analysis of atmospheric properties needed in describing the past, current, and future
-state of the atmosphere. The need for thorough analysis of the atmosphere's 
-vertical properties has been recognized since the early 20th century, during the 
-advent of "free-air" observations (soundings) using kites, balloons, and aircraft.
+state of the atmosphere. 
 
 Normalizing the analysis of meteorological data ensures that meaningful comparisons 
 can be drawn across a variety of datasets. From this, reliable statistics and analogs
@@ -75,8 +73,8 @@ be used with SounderPy's analysis and plotting functionality.
 # Acknowledgements
 
 The development of SounderPy relies on the robust functionality provided by
-several foundational Python libraries, including MetPy, NumPy, Matplotlib,
-xarray, Cartopy, SHARPpy, SciPy, and others. SounderPy gratefully acknowledges the
+several foundational Python libraries, including MetPy [@metpy], NumPy [@numpy], Matplotlib [@matplotlib],
+xarray [@xarray], Cartopy [@cartopy], SHARPpy [@sharppy], SciPy [@scipy], and others. SounderPy gratefully acknowledges the
 valuable contributions of individuals who have enhanced this project, including
 Scott Thomas (National Weather Service), Daryl Herzmann (Iowa State University),
 Amelia R.H. Urquhart (University of Oklahoma), Ryan Vandersmith, and many others. [@Elements.2016]
