@@ -6,7 +6,7 @@
 # SounderPy, the vertical profile data retrieval and analysis tool for Python
 LATEST VERSION: v3.0.8 |  RELEASED: Jan, 2025  |  COPYRIGHT Kyle J Gillett, 2023-2025
 
-A Python package that helps you to access and plot vertical profile data for meteorological analysis 
+SounderPy is an open-source Python package for retrieving, processing, and visualizing atmospheric sounding data.
 
 [![PyPI Package](https://img.shields.io/pypi/v/sounderpy.svg)](https://pypi.python.org/pypi/sounderpy/)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/sounderpy.svg)](https://pypi.python.org/pypi/sounderpy/)
