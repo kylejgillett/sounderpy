@@ -862,7 +862,7 @@ WMO numbers must be sequential.      Coordinates are in normal degrees.
 687,503530,51.72,126.65,XHEW,A CHINA                         ,--,178,
 688,545110,39.8,116.47,XIQL,JING CHINA                      ,--,32,
 689,548570,36.07,120.33,ZSQD,QINGDAO LIUTING INT'L           ,PT,77,Baker/UPS 11-08
-690,562940,30.67,104.02,XLIC,NGDU CHINA                      ,--,508,
+690,562940,30.67,104.02,XLIK,NGDU CHINA                      ,--,508,
 691,570360,34.3,108.93,XYBH,N CHINA                         ,--,398,
 692,583670,31.17,121.43,XBNI,NGHAI CHINA                     ,--,5,
 693,600300,27.93,-15.38,CLP ,PALMAS/GAN                      ,DO,25,
