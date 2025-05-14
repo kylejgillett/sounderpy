@@ -164,8 +164,6 @@ Thanks for checking out and using SounderPy. My name is Kyle Gillett and I'm a m
 
 SounderPy is published on PyPi and the source code is available on GitHub -- this tool is an open source project. If you have found SounderPy useful in your work, I'd love to hear about it! The coolest part of this project has been hearing how many folks have been using this software. If you'd like to support continued SounderPy development, consider "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"! ☕. 
 
-*Have an issue?* You can `open a GitHub Issue <https://github.com/kylejgillett/sounderpy/issues>`_ or just shoot me a DM on `Twitter <https://twitter.com/wxkylegillett>`_!
-
 
 ****************************************
 

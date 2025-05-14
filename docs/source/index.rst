@@ -101,6 +101,7 @@ Directory
      
      about
      troubleshooting
+     community
 
   .. toctree::
      :maxdepth: 5

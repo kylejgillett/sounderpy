@@ -1,421 +1,192 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
-<title>❓ Troubleshooting</title>
-<style type="text/css">
-
-/*
-:Author: David Goodger (goodger@python.org)
-:Id: $Id: html4css1.css 8954 2022-01-20 10:10:25Z milde $
-:Copyright: This stylesheet has been placed in the public domain.
-
-Default cascading style sheet for the HTML output of Docutils.
-
-See https://docutils.sourceforge.io/docs/howto/html-stylesheets.html for how to
-customize this style sheet.
-*/
-
-/* used to remove borders from tables and images */
-.borderless, table.borderless td, table.borderless th {
-  border: 0 }
-
-table.borderless td, table.borderless th {
-  /* Override padding for "table.docutils td" with "! important".
-     The right padding separates the table cells. */
-  padding: 0 0.5em 0 0 ! important }
-
-.first {
-  /* Override more specific margin styles with "! important". */
-  margin-top: 0 ! important }
-
-.last, .with-subtitle {
-  margin-bottom: 0 ! important }
-
-.hidden {
-  display: none }
-
-.subscript {
-  vertical-align: sub;
-  font-size: smaller }
-
-.superscript {
-  vertical-align: super;
-  font-size: smaller }
-
-a.toc-backref {
-  text-decoration: none ;
-  color: black }
-
-blockquote.epigraph {
-  margin: 2em 5em ; }
-
-dl.docutils dd {
-  margin-bottom: 0.5em }
-
-object[type="image/svg+xml"], object[type="application/x-shockwave-flash"] {
-  overflow: hidden;
-}
-
-/* Uncomment (and remove this text!) to get bold-faced definition list terms
-dl.docutils dt {
-  font-weight: bold }
-*/
-
-div.abstract {
-  margin: 2em 5em }
-
-div.abstract p.topic-title {
-  font-weight: bold ;
-  text-align: center }
-
-div.admonition, div.attention, div.caution, div.danger, div.error,
-div.hint, div.important, div.note, div.tip, div.warning {
-  margin: 2em ;
-  border: medium outset ;
-  padding: 1em }
-
-div.admonition p.admonition-title, div.hint p.admonition-title,
-div.important p.admonition-title, div.note p.admonition-title,
-div.tip p.admonition-title {
-  font-weight: bold ;
-  font-family: sans-serif }
-
-div.attention p.admonition-title, div.caution p.admonition-title,
-div.danger p.admonition-title, div.error p.admonition-title,
-div.warning p.admonition-title, .code .error {
-  color: red ;
-  font-weight: bold ;
-  font-family: sans-serif }
-
-/* Uncomment (and remove this text!) to get reduced vertical space in
-   compound paragraphs.
-div.compound .compound-first, div.compound .compound-middle {
-  margin-bottom: 0.5em }
-
-div.compound .compound-last, div.compound .compound-middle {
-  margin-top: 0.5em }
-*/
-
-div.dedication {
-  margin: 2em 5em ;
-  text-align: center ;
-  font-style: italic }
-
-div.dedication p.topic-title {
-  font-weight: bold ;
-  font-style: normal }
-
-div.figure {
-  margin-left: 2em ;
-  margin-right: 2em }
-
-div.footer, div.header {
-  clear: both;
-  font-size: smaller }
-
-div.line-block {
-  display: block ;
-  margin-top: 1em ;
-  margin-bottom: 1em }
-
-div.line-block div.line-block {
-  margin-top: 0 ;
-  margin-bottom: 0 ;
-  margin-left: 1.5em }
-
-div.sidebar {
-  margin: 0 0 0.5em 1em ;
-  border: medium outset ;
-  padding: 1em ;
-  background-color: #ffffee ;
-  width: 40% ;
-  float: right ;
-  clear: right }
-
-div.sidebar p.rubric {
-  font-family: sans-serif ;
-  font-size: medium }
-
-div.system-messages {
-  margin: 5em }
-
-div.system-messages h1 {
-  color: red }
-
-div.system-message {
-  border: medium outset ;
-  padding: 1em }
-
-div.system-message p.system-message-title {
-  color: red ;
-  font-weight: bold }
-
-div.topic {
-  margin: 2em }
-
-h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
-h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
-  margin-top: 0.4em }
-
-h1.title {
-  text-align: center }
-
-h2.subtitle {
-  text-align: center }
-
-hr.docutils {
-  width: 75% }
-
-img.align-left, .figure.align-left, object.align-left, table.align-left {
-  clear: left ;
-  float: left ;
-  margin-right: 1em }
-
-img.align-right, .figure.align-right, object.align-right, table.align-right {
-  clear: right ;
-  float: right ;
-  margin-left: 1em }
-
-img.align-center, .figure.align-center, object.align-center {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-table.align-center {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.align-left {
-  text-align: left }
-
-.align-center {
-  clear: both ;
-  text-align: center }
-
-.align-right {
-  text-align: right }
-
-/* reset inner alignment in figures */
-div.align-right {
-  text-align: inherit }
-
-/* div.align-center * { */
-/*   text-align: left } */
-
-.align-top    {
-  vertical-align: top }
-
-.align-middle {
-  vertical-align: middle }
-
-.align-bottom {
-  vertical-align: bottom }
-
-ol.simple, ul.simple {
-  margin-bottom: 1em }
-
-ol.arabic {
-  list-style: decimal }
-
-ol.loweralpha {
-  list-style: lower-alpha }
-
-ol.upperalpha {
-  list-style: upper-alpha }
-
-ol.lowerroman {
-  list-style: lower-roman }
-
-ol.upperroman {
-  list-style: upper-roman }
-
-p.attribution {
-  text-align: right ;
-  margin-left: 50% }
-
-p.caption {
-  font-style: italic }
-
-p.credits {
-  font-style: italic ;
-  font-size: smaller }
-
-p.label {
-  white-space: nowrap }
-
-p.rubric {
-  font-weight: bold ;
-  font-size: larger ;
-  color: maroon ;
-  text-align: center }
-
-p.sidebar-title {
-  font-family: sans-serif ;
-  font-weight: bold ;
-  font-size: larger }
-
-p.sidebar-subtitle {
-  font-family: sans-serif ;
-  font-weight: bold }
-
-p.topic-title {
-  font-weight: bold }
-
-pre.address {
-  margin-bottom: 0 ;
-  margin-top: 0 ;
-  font: inherit }
-
-pre.literal-block, pre.doctest-block, pre.math, pre.code {
-  margin-left: 2em ;
-  margin-right: 2em }
-
-pre.code .ln { color: grey; } /* line numbers */
-pre.code, code { background-color: #eeeeee }
-pre.code .comment, code .comment { color: #5C6576 }
-pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
-pre.code .literal.string, code .literal.string { color: #0C5404 }
-pre.code .name.builtin, code .name.builtin { color: #352B84 }
-pre.code .deleted, code .deleted { background-color: #DEB0A1}
-pre.code .inserted, code .inserted { background-color: #A3D289}
-
-span.classifier {
-  font-family: sans-serif ;
-  font-style: oblique }
-
-span.classifier-delimiter {
-  font-family: sans-serif ;
-  font-weight: bold }
-
-span.interpreted {
-  font-family: sans-serif }
-
-span.option {
-  white-space: nowrap }
-
-span.pre {
-  white-space: pre }
-
-span.problematic {
-  color: red }
-
-span.section-subtitle {
-  /* font-size relative to parent (h1..h6 element) */
-  font-size: 80% }
-
-table.citation {
-  border-left: solid 1px gray;
-  margin-left: 1px }
-
-table.docinfo {
-  margin: 2em 4em }
-
-table.docutils {
-  margin-top: 0.5em ;
-  margin-bottom: 0.5em }
-
-table.footnote {
-  border-left: solid 1px black;
-  margin-left: 1px }
-
-table.docutils td, table.docutils th,
-table.docinfo td, table.docinfo th {
-  padding-left: 0.5em ;
-  padding-right: 0.5em ;
-  vertical-align: top }
-
-table.docutils th.field-name, table.docinfo th.docinfo-name {
-  font-weight: bold ;
-  text-align: left ;
-  white-space: nowrap ;
-  padding-left: 0 }
-
-/* "booktabs" style (no vertical lines) */
-table.docutils.booktabs {
-  border: 0px;
-  border-top: 2px solid;
-  border-bottom: 2px solid;
-  border-collapse: collapse;
-}
-table.docutils.booktabs * {
-  border: 0px;
-}
-table.docutils.booktabs th {
-  border-bottom: thin solid;
-  text-align: left;
-}
-
-h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
-h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
-  font-size: 100% }
-
-ul.auto-toc {
-  list-style-type: none }
-
-</style>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>❓ Troubleshooting &mdash; SounderPy v3.0.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=0f7a3e64"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="🌐 Tools for Getting Data" href="gettingdata.html" />
+    <link rel="prev" title="📖 About" href="about.html" /> 
 </head>
-<body>
-<div class="document" id="troubleshooting">
-<h1 class="title">❓ Troubleshooting</h1>
 
-<p>Like any software, SounderPy is prone to errors now and then -- some of them are known with fixes! If you are running into issues using SounderPy, check out this guide to troubleshooting below!</p>
-<p>If you have an error that you don't see on this page, you can <a class="reference external" href="https://github.com/kylejgillett/sounderpy/issues">open a GitHub Issue</a> or feel free to shoot me a DM on <a class="reference external" href="https://twitter.com/wxkylegillett">Twitter</a>!</p>
-<div class="section" id="funky-plot-scaling">
-<h1>Funky Plot Scaling</h1>
-<img alt="_static/images/funky_layout_example.jpg" class="align-left" src="_static/images/funky_layout_example.jpg" style="width: 300px;" />
-<p>When using SounderPy's plot function, sometimes the matplotlib formatting operations the plot functions use (<tt class="docutils literal">build_sounding()</tt>, <tt class="docutils literal">build_hodograph()</tt>, <tt class="docutils literal">build_composite()</tt>) don't agree with some screen sizes. This throws off the scaling of the plots when plotting them 'inline'. Thankfully there is a fix!</p>
-<p>Each of SounderPy's plotting functions have a <tt class="docutils literal">save</tt> key-word-argument (kwarg). By default these are set to <em>False</em>, but when setting the kwarg to <em>True</em> you can save the plot to a .png file.</p>
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SounderPy
+              <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">❓ Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#funky-plot-scaling">Funky Plot Scaling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-fix-saving-the-plot-to-a-file">The Fix: saving the plot to a file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#goofy-acars-profiles">Goofy ACARS Profiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#era5-data-access-not-working">ERA5 data access not working</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rap-data-won-t-load">RAP data won’t load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sounderpy-can-t-find-a-raob-sounding-you-know-exists">SounderPy can’t find a RAOB sounding you know exists</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customdatasources.html">✏️ Custom Data Sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpertools.html">🛠️ Helper Tools</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="beginners_sounderpy_cookbook.html">👨‍🍳Beginner’s SounderPy Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examplescripts.html">📝 Usage Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SounderPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">❓ Troubleshooting</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/troubleshooting.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="troubleshooting">
+<h1>❓ Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h1>
+<p>Like any software, SounderPy is prone to errors now and then – some of them are known with fixes! If you are running into issues using SounderPy, check out this guide to troubleshooting below!</p>
+<p>If you have an error that you don’t see on this page, you can <a class="reference external" href="https://github.com/kylejgillett/sounderpy/issues">open a GitHub Issue</a> or feel free to shoot me a DM on <a class="reference external" href="https://twitter.com/wxkylegillett">Twitter</a>!</p>
+<section id="funky-plot-scaling">
+<h2>Funky Plot Scaling<a class="headerlink" href="#funky-plot-scaling" title="Link to this heading"></a></h2>
+<a class="reference internal image-reference" href="_images/funky_layout_example.jpg"><img alt="_images/funky_layout_example.jpg" class="align-left" src="_images/funky_layout_example.jpg" style="width: 300px;" />
+</a>
+<p>When using SounderPy’s plot function, sometimes the matplotlib formatting operations the plot functions use (<code class="docutils literal notranslate"><span class="pre">build_sounding()</span></code>, <code class="docutils literal notranslate"><span class="pre">build_hodograph()</span></code>, <code class="docutils literal notranslate"><span class="pre">build_composite()</span></code>) don’t agree with some screen sizes. This throws off the scaling of the plots when plotting them ‘inline’. Thankfully there is a fix!</p>
+<p>Each of SounderPy’s plotting functions have a <code class="docutils literal notranslate"><span class="pre">save</span></code> key-word-argument (kwarg). By default these are set to <em>False</em>, but when setting the kwarg to <em>True</em> you can save the plot to a .png file.</p>
 <p>When the plot is saved to a file it will preserve the correct scaling and dimensions.</p>
-<div class="section" id="the-fix-saving-the-plot-to-a-file">
-<h2>The Fix: saving the plot to a file</h2>
+<section id="the-fix-saving-the-plot-to-a-file">
+<h3>The Fix: saving the plot to a file<a class="headerlink" href="#the-fix-saving-the-plot-to-a-file" title="Link to this heading"></a></h3>
 <blockquote>
-<p>Add the <tt class="docutils literal">save=True</tt> kwarg to your plot function (<tt class="docutils literal">build_sounding()</tt>, <tt class="docutils literal">build_hodograph()</tt>, <tt class="docutils literal">build_composite()</tt>).</p>
-<p>You can optionally add the <tt class="docutils literal">filename</tt> kwarg that allows you to set a specific filename. By default, this filename is <em>'sounderpy_sounding.png'</em>.</p>
-</blockquote>
-</div>
-</div>
+<div><p>Add the <code class="docutils literal notranslate"><span class="pre">save=True</span></code> kwarg to your plot function (<code class="docutils literal notranslate"><span class="pre">build_sounding()</span></code>, <code class="docutils literal notranslate"><span class="pre">build_hodograph()</span></code>, <code class="docutils literal notranslate"><span class="pre">build_composite()</span></code>).</p>
+<p>You can optionally add the <code class="docutils literal notranslate"><span class="pre">filename</span></code> kwarg that allows you to set a specific filename. By default, this filename is <em>‘sounderpy_sounding.png’</em>.</p>
+</div></blockquote>
+</section>
+</section>
 <hr class="docutils" />
-<div class="section" id="goofy-acars-profiles">
-<h1>Goofy ACARS Profiles</h1>
-<img alt="_static/images/example-goofy-acars.png" class="align-left" src="_static/images/example-goofy-acars.png" style="width: 300px;" />
+<section id="goofy-acars-profiles">
+<h2>Goofy ACARS Profiles<a class="headerlink" href="#goofy-acars-profiles" title="Link to this heading"></a></h2>
+<a class="reference internal image-reference" href="_images/example-goofy-acars.png"><img alt="_images/example-goofy-acars.png" class="align-left" src="_images/example-goofy-acars.png" style="width: 300px;" />
+</a>
 <p>Sometimes ACARS data just comes with errors that can not be fixed. Because these observations are taken by aircraft during arrivals and departures, they can be prone to errors such as too-dry dewpoints, too-strong wind velocity, and strange height data. Unfortunately these errors can not be fixed.</p>
 <p>The best way to check if ACARS observations are correct is by comparing them to recent forecast model profiles (at forecast hour 0) for that location.</p>
-</div>
+</section>
 <hr class="docutils" />
-<div class="section" id="era5-data-access-not-working">
-<h1>ERA5 data access not working</h1>
+<section id="era5-data-access-not-working">
+<h2>ERA5 data access not working<a class="headerlink" href="#era5-data-access-not-working" title="Link to this heading"></a></h2>
 <p>To access ERA5 data, some extra steps are involved. Make sure you create an account with the ECMWF Climate Data Store (CDS) to gain access to their API.</p>
 <p>Also note that CDS has recently updated their API (September 2024). Thus, even if you have done this before, you have to migrate to the new API.</p>
-<dl class="docutils">
-<dt>Basic steps include:</dt>
-<dd><blockquote class="first">
-<ul class="simple">
-<li>creating a CDS API account</li>
-<li>Setting up a CDS API personal access token</li>
-<li>Creating a $HOME/.cdsapirc file</li>
+<dl>
+<dt>Basic steps include:</dt><dd><blockquote>
+<div><ul class="simple">
+<li><p>creating a CDS API account</p></li>
+<li><p>Setting up a CDS API personal access token</p></li>
+<li><p>Creating a $HOME/.cdsapirc file</p></li>
 </ul>
-</blockquote>
-<p class="last">Follow the instructions on the CDSAPI &quot;how to&quot; documentation -- See: <a class="reference external" href="https://cds.climate.copernicus.eu/how-to-api">https://cds.climate.copernicus.eu/how-to-api</a></p>
+</div></blockquote>
+<p>Follow the instructions on the CDSAPI “how to” documentation – See: <a class="reference external" href="https://cds.climate.copernicus.eu/how-to-api">https://cds.climate.copernicus.eu/how-to-api</a></p>
 </dd>
 </dl>
-</div>
+</section>
 <hr class="docutils" />
-<div class="section" id="rap-data-won-t-load">
-<h1>RAP data won't load</h1>
+<section id="rap-data-won-t-load">
+<h2>RAP data won’t load<a class="headerlink" href="#rap-data-won-t-load" title="Link to this heading"></a></h2>
 <p>Sometimes, this just happens. The NCEP server (THREDDS) is prone to high latency or even simply being down. Therefore, data access may take several minutes or data access is not possible.</p>
 <p>Sometimes these issues are resolved within hours, other times possibly a few days. Trying again at a later time is generally the best fix.</p>
-</div>
+</section>
 <hr class="docutils" />
-<div class="section" id="sounderpy-can-t-find-a-raob-sounding-you-know-exists">
-<h1>SounderPy can't find a RAOB sounding you know exists</h1>
-<p>Ah, this one is fun. Different databases store RAOB data differently. As such, you may find that a sounding that you believe was launched at '18z' is actually stored as '19z' or '17z'. Its annoying.</p>
-<p>This will cause the <cite>get_obs_data()</cite> to &quot;not find&quot; the sounding you want because the database it's seraching through</p>
-</div>
-</div>
+<section id="sounderpy-can-t-find-a-raob-sounding-you-know-exists">
+<h2>SounderPy can’t find a RAOB sounding you know exists<a class="headerlink" href="#sounderpy-can-t-find-a-raob-sounding-you-know-exists" title="Link to this heading"></a></h2>
+<p>Ah, this one is fun. Different databases store RAOB data differently. As such, you may find that a sounding that you believe was launched at ‘18z’ is actually stored as ‘19z’ or ‘17z’. Its annoying.</p>
+<p>This will cause the <cite>get_obs_data()</cite> to “not find” the sounding you want because the database it’s searching through has it listed under a different time.</p>
+<p>Try increasing or decreasing the launch_hour by 1 hour.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="about.html" class="btn btn-neutral float-left" title="📖 About" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gettingdata.html" class="btn btn-neutral float-right" title="🌐 Tools for Getting Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Kyle J Gillett.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
 </body>
 </html>
