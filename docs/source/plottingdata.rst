@@ -44,8 +44,8 @@ While this function may appear complicated at first glance, there is actually on
    :type storm_motion: str or list of floats, optional, Default is 'right_moving'.
    :param special_parcels: a nested list of special parcels from the ``ecape_parcels`` library. The nested list should be a list of two lists (`[[a, b], [c, d]]`) where the first list should include 'highlight parcels' and second list should include 'background parcels'. For more details, see the :ref:`parcels_logic` section. Another option is 'simple', which removes all advanced parcels making the plot quicker.
    :type special_parcels: nested `list` of two `lists`, optional, Default is None
-   :param show_radar: whether or not to display mosaic radar data on the map inset.
-   :type show_radar: bool, optional, Default is ``True``
+   :param radar: whether to display mosaic reflectivity, single-site reflectivity, or no radar in the map inset.
+   :type radar: str, ``mosaic`` or ``single-site``. Optional. Default is ``mosaic``.
    :param radar_time: radar mosaic data valid time. May be ``sounding`` (uses the valid time of the sounding data), or ``now`` (current time/date). **Note: radar mosaic data only goes back 1 month from current date**
    :type radar_time: str, optional, Default is ``sounding``.
    :param map_zoom: a 'zoom' level for the map inset as an `int`. **Note: Setting ``map_zoom=0`` will hide the map**

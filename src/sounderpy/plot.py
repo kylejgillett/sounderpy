@@ -28,18 +28,26 @@ from PIL import Image
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import matplotlib.pyplot as plt
+from cartopy.io import img_tiles
 
-# DATA RETRIEVAL
-from xarray.backends import NetCDF4DataStore
-from xarray import open_dataset
-from siphon.catalog import TDSCatalog
-from netCDF4 import Dataset
-from matplotlib.colors import LinearSegmentedColormap
 
 # SOUNDERPY MODULES
 from .calc import sounding_params, vad_params
 from .utils import modify_surface, find_nearest, mag, mag_round
+from .radar_utils import *
 
+
+import os
+from contextlib import contextmanager, redirect_stderr, redirect_stdout
+@contextmanager
+def suppress_stdout_stderr():
+    """A context manager that redirects stdout and stderr to devnull"""
+    with open(os.devnull, 'w') as fnull:
+        with redirect_stderr(fnull) as err, redirect_stdout(fnull) as out:
+            yield (err, out)
+
+with suppress_stdout_stderr():
+    import pyart
 
 
 
@@ -56,115 +64,48 @@ from .utils import modify_surface, find_nearest, mag, mag_round
 """
 
 
+#########################################################################
+############################ PLOT UTILS #################################
+#########################################################################
+
+#########################################################################
+########################## HODO BOUNDARY ################################
+def plot_boundary(ax, angle_deg, color):
+    # line params
+    center_u = 0
+    center_v = 0
+    angle_rad = np.deg2rad(90-angle_deg)
+    # compute u & v deltas
+    delta_u = 200 * np.cos(angle_rad)
+    delta_v = 200 * np.sin(angle_rad)
+    # compute "u & v" values for the boundary
+    boundary_u = np.array([center_u - delta_u, center_u + delta_u])
+    boundary_v = np.array([center_v - delta_v, center_v + delta_v])
+    # plot the boundary
+    ax.plot(boundary_u, boundary_v, color=color, linestyle='--', linewidth=2, alpha=0.3, label='Boundary Axis')
+
+
+
+
+
+#########################################################################
+############################## FIGURES ##################################
+#########################################################################
+
+
+
 
 #########################################################################
 ########################## FULL SOUNDING ################################
 
 def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels=None, 
-                    show_radar=True, radar_time='sounding', map_zoom=2, modify_sfc=None,
-                    show_theta=False):
+                    radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None,
+                    show_theta=False, hodo_boundary=None):
     
     
     # record process time 
-    st = time.time()  
+    st = time.time()
 
-
-    
-    
-    # get radar mosaic data for map inset
-    def get_radar_mosaic(clean_data, map_zoom, radar_time):
-        '''
-        GET RADAR MOSAIC DATA FOR SOUNDING PLOT
-        
-        - gets data from NCEI for 'sounding time' or now
-        - data only goes back 1 month from current time
-        '''
-    
-        # search the NCEI database for the file closest to 
-        # the requested radar date/time
-        def find_file(target_time, file_names):
-            closest_index = None
-            closest_difference = float('inf')
-
-            for idx, file_name in enumerate(file_names):
-                # Extract the final component (ex: "1220") from the file name
-                components = file_name.split('_')
-                if len(components) > 1:
-                    # Remove file extension if present
-                    last_component = components[-1].split('.')[0]
-                    try:
-                        file_time = int(last_component)
-                        # Convert the target_time to an integer for comparison
-                        target_time_int = int(target_time)
-                        difference = abs(file_time - target_time_int)
-                        if difference < closest_difference:
-                            closest_difference = difference
-                            closest_index = idx
-                    except ValueError:
-                        pass  # Skip if the last component is not a valid integer
-
-            return closest_index
-
-
-        # PREFORM DATETIME OPERATIONS------------------------------------------------------------------------
-        # get sounding data from from clean_data
-        data_dt = datetime(int(clean_data['site_info']['valid-time'][0]), int(clean_data['site_info']['valid-time'][1]), 
-             int(clean_data['site_info']['valid-time'][2]), int(clean_data['site_info']['valid-time'][3][0:2]))
-
-        # get current time
-        curr_dt = datetime.utcnow()
-
-        # if data time is after current time, default to now
-        if data_dt > curr_dt:
-            time = curr_dt.strftime('%H%M')
-            datestr = curr_dt.strftime('%Y%m%d')
-        
-        # if radar time is given as now, time is now
-        elif radar_time == 'now':
-            time = curr_dt.strftime('%H%M')
-            datestr = curr_dt.strftime('%Y%m%d')
-
-        # if radar time is given as sounding, use the valid-time info from clean_data
-        elif radar_time == 'sounding':
-            if len(clean_data['site_info']['valid-time'][3]) == 2:
-                time = f"{clean_data['site_info']['valid-time'][3]}00"
-            else:
-                time = clean_data['site_info']['valid-time'][3]
-            datestr = data_dt.strftime('%Y%m%d')
-
-
-        # PULL SOUNDING DATA LAT/LON ----------------------------------------------------------------------
-        data_lat = clean_data['site_info']['site-latlon'][0]
-        data_lon = clean_data['site_info']['site-latlon'][1]
-
-
-        # GET RADAR DATA ----------------------------------------------------------------------------------
-        composite_url = 'https://thredds.ucar.edu/thredds/catalog/nexrad/composite/gini/dhr/1km/'+datestr+'/catalog.xml'
-        try:
-            # try accessing the NCEI TDS database
-            composite_catalog = TDSCatalog(composite_url).datasets
-            data_found = True
-        except:
-            # no data is available, return no data
-            print('- no radar data available -')
-            data_found = False
-            pass
-        
-        if data_found == True:
-            # if data is foudn, parse it for plotting.
-            filename = composite_catalog[find_file(time, composite_catalog)].subset()
-            composite_query = filename.query()
-            composite_query.lonlat_box(north = data_lat + (map_zoom + 1),
-                             south = data_lat - (map_zoom + 1),
-                             east  = data_lon + (map_zoom + 1),
-                             west  = data_lon - (map_zoom + 1))
-            composite_query.add_lonlat(value=True)
-            composite_query.accept('netcdf4')
-            composite_query.variables('Reflectivity')
-            radar_data = filename.get_data(composite_query)
-            radar_data = open_dataset(NetCDF4DataStore(radar_data))
-
-            return radar_data
         
     # define display mode colors and alphas    
     if dark_mode == True:
@@ -902,7 +843,15 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
             
         plt.figtext(0.748, 0.942, 
                 f' SM: {sm_str(storm_motion, speeds, directions)} kts',
-                color=gen_txt_clr, weight='bold', fontsize=15, verticalalignment='top', linespacing=2.2, alpha=0.6) 
+                color=gen_txt_clr, weight='bold', fontsize=15, verticalalignment='top', linespacing=2.2, alpha=0.6)
+
+
+
+    if hodo_boundary is not None:
+        for angle, color in zip(hodo_boundary['angle'], hodo_boundary['color']):
+            plot_boundary(h.ax, angle, color=color)
+        h.ax.arrow(0, 0, kinem['sm_mw'][0] - 0.3, kinem['sm_mw'][1] - 0.3, linewidth=3, color=gen_txt_clr, alpha=0.2,
+                   label='SM Vector', length_includes_head=True, head_width=0.6)
     ################################################################
     
     
@@ -1013,43 +962,67 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
         zoom_factor = map_zoom
         map_ax.set_extent([clean_data['site_info']['site-latlon'][1] - zoom_factor,
                            clean_data['site_info']['site-latlon'][1] + zoom_factor,
-                           clean_data['site_info']['site-latlon'][0] - zoom_factor,
+                           clean_data['site_info']['site-latlon'][0] - zoom_factor/1.6,
                            clean_data['site_info']['site-latlon'][0] + zoom_factor*1.6])
         map_ax.set_box_aspect(1) 
 
-        map_ax.add_feature(cfeature.STATES, color=bckgrnd_clr, zorder=1)
+        map_ax.add_feature(cfeature.STATES, color=bckgrnd_clr, alpha=0.5, zorder=2)
         map_ax.add_feature(cfeature.STATES, edgecolor=gen_txt_clr, alpha=0.7, 
                        linestyle='-', linewidth=2, zorder=6)
-        map_ax.add_feature(USCOUNTIES, alpha=0.3, edgecolor=gen_txt_clr, 
-                           linestyle='-', linewidth=0.2, zorder=5)
+        map_ax.add_feature(USCOUNTIES, alpha=0.7, edgecolor=gen_txt_clr,
+                           linestyle='-', linewidth=0.5, zorder=5)
         map_ax.add_feature(cfeature.LAKES, color=bckgrnd_clr)
         map_ax.add_feature(cfeature.OCEAN, color=bckgrnd_clr)
+        satellite = img_tiles.GoogleTiles(style='satellite')
+        map_ax.add_image(satellite, 10, zorder=1)
 
-        if show_radar == True:
-            # BUILD COLOR MAP -----------------------------------------------------------------------------------------------------
-            radar_cmap = LinearSegmentedColormap.from_list('custom_cmap',
-                        ['#B0C4DE', '#4682B4', '#90EE90', '#228B22', '#FFFF4D', '#E6E600',
-                        '#FFC34D', '#E69900', '#FF4D4D', '#E60000', '#FFCCEE', '#FF198C',
-                        '#D400FF', '#550080'], N=256)
+        if radar == 'mosaic':
 
-
-            # PLOT RADAR DATA -----------------------------------------------------------------------------------------------------
+            # PLOT RADAR MOSAIC -----------------------------------------------------------------------------------------------------
             try:
                 radar_data = get_radar_mosaic(sounding_data, map_zoom, radar_time)
-
                 reflectivity = np.ma.masked_array(np.array(radar_data['Reflectivity'])[0,:,:],
                                                   np.array(radar_data['Reflectivity'])[0,:,:]<10)
-
-                map_ax.pcolormesh(radar_data['lon']+0.05, radar_data['lat']+0.05, reflectivity, 
-                                  vmin=10, vmax=80, cmap=radar_cmap, alpha=1, zorder=4)
-
+                map_ax.pcolormesh(radar_data['lon']+0.05, radar_data['lat']+0.05, reflectivity,
+                                  vmin=-32, vmax=95, cmap=rs_expertreflect_cmap, alpha=1, zorder=4)
                 radar_timestamp = f"{str(radar_data['time'].values[0])[5:10]} | {str(radar_data['time'].values[0])[11:16]}"
 
-
-                plt.figtext(0.80, 0.11, f'Valid: {radar_timestamp}', 
+                plt.figtext(0.80, 0.11, f'Valid: {radar_timestamp}',
                         ha='center', alpha=0.9, weight='bold', fontsize=13, zorder=13, color=gen_txt_clr,
                         bbox=dict(facecolor=bckgrnd_clr, alpha=0.8, edgecolor=gen_txt_clr, pad=3))
-            except: 
+            except:
+                plt.figtext(0.80, 0.11, f'RADAR UNAVAILABLE',
+                            ha='center', alpha=0.9, weight='bold', fontsize=13, zorder=13, color=gen_txt_clr,
+                            bbox=dict(facecolor=bckgrnd_clr, alpha=0.8, edgecolor=gen_txt_clr, pad=3))
+                pass
+
+        if radar in ['single-site', 'single']:
+            # PLOT SINGLE SITE RADAR -----------------------------------------------------------------------------------------------------
+            try:
+                site_ids, lat_radar, lon_radar = parse_nexrad_locs('nexrad_locations.txt')
+                nexrad_site, nexrad_lat, nexrad_lon = find_nearest_station(site_ids, lat_radar, lon_radar, clean_data['site_info']['site-latlon'][0],clean_data['site_info']['site-latlon'][1])
+                radar, scan_timestamp, nexrad_site = get_radar_data(nexrad_site, clean_data, radar_time)
+
+                radar.longitude['data'][0] = nexrad_lon
+                radar.latitude['data'][0] = nexrad_lat
+
+                gatefilter = pyart.filters.GateFilter(radar)
+                gatefilter.exclude_below('reflectivity', 10)
+                gatefilter.exclude_equal('reflectivity', 2)
+                gatefilter.exclude_equal('reflectivity', 1)
+                display = pyart.graph.RadarMapDisplay(radar)
+                rad_display = display.plot_ppi_map(field='reflectivity',
+                                                   sweep=0,ax=map_ax,vmin=-32,vmax=95,title_flag=False,
+                                                   colorbar_flag=False,cmap=rs_expertreflect_cmap,resolution='10m',
+                                                   lat_lines=None,lon_lines=None,add_grid_lines=False,zorder=4)
+
+                plt.figtext(0.80, 0.11, f'{nexrad_site}: {scan_timestamp}',
+                        ha='center', alpha=0.9, weight='bold', fontsize=12, zorder=13, color=gen_txt_clr,
+                        bbox=dict(facecolor=bckgrnd_clr, alpha=0.8, edgecolor=gen_txt_clr, pad=3))
+            except:
+                plt.figtext(0.80, 0.11, f'RADAR UNAVAILABLE',
+                            ha='center', alpha=0.9, weight='bold', fontsize=13, zorder=13, color=gen_txt_clr,
+                            bbox=dict(facecolor=bckgrnd_clr, alpha=0.8, edgecolor=gen_txt_clr, pad=3))
                 pass
 
         # ADD PROFILE LOCATION ------------------------------------------------------------------------------------------------
@@ -1599,21 +1572,20 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
 #########################################################################
 ############################ HODOGRAPH ##################################
 
-def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc):
+def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc,
+                     show_radar, radar_time, map_zoom, hodo_boundary):
 
 
     if dark_mode == True:
         gen_txt_clr = 'white'
         bckgrnd_clr = 'black'
         brdr_clr    = 'white'
-        barb_clr    = 'white'
-        shade_alpha = 0.06
+        marker_clr = 'white'
     else: 
         gen_txt_clr = 'black'
         bckgrnd_clr = 'white'
         brdr_clr    = 'black'
-        barb_clr    = 'black'
-        shade_alpha = 0.02
+        marker_clr = 'black'
     
     
     # record process time 
@@ -1643,7 +1615,7 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc):
     ws = mpcalc.wind_speed(u, v)
 
     # calculate other sounding parameters using SounderPy Calc
-    general, thermo, kinem, intrp = sounding_params(sounding_data, storm_motion).calc()
+    general, thermo, kinem, intrp = sounding_params(sounding_data, storm_motion, include_all_parcels=True).calc()
     #################################################################
 
 
@@ -1700,30 +1672,30 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc):
     v_clean = v.magnitude[np.logical_not(np.isnan(v.magnitude))]
     # restructure u and v, p, ws and z data arrays based on corrected u and v arrays and hodo_layer depth
     # define x and y min/max values from 'cleaned' and restructured u and v arrays
-    x_min = u_hodo.min().m
-    y_min = v_hodo.min().m
-    x_max = u_hodo.max().m
-    y_max = v_hodo.max().m
-    # if statements to determine approprate x axis and y axis limits (to change dynamically with the data)
-    if y_max >= 0:
-        y_Maxlimit = (y_max + 15)
-    if y_max < 0:
-        y_Maxlimit = (y_max + 15)
-
-    if x_max >= 0:
-        x_Maxlimit = (x_max + 15)
-    if x_max < 0:
-        x_Maxlimit = (x_max + 15)
-
-    if y_min >= 0:
-        y_Minlimit = (y_min - 40)
-    if y_min < 0:
-        y_Minlimit = (y_min - 40)
-
-    if x_min >= 0:
-        x_Minlimit = (x_min - 40)
-    if x_min < 0:
-        x_Minlimit = (x_min - 40)
+    # x_min = u_hodo.min().m
+    # y_min = v_hodo.min().m
+    # x_max = u_hodo.max().m
+    # y_max = v_hodo.max().m
+    # # if statements to determine approprate x axis and y axis limits (to change dynamically with the data)
+    # if y_max >= 0:
+    #     y_Maxlimit = (y_max + 15)
+    # if y_max < 0:
+    #     y_Maxlimit = (y_max + 15)
+    #
+    # if x_max >= 0:
+    #     x_Maxlimit = (x_max + 15)
+    # if x_max < 0:
+    #     x_Maxlimit = (x_max + 15)
+    #
+    # if y_min >= 0:
+    #     y_Minlimit = (y_min - 40)
+    # if y_min < 0:
+    #     y_Minlimit = (y_min - 40)
+    #
+    # if x_min >= 0:
+    #     x_Minlimit = (x_min - 40)
+    # if x_min < 0:
+    #     x_Minlimit = (x_min - 40)
     #################################################################
         
         
@@ -1734,15 +1706,10 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc):
     fig.set_facecolor(bckgrnd_clr)  
     hod_ax = plt.axes((0.13, 0.11, 0.77, 0.77))
     h = Hodograph(hod_ax, component_range=150.)
-    try:
-        h.ax.set_xlim(x_Minlimit, x_Maxlimit)                                  
-        h.ax.set_ylim(y_Minlimit, y_Maxlimit)                             
-    except:
-        h.ax.set_xlim(-65,65)
-        h.ax.set_ylim(-65,65)
-        pass                                                                         
-    h.add_grid(increment=20, color=gen_txt_clr, linestyle='-', linewidth=1.5, alpha=0.4) 
-    h.add_grid(increment=10, color=gen_txt_clr, linewidth=1, linestyle='--', alpha=0.4) 
+    h.ax.set_xlim(-70, 70)
+    h.ax.set_ylim(-70, 70)
+    h.add_grid(increment=20, color=gen_txt_clr, linestyle='-', linewidth=1.5, alpha=1)
+    h.add_grid(increment=10, color=gen_txt_clr, linewidth=1, linestyle='--', alpha=0.5)
     h.ax.set_facecolor(bckgrnd_clr)
     h.ax.spines["top"].set_color(brdr_clr)
     h.ax.spines["left"].set_color(brdr_clr)
@@ -1766,20 +1733,20 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc):
     plt.xticks(np.arange(0,0,1))
     plt.yticks(np.arange(0,0,1))
     for i in range(10,130,20):
-        h.ax.annotate(str(i),(i,0),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
+        h.ax.annotate(str(i),(i,0),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=10,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
     for i in range(10,130,20):
-        h.ax.annotate(str(i),(0,i),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
+        h.ax.annotate(str(i),(0,i),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=10,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
     for i in range(10,130,20):
-        h.ax.annotate(str(i),(-i,0),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
+        h.ax.annotate(str(i),(-i,0),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=10,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
     for i in range(10,130,20):
-        h.ax.annotate(str(i),(0,-i),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=12,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
+        h.ax.annotate(str(i),(0,-i),xytext=(0,2),textcoords='offset pixels',clip_on=True,fontsize=10,weight='bold',alpha=0.2,zorder=0, color=gen_txt_clr)
 
         
         
     h.plot(intrp['uINTRP'][intrp['hgt_lvls']['h05']],intrp['vINTRP'][intrp['hgt_lvls']['h05']],marker='.', markeredgecolor='black',
-           color='white', alpha=1, markersize=30, clip_on=True, zorder=5)
+           color='white', alpha=1, markersize=20, clip_on=True, zorder=5)
     h.ax.annotate(str('.5'),(intrp['uINTRP'][intrp['hgt_lvls']['h05']],intrp['vINTRP'][intrp['hgt_lvls']['h05']]),
-                  weight='bold', fontsize=11, color='black',xytext=(0.02,-5),textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=6) 
+                  weight='bold', fontsize=8, color='black',xytext=(0.02,-5),textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=6)
 
     hgt_lvls = [] 
     for key in intrp['hgt_lvls'].keys():
@@ -1788,9 +1755,9 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc):
 
     for lvl in hgt_lvls[1::2]:
         if lvl < 130:
-            h.plot(intrp['uINTRP'][lvl],intrp['vINTRP'][lvl], marker='.', color='white', markeredgecolor='black', alpha=1, markersize=30, zorder=5)
+            h.plot(intrp['uINTRP'][lvl],intrp['vINTRP'][lvl], marker='.', color='white', markeredgecolor='black', alpha=1, markersize=20, zorder=5)
             h.ax.annotate(str(int(round(intrp['zINTRP'][lvl]/1000,0))),(intrp['uINTRP'][lvl],intrp['vINTRP'][lvl]), 
-                          weight='bold', fontsize=11, color='black',xytext=(0.02,-5),textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=5.1) 
+                          weight='bold', fontsize=8, color='black',xytext=(0.02,-5),textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=5.1)
     #################################################################
     
     
@@ -1802,11 +1769,11 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc):
     #################################################################
     hodo_color = ['purple','red','darkorange','gold','#fff09f']
 
-    h.ax.plot(intrp['uINTRP'][0:10+1],   intrp['vINTRP'][0:10+1],   color=hodo_color[0], linewidth=7, clip_on=True)
-    h.ax.plot(intrp['uINTRP'][10:30+1],  intrp['vINTRP'][10:30+1],  color=hodo_color[1], linewidth=7, clip_on=True)
-    h.ax.plot(intrp['uINTRP'][30:60+1],  intrp['vINTRP'][30:60+1],  color=hodo_color[2], linewidth=7, clip_on=True)
-    h.ax.plot(intrp['uINTRP'][60:90+1],  intrp['vINTRP'][60:90+1],  color=hodo_color[3], linewidth=7, clip_on=True)
-    h.ax.plot(intrp['uINTRP'][90:120+1], intrp['vINTRP'][90:120+1], color=hodo_color[4], linewidth=7, clip_on=True) 
+    h.ax.plot(intrp['uINTRP'][0:10+1],   intrp['vINTRP'][0:10+1],   color=hodo_color[0], linewidth=6, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][10:30+1],  intrp['vINTRP'][10:30+1],  color=hodo_color[1], linewidth=6, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][30:60+1],  intrp['vINTRP'][30:60+1],  color=hodo_color[2], linewidth=6, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][60:90+1],  intrp['vINTRP'][60:90+1],  color=hodo_color[3], linewidth=6, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][90:120+1], intrp['vINTRP'][90:120+1], color=hodo_color[4], linewidth=6, clip_on=True)
 
     
     
@@ -1816,18 +1783,18 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc):
     if ma.is_masked(kinem['sm_rm']) == False:
         # BUNKERS STORM MOTION
         if sr_hodo == False:
-            h.ax.text((kinem['sm_rm'][0]+0.5), (kinem['sm_rm'][1]-0.5), 'RM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
-            h.ax.text((kinem['sm_lm'][0]+0.5), (kinem['sm_lm'][1]-0.5), 'LM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
-            h.ax.text((kinem['sm_mw'][0]+0.5), (kinem['sm_mw'][1]-0.5), 'MW', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
+            h.ax.text((kinem['sm_rm'][0]+0.5), (kinem['sm_rm'][1]-0.5), 'RM', weight='bold', ha='left', fontsize=12, alpha=0.9, color=gen_txt_clr)
+            h.ax.text((kinem['sm_lm'][0]+0.5), (kinem['sm_lm'][1]-0.5), 'LM', weight='bold', ha='left', fontsize=12, alpha=0.9, color=gen_txt_clr)
+            h.ax.text((kinem['sm_mw'][0]+0.5), (kinem['sm_mw'][1]-0.5), 'MW', weight='bold', ha='left', fontsize=12, alpha=0.9, color=gen_txt_clr)
         elif sr_hodo == True:
-            h.ax.text((kinem['sm_lm'][0] - kinem['sm_u'] +0.5), (kinem['sm_lm'][1] - kinem['sm_v'] -0.5), 'LM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
-            h.ax.text((kinem['sm_mw'][0] - kinem['sm_u'] +0.5), (kinem['sm_mw'][1] - kinem['sm_v'] -0.5), 'MW', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
+            h.ax.text((kinem['sm_lm'][0] - kinem['sm_u'] +0.5), (kinem['sm_lm'][1] - kinem['sm_v'] -0.5), 'LM', weight='bold', ha='left', fontsize=12, alpha=0.9, color=gen_txt_clr)
+            h.ax.text((kinem['sm_mw'][0] - kinem['sm_u'] +0.5), (kinem['sm_mw'][1] - kinem['sm_v'] -0.5), 'MW', weight='bold', ha='left', fontsize=12, alpha=0.9, color=gen_txt_clr)
     
 
     if ma.is_masked(kinem['sm_u']) == False:    
         # ADD SM POINT IF ITS A CUSTOM STORM MOTION
         if str(type(storm_motion)) == "<class 'list'>":
-            h.ax.text((kinem['sm_u']+0.5), (kinem['sm_v']-0.5), 'SM', weight='bold', ha='left', fontsize=14, alpha=0.9, color=gen_txt_clr)
+            h.ax.text((kinem['sm_u']+0.5), (kinem['sm_v']-0.5), 'SM', weight='bold', ha='left', fontsize=12, alpha=0.9, color=gen_txt_clr)
     
         h.ax.arrow(0,0,kinem['sm_u']-0.3, kinem['sm_v']-0.3, linewidth=3, color=gen_txt_clr, alpha=0.2, 
                 label='SM Vector', length_includes_head=True, head_width=0.5)
@@ -1928,7 +1895,18 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc):
             
         plt.figtext(0.228, 0.87, 
                 f' SM: {sm_str(storm_motion, speeds, directions)} kts',
-                color=gen_txt_clr, weight='bold', fontsize=10, verticalalignment='top', linespacing=2.2, alpha=0.6) 
+                color=gen_txt_clr, weight='bold', fontsize=10, verticalalignment='top', linespacing=2.2, alpha=0.6)
+
+
+
+    if hodo_boundary is not None:
+        for angle, color in zip(hodo_boundary['angle'], hodo_boundary['color']):
+            plot_boundary(h.ax, angle, color=color)
+        h.ax.arrow(0, 0, kinem['sm_mw'][0] - 0.3, kinem['sm_mw'][1] - 0.3, linewidth=3, color=gen_txt_clr, alpha=0.2,
+                   label='SM Vector', length_includes_head=True, head_width=0.6)
+        h.ax.arrow(0, 0, kinem['sm_lm'][0] - 0.3, kinem['sm_lm'][1] - 0.3, linewidth=3, color=gen_txt_clr, alpha=0.2,
+                   label='SM Vector', length_includes_head=True, head_width=0.6)
+    ################################################################
     ################################################################
     
     
@@ -1945,41 +1923,44 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc):
     #################################################################
     # PLOT AXIS/LOC
     strmws_ax = plt.axes((0.8015, 0.11, 0.095, 0.32))
-    plt.figtext(0.85, 0.40, f'SW ζ (%)', color=gen_txt_clr, weight='bold', fontsize=12, ha='center', alpha=0.7)
+    plt.figtext(0.85, 0.40, f'SW ζ (%)', color=gen_txt_clr, weight='bold', fontsize=12, ha='center', alpha=0.9)
     strmws_ax.spines["top"].set_color(brdr_clr)
     strmws_ax.spines["left"].set_color(brdr_clr)
     strmws_ax.spines["right"].set_color(brdr_clr)
     strmws_ax.spines["bottom"].set_color(brdr_clr)
-    strmws_ax.spines["bottom"].set_color(brdr_clr)   
-    strmws_ax.set_facecolor(bckgrnd_clr) 
+    strmws_ax.spines["bottom"].set_color(brdr_clr)
+    strmws_ax.set_facecolor(bckgrnd_clr)
 
-    #YTICKS
+    # YTICKS
     strmws_ax.set_ylim(0, 3000)
     strmws_ax.set_yticklabels([])
     strmws_ax.set_ylabel(' ')
-    strmws_ax.tick_params(axis='y', length = 0)
+    strmws_ax.tick_params(axis='y', length=0)
     strmws_ax.grid(True, axis='y')
-    strmws_ax.tick_params(axis="x",direction="in", pad=-12)
+    strmws_ax.tick_params(axis="x", direction="in", pad=-12)
 
-    #XTICKS
+    # XTICKS
     strmws_ax.set_xlim(40, 102)
-    strmws_ax.set_xticks([50, 90])
-    strmws_ax.set_xticklabels([50, 90], weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
+    strmws_ax.set_xticks([50, 70, 90])
+    strmws_ax.set_xticklabels([50, 70, 90], weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
     strmws_ax.set_xlabel(' ')
 
-    #HGT LABLES 
-    strmws_ax.text(47, 502 , '0.5km', fontsize=8, alpha=0.6, color=gen_txt_clr)
-    strmws_ax.text(47, 1002, '1.0km', fontsize=8, alpha=0.6, color=gen_txt_clr)
-    strmws_ax.text(47, 1502, '1.5km', fontsize=8, alpha=0.6, color=gen_txt_clr)
-    strmws_ax.text(47, 2002, '2.0km', fontsize=8, alpha=0.6, color=gen_txt_clr)
-    strmws_ax.text(47, 2502, '2.5km', fontsize=8, alpha=0.6, color=gen_txt_clr)
+    # HGT LABLES
+    strmws_ax.text(47, 502, '.5 km', fontsize=10, weight='bold', alpha=1, color=gen_txt_clr)
+    strmws_ax.text(47, 1002, '1 km', fontsize=10, weight='bold', alpha=1, color=gen_txt_clr)
+    strmws_ax.text(47, 1502, '1.5 km', fontsize=10, weight='bold', alpha=1, color=gen_txt_clr)
+    strmws_ax.text(47, 2002, '2 km', fontsize=10, weight='bold', alpha=1, color=gen_txt_clr)
+    # strmws_ax.text(47, 2502, '2.5 km', fontsize=9, weight='bold', alpha=0.9, color=gen_txt_clr)
 
     if ma.is_masked(kinem['sm_u']) == False:
-        plt.plot(kinem['swv_perc'][0:11],  intrp['zINTRP'][0:11],  color=hodo_color[0], lw=3, clip_on=True)
-        plt.plot(kinem['swv_perc'][10:30], intrp['zINTRP'][10:30], color=hodo_color[1], lw=3, clip_on=True)
-    
+        strmws_ax.plot(kinem['swv_perc'][0:11], intrp['zINTRP'][0:11], color=hodo_color[0], lw=3, clip_on=True)
+        strmws_ax.plot(kinem['swv_perc'][10:31], intrp['zINTRP'][10:31], color=hodo_color[1], lw=3, clip_on=True)
+        strmws_ax.fill_betweenx(intrp['zINTRP'][0:31], kinem['swv_perc'][0:31],
+                                color='cornflowerblue', linewidth=0, alpha=0.2, clip_on=True)
+
         if ma.is_masked(kinem['eil_z'][0]) == False:
-            strmws_ax.fill_between(x=(40,102), y1=kinem['eil_z'][0], y2=kinem['eil_z'][1], color='lightblue', alpha=0.2)
+            strmws_ax.fill_between(x=(40, 102), y1=kinem['eil_z'][0], y2=kinem['eil_z'][1], color='lightblue',
+                                   alpha=0.2)
     else:
         warnings.warn("Streamwiseness could not be plotted (no valid storm motion/not enough data)", Warning)
     #################################################################
@@ -1991,38 +1972,43 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc):
     ### VORTICITY W/HGT ###
     #################################################################
     vort_ax = plt.axes((0.8965, 0.11, 0.095, 0.32))
-    plt.figtext(0.945, 0.39, f'ζₜₒₜ & ζSW\n(/sec)', color=gen_txt_clr, weight='bold', fontsize=12, ha='center', alpha=0.7)
+    plt.figtext(0.945, 0.39, f'ζₜₒₜ & ζSW\n(/sec)', color=gen_txt_clr, weight='bold', fontsize=12, ha='center', alpha=0.9)
     vort_ax.spines["top"].set_color(brdr_clr)
     vort_ax.spines["left"].set_color(brdr_clr)
     vort_ax.spines["right"].set_color(brdr_clr)
     vort_ax.spines["bottom"].set_color(brdr_clr)
-    vort_ax.spines["bottom"].set_color(brdr_clr)   
-    vort_ax.set_facecolor(bckgrnd_clr) 
+    vort_ax.spines["bottom"].set_color(brdr_clr)
+    vort_ax.set_facecolor(bckgrnd_clr)
 
-    #YTICKS
-    vort_ax.tick_params(axis='y', length = 0)
+    # YTICKS
+    vort_ax.tick_params(axis='y', length=0)
     vort_ax.grid(True, axis='y')
     vort_ax.set_ylim(0, 3000)
     vort_ax.set_yticklabels([])
     vort_ax.set_ylabel(' ')
-    vort_ax.tick_params(axis="x",direction="in", pad=-12)
+    vort_ax.tick_params(axis="x", direction="in", pad=-12)
 
-        
-    if ma.is_masked(kinem['sm_u']) == False: 
-        #XTICKS
+    if ma.is_masked(kinem['sm_u']) == False:
+        # XTICKS
         vort_ax.set_xlabel(' ')
-        vort_max = kinem['vort'][0:30].max()+0.005
-        vort_min = kinem['vort'][0:30].min()-0.005
-    
-        vort_ax.set_xlim(vort_min-0.002, vort_max+0.002)
-        vort_ax.set_xticks([(vort_min+0.005),(vort_max-0.005)])
-        vort_ax.set_xticklabels([(np.round(vort_min+0.002,2)),(np.round(vort_max-0.002,2))], weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
- 
-        vort_ax.plot(kinem['swv'][0:30],  intrp['zINTRP'][0:30], color='orange', linewidth=3, alpha=0.8, label='SW ζ')
-        vort_ax.plot(kinem['vort'][0:30], intrp['zINTRP'][0:30], color=gen_txt_clr,  linewidth=4, alpha=0.4, label='Total ζ')
-        
+
+        vort_ax.set_xlim(0, 0.06)
+        vort_ax.set_xticks([.01, .03, .05])
+        vort_ax.set_xticklabels([".01", ".03", ".05"],
+                                weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
+
+        vort_ax.plot(kinem['swv'][0:31], intrp['zINTRP'][0:31], color='orange', linewidth=3, alpha=0.8, label='SW ζ')
+        vort_ax.plot(kinem['vort'][0:31], intrp['zINTRP'][0:31], color=gen_txt_clr, linewidth=4, alpha=0.4,
+                     label='Total ζ')
+        vort_ax.fill_betweenx(intrp['zINTRP'][0:31], kinem['vort'][0:31],
+                              where=(kinem['vort'][0:31] > kinem['swv'][0:31]),
+                              color=gen_txt_clr, linewidth=0, alpha=0.1, clip_on=True)
+        vort_ax.fill_betweenx(intrp['zINTRP'][0:31], kinem['swv'][0:31],
+                              color='orange', linewidth=0, alpha=0.2, clip_on=True)
+
         if ma.is_masked(kinem['eil_z'][0]) == False:
-            vort_ax.fill_between(x=(vort_min-0.002, vort_max+0.002), y1=kinem['eil_z'][0], y2=kinem['eil_z'][1], color='lightblue', alpha=0.2)
+            vort_ax.fill_between(x=(0, 0.065), y1=kinem['eil_z'][0],
+                                 y2=kinem['eil_z'][1], color='lightblue', alpha=0.2)
     else:
         warnings.warn("Total Vorticity could not be plotted (no valid storm motion/not enough data)", Warning)
     #################################################################
@@ -2035,37 +2021,47 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc):
     ### SRW W/HGT ###
     #################################################################
     wind_ax = plt.axes((0.9915, 0.11, 0.095, 0.32))
-    plt.figtext(1.037, 0.39, f'SR Wind\n(kts)', weight='bold', color=gen_txt_clr, fontsize=12, ha='center', alpha=0.7)
+    plt.figtext(1.037, 0.39, f'SR Wind\n(kts)', weight='bold', color=gen_txt_clr, fontsize=12, ha='center', alpha=0.9)
     wind_ax.spines["top"].set_color(brdr_clr)
     wind_ax.spines["left"].set_color(brdr_clr)
     wind_ax.spines["right"].set_color(brdr_clr)
     wind_ax.spines["bottom"].set_color(brdr_clr)
-    wind_ax.spines["bottom"].set_color(brdr_clr)   
-    wind_ax.set_facecolor(bckgrnd_clr) 
+    wind_ax.spines["bottom"].set_color(brdr_clr)
+    wind_ax.set_facecolor(bckgrnd_clr)
     plt.ylabel(' ')
     plt.xlabel(' ')
 
-    #YTICKS
+    # YTICKS
     wind_ax.set_ylim(0, 3000)
     wind_ax.grid(True, axis='y')
     wind_ax.set_yticklabels([])
-    wind_ax.tick_params(axis='y', length = 0)
-    wind_ax.tick_params(axis="x",direction="in", pad=-12)
+    wind_ax.tick_params(axis='y', length=0)
+    wind_ax.tick_params(axis="x", direction="in", pad=-12)
+
+    wind_ax.text(40, thermo['sb_lcl_z'], '-LCL-', fontsize=10, weight='bold',
+                 alpha=1, color=gen_txt_clr, clip_on=True)
+    if thermo['mu_lfc_z'] < 2500:
+        wind_ax.text(40, thermo['mu_lfc_z'], '-LFC-', fontsize=10, weight='bold',
+                     alpha=1, color=gen_txt_clr, clip_on=True)
 
     if ma.is_masked(kinem['sm_u']) == False:
-        #XTICKS
-        wind_max = kinem['srw'][0:30].max()+1
-        wind_min = kinem['srw'][0:30].min()-1
-        wind_ax.set_xlim(wind_min-5, wind_max+5)
-        wind_ax.set_xticks([(wind_min)+2, (wind_max)-2])
-        wind_ax.set_xticklabels([(int(wind_min)+2), (int(wind_max)-2)], weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
+        # XTICKS
+        wind_ax.set_xlim(10, 50)
+        wind_ax.set_xticks([20, 30, 40])
+        wind_ax.set_xticklabels([20, 30, 40], weight='bold',
+                                alpha=0.5, fontstyle='italic', color=gen_txt_clr)
 
-        #PLOT SR WIND  
-        wind_ax.plot(kinem['srw'][0:11],  intrp['zINTRP'][0:11],  color=hodo_color[0], clip_on=True, linewidth=3, alpha=0.8, label='0-1 SR Wind')
-        wind_ax.plot(kinem['srw'][10:30], intrp['zINTRP'][10:30], color=hodo_color[1], clip_on=True, linewidth=3, alpha=0.8, label='1-3 SR Wind')
-        
+        # PLOT SR WIND
+        wind_ax.plot(kinem['srw'][0:11], intrp['zINTRP'][0:11], color=hodo_color[0], clip_on=True,
+                     linewidth=3, alpha=0.8, label='0-1 SR Wind')
+        wind_ax.plot(kinem['srw'][10:31], intrp['zINTRP'][10:31], color=hodo_color[1], clip_on=True,
+                     linewidth=3, alpha=0.8, label='1-3 SR Wind')
+        wind_ax.fill_betweenx(intrp['zINTRP'][0:31], kinem['srw'][0:31],
+                              color='cornflowerblue', linewidth=0, alpha=0.2, clip_on=True)
+
         if ma.is_masked(kinem['eil_z'][0]) == False:
-            wind_ax.fill_between(x=(wind_min-5, wind_max+5), y1=kinem['eil_z'][0], y2=kinem['eil_z'][1], color='lightblue', alpha=0.2)
+            wind_ax.fill_between(x=(5, 55), y1=kinem['eil_z'][0], y2=kinem['eil_z'][1],
+                                 color='lightblue', alpha=0.2)
     else:
         warnings.warn("Storm Relative Wind could not be plotted (no valid storm motion/not enough data)", Warning)
         
@@ -2073,45 +2069,136 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc):
     
     
     
-    
-    
-    #################################################################
-    ### THETA & THETA E W/HGT ###
-    #################################################################
-    #PLOT AXES/LOC
-    theta_ax = plt.axes((1.0865, 0.11, 0.095, 0.32))
-    plt.figtext(1.135, 0.39, f'Theta-e &\nTheta (K)', weight='bold', color=gen_txt_clr, fontsize=12, ha='center', alpha=0.7)
-    theta_ax.spines["top"].set_color(brdr_clr)
-    theta_ax.spines["left"].set_color(brdr_clr)
-    theta_ax.spines["right"].set_color(brdr_clr)
-    theta_ax.spines["bottom"].set_color(brdr_clr)
-    theta_ax.spines["bottom"].set_color(brdr_clr)   
-    theta_ax.set_facecolor(bckgrnd_clr) 
 
-    maxtheta = intrp['thetaeINTRP'][0:30].max()
-    mintheta = intrp['thetaINTRP'][0:30].min()
+    #############################################################
+    ### CIN & 3CAPE W/HGT ###
+    #############################################################
+    cin_color, cape_color = 'teal', 'tab:orange'
 
-    #YTICKS
-    theta_ax.set_ylim(intrp['zINTRP'][0], 3000)
-    theta_ax.set_yticklabels([])
-    plt.ylabel(' ')
-    theta_ax.tick_params(axis='y', length = 0)
-    theta_ax.grid(True, axis='y')
+    mincin = intrp['cin_profileINTRP'][0:31].min()
+    max3cape = intrp['3cape_profileINTRP'][0:31].max()
 
-    #XTICKS
-    theta_ax.set_xlim(mintheta - 5, maxtheta + 5)
-    theta_ax.set_xticks([(mintheta), (maxtheta)])
-    theta_ax.set_xticklabels([int(mintheta), int(maxtheta)], weight='bold', alpha=0.5, fontstyle='italic', color=gen_txt_clr)
+    # PLOT AXES/LOC
+    inflow_ax = plt.axes((1.0865, 0.11, 0.095, 0.32))
+    plt.figtext(1.135, 0.38, f'Stepwise\n CIN & CAPE\n (J/kg)', weight='bold',
+                color=gen_txt_clr, fontsize=12, ha='center', alpha=0.9)
+    inflow_ax.spines["top"].set_color(brdr_clr)
+    inflow_ax.spines["left"].set_color(brdr_clr)
+    inflow_ax.spines["right"].set_color(brdr_clr)
+    inflow_ax.spines["bottom"].set_color(brdr_clr)
+    inflow_ax.set_facecolor(bckgrnd_clr)
 
-    theta_ax.tick_params(axis="x", direction="in", pad=-12)
-    theta_ax.set_xlabel(' ')
+    ### AXIS 1 -- CIN ###
 
-    #PLOT THETA VS HGT
-    plt.plot(intrp['thetaINTRP'], intrp['zINTRP'], color='purple', linewidth=3.5, alpha=0.5, clip_on=True)
-    plt.plot(intrp['thetaeINTRP'], intrp['zINTRP'], color='purple', linewidth=3.5, alpha=0.8, clip_on=True)
+    # YAXIS PARAMS AX1 & AX2
+    inflow_ax.set_ylim(intrp['zINTRP'][0], 3000)
+    inflow_ax.set_yticklabels([])
+    inflow_ax.set_ylabel(' ')
+    inflow_ax.tick_params(axis='y', length=0)
+    inflow_ax.grid(True, axis='y')
+    inflow_ax.axvline(0, linestyle=':', alpha=.8)
+
+    # XAXIS PARAMS AX1
+    inflow_ax.set_xlim(-300, 300)
+    inflow_ax.set_xticks([-200, -100])
+    inflow_ax.set_xticklabels([-200, -100], weight='bold', alpha=0.5, rotation=60,
+                              fontstyle='italic', color=gen_txt_clr, zorder=10)
+    inflow_ax.tick_params(axis="x", direction="in", pad=-25)
+    inflow_ax.set_xlabel(' ')
+    plt.xticks(rotation=45)
+
+    # PLOT CIN VS HGT
+    inflow_ax.fill_betweenx(intrp['zINTRP'], intrp['cin_profileINTRP'],
+                            color=cin_color, linewidth=0, alpha=0.5, clip_on=True)
 
     if ma.is_masked(kinem['eil_z'][0]) == False:
-        theta_ax.fill_between(x=(mintheta - 5, maxtheta + 5), y1=kinem['eil_z'][0], y2=kinem['eil_z'][1], color='lightblue', alpha=0.2)
+        inflow_ax.fill_between(x=(-305, 305), y1=kinem['eil_z'][0],
+                               y2=kinem['eil_z'][1], color='lightblue', alpha=0.2)
+
+    ### AXIS 2 -- CAPE ###
+    inflow_ax2 = inflow_ax.twiny()
+    inflow_ax2.spines["top"].set_color(brdr_clr)
+    inflow_ax2.spines["left"].set_color(brdr_clr)
+    inflow_ax2.spines["right"].set_color(brdr_clr)
+    inflow_ax2.spines["bottom"].set_color(brdr_clr)
+    inflow_ax2.set_facecolor(bckgrnd_clr)
+
+    # XAXIS PARAMS AX2
+    inflow_ax2.set_xlim(-3000, 3000)
+    inflow_ax2.set_xticks([0, 1000, 2000])
+    inflow_ax2.set_xticklabels(['0 ', '1k', '2k'], weight='bold', alpha=0.5,
+                               fontstyle='italic', color=gen_txt_clr, zorder=10)
+    inflow_ax2.xaxis.set_ticks_position('bottom')
+    inflow_ax2.tick_params(axis="x", direction="in", pad=-20)
+    inflow_ax2.set_xlabel(' ')
+    plt.xticks(rotation=45)
+
+    # YAXIS PARAMS AX2
+    inflow_ax2.set_ylim(intrp['zINTRP'][0], 3000)
+    inflow_ax2.set_yticklabels([])
+    inflow_ax2.set_ylabel(' ')
+    inflow_ax2.tick_params(axis="y", length=0)
+    inflow_ax2.grid(True, axis='y')
+
+    # PLOT 3CAPE VS HGT
+    inflow_ax2.fill_betweenx(intrp['zINTRP'], intrp['cape_profileINTRP'],
+                             color=cape_color, linewidth=0, alpha=0.8, clip_on=True)
+    #################################################################
+
+
+    #################################################################
+    ### SOUNDING MAP INSET -- TEST ###
+    #################################################################
+    # BUILD SIMPLE MAP -----------------------------------------------------------------------------------------------------
+    if map_zoom > 0:
+        proj = ccrs.PlateCarree()
+        map_ax = plt.axes((0.626, 0.11, 0.20, 0.20), projection=proj, zorder=12) # 1, 0.1 | 0.542, 0.75, 0.20, 0.20
+        map_ax.spines['geo'].set_color(gen_txt_clr)
+
+        zoom_factor = map_zoom
+        map_ax.set_extent([clean_data['site_info']['site-latlon'][1] - zoom_factor,
+                           clean_data['site_info']['site-latlon'][1] + zoom_factor,
+                           clean_data['site_info']['site-latlon'][0] - zoom_factor/1.6,
+                           clean_data['site_info']['site-latlon'][0] + zoom_factor*1.6])
+        map_ax.set_box_aspect(1)
+
+        map_ax.add_feature(cfeature.STATES, color=bckgrnd_clr, zorder=1)
+        map_ax.add_feature(cfeature.STATES, edgecolor=gen_txt_clr, alpha=0.7,
+                       linestyle='-', linewidth=2, zorder=6)
+        map_ax.add_feature(USCOUNTIES, alpha=0.3, edgecolor=gen_txt_clr,
+                           linestyle='-', linewidth=0.2, zorder=5)
+        map_ax.add_feature(cfeature.LAKES, color=bckgrnd_clr)
+        map_ax.add_feature(cfeature.OCEAN, color=bckgrnd_clr)
+
+        if show_radar == True:
+
+            # PLOT RADAR DATA -----------------------------------------------------------------------------------------------------
+            try:
+                radar_data = get_radar_mosaic(sounding_data, map_zoom, radar_time)
+
+                reflectivity = np.ma.masked_array(np.array(radar_data['Reflectivity'])[0,:,:],
+                                                  np.array(radar_data['Reflectivity'])[0,:,:]<10)
+
+                map_ax.pcolormesh(radar_data['lon']+0.05, radar_data['lat']+0.05, reflectivity,
+                                  vmin=-32, vmax=95, cmap=rs_expertreflect_cmap, alpha=1, zorder=4)
+
+                radar_timestamp = f"{str(radar_data['time'].values[0])[5:10]} | {str(radar_data['time'].values[0])[11:16]}"
+
+
+                plt.figtext(0.73, 0.12, f'Valid: {radar_timestamp}',
+                        ha='center', alpha=0.9, weight='bold', fontsize=10, zorder=13, color=gen_txt_clr,
+                        bbox=dict(facecolor=bckgrnd_clr, alpha=0.8, edgecolor=gen_txt_clr, pad=3))
+            except:
+                pass
+
+        # ADD PROFILE LOCATION ------------------------------------------------------------------------------------------------
+        map_ax.plot(clean_data['site_info']['site-latlon'][1],clean_data['site_info']['site-latlon'][0],
+                    marker='o', mfc='none', markeredgewidth=1.5,
+                    color=marker_clr, markersize='11', transform=ccrs.PlateCarree(), zorder=10, clip_on=True)
+        map_ax.plot(clean_data['site_info']['site-latlon'][1],clean_data['site_info']['site-latlon'][0],
+                    marker='+', color=marker_clr, markeredgewidth=1.5,
+                    markersize='18', transform=ccrs.PlateCarree(), zorder=10, clip_on=True)
+
     #################################################################
 
     

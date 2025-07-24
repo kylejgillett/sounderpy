@@ -9,7 +9,7 @@
 **/__pycache__/
 notes.txt
 /.idea
-
+/src/sounderpy.egg-info
 test-file
 scrap_306.ipynb
 CHANGELOG.md

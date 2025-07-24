@@ -146,7 +146,7 @@ def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_ho
         fct_dt = run_dt + timedelta(hours=fcst_hour)
         hr_deltas = {
             'gfs': [1, 180], 'hrrr': [1, 48],
-            'rap': [1, 51], 'nam': [1, 48],
+            'rap': [1, 51], 'nam': [1, 84],
             'namnest': [1, 60], 'nam4km': [1, 60],
             'sref': [1, 84], 'hiresw': [1, 48]}
         stp_dt = fct_dt + timedelta(hours=hr_deltas[model][0])

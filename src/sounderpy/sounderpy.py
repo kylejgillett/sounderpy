@@ -50,7 +50,7 @@ from .cm1_utils import make_cm1_profile
 citation_text = f"""
 ## ---------------------------------- SOUNDERPY ----------------------------------- ##
 ##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
-##                      v3.0.8 | Jan 2025 | (C) Kyle J Gillett                      ##
+##                      v3.0.9 | May 2025 | (C) Kyle J Gillett                      ##
 ##                 Docs: https://kylejgillett.github.io/sounderpy/                  ##
 ## --------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------ ##
 """
@@ -205,8 +205,8 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
 # FULL SOUNDING
 #########################################################################
 def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False, storm_motion='right_moving',
-                   special_parcels=None, show_radar=True, radar_time='sounding', map_zoom=2, modify_sfc=None,
-                   show_theta=False, save=False, filename='sounderpy_sounding'):
+                   special_parcels=None, radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None,
+                   show_theta=False, hodo_boundary=None, save=False, filename='sounderpy_sounding'):
     
     '''
     Return a full sounding plot of SounderPy data, ``plt``
@@ -234,7 +234,7 @@ def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False,
     
     print(f'> SOUNDING PLOTTER FUNCTION\n  ---------------------------------')
 
-    plt = __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, show_radar, radar_time, map_zoom, modify_sfc, show_theta)
+    plt = __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, radar, radar_time, map_zoom, modify_sfc, show_theta, hodo_boundary)
     if save:
         plt.savefig(filename, bbox_inches='tight')
     else:
@@ -248,8 +248,9 @@ def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False,
 ############
 # FULL HODOGRAPH
 #########################################################################
-def build_hodograph(clean_data, save=False, dark_mode=False, storm_motion='right_moving', sr_hodo=False, modify_sfc=None, filename='sounderpy_hodograph'):
-    
+def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr_hodo=False, modify_sfc=None,
+                    show_radar=True, radar_time='sounding', map_zoom=2, hodo_boundary=None, save=False, filename='sounderpy_hodograph'):
+
     '''
        Return a full sounding plot of SounderPy data, ``plt`` 
 
@@ -268,13 +269,17 @@ def build_hodograph(clean_data, save=False, dark_mode=False, storm_motion='right
        :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
        :rtype: plt
     '''
-    
+
+
+
+
     print(f'> HODOGRAPH PLOTTER FUNCTION --\n-------------------------------')
-    
+
+    plt = __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc, show_radar, radar_time, map_zoom, hodo_boundary)
     if save:
-        __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc).savefig(filename, bbox_inches='tight')
+        plt.savefig(filename, bbox_inches='tight')
     else:
-        __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc).show()
+        plt.show()
 
 
 
@@ -313,13 +318,13 @@ def build_composite(data_list, shade_between=True, cmap='viridis', colors_to_use
     '''
     
     print(f'> COMPOSITE SOUNDING FUNCTION\n  -------------------------------')
-    
+
+    plt =  __composite_sounding(data_list, shade_between, cmap, colors_to_use,
+            ls_to_use, alphas_to_use, lw_to_use, dark_mode)
     if save:
-        __composite_sounding(data_list, shade_between, cmap, colors_to_use,
-            ls_to_use, alphas_to_use, lw_to_use, dark_mode).savefig(filename, bbox_inches='tight')
+        plt.savefig(filename, bbox_inches='tight')
     else:
-        __composite_sounding(data_list, shade_between, cmap, colors_to_use, 
-            ls_to_use, alphas_to_use, lw_to_use, dark_mode).show()
+        plt.show()
 
 
 
@@ -358,10 +363,11 @@ def build_vad_hodograph(vad_data, save=False, dark_mode=False, storm_motion='rig
 
     print(f'> VAD HODOGRAPH PLOTTER FUNCTION --\n------------------------------------')
 
+    plt =  __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo)
     if save:
-        __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo).savefig(filename, bbox_inches='tight')
+        plt.savefig(filename, bbox_inches='tight')
     else:
-        __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo).show()
+        plt.show()
 
 
 

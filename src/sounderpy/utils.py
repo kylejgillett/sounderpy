@@ -13,7 +13,6 @@ import copy
 
 
 
-
 """
     SOUNDERPY UTILITY FUNCTIONS 
 
@@ -191,8 +190,6 @@ def mag_round(param, dec, mag=False):
     else:
         fixed = np.round(param, dec)
     return fixed
-
-
 
 
 
