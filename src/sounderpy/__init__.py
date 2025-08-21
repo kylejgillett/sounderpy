@@ -17,5 +17,7 @@ from .utils import make_sfc_based
 from .utils import make_sfc_based_3D
 from .utils import get_latlon
 from .utils import to_file
+from .profile_utils import merge_profiles
+from .profile_utils import smooth_profile
 from .calc import sounding_params
 from .calc import vad_params

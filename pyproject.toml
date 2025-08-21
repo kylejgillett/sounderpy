@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sounderpy"
-version = "3.0.8"
+version = "3.0.9"
 authors = [
   { name="Kyle J Gillett, University of North Dakota", email="kyle.gillett@und.edu" },
 ]
@@ -32,6 +32,7 @@ dependencies = [
 	"netcdf4>=1.6.4",
 	"numpy>=1.20.0",
 	"pandas>=1.2.0",
+	"arm-pyart>=2.0.0",
 	"siphon>=0.9",
 	"scipy>= 1.10.1",
 	"xarray>=0.18.0",
@@ -43,3 +44,13 @@ dependencies = [
 "Operational Site" = "https://sounderpysoundings.anvil.app/"
 "PyPi" = "https://pypi.org/project/sounderpy/"
 "My Website" = "https://kylegillettphoto.com"
+
+[tool.setuptools]
+packages = ["sounderpy"]
+package-dir = {"" = "src"}
+
+[tool.setuptools.package-data]
+"sounderpy" = [
+    "rs_reflectivity.txt",
+    "nexrad_locations.txt",
+]

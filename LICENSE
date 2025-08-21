@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) [2024] [KYLE J GILLETT]
+Copyright (c) 2025, KYLE J GILLETT
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+SounderPy contains the source code to SHARPpy (Sounding/Hodograph Analysis and
+Research Program in Python). SHARPpy is protected by and licensed under the BSD
+3-Clause that can be found at: /src/sounderpy/SHARPPYMAIN/LICENSE.rst

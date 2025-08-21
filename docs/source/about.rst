@@ -182,3 +182,38 @@ Useful Links
 
 Thanks for using SounderPy!
 
+
+
+****************************************
+
+
+Publications Using SounderPy
+-----------------------------
+
+- Barton, B., and C. Gormley, 2025: Analysis of strongly tornadic environments in Central and Eastern Europe utilizing ERA5 reanalysis data. M.S. thesis, University of Oklahoma
+
+- Capuli, G., M. A. Noveno, and M. P. Ibañez, 2025: A case study of the tornadic supercell in the Province of Pampanga, Philippines (27 May 2024). arXiv, https://doi.org/10.48550/arXiv.2504.20559
+
+- Capuli, G. H., 2024: Friday the 13th hailstorm in the province of Bulacan, Philippines (13 August 2021): A case study. arXiv, https://arxiv.org/abs/2412.09307
+
+- Capuli, G., 2024: Project Severe Weather Archive of the Philippines (SWAP) Part 1: Establishing a baseline climatology for severe weather across the Philippine Archipelago. Ann. Geophys., 67(5), GC553, https://doi.org/10.4401/ag-9151
+
+- Coffer, B. E., M. D. Parker, M. C. Coniglio, and C. R. Homeyer, 2025: Supercell environments using GridRad-Severe and the HRRR: Addressing discrepancies between prior tornado datasets. Wea. Forecasting, 40, 1405–1428, https://doi.org/10.1175/WAF-D-24-0251.1
+
+- Hua, Z., A. Anderson-Frey, M. C. Brown, and Q. Jiang, 2025: A data-driven explainable framework for diagnosing cluster assignments of right-moving tornadic supercell soundings. Preprint, 4 Jul 2025.
+
+- Ibañez, M. P. A., J. A. Manalo, G. H. Capuli, and Coauthors, 2025: Spatiotemporal analysis of hail events in the Philippines. Asia-Pac. J. Atmos. Sci., 61, 24, https://doi.org/10.1007/s13143-025-00409-4
+
+- Kramer, Alex D., "The Influence of Complex Terrain on the Turin, New York Tornado of 2023" (2025). Atmospheric and Environmental Sciences Honors Program. 1. https://scholarsarchive.library.albany.edu/cas-daes-honors/1
+
+- Logan, T., X. Dong, B. Xi, X. Zheng, L. Wu, A. Abramowitz, and Coauthors, 2024: Assessing radiative impacts of African smoke aerosols over the southeastern Atlantic Ocean. Earth Space Sci., 11, e2023EA003138, https://doi.org/10.1029/2023EA003138
+
+- Logan, T., J. Hale, S. Butler, B. Lawrence, and S. Gardner, 2024: Occurrence of rare lightning events during Hurricane Nicholas (2021). Earth Space Sci., 11, e2024EA003733, https://doi.org/10.1029/2024EA003733
+
+- Logan, T., B. Smith, K. Calindi, C. White, and I. Jones, 2025: Comparison study of the electrical nature of two smoke-enhanced sea breeze thunderstorm cases during TRACER. J. Geophys. Res. Lett., submitted.
+
+- O’Neill, E., 2025: The sensitivity of the impact of cell mergers on supercell thunderstorms before versus after sunset. M.S. thesis, Department of Earth Science, The University of North Carolina at Charlotte, Charlotte
+
+- Staněk, M., 2024: Podmínky při vývoji weak-forcing derech ve střední Evropě. M.S. thesis, Department of Physical Geography and Geoecology, Faculty of Science, Charles University, Prague, Czech Republic.
+
+- Yattoni, A., 2024: The horizontal displacement of Macomb’s X-band and Davenport and Lincoln’s S-band radar images caused by atmospheric conditions. Master's Thesis, Department of Earth, Atmospheric, and Geographic Information Sciences, Western Illinois University, available from ProQuest Dissertations & Theses Global, https://ezproxy.library.und.edu/login?url=https://www.proquest.com/dissertations-theses/horizontal-displacement-macomb-s-x-band-davenport/docview/3143462326/se-2

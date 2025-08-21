@@ -3,6 +3,10 @@ import numpy as np
 from matplotlib.colors import ListedColormap
 from datetime import datetime, timedelta
 import fsspec
+import importlib.resources as resources
+import warnings
+from siphon.catalog import TDSCatalog
+import xarray as xr
 
 import os
 from contextlib import contextmanager, redirect_stderr, redirect_stdout
@@ -33,9 +37,14 @@ with suppress_stdout_stderr():
 # RADAR DATA DATE HANDLER
 #########################################################################
 def define_radar_time(clean_data, radar_time):
-    data_dt = datetime(int(clean_data['site_info']['valid-time'][0]), int(clean_data['site_info']['valid-time'][1]),
-                       int(clean_data['site_info']['valid-time'][2]),
-                       int(clean_data['site_info']['valid-time'][3][0:2]))
+    try:
+        data_dt = datetime(int(clean_data['site_info']['valid-time'][0]), int(clean_data['site_info']['valid-time'][1]),
+                           int(clean_data['site_info']['valid-time'][2]),
+                           int(clean_data['site_info']['valid-time'][3][0:2]))
+    except:
+        warnings.warn("Sounding Date/time invalid for this profile. Defaulting to 'now' unless a specific datetime.datetime() was provided", Warning)
+        data_dt = datetime.utcnow()
+        pass
 
     # get current time
     curr_dt = datetime.utcnow()
@@ -66,6 +75,7 @@ def define_radar_time(clean_data, radar_time):
         datestr = radar_time.strftime('%Y%m%d')
         dt_obj = radar_time
 
+
     return time, datestr, dt_obj
 #########################################################################
 
@@ -74,9 +84,8 @@ def define_radar_time(clean_data, radar_time):
 #########################
 # CREATE RADARSCOPE COLORMAP
 #########################################################################
-script_dir = os.path.dirname(os.path.abspath(__file__))
-txt_file_path = os.path.join(script_dir, "rs_reflectivity.txt")
-rs_data = np.loadtxt(txt_file_path, skiprows=3, usecols=(1, 2, 3, 4))
+with resources.open_text("sounderpy", "rs_reflectivity.txt") as f:
+    rs_data = np.loadtxt(f, skiprows=3, usecols=(1, 2, 3, 4))
 rgb = rs_data[:, 1:] / 255.0
 levels = rs_data[:, 0]
 rs_expertreflect_cmap = ListedColormap(rgb)
@@ -112,10 +121,9 @@ def parse_dms_string(dms_str, is_lat=True):
 #########################
 # OPEN AND PARSE NEXRAD LOCS FILE
 #########################################################################
-def parse_nexrad_locs(filename):
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    txt_file_path = os.path.join(script_dir, filename)
-    nexrad_locs = np.genfromtxt(txt_file_path, dtype='str', delimiter=',', skip_header=1)
+def parse_nexrad_locs():
+    with resources.open_text("sounderpy", "nexrad_locations.txt") as f:
+        nexrad_locs = np.genfromtxt(f, dtype='str', delimiter=',', skip_header=1)
     site_ids = nexrad_locs[:, 0]
     latitudes = []
     longitudes = []
@@ -167,7 +175,7 @@ def get_radar_data(nexrad_site, clean_data, radar_time):
     # try current time, then fallback to previous hour if needed
     for hour_offset in [0, -1]:
         radar_dt = dt_obj + timedelta(hours=hour_offset)
-        time_candidates = [radar_dt + timedelta(minutes=delta) for delta in range(-4, 5)]
+        time_candidates = [radar_dt + timedelta(minutes=delta) for delta in range(-15, 15)]
 
         files = []
         for t in time_candidates:
@@ -178,7 +186,7 @@ def get_radar_data(nexrad_site, clean_data, radar_time):
 
         if files:
             files = sorted(files)
-            file = files[0]
+            file = files[int(len(files)/2)]
             break
     else:
         raise FileNotFoundError("    > RADAR ERROR: No single-site radar scan found")
@@ -240,7 +248,7 @@ def get_radar_mosaic(clean_data, map_zoom, radar_time):
     data_lon = clean_data['site_info']['site-latlon'][1]
 
     # GET RADAR DATA ----------------------------------------------------------------------------------
-    composite_url = 'https://thredds.ucar.edu/thredds/catalog/nexrad/composite/gini/dhr/1km/' + datestr + '/catalog.xml'
+    composite_url = 'https://thredds.ucar.edu/thredds/catalog/nexrad/composite/gini/dhr/1km/' + datestr +'/catalog.xml'
     try:
         # try accessing the NCEI TDS database
         composite_catalog = TDSCatalog(composite_url).datasets
@@ -252,7 +260,7 @@ def get_radar_mosaic(clean_data, map_zoom, radar_time):
         pass
 
     if data_found == True:
-        # if data is foudn, parse it for plotting.
+        # if data is found, parse it for plotting.
         filename = composite_catalog[find_file(time, composite_catalog)].subset()
         composite_query = filename.query()
         composite_query.lonlat_box(north=data_lat + (map_zoom + 1),
@@ -263,7 +271,7 @@ def get_radar_mosaic(clean_data, map_zoom, radar_time):
         composite_query.accept('netcdf4')
         composite_query.variables('Reflectivity')
         radar_data = filename.get_data(composite_query)
-        radar_data = open_dataset(NetCDF4DataStore(radar_data))
+        radar_data = xr.open_dataset(xr.backends.NetCDF4DataStore(radar_data))
 
         return radar_data
 #########################################################################

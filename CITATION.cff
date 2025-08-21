@@ -26,5 +26,5 @@ keywords:
 abstract: >-
   SounderPy is an open-source Python package for retrieving, processing, and visualizing atmospheric sounding data.
 license: MIT
-version: v3.0.8
-date-released: '2025-01-13'
+version: v3.0.9
+date-released: '2025-08-21'

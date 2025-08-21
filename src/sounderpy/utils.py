@@ -7,6 +7,7 @@ import numpy.ma as ma
 import metpy.calc as mpcalc
 from metpy.units import units
 import copy
+import math
 
 
 
@@ -597,3 +598,20 @@ def get_latlon(station_type, station_id):
     else:
         raise ValueError(
             f"Incorrect station_type argument. Valid station_type-s are 'metar', 'raob', 'igra', 'bufkit', 'buoy'")
+
+
+
+#########################
+# U/V WIND TO DIR STRING
+#########################################################################
+def wind_to_dir(u, v):
+
+    wind_dir_deg = (math.degrees(math.atan2(u, v)) + 360) % 360
+
+    dirs = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
+            "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
+
+    # Each sector covers 360/16 = 22.5 degrees
+    idx = int((wind_dir_deg + 11.25) // 22.5) % 16
+
+    return dirs[idx]

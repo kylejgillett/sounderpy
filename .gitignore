@@ -4,12 +4,14 @@
 **/*.egg-info/
 /.pytest_cache/
 /docs/build
+/docs/source
 /.eggs
 /cov.xml
 **/__pycache__/
 notes.txt
 /.idea
 /src/sounderpy.egg-info
+/src/sounderpy/__pycache__
 test-file
 scrap_306.ipynb
 CHANGELOG.md

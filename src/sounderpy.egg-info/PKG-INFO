@@ -1,6 +1,6 @@
-Metadata-Version: 2.2
+Metadata-Version: 2.4
 Name: sounderpy
-Version: 3.0.8
+Version: 3.0.9
 Summary: Vertical Profile Data Retrieval and Analysis Tool For Python
 Author-email: "Kyle J Gillett, University of North Dakota" <kyle.gillett@und.edu>
 Project-URL: Docs, https://kylejgillett.github.io/sounderpy/
@@ -29,9 +29,11 @@ Requires-Dist: metpy>=1.5.1
 Requires-Dist: netcdf4>=1.6.4
 Requires-Dist: numpy>=1.20.0
 Requires-Dist: pandas>=1.2.0
+Requires-Dist: arm-pyart>=2.0.0
 Requires-Dist: siphon>=0.9
 Requires-Dist: scipy>=1.10.1
 Requires-Dist: xarray>=0.18.0
+Dynamic: license-file
 
 <div align="center">
 <img src="https://github.com/kylejgillett/sounderpy/assets/100786530/2e9477c9-e36a-4163-accb-fe46780058dd" width="250">
@@ -39,9 +41,9 @@ Requires-Dist: xarray>=0.18.0
 </div>
 
 # SounderPy, the vertical profile data retrieval and analysis tool for Python
-LATEST VERSION: v3.0.8 |  RELEASED: Jan, 2025  |  COPYRIGHT Kyle J Gillett, 2023-2025
+LATEST VERSION: v3.0.9 |  RELEASED: Aug, 2025  |  COPYRIGHT Kyle J Gillett, 2023-2025
 
-A Python package that helps you to access and plot vertical profile data for meteorological analysis 
+SounderPy is an open-source Python package for retrieving, processing, and visualizing atmospheric sounding data.
 
 [![PyPI Package](https://img.shields.io/pypi/v/sounderpy.svg)](https://pypi.python.org/pypi/sounderpy/)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/sounderpy.svg)](https://pypi.python.org/pypi/sounderpy/)
@@ -193,7 +195,7 @@ SounderPy has been used by several institutions. For example, this tool has been
 
 in AMS format:
 
-- Gillett, K., 2025: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.8). Py-Pi, https://pypi.org/project/sounderpy/
+- Gillett, K., 2025: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.9). Py-Pi, https://pypi.org/project/sounderpy/
 
 ------
 

@@ -35,7 +35,7 @@ from .utils import modify_surface, find_nearest, mag, mag_round
     accessed by calling `spy.sounding_params.calc(clean_data)`
     
     
-    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2025
 """
 
 

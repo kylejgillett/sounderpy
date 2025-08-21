@@ -29,7 +29,7 @@ Building Soundings
 
 While this function may appear complicated at first glance, there is actually only *one* required argument for this function. The other arguments are simply optional settings for the plot!
 
-.. py:function:: spy.build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion='right_moving', special_parcels=None, show_radar=True, radar_time='sounding', map_zoom=2, modify_sfc=None, save=False, filename='sounderpy_sounding')
+.. py:function:: spy.build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion='right_moving', special_parcels=None, radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None, show_theta=False, hodo_boundary=None, save=False, filename='sounderpy_sounding')
 
 
    Return a full sounding plot of SounderPy data, ``plt`` 
@@ -45,13 +45,17 @@ While this function may appear complicated at first glance, there is actually on
    :param special_parcels: a nested list of special parcels from the ``ecape_parcels`` library. The nested list should be a list of two lists (`[[a, b], [c, d]]`) where the first list should include 'highlight parcels' and second list should include 'background parcels'. For more details, see the :ref:`parcels_logic` section. Another option is 'simple', which removes all advanced parcels making the plot quicker.
    :type special_parcels: nested `list` of two `lists`, optional, Default is None
    :param radar: whether to display mosaic reflectivity, single-site reflectivity, or no radar in the map inset.
-   :type radar: str, ``mosaic`` or ``single-site``. Optional. Default is ``mosaic``.
-   :param radar_time: radar mosaic data valid time. May be ``sounding`` (uses the valid time of the sounding data), or ``now`` (current time/date). **Note: radar mosaic data only goes back 1 month from current date**
-   :type radar_time: str, optional, Default is ``sounding``.
+   :type radar: str, ``"mosaic"``, ``"single-site"``, or ``None``. Optional. Default is ``mosaic``.
+   :param radar_time: radar mosaic data valid time. May be ``"sounding"`` (uses the valid time of the sounding data),``"now"`` (current time/date), or a `datetime` obj **Note: radar mosaic data only goes back 1 month from current date**
+   :type radar_time: str or `datetime` obj, optional, Default is ``"sounding"``.
    :param map_zoom: a 'zoom' level for the map inset as an `int`. **Note: Setting ``map_zoom=0`` will hide the map**
    :type map_zoom: int, optional, Default is ``2``.
    :param modify_sfc: a `dict` in the format ``{'T': 25, 'Td': 21, 'ws': 20, 'wd': 270}`` to modify the surface values of the ``clean_data`` dict. See the :ref:`modify_sfc` section for more details.
    :type modify_sfc: None or dict, optional, default is None
+   :param show_theta: whether to replace the piecewise CAPE plot with theta & theta-e. Default is ``False``
+   :type show_theta: bool, optional
+   :param hodo_boundary: plot a "boundary" (straight line) on the hodograph axis. Do so by providing an angle and a color. The angle represents the angle between zero-degrees (north) and the upper-half of the boundary line, to the right. Multiple boundaries can be plotted. Default is ``None``
+   :type hodo_boundary: dict of lists -- structured as ``{'angle':[], 'color':[]}``, optional
    :param save: whether to show the plot inline or save to a file.
    :type save: bool, optional, Default is ``False``.
    :param filename: the filename by which a file should be saved to if ``save = True``.
@@ -105,6 +109,14 @@ Very similarly to soundings, we can use the simple ``spy.build_hodograph()`` fun
    :type sr_hodo: bool, optional, default is ``False``
    :param modify_sfc: a `dict` in the format ``{'T': 25, 'Td': 21, 'ws': 20, 'wd': 270}`` to modify the surface values of the ``clean_data`` dict.
    :type modify_sfc: None or dict, optional, default is None
+   :param radar: whether to display mosaic reflectivity, single-site reflectivity, or no radar in the map inset.
+   :type radar: str, ``"mosaic"``, ``"single-site"``, or ``None``. Optional. Default is ``mosaic``.
+   :param radar_time: radar mosaic data valid time. May be ``"sounding"`` (uses the valid time of the sounding data),``"now"`` (current time/date), or a `datetime` obj **Note: radar mosaic data only goes back 1 month from current date**
+   :type radar_time: str or `datetime` obj, optional, Default is ``"sounding"``.
+   :param map_zoom: a 'zoom' level for the map inset as an `int`. **Note: Setting ``map_zoom=0`` will hide the map**
+   :type map_zoom: int, optional, Default is ``2``.
+   :param hodo_boundary: plot a "boundary" (straight line) on the hodograph axis. Do so by providing an angle and a color. The angle represents the angle between zero-degrees (north) and the upper-half of the boundary line, to the right. Multiple boundaries can be plotted. Default is ``None``
+   :type hodo_boundary: dict of lists -- structured as ``{'angle':[], 'color':[]}``, optional
    :param save: whether to show the plot inline or save to a file.
    :type save: bool, optional, Default is ``False``.
    :param filename: the filename by which a file should be saved to if ``save = True``.
@@ -415,9 +427,31 @@ Note the struture of the 'parcel key': ``sb_ia_ecape``. This is broken into thre
 **************************************************
 
 
+.. _radar_logic:
+Radar Logic
+------------
+Knowing the location of a vertical profile relative to nearby meteorological phenomenon is vital in understanding what that vertical profile means for the atmosphere at a given time. To help with this, SounderPy employs the use of mapping & radar data to provide this information to a reader.
 
+Using the Map
+^^^^^^^^^^^^^^^^^
+The map is simply controlled by the "map_zoom" key-word-argument (kwarg) in the ``build_sounding()`` & ``build_hodograph()`` functions. Setting **``map_zoom=0``** will hide the map completely. Otherwise, ``map_zoom`` must be an `int` describing the size of the map. A larger `int` will reveal more of the map (zooming out).
 
+Using Radar
+^^^^^^^^^^^^^^^^^
+SounderPy offers two sources of radar data to the user. First is a CONUS reflectivity mosaic, and the other is single-site NEXRAD WSR-88D reflectivity. The CONUS mosaic is default because its fastest and easiest to plot, but data availablity is only up to 30 days before the current date. Single-site radar goes back much further but data availability varies by site and date.
 
+To plot radar on a sounding or hodograph, there are two kwargs to understand:
+
+    - ``radar``
+        - ``"mosaic"``: plots the CONUS reflectivity mosaic
+        - ``"single"``: plots single-site WSR-88D reflectivity closest to the latitude/longitude coordinates of the sounding.
+
+    - ``radar_time``
+        - ``"now"``: plots the most recent radar scan
+        - ``"sounding"``: plots the radar scan closest the time of the sounding
+        - ``datetime(1999, 5, 4, 0, 27)``: or you may define your own time by providing a datetime obj. This will plot the nearest radar scan to the date/time provided.
+
+**************************************************
 
 About These Plots
 -----------------

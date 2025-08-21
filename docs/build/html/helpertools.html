@@ -58,10 +58,6 @@
 <li class="toctree-l1"><a class="reference internal" href="customdatasources.html">✏️ Custom Data Sources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">🛠️ Helper Tools</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#printing-data-to-the-console">Printing data to the console</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#spy.print_variables"><code class="docutils literal notranslate"><span class="pre">spy.print_variables()</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="#returning-a-dictionary-of-profile-parameters">Returning a dictionary of profile parameters</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#sounding_params"><code class="docutils literal notranslate"><span class="pre">sounding_params</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#sounding_params..calc"><code class="docutils literal notranslate"><span class="pre">sounding_params..calc()</span></code></a></li>
@@ -69,12 +65,20 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#finding-site-lat-lon-pairs">Finding site lat/lon pairs</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#spy.get_latlon"><code class="docutils literal notranslate"><span class="pre">spy.get_latlon()</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="#saving-data-to-a-file">Saving data to a file</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#spy.to_file"><code class="docutils literal notranslate"><span class="pre">spy.to_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#merging-two-profiles-via-weighted-averaging">Merging two profiles via weighted averaging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spy.merge_profiles"><code class="docutils literal notranslate"><span class="pre">spy.merge_profiles()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#smooth-a-profile">Smooth a profile</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spy.smooth_profile"><code class="docutils literal notranslate"><span class="pre">spy.smooth_profile()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#finding-site-lat-lon-pairs">Finding site lat/lon pairs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spy.get_latlon"><code class="docutils literal notranslate"><span class="pre">spy.get_latlon()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#interpolating-a-vertical-profile">Interpolating a vertical profile</a><ul>
@@ -83,6 +87,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#finding-a-nearest-value">Finding a ‘nearest’ value</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#spy.find_nearest"><code class="docutils literal notranslate"><span class="pre">spy.find_nearest()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#printing-data-to-the-console">Printing data to the console</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spy.print_variables"><code class="docutils literal notranslate"><span class="pre">spy.print_variables()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -123,39 +131,6 @@
 <h1>🛠️ Helper Tools<a class="headerlink" href="#helper-tools" title="Link to this heading"></a></h1>
 <p>A collection of helper tools included within SounderPy.</p>
 <hr class="docutils" />
-<section id="printing-data-to-the-console">
-<h2>Printing data to the console<a class="headerlink" href="#printing-data-to-the-console" title="Link to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="spy.print_variables">
-<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">print_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clean_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storm_motion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'right_moving'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modify_sfc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.print_variables" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>clean_data</strong> (<em>dict</em><em>, </em><em>required</em>) – the dictionary of profile data to calculate profile parameters for (see <a class="reference internal" href="gettingdata.html"><span class="doc">🌐 Tools for Getting Data</span></a>)</p></li>
-<li><p><strong>storm_motion</strong> (<em>str</em><em> or </em><em>list</em><em> of </em><em>floats</em><em>, </em><em>optional</em>) – the storm motion used for calculations. Default is ‘right_moving’. Custom storm motions are accepted as a <cite>list</cite> of <cite>floats</cite> representing direction and speed. Ex: <code class="docutils literal notranslate"><span class="pre">[270.0,</span> <span class="pre">25.0]</span></code> where ‘270.0’ is the <em>direction in degrees</em> and ‘25.0’ is the <em>speed in kts</em>. See the <a class="reference internal" href="plottingdata.html#storm-motions"><span class="std std-ref">Storm Motion Logic</span></a> section for more details.</p></li>
-<li><p><strong>modify_sfc</strong> (<em>None</em><em> or </em><em>dict</em><em>, </em><em>optional</em><em>, </em><em>default is None</em>) – a <cite>dict</cite> in the format <code class="docutils literal notranslate"><span class="pre">{'T':</span> <span class="pre">25,</span> <span class="pre">'Td':</span> <span class="pre">21,</span> <span class="pre">'ws':</span> <span class="pre">20,</span> <span class="pre">'wd':</span> <span class="pre">270}</span></code> to modify the surface values of the <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> dict.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>prints a number of thermodynamic and kinematic variables to the console.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>data print out to the console</p>
-</dd>
-</dl>
-</dd></dl>
-
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">THERMODYNAMICS</span> <span class="o">---------------------------------------------</span>
-<span class="o">---</span> <span class="n">SBCAPE</span><span class="p">:</span> <span class="mf">2090.8</span> <span class="o">|</span> <span class="n">MUCAPE</span><span class="p">:</span> <span class="mf">2090.8</span> <span class="o">|</span> <span class="n">MLCAPE</span><span class="p">:</span> <span class="mf">1878.3</span> <span class="o">|</span> <span class="n">MUECAPE</span><span class="p">:</span> <span class="mf">1651.9</span>
-<span class="o">---</span> <span class="n">MU</span> <span class="mi">0</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span> <span class="mf">71.1</span> <span class="o">|</span> <span class="n">MU</span> <span class="mi">0</span><span class="o">-</span><span class="mi">6</span><span class="p">:</span> <span class="mf">533.0</span> <span class="o">|</span> <span class="n">SB</span> <span class="mi">0</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span> <span class="mf">71.1</span> <span class="o">|</span> <span class="n">SB</span> <span class="mi">0</span><span class="o">-</span><span class="mi">6</span><span class="p">:</span> <span class="mf">533.0</span>
-
-<span class="o">&gt;</span> <span class="n">KINEMATICS</span> <span class="o">-------------------------------------------------</span>
-<span class="o">---</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SRW</span><span class="p">:</span> <span class="mf">35.0</span> <span class="n">knot</span> <span class="o">|</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SWV</span><span class="p">:</span> <span class="mf">0.019</span> <span class="o">|</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SHEAR</span><span class="p">:</span> <span class="mf">21.8</span> <span class="o">|</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SRH</span><span class="p">:</span> <span class="mf">186.2</span>
-<span class="o">---</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SRW</span><span class="p">:</span> <span class="mf">20.9</span> <span class="n">knot</span> <span class="o">|</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SWV</span><span class="p">:</span> <span class="mf">0.005</span> <span class="o">|</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SHEAR</span><span class="p">:</span> <span class="mf">14.1</span> <span class="o">|</span> <span class="o">|</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SRH</span><span class="p">:</span> <span class="mf">54.0</span>
-</pre></div>
-</div>
-</section>
-<hr class="docutils" />
 <section id="returning-a-dictionary-of-profile-parameters">
 <h2>Returning a dictionary of profile parameters<a class="headerlink" href="#returning-a-dictionary-of-profile-parameters" title="Link to this heading"></a></h2>
 <p>Return a dictionary of common calculated sounding paramters and special variables for a given vertical profile.</p>
@@ -195,44 +170,14 @@
 
 </dd></dl>
 
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">sounding_params</span><span class="p">(</span><span class="n">clean_data</span><span class="p">)</span><span class="o">.</span><span class="n">calc</span><span class="p">()</span>
+</pre></div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>These calculated parameters are the same used on SounderPy plots. This function simply returns the master dictionary of all of these values.</p>
 </div>
-</section>
-<hr class="docutils" />
-<section id="finding-site-lat-lon-pairs">
-<h2>Finding site lat/lon pairs<a class="headerlink" href="#finding-site-lat-lon-pairs" title="Link to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="spy.get_latlon">
-<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">get_latlon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.get_latlon" title="Link to this definition"></a></dt>
-<dd><p>Return a latitude-longitude float pair in a <code class="docutils literal notranslate"><span class="pre">list</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>station_type</strong> (<em>str</em><em>, </em><em>required</em>) – the station ‘type’ that corresponds with the given station ID</p></li>
-<li><p><strong>station_id</strong> (<em>str</em><em>, </em><em>required</em>) – the station ID for the given station type</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>lat/lon float pair</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<p>Example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">get_latlon</span><span class="p">(</span><span class="s1">&#39;metar&#39;</span><span class="p">,</span> <span class="s1">&#39;kmop&#39;</span><span class="p">)</span>
-<span class="n">spy</span><span class="o">.</span><span class="n">get_latlon</span><span class="p">(</span><span class="s1">&#39;bufkit&#39;</span><span class="p">,</span> <span class="s1">&#39;apx&#39;</span><span class="p">)</span>
-<span class="n">spy</span><span class="o">.</span><span class="n">get_latlon</span><span class="p">(</span><span class="s1">&#39;raob&#39;</span><span class="p">,</span> <span class="s1">&#39;oun&#39;</span><span class="p">)</span>
-<span class="n">spy</span><span class="o">.</span><span class="n">get_latlon</span><span class="p">(</span><span class="s1">&#39;buoy&#39;</span><span class="p">,</span> <span class="s1">&#39;45210&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>note: you can use this lat/lon pair list when calling the function <a class="reference internal" href="gettingdata.html#modeldata"><span class="std std-ref">get_model_data</span></a></p></li>
-</ul>
 </section>
 <hr class="docutils" />
 <section id="saving-data-to-a-file">
@@ -267,6 +212,129 @@
 <span class="n">spy</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;sharppy&#39;</span><span class="p">,</span> <span class="n">clean_data</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<hr class="docutils" />
+<section id="merging-two-profiles-via-weighted-averaging">
+<h2>Merging two profiles via weighted averaging<a class="headerlink" href="#merging-two-profiles-via-weighted-averaging" title="Link to this heading"></a></h2>
+<p>Merge two profiles together using weighted averaging of values along a common height axis to return a single profile.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="spy.merge_profiles">
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">merge_profiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile_b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_a</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.merge_profiles" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>profile_a</strong> (<em>dict</em><em>, </em><em>required</em>) – a SounderPy <a href="#id1"><span class="problematic" id="id2">`</span></a>clean_data`dictionary containing variable arrays for profile_a.</p></li>
+<li><p><strong>profile_b</strong> (<em>dict</em><em>, </em><em>required</em>) – a SounderPy <cite>clean_data</cite> dictionary containing variable arrays for profile_b.</p></li>
+<li><p><strong>weight_a</strong> (<em>float</em><em>, </em><em>optional</em>) – the weight for <cite>profile_a</cite> in the averaging scheme, default is 0.5 (50%)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a <cite>clean_data</cite> dictionary with weighted-averaged values for z, T, Td, u, v, and p <strong>without metadata</strong> (see example below)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># load in some sounding data</span>
+<span class="n">profile_a</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s2">&quot;OAX&quot;</span><span class="p">,</span> <span class="s2">&quot;2014&quot;</span><span class="p">,</span> <span class="s2">&quot;06&quot;</span><span class="p">,</span> <span class="s2">&quot;16&quot;</span><span class="p">,</span> <span class="s2">&quot;18&quot;</span><span class="p">)</span>
+<span class="n">profile_b</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s2">&quot;OAX&quot;</span><span class="p">,</span> <span class="s2">&quot;2014&quot;</span><span class="p">,</span> <span class="s2">&quot;06&quot;</span><span class="p">,</span> <span class="s2">&quot;17&quot;</span><span class="p">,</span> <span class="s2">&quot;00&quot;</span><span class="p">)</span>
+
+<span class="c1"># apply `merge_profiles()` function</span>
+<span class="n">merged_profile</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">merge_profiles</span><span class="p">(</span><span class="n">profile_a</span><span class="p">,</span> <span class="n">profile_b</span><span class="p">,</span> <span class="n">weight_a</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+
+<span class="c1"># reapply profile metadata and plot titles</span>
+<span class="n">merged_profile</span><span class="p">[</span><span class="s1">&#39;site_info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;site-id&#39;</span><span class="p">:</span> <span class="s1">&#39;KOAX&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;site-name&#39;</span><span class="p">:</span> <span class="s1">&#39;OMAHA VALLEY&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;site-lctn&#39;</span><span class="p">:</span> <span class="s1">&#39;NE US&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;site-latlon&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">41.32</span><span class="p">,</span> <span class="o">-</span><span class="mf">96.37</span><span class="p">],</span>
+                          <span class="s1">&#39;site-elv&#39;</span><span class="p">:</span> <span class="mi">350</span><span class="p">,</span>
+                          <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;RAOB OBSERVED PROFILE&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;fcst-hour&#39;</span><span class="p">:</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;run-time&#39;</span><span class="p">:</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;valid-time&#39;</span><span class="p">:</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;box_area&#39;</span><span class="p">:</span> <span class="s1">&#39;none&#39;</span><span class="p">}</span>
+<span class="n">merged_profile</span><span class="p">[</span><span class="s1">&#39;titles&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="p">{</span><span class="s1">&#39;top_title&#39;</span><span class="p">:</span>   <span class="s1">&#39;COMPOSITE VERTICAL PROFILE&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;left_title&#39;</span><span class="p">:</span>  <span class="s1">&#39;Profile-a (60%): 18z OAX 06/16/2014 | Profile-b (40%): 18z OAX 06/16/2014&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;right_title&#39;</span><span class="p">:</span> <span class="s1">&#39;KOAX, OMAHA VALLEY, NE | 41.32, -96.37    &#39;</span><span class="p">}</span>
+
+<span class="c1"># build a sounding</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">merged_profile</span><span class="p">,</span> <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">special_parcels</span><span class="o">=</span><span class="s1">&#39;simple&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/merged_profile_example.png"><img alt="_images/merged_profile_example.png" class="align-center" src="_images/merged_profile_example.png" style="width: 500px;" />
+</a>
+</section>
+<hr class="docutils" />
+<section id="smooth-a-profile">
+<h2>Smooth a profile<a class="headerlink" href="#smooth-a-profile" title="Link to this heading"></a></h2>
+<p>Apply a simple <code class="docutils literal notranslate"><span class="pre">SciPy</span></code> gaussian smoother to a SounderPy <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> profile</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="spy.smooth_profile">
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">smooth_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clean_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.smooth_profile" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clean_data</strong> (<em>dict</em><em>, </em><em>required</em>) – a SounderPy <a href="#id3"><span class="problematic" id="id4">`</span></a>clean_data`dictionary.</p></li>
+<li><p><strong>sigma</strong> (<em>float</em><em>, </em><em>optional</em>) – from SciPy: “Standard deviation for Gaussian kernel”. Default is 0.5.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a <cite>clean_data</cite> dictionary with smoothed values for z, T, Td, u, v, and p. Metadata remains unchanged.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Here is an (extreme) example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># load in some sounding data</span>
+<span class="n">clean_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s2">&quot;OAX&quot;</span><span class="p">,</span> <span class="s2">&quot;2014&quot;</span><span class="p">,</span> <span class="s2">&quot;06&quot;</span><span class="p">,</span> <span class="s2">&quot;16&quot;</span><span class="p">,</span> <span class="s2">&quot;18&quot;</span><span class="p">)</span>
+
+<span class="n">smoothed_profile</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">smooth_profile</span><span class="p">(</span><span class="n">clean_data</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">smoothed_profile</span><span class="p">,</span> <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">special_parcels</span><span class="o">=</span><span class="s1">&#39;simple&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/smoothed_profile_example.png"><img alt="_images/smoothed_profile_example.png" class="align-center" src="_images/smoothed_profile_example.png" style="width: 500px;" />
+</a>
+</section>
+<hr class="docutils" />
+<section id="finding-site-lat-lon-pairs">
+<h2>Finding site lat/lon pairs<a class="headerlink" href="#finding-site-lat-lon-pairs" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="spy.get_latlon">
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">get_latlon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.get_latlon" title="Link to this definition"></a></dt>
+<dd><p>Return a latitude-longitude float pair in a <code class="docutils literal notranslate"><span class="pre">list</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>station_type</strong> (<em>str</em><em>, </em><em>required</em>) – the station ‘type’ that corresponds with the given station ID</p></li>
+<li><p><strong>station_id</strong> (<em>str</em><em>, </em><em>required</em>) – the station ID for the given station type</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>lat/lon float pair</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">get_latlon</span><span class="p">(</span><span class="s1">&#39;metar&#39;</span><span class="p">,</span> <span class="s1">&#39;kmop&#39;</span><span class="p">)</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">get_latlon</span><span class="p">(</span><span class="s1">&#39;bufkit&#39;</span><span class="p">,</span> <span class="s1">&#39;apx&#39;</span><span class="p">)</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">get_latlon</span><span class="p">(</span><span class="s1">&#39;raob&#39;</span><span class="p">,</span> <span class="s1">&#39;oun&#39;</span><span class="p">)</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">get_latlon</span><span class="p">(</span><span class="s1">&#39;buoy&#39;</span><span class="p">,</span> <span class="s1">&#39;45210&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>note: you can use this lat/lon pair list when calling the function <a class="reference internal" href="gettingdata.html#modeldata"><span class="std std-ref">get_model_data</span></a></p></li>
+</ul>
 </section>
 <hr class="docutils" />
 <section id="interpolating-a-vertical-profile">
@@ -326,6 +394,40 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">z_equals_500m</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">interp_data</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<hr class="docutils" />
+<section id="printing-data-to-the-console">
+<h2>Printing data to the console<a class="headerlink" href="#printing-data-to-the-console" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="spy.print_variables">
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">print_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clean_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storm_motion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'right_moving'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modify_sfc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.print_variables" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clean_data</strong> (<em>dict</em><em>, </em><em>required</em>) – the dictionary of profile data to calculate profile parameters for (see <a class="reference internal" href="gettingdata.html"><span class="doc">🌐 Tools for Getting Data</span></a>)</p></li>
+<li><p><strong>storm_motion</strong> (<em>str</em><em> or </em><em>list</em><em> of </em><em>floats</em><em>, </em><em>optional</em>) – the storm motion used for calculations. Default is ‘right_moving’. Custom storm motions are accepted as a <cite>list</cite> of <cite>floats</cite> representing direction and speed. Ex: <code class="docutils literal notranslate"><span class="pre">[270.0,</span> <span class="pre">25.0]</span></code> where ‘270.0’ is the <em>direction in degrees</em> and ‘25.0’ is the <em>speed in kts</em>. See the <a class="reference internal" href="plottingdata.html#storm-motions"><span class="std std-ref">Storm Motion Logic</span></a> section for more details.</p></li>
+<li><p><strong>modify_sfc</strong> (<em>None</em><em> or </em><em>dict</em><em>, </em><em>optional</em><em>, </em><em>default is None</em>) – a <cite>dict</cite> in the format <code class="docutils literal notranslate"><span class="pre">{'T':</span> <span class="pre">25,</span> <span class="pre">'Td':</span> <span class="pre">21,</span> <span class="pre">'ws':</span> <span class="pre">20,</span> <span class="pre">'wd':</span> <span class="pre">270}</span></code> to modify the surface values of the <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> dict.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>prints a number of thermodynamic and kinematic variables to the console.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>data print out to the console</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">THERMODYNAMICS</span> <span class="o">---------------------------------------------</span>
+<span class="o">---</span> <span class="n">SBCAPE</span><span class="p">:</span> <span class="mf">2090.8</span> <span class="o">|</span> <span class="n">MUCAPE</span><span class="p">:</span> <span class="mf">2090.8</span> <span class="o">|</span> <span class="n">MLCAPE</span><span class="p">:</span> <span class="mf">1878.3</span> <span class="o">|</span> <span class="n">MUECAPE</span><span class="p">:</span> <span class="mf">1651.9</span>
+<span class="o">---</span> <span class="n">MU</span> <span class="mi">0</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span> <span class="mf">71.1</span> <span class="o">|</span> <span class="n">MU</span> <span class="mi">0</span><span class="o">-</span><span class="mi">6</span><span class="p">:</span> <span class="mf">533.0</span> <span class="o">|</span> <span class="n">SB</span> <span class="mi">0</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span> <span class="mf">71.1</span> <span class="o">|</span> <span class="n">SB</span> <span class="mi">0</span><span class="o">-</span><span class="mi">6</span><span class="p">:</span> <span class="mf">533.0</span>
+
+<span class="o">&gt;</span> <span class="n">KINEMATICS</span> <span class="o">-------------------------------------------------</span>
+<span class="o">---</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SRW</span><span class="p">:</span> <span class="mf">35.0</span> <span class="n">knot</span> <span class="o">|</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SWV</span><span class="p">:</span> <span class="mf">0.019</span> <span class="o">|</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SHEAR</span><span class="p">:</span> <span class="mf">21.8</span> <span class="o">|</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span> <span class="n">SRH</span><span class="p">:</span> <span class="mf">186.2</span>
+<span class="o">---</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SRW</span><span class="p">:</span> <span class="mf">20.9</span> <span class="n">knot</span> <span class="o">|</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SWV</span><span class="p">:</span> <span class="mf">0.005</span> <span class="o">|</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SHEAR</span><span class="p">:</span> <span class="mf">14.1</span> <span class="o">|</span> <span class="o">|</span> <span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="n">km</span> <span class="n">SRH</span><span class="p">:</span> <span class="mf">54.0</span>
+</pre></div>
+</div>
+<hr class="docutils" />
 </section>
 </section>
 

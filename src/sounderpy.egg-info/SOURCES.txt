@@ -8,8 +8,12 @@ src/sounderpy/bufkit_data.py
 src/sounderpy/calc.py
 src/sounderpy/cm1_utils.py
 src/sounderpy/model_data.py
+src/sounderpy/nexrad_locations.txt
 src/sounderpy/obs_data.py
 src/sounderpy/plot.py
+src/sounderpy/profile_utils.py
+src/sounderpy/radar_utils.py
+src/sounderpy/rs_reflectivity.txt
 src/sounderpy/sounderpy.py
 src/sounderpy/timeseries.py
 src/sounderpy/utils.py

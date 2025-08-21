@@ -33,7 +33,7 @@ from cartopy.io import img_tiles
 
 # SOUNDERPY MODULES
 from .calc import sounding_params, vad_params
-from .utils import modify_surface, find_nearest, mag, mag_round
+from .utils import modify_surface, find_nearest, mag, mag_round, wind_to_dir
 from .radar_utils import *
 
 
@@ -235,11 +235,11 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     skew.ax.axvline(0 * units.degC, linestyle='--', color='blue', alpha=0.3)
     skew.ax.axvline(-20 * units.degC, linestyle='--', color='blue', alpha=0.3)
     # dry adiabats
-    skew.plot_dry_adiabats(color='cornflowerblue', linewidth=0.2, alpha=0.7) 
+    skew.plot_dry_adiabats(color='cornflowerblue', linewidth=0.3, alpha=0.8)
     # moist adiabats
-    skew.plot_moist_adiabats(color='cornflowerblue', linewidth=0.2, alpha=0.7)
+    skew.plot_moist_adiabats(color='cornflowerblue', linewidth=0.3, alpha=0.8)
     # mixing ratio lines
-    skew.plot_mixing_lines(color=skw_ln_clr, linewidth=0.2, alpha=0.7)
+    skew.plot_mixing_lines(color=skw_ln_clr, linewidth=0.3, alpha=0.8)
     # wet bulb temp (Tw)
     twline = skew.plot(p, general['wet_bulb'], '#3d8aff', linewidth=2, label='WETBULB TEMP', alpha=0.6)
     # virtual temp (Tv)
@@ -477,7 +477,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
         
         
         
-    # T & WB FRREZING POINT ANNOTATION--------------------------------------------------------------
+    # T & WB FREEZING POINT ANNOTATION--------------------------------------------------------------
     if ma.is_masked(general['frz_pt_z']) == False:
         if general['frz_pt_z'] >= 50*units.m:
             plt.text((0.765), (general['frz_pt_p']), "←FRZ", weight='bold',color='cornflowerblue',  
@@ -502,20 +502,20 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
         idx = find_nearest(thermo['muZ_trace'], 3000)
         cape03_label = " ←{}J/kg".format(mag(thermo['mu3cape']))     
         plt.annotate(cape03_label,  ((thermo['muT_trace'][idx]+7), intrp['pINTRP'][intrp['hgt_lvls']['h3']]),  textcoords="offset points",  xytext=(20, 0), 
-                     color='red', alpha=0.6, fontsize=13.5, ha='right')  
+                     color='red', alpha=0.7, fontsize=13.5, ha='right')
             
             
     if thermo['mu6cape'] > thermo['mu3cape']:
         idx = find_nearest(thermo['muZ_trace'], 6000)
         cape06_label = " ←{}J/kg".format(mag(thermo['mu6cape']))                                            
         plt.annotate(cape06_label, ((thermo['muT_trace'][idx]+7), intrp['pINTRP'][intrp['hgt_lvls']['h6']]), textcoords="offset points",  xytext=(10, 0), 
-                         color='red', alpha=0.6, fontsize=13.5, ha='right') 
+                         color='red', alpha=0.7, fontsize=13.5, ha='right')
             
             
     if thermo['mucape'] > thermo['mu6cape']:
             cape_label = "←{}J/kg".format(mag(thermo['mucape']))                                            
             plt.annotate(cape_label,((thermo['mu_el_T']), thermo['mu_el_p']), textcoords="offset points",  xytext=(5, 0), 
-                         color='red', alpha=0.6, fontsize=13.5, ha='left') 
+                         color='red', alpha=0.7, fontsize=13.5, ha='left')
             
             
             
@@ -524,13 +524,13 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     x_mid = (x_start + x_end)/2
     Lapse_line = plt.Line2D([x_mid, x_mid], (thermo['lr_max'][1], thermo['lr_max'][2]), color='firebrick', linewidth=3, alpha=0.3, transform=skew.ax.get_yaxis_transform())
     plt.text((x_start-0.005), (thermo['lr_max'][2]-8), f"{np.round(thermo['lr_max'][0],1)}", 
-             color='firebrick', weight='bold', fontsize=13, alpha=0.3, transform=skew.ax.get_yaxis_transform())
+             color='firebrick', weight='bold', fontsize=13, alpha=0.6, transform=skew.ax.get_yaxis_transform())
     skew.ax.add_artist(Lapse_line)
 
     # EFFECTIVE INFLOW LAYER ANNOTATION--------------------------
     x_start, x_end = 0.18, 0.20
     x_mid = (x_start + x_end)/2
-    plt.text((x_start+0.01), (kinem['eil'][1]-8), "EIL", weight='bold',color='lightblue', alpha=0.4, ha='center', fontsize=13, transform=skew.ax.get_yaxis_transform())
+    plt.text((x_start+0.01), (kinem['eil'][1]-8), "EIL", weight='bold',color='lightblue', alpha=0.6, ha='center', fontsize=13, transform=skew.ax.get_yaxis_transform())
     EIL_line = plt.Line2D([x_mid, x_mid], (kinem['eil'][0], kinem['eil'][1]), color='lightblue', linewidth=3, alpha=0.4, transform=skew.ax.get_yaxis_transform())
     skew.ax.add_artist(EIL_line)
 
@@ -539,7 +539,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
         if thermo['dgz'][1] < p[0].m:
             x_start, x_end = 0.12, 0.14
             x_mid = (x_start + x_end)/2
-            plt.text((x_start+0.01), (thermo['dgz'][1]-8), "DGZ", weight='bold',color='blue', alpha=0.4, ha='center', fontsize=13, transform=skew.ax.get_yaxis_transform())
+            plt.text((x_start+0.01), (thermo['dgz'][1]-8), "DGZ", weight='bold',color='blue', alpha=0.6, ha='center', fontsize=13, transform=skew.ax.get_yaxis_transform())
             dgz_line = plt.Line2D([x_mid, x_mid], (thermo['dgz'][0], thermo['dgz'][1]), color='blue', linewidth=3, alpha=0.4, transform=skew.ax.get_yaxis_transform())
             skew.ax.add_artist(dgz_line)
       
@@ -548,7 +548,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
         if thermo['hgz'][1] < p[0].m:
             x_start, x_end = 0.12, 0.14
             x_mid = (x_start + x_end)/2
-            plt.text((x_start+0.01), (thermo['hgz'][1]-8), "HGZ", weight='bold',color='green', alpha=0.4, ha='center', fontsize=13, transform=skew.ax.get_yaxis_transform())
+            plt.text((x_start+0.01), (thermo['hgz'][1]-8), "HGZ", weight='bold',color='green', alpha=0.6, ha='center', fontsize=13, transform=skew.ax.get_yaxis_transform())
             hgz_line = plt.Line2D([x_mid, x_mid], (thermo['hgz'][0], thermo['hgz'][1]), color='green', alpha=0.4, linewidth=3, transform=skew.ax.get_yaxis_transform())
             skew.ax.add_artist(hgz_line)
             
@@ -562,7 +562,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
             plt.annotate(label, (mpcalc.dewpoint_from_relative_humidity(intrp['tINTRP'][hgt_idx]*units.degC, 
                                                                     intrp['rhINTRP'][hgt_idx]/100),
                          intrp['pINTRP'][hgt_idx]*units.hPa), textcoords="offset points", xytext=(-40, 0), 
-                         color='green', alpha=0.6, fontsize=13.5, ha='center', clip_on=True) 
+                         color='green', alpha=0.7, fontsize=13.5, ha='center', clip_on=True)
     except:
         pass
     #################################################################
@@ -805,21 +805,17 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
             directions = []
             
             speeds.append(mpcalc.wind_speed(kinem['sm_u']*units.kts,kinem['sm_v']*units.kts).m) 
-            directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem['sm_u'],kinem['sm_v']))), 
-                                                        full=False, level=3)) 
+            directions.append(wind_to_dir(kinem['sm_u'],kinem['sm_v']))
 
             for key in keys:
                 speeds.append(mpcalc.wind_speed(kinem[key][0]*units.kts,kinem[key][1]*units.kts).m) 
-                directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem[key][0],kinem[key][1]))), 
-                                                            full=False, level=3))
+                directions.append(wind_to_dir(kinem[key][0],kinem[key][1]))
 
             speeds.append(mpcalc.wind_speed(kinem['mcs'][0]*units.kts,kinem['mcs'][1]*units.kts).m) 
-            directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem['mcs'][0],kinem['mcs'][1]))), 
-                                                        full=False, level=3))   
+            directions.append(wind_to_dir(kinem['mcs'][0],kinem['mcs'][1]))
 
             speeds.append(mpcalc.wind_speed(kinem['mcs'][2]*units.kts,kinem['mcs'][3]*units.kts).m) 
-            directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem['mcs'][2],kinem['mcs'][3]))), 
-                                                        full=False, level=3)) 
+            directions.append(wind_to_dir(kinem['mcs'][2],kinem['mcs'][3]))
                     
                     
             #plot Bunkers Storm Motion & DTM Data in box on Hodograph 
@@ -999,7 +995,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
         if radar in ['single-site', 'single']:
             # PLOT SINGLE SITE RADAR -----------------------------------------------------------------------------------------------------
             try:
-                site_ids, lat_radar, lon_radar = parse_nexrad_locs('nexrad_locations.txt')
+                site_ids, lat_radar, lon_radar = parse_nexrad_locs()
                 nexrad_site, nexrad_lat, nexrad_lon = find_nearest_station(site_ids, lat_radar, lon_radar, clean_data['site_info']['site-latlon'][0],clean_data['site_info']['site-latlon'][1])
                 radar, scan_timestamp, nexrad_site = get_radar_data(nexrad_site, clean_data, radar_time)
 
@@ -1441,39 +1437,39 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     plt.figtext( 0.905, 0.04, f"{mag_round(kinem['swv_0_to_500'], 3)}", fontsize=15, color='#6495ED', weight='bold')
 
     plt.figtext( 0.689, 0.01, f"0-1ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
-    plt.figtext( 0.732, 0.01, f"{mag(kinem['shear_0_to_1000'])} kt", fontsize=15, color='#7B68EE', weight='bold')
-    plt.figtext( 0.769, 0.01, f"{mag(kinem['srh_0_to_1000'])* met_per_sec:~P}", fontsize=15, color='#7B68EE', weight='bold')
-    plt.figtext( 0.828, 0.01, f"{mag(kinem['srw_0_to_1000'])} kt", fontsize=15, color='#7B68EE', weight='bold')
-    plt.figtext( 0.870, 0.01, f"{mag(kinem['swv_perc_0_to_1000'])}", fontsize=15, color='#7B68EE', weight='bold')
-    plt.figtext( 0.905, 0.01, f"{mag_round(kinem['swv_0_to_1000'], 3)}", fontsize=15, color='#7B68EE', weight='bold')
+    plt.figtext( 0.732, 0.01, f"{mag(kinem['shear_0_to_1000'])} kt", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.769, 0.01, f"{mag(kinem['srh_0_to_1000'])* met_per_sec:~P}", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.828, 0.01, f"{mag(kinem['srw_0_to_1000'])} kt", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.870, 0.01, f"{mag(kinem['swv_perc_0_to_1000'])}", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.905, 0.01, f"{mag_round(kinem['swv_0_to_1000'], 3)}", fontsize=15, color='#6495ED', weight='bold')
 
     plt.figtext( 0.689, -0.02, f"1-3ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
-    plt.figtext( 0.732, -0.02, f"{mag(kinem['shear_1_to_3000'])} kt", fontsize=15, color='#4169E1', weight='bold')
-    plt.figtext( 0.769, -0.02, f"{mag(kinem['srh_1_to_3000'])* met_per_sec:~P}", fontsize=15, color='#4169E1', weight='bold')
-    plt.figtext( 0.828, -0.02, f"{mag(kinem['srw_1_to_3000'])} kt", fontsize=15, color='#4169E1', weight='bold')
-    plt.figtext( 0.870, -0.02, f"{mag(kinem['swv_perc_1_to_3000'])}", fontsize=15, color='#4169E1', weight='bold')
-    plt.figtext( 0.905, -0.02, f"{mag_round(kinem['swv_1_to_3000'], 3)}", fontsize=15, color='#4169E1', weight='bold')
+    plt.figtext( 0.732, -0.02, f"{mag(kinem['shear_1_to_3000'])} kt", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.769, -0.02, f"{mag(kinem['srh_1_to_3000'])* met_per_sec:~P}", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.828, -0.02, f"{mag(kinem['srw_1_to_3000'])} kt", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.870, -0.02, f"{mag(kinem['swv_perc_1_to_3000'])}", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.905, -0.02, f"{mag_round(kinem['swv_1_to_3000'], 3)}", fontsize=15, color='#6495ED', weight='bold')
 
     plt.figtext( 0.689, -0.05, f"3-6ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
-    plt.figtext( 0.732, -0.05, f"{mag(kinem['shear_3_to_6000'])} kt", fontsize=15, color='#0000CD', weight='bold')
-    plt.figtext( 0.769, -0.05, f"{mag(kinem['srh_3_to_6000'])* met_per_sec:~P}", fontsize=15, color='#0000CD', weight='bold')
-    plt.figtext( 0.828, -0.05, f"{mag(kinem['srw_3_to_6000'])} kt", fontsize=15, color='#0000CD', weight='bold')
-    plt.figtext( 0.870, -0.05, f"{mag(kinem['swv_perc_3_to_6000'])}", fontsize=15, color='#0000CD', weight='bold')
-    plt.figtext( 0.905, -0.05, f"{mag_round(kinem['swv_3_to_6000'], 3)}", fontsize=15, color='#0000CD', weight='bold')
+    plt.figtext( 0.732, -0.05, f"{mag(kinem['shear_3_to_6000'])} kt", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.769, -0.05, f"{mag(kinem['srh_3_to_6000'])* met_per_sec:~P}", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.828, -0.05, f"{mag(kinem['srw_3_to_6000'])} kt", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.870, -0.05, f"{mag(kinem['swv_perc_3_to_6000'])}", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.905, -0.05, f"{mag_round(kinem['swv_3_to_6000'], 3)}", fontsize=15, color='#6495ED', weight='bold')
     
     plt.figtext( 0.689, -0.08, f"6-9ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
-    plt.figtext( 0.732, -0.08, f"{mag(kinem['shear_6_to_9000'])} kt", fontsize=15, color='#00008B', weight='bold')
-    plt.figtext( 0.769, -0.08, f"{mag(kinem['srh_6_to_9000'])* met_per_sec:~P}", fontsize=15, color='#00008B', weight='bold')
-    plt.figtext( 0.828, -0.08, f"{mag(kinem['srw_6_to_9000'])} kt", fontsize=15, color='#00008B', weight='bold')
-    plt.figtext( 0.870, -0.08, f"{mag(kinem['swv_perc_6_to_9000'])}", fontsize=15, color='#00008B', weight='bold')
-    plt.figtext( 0.905, -0.08, f"{mag_round(kinem['swv_6_to_9000'], 3)}", fontsize=15, color='#00008B', weight='bold')
+    plt.figtext( 0.732, -0.08, f"{mag(kinem['shear_6_to_9000'])} kt", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.769, -0.08, f"{mag(kinem['srh_6_to_9000'])* met_per_sec:~P}", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.828, -0.08, f"{mag(kinem['srw_6_to_9000'])} kt", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.870, -0.08, f"{mag(kinem['swv_perc_6_to_9000'])}", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.905, -0.08, f"{mag_round(kinem['swv_6_to_9000'], 3)}", fontsize=15, color='#6495ED', weight='bold')
     
     plt.figtext( 0.689, -0.11, f"EIL:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
-    plt.figtext( 0.732, -0.11, f"{mag(kinem['shear_eil'])} kt", fontsize=15, color='#000080', weight='bold')
-    plt.figtext( 0.769, -0.11, f"{mag(kinem['srh_eil'])* met_per_sec:~P}", fontsize=15, color='#000080', weight='bold')
-    plt.figtext( 0.828, -0.11, f"{mag(kinem['srw_eil'])} kt", fontsize=15, color='#000080', weight='bold')
-    plt.figtext( 0.870, -0.11, f"{mag(kinem['swv_perc_eil'])}", fontsize=15, color='#000080', weight='bold')
-    plt.figtext( 0.905, -0.11, f"{mag_round(kinem['swv_eil'], 3)}", fontsize=15, color='#000080', weight='bold')
+    plt.figtext( 0.732, -0.11, f"{mag(kinem['shear_eil'])} kt", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.769, -0.11, f"{mag(kinem['srh_eil'])* met_per_sec:~P}", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.828, -0.11, f"{mag(kinem['srw_eil'])} kt", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.870, -0.11, f"{mag(kinem['swv_perc_eil'])}", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.905, -0.11, f"{mag_round(kinem['swv_eil'], 3)}", fontsize=15, color='#6495ED', weight='bold')
     #################################################################
 
 
@@ -1531,7 +1527,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     # plot author credit information 
     plt.figtext( 0.34, -0.105, 'SOUNDERPY VERTICAL PROFILE ANALYSIS TOOL', 
                 fontsize=20, ha='center', color='cornflowerblue', weight='bold', alpha=0.6)
-    plt.figtext( 0.34, -0.125, '(C) KYLE J GILLETT | sounderpysoundings.anvil.app', 
+    plt.figtext( 0.34, -0.125, 'KYLE J GILLETT | sounderpysoundings.anvil.app',
                 fontsize=15, ha='center', color='cornflowerblue', weight='bold', alpha=0.6)
 
     # sounderpy logo
@@ -1573,7 +1569,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
 ############################ HODOGRAPH ##################################
 
 def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc,
-                     show_radar, radar_time, map_zoom, hodo_boundary):
+                     radar, radar_time, map_zoom, hodo_boundary):
 
 
     if dark_mode == True:
@@ -1705,11 +1701,11 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc,
     fig = plt.figure(figsize=(16, 12), linewidth=1.5, edgecolor=brdr_clr)
     fig.set_facecolor(bckgrnd_clr)  
     hod_ax = plt.axes((0.13, 0.11, 0.77, 0.77))
-    h = Hodograph(hod_ax, component_range=150.)
-    h.ax.set_xlim(-70, 70)
-    h.ax.set_ylim(-70, 70)
-    h.add_grid(increment=20, color=gen_txt_clr, linestyle='-', linewidth=1.5, alpha=1)
-    h.add_grid(increment=10, color=gen_txt_clr, linewidth=1, linestyle='--', alpha=0.5)
+    h = Hodograph(hod_ax, component_range=180.)
+    h.ax.set_xlim(-90, 90)
+    h.ax.set_ylim(-90, 90)
+    h.add_grid(increment=20, color=gen_txt_clr, linestyle='-', linewidth=1, alpha=0.7)
+    h.add_grid(increment=10, color=gen_txt_clr, linewidth=0.3, linestyle='--', alpha=0.5)
     h.ax.set_facecolor(bckgrnd_clr)
     h.ax.spines["top"].set_color(brdr_clr)
     h.ax.spines["left"].set_color(brdr_clr)
@@ -1769,11 +1765,11 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc,
     #################################################################
     hodo_color = ['purple','red','darkorange','gold','#fff09f']
 
-    h.ax.plot(intrp['uINTRP'][0:10+1],   intrp['vINTRP'][0:10+1],   color=hodo_color[0], linewidth=6, clip_on=True)
-    h.ax.plot(intrp['uINTRP'][10:30+1],  intrp['vINTRP'][10:30+1],  color=hodo_color[1], linewidth=6, clip_on=True)
-    h.ax.plot(intrp['uINTRP'][30:60+1],  intrp['vINTRP'][30:60+1],  color=hodo_color[2], linewidth=6, clip_on=True)
-    h.ax.plot(intrp['uINTRP'][60:90+1],  intrp['vINTRP'][60:90+1],  color=hodo_color[3], linewidth=6, clip_on=True)
-    h.ax.plot(intrp['uINTRP'][90:120+1], intrp['vINTRP'][90:120+1], color=hodo_color[4], linewidth=6, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][0:10+1],   intrp['vINTRP'][0:10+1],   color=hodo_color[0], linewidth=5, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][10:30+1],  intrp['vINTRP'][10:30+1],  color=hodo_color[1], linewidth=5, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][30:60+1],  intrp['vINTRP'][30:60+1],  color=hodo_color[2], linewidth=5, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][60:90+1],  intrp['vINTRP'][60:90+1],  color=hodo_color[3], linewidth=5, clip_on=True)
+    h.ax.plot(intrp['uINTRP'][90:120+1], intrp['vINTRP'][90:120+1], color=hodo_color[4], linewidth=5, clip_on=True)
 
     
     
@@ -1861,17 +1857,17 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc,
             directions = []
             
             speeds.append(mpcalc.wind_speed(kinem['sm_u']*units.kts,kinem['sm_v']*units.kts).m) 
-            directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem['sm_u'],kinem['sm_v']))), full=False, level=3)) 
+            directions.append(wind_to_dir(kinem['sm_u'],kinem['sm_v']))
 
             for key in keys:
                 speeds.append(mpcalc.wind_speed(kinem[key][0]*units.kts,kinem[key][1]*units.kts).m) 
-                directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem[key][0],kinem[key][1]))), full=False, level=3))
+                directions.append(wind_to_dir(kinem[key][0],kinem[key][1]))
 
             speeds.append(mpcalc.wind_speed(kinem['mcs'][0]*units.kts,kinem['mcs'][1]*units.kts).m) 
-            directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem['mcs'][0],kinem['mcs'][1]))), full=False, level=3))   
+            directions.append(wind_to_dir(kinem['mcs'][0],kinem['mcs'][1]))
 
             speeds.append(mpcalc.wind_speed(kinem['mcs'][2]*units.kts,kinem['mcs'][3]*units.kts).m) 
-            directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem['mcs'][2],kinem['mcs'][3]))), full=False, level=3)) 
+            directions.append(wind_to_dir(kinem['mcs'][2],kinem['mcs'][3]))
                     
                     
             #plot Bunkers Storm Motion & DTM Data in box on Hodograph 
@@ -2162,33 +2158,63 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc,
                            clean_data['site_info']['site-latlon'][0] + zoom_factor*1.6])
         map_ax.set_box_aspect(1)
 
-        map_ax.add_feature(cfeature.STATES, color=bckgrnd_clr, zorder=1)
+        map_ax.add_feature(cfeature.STATES, color=bckgrnd_clr, alpha=0.5, zorder=2)
         map_ax.add_feature(cfeature.STATES, edgecolor=gen_txt_clr, alpha=0.7,
                        linestyle='-', linewidth=2, zorder=6)
-        map_ax.add_feature(USCOUNTIES, alpha=0.3, edgecolor=gen_txt_clr,
-                           linestyle='-', linewidth=0.2, zorder=5)
+        map_ax.add_feature(USCOUNTIES, alpha=0.7, edgecolor=gen_txt_clr,
+                           linestyle='-', linewidth=0.5, zorder=5)
         map_ax.add_feature(cfeature.LAKES, color=bckgrnd_clr)
         map_ax.add_feature(cfeature.OCEAN, color=bckgrnd_clr)
+        satellite = img_tiles.GoogleTiles(style='satellite')
+        map_ax.add_image(satellite, 10, zorder=1)
 
-        if show_radar == True:
+        if radar == 'mosaic':
 
-            # PLOT RADAR DATA -----------------------------------------------------------------------------------------------------
+            # PLOT RADAR MOSAIC -----------------------------------------------------------------------------------------------------
             try:
                 radar_data = get_radar_mosaic(sounding_data, map_zoom, radar_time)
-
                 reflectivity = np.ma.masked_array(np.array(radar_data['Reflectivity'])[0,:,:],
                                                   np.array(radar_data['Reflectivity'])[0,:,:]<10)
-
                 map_ax.pcolormesh(radar_data['lon']+0.05, radar_data['lat']+0.05, reflectivity,
                                   vmin=-32, vmax=95, cmap=rs_expertreflect_cmap, alpha=1, zorder=4)
-
                 radar_timestamp = f"{str(radar_data['time'].values[0])[5:10]} | {str(radar_data['time'].values[0])[11:16]}"
 
-
-                plt.figtext(0.73, 0.12, f'Valid: {radar_timestamp}',
-                        ha='center', alpha=0.9, weight='bold', fontsize=10, zorder=13, color=gen_txt_clr,
+                plt.figtext(0.80, 0.11, f'Valid: {radar_timestamp}',
+                        ha='center', alpha=0.9, weight='bold', fontsize=13, zorder=13, color=gen_txt_clr,
                         bbox=dict(facecolor=bckgrnd_clr, alpha=0.8, edgecolor=gen_txt_clr, pad=3))
             except:
+                plt.figtext(0.80, 0.11, f'RADAR UNAVAILABLE',
+                            ha='center', alpha=0.9, weight='bold', fontsize=13, zorder=13, color=gen_txt_clr,
+                            bbox=dict(facecolor=bckgrnd_clr, alpha=0.8, edgecolor=gen_txt_clr, pad=3))
+                pass
+
+        if radar in ['single-site', 'single']:
+            # PLOT SINGLE SITE RADAR -----------------------------------------------------------------------------------------------------
+            try:
+                site_ids, lat_radar, lon_radar = parse_nexrad_locs()
+                nexrad_site, nexrad_lat, nexrad_lon = find_nearest_station(site_ids, lat_radar, lon_radar, clean_data['site_info']['site-latlon'][0],clean_data['site_info']['site-latlon'][1])
+                radar, scan_timestamp, nexrad_site = get_radar_data(nexrad_site, clean_data, radar_time)
+
+                radar.longitude['data'][0] = nexrad_lon
+                radar.latitude['data'][0] = nexrad_lat
+
+                gatefilter = pyart.filters.GateFilter(radar)
+                gatefilter.exclude_below('reflectivity', 10)
+                gatefilter.exclude_equal('reflectivity', 2)
+                gatefilter.exclude_equal('reflectivity', 1)
+                display = pyart.graph.RadarMapDisplay(radar)
+                rad_display = display.plot_ppi_map(field='reflectivity',
+                                                   sweep=0,ax=map_ax,vmin=-32,vmax=95,title_flag=False,
+                                                   colorbar_flag=False,cmap=rs_expertreflect_cmap,resolution='10m',
+                                                   lat_lines=None,lon_lines=None,add_grid_lines=False,zorder=4)
+
+                plt.figtext(0.722, 0.12, f'{nexrad_site}: {scan_timestamp}',
+                        ha='center', alpha=0.9, weight='bold', fontsize=11, zorder=13, color=gen_txt_clr,
+                        bbox=dict(facecolor=bckgrnd_clr, alpha=0.8, edgecolor=gen_txt_clr, pad=3))
+            except:
+                plt.figtext(0.722, 0.12, f'RADAR UNAVAILABLE',
+                            ha='center', alpha=0.9, weight='bold', fontsize=11, zorder=13, color=gen_txt_clr,
+                            bbox=dict(facecolor=bckgrnd_clr, alpha=0.8, edgecolor=gen_txt_clr, pad=3))
                 pass
 
         # ADD PROFILE LOCATION ------------------------------------------------------------------------------------------------
@@ -2305,7 +2331,7 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc,
     plt.figtext( 1.20, 0.89, f'{right_title}  ', ha='right', fontsize=16, color=gen_txt_clr)
     plt.figtext( 0.23, 0.92, top_title, ha='left', weight='bold', fontsize=22, color=gen_txt_clr) 
     plt.figtext( 0.23, 0.94, ' ') 
-    plt.figtext( 0.225, 0.09, f'SOUNDERPY VERTICAL PROFILE ANALYSIS TOOL | (C) KYLE J GILLETT 2024',
+    plt.figtext( 0.225, 0.09, f'SOUNDERPY VERTICAL PROFILE ANALYSIS TOOL | KYLE J GILLETT 2024',
                 ha='left', color='cornflowerblue', alpha=0.8, weight='bold', fontsize=10)
     
     img = Image.open(urlopen('https://user-images.githubusercontent.com/100786530/251580013-2e9477c9-e36a-4163-accb-fe46780058dd.png'))
@@ -2650,7 +2676,7 @@ def __composite_sounding(data_list, shade_between, cmap, colors_to_use,
     
     
     # plot author credit information 
-    plt.figtext( 1, 0.96, 'SOUNDERPY (C) KYLE J GILLETT 2023        ', 
+    plt.figtext( 1, 0.96, 'SOUNDERPY | KYLE J GILLETT 2023        ',
                 fontsize=15, ha='left', color='cornflowerblue', weight='bold', alpha=0.6)
 
     # sounderpy logo
@@ -2963,17 +2989,17 @@ def __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo):
             directions = []
             
             speeds.append(mpcalc.wind_speed(kinem['sm_u']*units.kts,kinem['sm_v']*units.kts).m) 
-            directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem['sm_u'],kinem['sm_v']))), full=False, level=3)) 
+            directions.append(wind_to_dir(kinem['sm_u'],kinem['sm_v']))
 
             for key in keys:
                 speeds.append(mpcalc.wind_speed(kinem[key][0]*units.kts,kinem[key][1]*units.kts).m) 
-                directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem[key][0],kinem[key][1]))), full=False, level=3))
+                directions.append(wind_to_dir(kinem[key][0],kinem[key][1]))
 
             speeds.append(mpcalc.wind_speed(kinem['mcs'][0]*units.kts,kinem['mcs'][1]*units.kts).m) 
-            directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem['mcs'][0],kinem['mcs'][1]))), full=False, level=3))   
+            directions.append(wind_to_dir(kinem['mcs'][0],kinem['mcs'][1]))
 
             speeds.append(mpcalc.wind_speed(kinem['mcs'][2]*units.kts,kinem['mcs'][3]*units.kts).m) 
-            directions.append(mpcalc.angle_to_direction((np.degrees(np.arctan2(kinem['mcs'][2],kinem['mcs'][3]))), full=False, level=3)) 
+            directions.append(wind_to_dir(kinem['mcs'][2],kinem['mcs'][3]))
                     
                     
             #plot Bunkers Storm Motion & DTM Data in box on Hodograph 
@@ -3242,7 +3268,7 @@ def __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo):
     plt.figtext( 1.20, 0.89, f'{right_title}  ', ha='right', fontsize=16, color=gen_txt_clr)
     plt.figtext( 0.23, 0.92, top_title, ha='left', weight='bold', fontsize=22, color=gen_txt_clr) 
     plt.figtext( 0.23, 0.94, ' ') 
-    plt.figtext( 0.225, 0.09, f'SOUNDERPY VERTICAL PROFILE ANALYSIS TOOL | (C) KYLE J GILLETT 2024',
+    plt.figtext( 0.225, 0.09, f'SOUNDERPY VERTICAL PROFILE ANALYSIS TOOL | KYLE J GILLETT 2024',
                 ha='left', color='cornflowerblue', alpha=0.8, weight='bold', fontsize=10)
     
     img = Image.open(urlopen('https://user-images.githubusercontent.com/100786530/251580013-2e9477c9-e36a-4163-accb-fe46780058dd.png'))

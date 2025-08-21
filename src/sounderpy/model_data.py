@@ -196,45 +196,45 @@ def fetch_model(model, latlon, year, month, day, hour, dataset, box_avg_size, hu
 
         # create dict of RAP-data urls for the different datasets of RAP and RUC from NCEI
         urls = {
-            'RAP_25km': 'https://www.ncei.noaa.gov/thredds/ncss/model-rap252/' + str(year) + str(month) + '/' + str(
+            'RAP_25km': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-rap252/' + str(year) + str(month) + '/' + str(
                 year) + str(month) + str(day) + '/rap_252_' + str(year) + str(month) + str(day) + '_' + str(
                 hour) + '00_000.grb2',
-            'RAP_25km_old': 'https://www.ncei.noaa.gov/thredds/ncss/model-rap252-old/' + str(year) + str(
+            'RAP_25km_old': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-rap252-old/' + str(year) + str(
                 month) + '/' + str(year) + str(month) + str(day) + '/rap_252_' + str(year) + str(month) + str(
                 day) + '_' + str(hour) + '00_000.grb2',
 
-            'RAP_25km_anl': 'https://www.ncei.noaa.gov/thredds/ncss/model-rap252anl/' + str(year) + str(
+            'RAP_25km_anl': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-rap252anl/' + str(year) + str(
                 month) + '/' + str(year) + str(month) + str(day) + '/rap_252_' + str(year) + str(month) + str(
                 day) + '_' + str(hour) + '00_000.grb2',
-            'RAP_25km_anl_old': 'https://www.ncei.noaa.gov/thredds/ncss/model-rap252anl-old/' + str(year) + str(
+            'RAP_25km_anl_old': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-rap252anl-old/' + str(year) + str(
                 month) + '/' + str(year) + str(month) + str(day) + '/rap_252_' + str(year) + str(month) + str(
                 day) + '_' + str(hour) + '00_000.grb2',
 
-            'RAP_13km': 'https://www.ncei.noaa.gov/thredds/ncss/model-rap130/' + str(year) + str(month) + '/' + str(
+            'RAP_13km': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-rap130/' + str(year) + str(month) + '/' + str(
                 year) + str(month) + str(day) + '/rap_130_' + str(year) + str(month) + str(day) + '_' + str(
                 hour) + '00_000.grb2',
-            'RAP_13km_old': 'https://www.ncdc.noaa.gov/thredds/ncss/model-rap130-old/' + str(year) + str(
+            'RAP_13km_old': 'https://www.ncdc.noaa.gov/thredds/ncss/grid/model-rap130-old/' + str(year) + str(
                 month) + '/' + str(year) + str(month) + str(day) + '/rap_130_' + str(year) + str(month) + str(
                 day) + '_' + str(hour) + '00_000.grb2',
 
-            'RAP_13km_anl': 'https://www.ncei.noaa.gov/thredds/ncss/model-rap130anl/' + str(year) + str(
+            'RAP_13km_anl': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-rap130anl/' + str(year) + str(
                 month) + '/' + str(year) + str(month) + str(day) + '/rap_130_' + str(year) + str(month) + str(
                 day) + '_' + str(hour) + '00_000.grb2',
-            'RAP_13km_anl_old': 'https://www.ncdc.noaa.gov/thredds/ncss/model-rap130anl-old/' + str(year) + str(
+            'RAP_13km_anl_old': 'https://www.ncdc.noaa.gov/thredds/ncss/grid/model-rap130anl-old/' + str(year) + str(
                 month) + '/' + str(year) + str(month) + str(day) + '/rap_130_' + str(year) + str(month) + str(
                 day) + '_' + str(hour) + '00_000.grb2',
 
-            'RUC_13km': 'https://www.ncei.noaa.gov/thredds/ncss/model-ruc130anl/' + str(year) + str(month) + '/' + str(
+            'RUC_13km': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-ruc130anl/' + str(year) + str(month) + '/' + str(
                 year) + str(month) + str(day) + '/ruc2anl_130_' + str(year) + str(month) + str(day) + '_' + str(
                 hour) + '00_000.grb2',
-            'RUC_13km_old': 'https://www.ncei.noaa.gov/thredds/ncss/model-ruc130anl-old/' + str(year) + str(
+            'RUC_13km_old': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-ruc130anl-old/' + str(year) + str(
                 month) + '/' + str(year) + str(month) + str(day) + '/ruc2anl_130_' + str(year) + str(month) + str(
                 day) + '_' + str(hour) + '00_000.grb2',
 
-            'RUC_25km': 'https://www.ncei.noaa.gov/thredds/ncss/model-ruc252anl/' + str(year) + str(month) + '/' + str(
+            'RUC_25km': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-ruc252anl/' + str(year) + str(month) + '/' + str(
                 year) + str(month) + str(day) + '/ruc2anl_252_' + str(year) + str(month) + str(day) + '_' + str(
                 hour) + '00_000.grb',
-            'RUC_25km_old': 'https://www.ncei.noaa.gov/thredds/ncss/model-ruc252anl-old/' + str(year) + str(
+            'RUC_25km_old': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-ruc252anl-old/' + str(year) + str(
                 month) + '/' + str(year) + str(month) + str(day) + '/ruc2anl_252_' + str(year) + str(month) + str(
                 day) + '_' + str(hour) + '00_000.grb'
         }

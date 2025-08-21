@@ -28,7 +28,7 @@ from .cm1_utils import make_cm1_profile
 
     THIS RELEASE
     -------
-    Version: 3.0.8 | January 2025
+    Version: 3.0.9 | August 2025
 
 
     DOCUMENTATION
@@ -50,7 +50,7 @@ from .cm1_utils import make_cm1_profile
 citation_text = f"""
 ## ---------------------------------- SOUNDERPY ----------------------------------- ##
 ##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
-##                      v3.0.9 | May 2025 | (C) Kyle J Gillett                      ##
+##                    v3.0.9 | August 2025 | (C) Kyle J Gillett                     ##
 ##                 Docs: https://kylejgillett.github.io/sounderpy/                  ##
 ## --------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------ ##
 """
@@ -223,7 +223,18 @@ def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False,
     :type storm_motion: str or list of floats, optional
     :param special_parcels: a nested list of special parcels from the ``ecape_parcels`` library. The nested list should be a list of two lists (`[[a, b], [c, d]]`) where the first list should include 'highlight parcels' and second list should include 'background parcels'. For more details, see the :ref:`parcels_logic` section.
     :type special_parcels: nested `list` of two `lists`, optional
-    :param show_theta: bool, optional
+    :param radar: type of radar data to retrieve for radar inset, ``mosaic`` will plot a CONUS reflectivity mosaic (data only available within one month of current time), ``single`` will plot reflectivity from the nearest NEXRAD WRS-88D radar site (data availability depends on site). Default is ``mosaic``.
+    :type radar: str, optional
+    :param radar_time: radar mosaic data valid time. May be ``sounding`` (uses the valid time of the sounding data), or ``now`` (current time/date). **Note: radar mosaic data only goes back 1 month from current date**
+    :type radar_time: str, optional, Default is ``sounding``.
+    :param map_zoom: a 'zoom' level for the map inset as an `int`. **Note: Setting ``map_zoom=0`` will hide the map**
+    :type map_zoom: int, optional, Default is ``2``.
+    :param modify_sfc: a `dict` in the format ``{'T': 25, 'Td': 21, 'ws': 20, 'wd': 270}`` to modify the surface values of the ``clean_data`` dict. See the :ref:`modify_sfc` section for more details.
+    :type modify_sfc: None or dict, optional, default is None
+    :param show_theta: whether to replace the piecewise CAPE plot with theta & theta-e. Default is ``False``
+    :type show_theta: bool, optional
+    :param hodo_boundary: plot a "boundary" (straight line) on the hodograph axis. Do so by providing an angle and a color. The angle represents the angle between zero-degrees (north) and the upper-half of the boundary line, to the right. Multiple boundaries can be plotted. Default is ``None``
+    :type hodo_boundary: dict of lists -- structured as ``{'angle':[], 'color':[]}``, optional
     :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
     :type save: bool, optional
     :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
@@ -249,7 +260,7 @@ def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False,
 # FULL HODOGRAPH
 #########################################################################
 def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr_hodo=False, modify_sfc=None,
-                    show_radar=True, radar_time='sounding', map_zoom=2, hodo_boundary=None, save=False, filename='sounderpy_hodograph'):
+                    radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, save=False, filename='sounderpy_hodograph'):
 
     '''
        Return a full sounding plot of SounderPy data, ``plt`` 
@@ -266,6 +277,16 @@ def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr
        :type storm_motion: str or list of floats, optional
        :param sr_hodo: transform the hodograph from ground relative to storm relative 
        :type sr_hodo: bool, optional, default is ``False``
+       :param radar: type of radar data to retrieve for radar inset, ``mosaic`` will plot a CONUS reflectivity mosaic (data only available within one month of current time), ``single`` will plot reflectivity from the nearest NEXRAD WRS-88D radar site (data availability depends on site). Default is ``mosaic``.
+       :type radar: str, optional
+       :param radar_time: radar mosaic data valid time. May be ``sounding`` (uses the valid time of the sounding data), or ``now`` (current time/date). **Note: radar mosaic data only goes back 1 month from current date**
+       :type radar_time: str, optional, Default is ``sounding``.
+       :param map_zoom: a 'zoom' level for the map inset as an `int`. **Note: Setting ``map_zoom=0`` will hide the map**
+       :type map_zoom: int, optional, Default is ``2``.
+       :param modify_sfc: a `dict` in the format ``{'T': 25, 'Td': 21, 'ws': 20, 'wd': 270}`` to modify the surface values of the ``clean_data`` dict. See the :ref:`modify_sfc` section for more details.
+       :type modify_sfc: None or dict, optional, default is None
+       :param hodo_boundary: plot a "boundary" (straight line) on the hodograph axis. Do so by providing an angle and a color. The angle represents the angle between zero-degrees (north) and the upper-half of the boundary line, to the right. Multiple boundaries can be plotted. Default is ``None``
+       :type hodo_boundary: dict of lists -- structured as ``{'angle':[], 'color':[]}``, optional
        :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
        :rtype: plt
     '''
@@ -275,7 +296,7 @@ def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr
 
     print(f'> HODOGRAPH PLOTTER FUNCTION --\n-------------------------------')
 
-    plt = __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc, show_radar, radar_time, map_zoom, hodo_boundary)
+    plt = __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc, radar, radar_time, map_zoom, hodo_boundary)
     if save:
         plt.savefig(filename, bbox_inches='tight')
     else:

@@ -10,9 +10,9 @@
     "# PLOTTING OBSERVED SOUNDINGS"
    ]
   },
-
   {
    "cell_type": "markdown",
+   "id": "53110e1d",
    "metadata": {
     "tags": [
      "nbsphinx-gallery"
@@ -34,8 +34,6 @@
     "... because only the first title in this cell is used."
    ]
   }
-
- 
  ],
  "metadata": {
   "kernelspec": {
