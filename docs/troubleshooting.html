@@ -22,7 +22,7 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="🌐 Tools for Getting Data" href="gettingdata.html" />
+    <link rel="next" title="🌍 Community" href="community.html" />
     <link rel="prev" title="📖 About" href="about.html" /> 
 </head>
 
@@ -50,6 +50,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">❓ Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#testing-sounderpy">Testing SounderPy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#funky-plot-scaling">Funky Plot Scaling</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#the-fix-saving-the-plot-to-a-file">The Fix: saving the plot to a file</a></li>
 </ul>
@@ -60,6 +61,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#sounderpy-can-t-find-a-raob-sounding-you-know-exists">SounderPy can’t find a RAOB sounding you know exists</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="community.html">🌍 Community</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul>
@@ -103,6 +105,20 @@
 <h1>❓ Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h1>
 <p>Like any software, SounderPy is prone to errors now and then – some of them are known with fixes! If you are running into issues using SounderPy, check out this guide to troubleshooting below!</p>
 <p>If you have an error that you don’t see on this page, you can <a class="reference external" href="https://github.com/kylejgillett/sounderpy/issues">open a GitHub Issue</a> or feel free to shoot me a DM on <a class="reference external" href="https://twitter.com/wxkylegillett">Twitter</a>!</p>
+<section id="testing-sounderpy">
+<h2>Testing SounderPy<a class="headerlink" href="#testing-sounderpy" title="Link to this heading"></a></h2>
+<p>You can test your installation of SounderPy against this figure. To do so, run the following block of code. The figure produced should be the same.</p>
+<a class="reference internal image-reference" href="_images/test-figure_abr-2024-08-29-00z.png"><img alt="_images/test-figure_abr-2024-08-29-00z.png" class="align-center" src="_images/test-figure_abr-2024-08-29-00z.png" style="width: 300px;" />
+</a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sounderpy</span> <span class="k">as</span> <span class="nn">spy</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s2">&quot;abr&quot;</span><span class="p">,</span> <span class="s2">&quot;2024&quot;</span><span class="p">,</span> <span class="s2">&quot;08&quot;</span><span class="p">,</span> <span class="s2">&quot;29&quot;</span><span class="p">,</span> <span class="s2">&quot;00&quot;</span><span class="p">)</span>
+
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">color_blind</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">radar</span><span class="o">=</span><span class="s1">&#39;single&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
 <section id="funky-plot-scaling">
 <h2>Funky Plot Scaling<a class="headerlink" href="#funky-plot-scaling" title="Link to this heading"></a></h2>
 <a class="reference internal image-reference" href="_images/funky_layout_example.jpg"><img alt="_images/funky_layout_example.jpg" class="align-left" src="_images/funky_layout_example.jpg" style="width: 300px;" />
@@ -163,7 +179,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="about.html" class="btn btn-neutral float-left" title="📖 About" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="gettingdata.html" class="btn btn-neutral float-right" title="🌐 Tools for Getting Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="community.html" class="btn btn-neutral float-right" title="🌍 Community" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

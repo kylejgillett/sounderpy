@@ -1,0 +1,56 @@
+📜 Reading These Sounding Plots
+================================
+
+Understanding the layout of SounderPy Soundings, it's parameters, and how to use them
+
+
+This is a guide to SounderPy soundings specifically. For more broad guides to reading soundings, check out the resources below:
+
++ `NOAA Jetstream skew-t guide <https://www.noaa.gov/jetstream/upperair/skew-t-log-p-diagrams>`_
++ `NWS skew-t training page <https://www.weather.gov/source/zhu/ZHU_Training_Page/convective_parameters/skewt/skewtinfo.html>`_
++ `Cameron Nixon's severe weather parameter guide <https://cameronjnixon.wordpress.com/research/parameters/>`_
+
+
+.. image:: _static/images/sounding_key.png
+   :width: 500 px
+   :align: center
+
+***************************************************************
+
+
+A. The Skew-T
+--------------
+The classic Skew-T diagram.
+
+B. Inffered Temperature Advection
+----------------------------------
+
+C. The Hodograph
+-----------------
+
+D. Map & Radar Inset
+---------------------
+
+E. Thermodynamic Parameters
+----------------------------
+
+F. Mositure Parameters
+-----------------------
+
+G. Kinematic Parameters
+------------------------
+
+H. 0-3km Profiles
+------------------
+
+0-3km Streamwiseness of vorticity
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+0-3km total vorticity and streamwise vorticity
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+0-3km Storm-relative wind magnitude
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+0-3km stepwise CIN & CAPE
+^^^^^^^^^^^^^^^^^^^^^^^^^^

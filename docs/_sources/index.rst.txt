@@ -10,8 +10,6 @@
 
 SounderPy is an open-source atmospheric science Python package for vertical profile analysis. This tool is designed to get data, ‘clean it up’ for simple use, and plot the data on advanced-sounding plots. SounderPy was developed with the goal in mind to keep the code simple and efficient for users of all experience levels and for reliability in all use cases.
 
-SounderPy is supported for Python >= 3.9. Examples of SounderPy use are available on the :doc:`examplescripts` page
-
 .. image:: https://img.shields.io/pypi/v/sounderpy.svg
    :target: https://pypi.python.org/pypi/sounderpy/
    :alt: PyPI Package
@@ -40,6 +38,8 @@ SounderPy is supported for Python >= 3.9. Examples of SounderPy use are availabl
    :target: https://www.python.org/
    :alt: Made with Python
 
+
+SounderPy is supported for Python >= 3.9. Examples of SounderPy use are available on the :doc:`examplescripts` page
 
 
 Why SounderPy?
@@ -81,7 +81,7 @@ What data can SounderPy work with?
 +--------------------------------+-----------------------+------------------+------------------+
 |  UNIDATA THREDDS TDS RAP       | get_model_data()      | Model Analysis   | Most recent run  |
 +--------------------------------+-----------------------+------------------+------------------+
-|   OU ACARS Archive             | acars_data()          | Observations     | 2019-06/2024     |
+|   OU ACARS Archive             | acars_data()          | Observations     | 2019-present     |
 +--------------------------------+-----------------------+------------------+------------------+
 |  The Unv. of WY RAOB Archive   | get_obs_data()        | Observations     | 1973-present     |
 +--------------------------------+-----------------------+------------------+------------------+
@@ -101,6 +101,7 @@ Directory
      
      about
      troubleshooting
+     community
 
   .. toctree::
      :maxdepth: 5

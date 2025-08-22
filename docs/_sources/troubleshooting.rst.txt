@@ -6,6 +6,32 @@ Like any software, SounderPy is prone to errors now and then -- some of them are
 
 If you have an error that you don't see on this page, you can `open a GitHub Issue <https://github.com/kylejgillett/sounderpy/issues>`_ or feel free to shoot me a DM on `Twitter <https://twitter.com/wxkylegillett>`_!
 
+
+Testing SounderPy
+-------------------
+
+You can test your installation of SounderPy against this figure. To do so, run the following block of code. The figure produced should be the same.
+
+.. image:: _static/images/test-figure_abr-2024-08-29-00z.png
+   :width: 300 px
+   :align: center
+
+
+.. code-block:: python
+
+    import sounderpy as spy
+
+    data = spy.get_obs_data("abr", "2024", "08", "29", "00")
+
+    spy.build_sounding(data, color_blind=True, radar='single')
+
+
+
+
+***************************************
+
+
+
 Funky Plot Scaling 
 -------------------
 
