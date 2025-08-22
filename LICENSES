@@ -21,5 +21,5 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 SounderPy contains the source code to SHARPpy (Sounding/Hodograph Analysis and
-Research Program in Python). SHARPpy is protected by and licensed under the BSD
-3-Clause that can be found at: /src/sounderpy/SHARPPYMAIN/LICENSE.rst
+Research Program in Python) in src/sounderpy/SHARPPYMAIN, which is protected by
+and licensed under a BSD 3-Clause.
