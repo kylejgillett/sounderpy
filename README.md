@@ -3,7 +3,7 @@
 
 </div>
 
-# SounderPy, the vertical profile data retrieval and analysis tool for Python
+# SounderPy: An atmospheric sounding visualization and analysis tool for Pytho
 LATEST VERSION: v3.0.9 |  RELEASED: Aug, 2025  |  COPYRIGHT Kyle J Gillett, 2023-2025
 
 SounderPy is an open-source Python package for retrieving, processing, and visualizing atmospheric sounding data.
@@ -15,9 +15,8 @@ SounderPy is an open-source Python package for retrieving, processing, and visua
 [![GitHub commits](https://badgen.net/github/commits/kylejgillett/sounderpy)](https://GitHub.com/kylejgillett/sounderpy/commit/)
 [![Maintainer](https://img.shields.io/badge/maintainer-kylejgillett-blue)](https://github.com/kylejgillett)
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10011851.svg)](https://doi.org/10.5281/zenodo.10011851)
-
------
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16927959.svg)](DOI:10.5281/zenodo.16927959)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.08087/status.svg)](https://doi.org/10.21105/joss.08087)
 
 <div align="center">
    
@@ -43,6 +42,8 @@ simple lines of code or less, making SounderPy an accessible tool for both Pytho
 novices. A number of scientific Python libraries build the base of SounderPy’s efficient and 
 durable functionality, such as NumPy, Matplotlib, xarray, Metpy, and SHARPpy. SounderPy is 
 available through GitHub and PyPi and is distributed under an MIT license. 
+
+Read more about SounderPy in this article published in the Journal of Open Source Software: [SounderPy: An atmospheric sounding visualization and analysis tool for Python](https://doi.org/10.21105/joss.08087)
 
 
 SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines, Columbia, and Grand Rapids National Weather Service Offices, the State University of New York at Albany, Mississippi State University, the University of North Dakota, and others. Many students at various universities have used SounderPy in projects, posters, and papers, such as students at The University of Oklahoma, Ohio State University, Central Michigan University, Iowa State University, & Rizal Technological University.
