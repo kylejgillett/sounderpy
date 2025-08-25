@@ -1,7 +1,7 @@
 📖 About
 =========
 
-SounderPy: A sounding visualization tool for severe-weather analysis and forecasting
+SounderPy: An atmospheric sounding visualization and analysis tool for Python
 --------------------------------------------------------------------------------------
 
 
@@ -27,6 +27,7 @@ novices. A number of scientific Python libraries build the base of SounderPy’s
 durable functionality, such as NumPy, Matplotlib, xarray, Metpy, and SHARPpy. SounderPy is 
 available through GitHub and PyPi and is distributed under an MIT license.
 
+Read more about SounderPy in this article published in the Journal of Open Source Software: `SounderPy: An atmospheric sounding visualization and analysis tool for Python <https://doi.org/10.21105/joss.08087>`_.
 
 .. image:: _static/images/sounderpy_poster.png
    :width: 500 px
@@ -117,13 +118,12 @@ Authors and Contributors
 
 Citing SounderPy
 -----------------
-	.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.10443609.svg
-	   :target: https://doi.org/10.5281/zenodo.10443609
-	   :alt: DOI
+    .. image:: https://joss.theoj.org/papers/10.21105/joss.08087/status.svg
+       :target: https://doi.org/10.21105/joss.08087
 
 
 	in AMS format:
-	     Gillett, K., 2025: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.8). Py-Pi, https://pypi.org/project/sounderpy/
+	     Gillett, K. J., 2025: SounderPy: An atmospheric sounding visualization and analysis tool for Python. J. Open Source Software, 10 (112), 8087, https://doi.org/10.21105/joss.08087
 
 
 ***************************************************************
