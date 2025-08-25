@@ -60,7 +60,7 @@ or via ``conda forge`` by first setting up the ``conda-forge`` channel:
 
     then you can install sounderpy via:
 
-	.. code-block:: console
+    .. code-block:: console
 
 		conda install sounderpy 
 
@@ -88,9 +88,9 @@ SounderPy is designed for simple and efficient use for all users. Below is a bas
 
 .. code-block:: python
 
-   import sounderpy as spy
-   clean_data = spy.get_bufkit_data('hrrr', 'kmli', 8, '2023', '03', '31', '12')
-   spy.build_sounding(clean_data)
+    import sounderpy as spy
+    clean_data = spy.get_bufkit_data('hrrr', 'kmli', 8, '2023', '03', '31', '12')
+    spy.build_sounding(clean_data)
 
 Those three basic lines will make this!:
 
@@ -107,7 +107,7 @@ More examples of these plots are available :ref:`here<gallery>`
 
 Authors and Contributors 
 -------------------------
-	**AUTHOR: Kyle J Gillett, University of North Dakota**
+    **AUTHOR: Kyle J Gillett, University of North Dakota**
 
 	*CONTRIBUTOR: Scott Thomas, NWS Grand Rapids | VWP Hodograph, Buoy-sites listing*
 	*CONTRIBUTOR: Amelia R H Urquhart, University of Oklahoma | ecape-parcels library*
@@ -119,11 +119,11 @@ Authors and Contributors
 Citing SounderPy
 -----------------
     .. image:: https://joss.theoj.org/papers/10.21105/joss.08087/status.svg
-       :target: https://doi.org/10.21105/joss.08087
+        :target: https://doi.org/10.21105/joss.08087
 
 
-	in AMS format:
-	     Gillett, K. J., 2025: SounderPy: An atmospheric sounding visualization and analysis tool for Python. J. Open Source Software, 10 (112), 8087, https://doi.org/10.21105/joss.08087
+    in AMS format:
+        Gillett, K. J., 2025: SounderPy: An atmospheric sounding visualization and analysis tool for Python. J. Open Source Software, 10 (112), 8087, https://doi.org/10.21105/joss.08087
 
 
 ***************************************************************
