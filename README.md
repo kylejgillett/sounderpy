@@ -153,13 +153,12 @@ SounderPy has been used by several institutions. For example, this tool has been
 
 
 ## CITING SOUNDERPY
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10443609.svg)](https://doi.org/10.5281/zenodo.10443609)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.08087/status.svg)](https://doi.org/10.21105/joss.08087)
 
 
 in AMS format:
 
-- Gillett, K., 2025: SounderPy: Vertical Profile Data Retrieval & Analysis Tool for Python (Version 3.0.9). Py-Pi, https://pypi.org/project/sounderpy/
-
+- Gillett, K. J., 2025: SounderPy: An atmospheric sounding visualization and analysis tool for Python. J. Open Source Software, 10 (112), 8087, https://doi.org/10.21105/joss.08087
 ------
 
 
