@@ -3,7 +3,7 @@
 
 </div>
 
-# SounderPy: An atmospheric sounding visualization and analysis tool for Pytho
+# SounderPy: An atmospheric sounding visualization and analysis tool for Python
 LATEST VERSION: v3.0.9 |  RELEASED: Aug, 2025  |  COPYRIGHT Kyle J Gillett, 2023-2025
 
 SounderPy is an open-source Python package for retrieving, processing, and visualizing atmospheric sounding data.
@@ -178,3 +178,4 @@ in AMS format:
 - Pauli Virtanen, Ralf Gommers, Travis E. Oliphant, Matt Haberland, Tyler Reddy, David Cournapeau, Evgeni Burovski, Pearu Peterson, Warren Weckesser, Jonathan Bright, Stéfan J. van der Walt, Matthew Brett, Joshua Wilson, K. Jarrod Millman, Nikolay Mayorov, Andrew R. J. Nelson, Eric Jones, Robert Kern, Eric Larson, CJ Carey, İlhan Polat, Yu Feng, Eric W. Moore, Jake VanderPlas, Denis Laxalde, Josef Perktold, Robert Cimrman, Ian Henriksen, E.A. Quintero, Charles R Harris, Anne M. Archibald, Antônio H. Ribeiro, Fabian Pedregosa, Paul van Mulbregt, and SciPy 1.0 Contributors. (2020) SciPy 1.0: Fundamental Algorithms for Scientific Computing in Python. Nature Methods, 17(3), 261-272.
 
 - Marsh, P., Halbert, K., Blumberg, G., Supinie, T., Esmaili, R., Szkodzinski, J., "SHARPpy: Sounding/Hodograph Analysis and Research Program in Python." GitHub. Available at: https://github.com/sharppy/SHARPpy.
+
