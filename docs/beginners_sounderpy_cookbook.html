@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>👨‍🍳Beginner’s SounderPy Cookbook &mdash; SounderPy v3.0.5 documentation</title>
+  <title>👨‍🍳Beginner’s SounderPy Cookbook &mdash; SounderPy v3.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=0f7a3e64"></script>
+      <script src="_static/documentation_options.js?v=26a6ea83"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -53,6 +53,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">❓ Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community.html">🌍 Community</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul>
@@ -159,7 +160,7 @@
 <li><p class="rubric" id="time-to-learn-15-minutes"><strong>Time to learn</strong>: 15 minutes</p>
 </li>
 </ul>
-<p><em>(C) Kyle J Gillett, University of North Dakota, 2024</em></p>
+<p><em>(C) Kyle J Gillett, University of North Dakota, 2024-2025</em></p>
 <hr class="docutils" />
 <section id="Before-we-get-started...">
 <h3><strong>Before we get started…</strong><a class="headerlink" href="#Before-we-get-started..." title="Link to this heading"></a></h3>
@@ -215,7 +216,7 @@
 
 ## ---------------------------------- SOUNDERPY ----------------------------------- ##
 ##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
-##                      v3.0.6 | Dec 2024 | (C) Kyle J Gillett                      ##
+##                    v3.0.9 | August 2025 | (C) Kyle J Gillett                     ##
 ##                 Docs: https://kylejgillett.github.io/sounderpy/                  ##
 ## --------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------ ##
 
@@ -302,7 +303,7 @@
   -----------------------------------
     &gt; PROFILE FOUND: OUN on 05/07/2024 at 00z | From UW
     &gt; COMPLETE --------
-    &gt; RUNTIME: 00:00:01
+    &gt; RUNTIME: 00:00:06
     &gt; SUMMARY: 00Z Launch for KOUN, NORMAN at 05-07-2024-00Z
 
     &gt; THERMODYNAMICS ---------------------------------------------
@@ -323,14 +324,14 @@
 <li><p>where <code class="docutils literal notranslate"><span class="pre">model</span></code> is the name of a valid reanalysis data model. See: <a class="reference external" href="https://kylejgillett.github.io/sounderpy/gettingdata.html#model-key-names">https://kylejgillett.github.io/sounderpy/gettingdata.html#model-key-names</a></p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">reanl_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_model_data</span><span class="p">(</span><span class="s1">&#39;rap&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">35.22</span><span class="p">,</span> <span class="o">-</span><span class="mf">97.44</span><span class="p">],</span> <span class="s1">&#39;2024&#39;</span><span class="p">,</span> <span class="s1">&#39;05&#39;</span><span class="p">,</span> <span class="s1">&#39;07&#39;</span><span class="p">,</span> <span class="s1">&#39;00&#39;</span><span class="p">)</span>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">reanl_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_model_data</span><span class="p">(</span><span class="s1">&#39;rap&#39;</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mf">97.44</span><span class="p">,</span> <span class="mf">35.22</span><span class="p">],</span> <span class="s1">&#39;2024&#39;</span><span class="p">,</span> <span class="s1">&#39;05&#39;</span><span class="p">,</span> <span class="s1">&#39;07&#39;</span><span class="p">,</span> <span class="s1">&#39;00&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
+<div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
@@ -338,19 +339,76 @@
 &gt; RAP REANALYSIS DATA ACCESS FUNCTION
   -----------------------------------------
     &gt; DATASET USED: RAP_25km_anl
-    &gt; COMPLETE --------
-    &gt; RUNTIME: 00:00:34
-    &gt; SUMMARY: 00Z RAP F00 for[35.22, -97.44] at 05-07-2024-00Z
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
+<span class="ansi-red-intense-fg ansi-bold">HTTPError</span>                                 Traceback (most recent call last)
+Cell <span class="ansi-green-intense-fg ansi-bold">In[6], line 1</span>
+<span class="ansi-green-intense-fg ansi-bold">----&gt; 1</span> reanl_data <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">spy</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">get_model_data</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">rap</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">[</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">-</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">97.44</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">35.22</span><span class="ansi-yellow-bg">]</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">2024</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">05</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">07</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">00</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg">)</span>
 
-    &gt; THERMODYNAMICS ---------------------------------------------
-    --- SBCAPE: 4030.2 | MUCAPE: 4045.7 | MLCAPE: 4036.5 | MUECAPE: 3287.5
-    --- MU 0-3: 148.6 | MU 0-6: 1039.6 | SB 0-3: 147.0 | SB 0-6: 1035.2
+File <span class="ansi-green-intense-fg ansi-bold">~\miniforge3\envs\2024env\Lib\site-packages\sounderpy\sounderpy.py:105</span>, in <span class="ansi-cyan-fg">get_model_data</span><span class="ansi-blue-intense-fg ansi-bold">(model, latlon, year, month, day, hour, dataset, box_avg_size, hush, clean_it)</span>
+<span class="ansi-green-fg">     72</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">get_model_data</span>(model: <span style="color: rgb(0,135,0)">str</span>, latlon: <span style="color: rgb(0,135,0)">list</span>, year: <span style="color: rgb(0,135,0)">str</span>, month: <span style="color: rgb(0,135,0)">str</span>, day: <span style="color: rgb(0,135,0)">str</span>, hour: <span style="color: rgb(0,135,0)">str</span>,
+<span class="ansi-green-fg">     73</span>                    dataset: Optional[<span style="color: rgb(0,135,0)">str</span>] <span style="color: rgb(98,98,98)">=</span> <span class="ansi-bold" style="color: rgb(0,135,0)">None</span>, box_avg_size: <span style="color: rgb(0,135,0)">float</span> <span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(98,98,98)">0.10</span>, hush: <span style="color: rgb(0,135,0)">bool</span> <span style="color: rgb(98,98,98)">=</span> <span class="ansi-bold" style="color: rgb(0,135,0)">False</span>, clean_it: <span style="color: rgb(0,135,0)">bool</span> <span style="color: rgb(98,98,98)">=</span> <span class="ansi-bold" style="color: rgb(0,135,0)">True</span>):
+<span class="ansi-green-fg">     75</span> <span style="color: rgb(188,188,188)">    </span><span style="color: rgb(175,0,0)">r</span><span style="color: rgb(175,0,0)">&#34;&#34;&#34;Get model reanalysis vertical profile data</span>
+<span class="ansi-green-fg">     76</span>
+<span class="ansi-green-fg">     77</span> <span style="color: rgb(175,0,0)">       Return a ``dict`` of &#39;cleaned up&#39; model reanalysis data from a given model, for a given location, date, and time</span>
+<span class="ansi-green-intense-fg ansi-bold">   (...)</span>
+<span class="ansi-green-fg">    102</span> <span style="color: rgb(175,0,0)">       :rtype: dict</span>
+<span class="ansi-green-fg">    103</span> <span style="color: rgb(175,0,0)">    &#34;&#34;&#34;</span>
+<span class="ansi-green-intense-fg ansi-bold">--&gt; 105</span>     data <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">fetch_model</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">model</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">latlon</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">year</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">month</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">day</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">hour</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">dataset</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">box_avg_size</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">hush</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">clean_it</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-fg">    107</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> data
 
-    &gt; KINEMATICS -------------------------------------------------
-    --- 0-500 SRW: 32.7 knot | 0-500 SWV: 0.026 | 0-500 SHEAR: 23.4 | 0-500 SRH: 203.6
-    --- 1-3km SRW: 22.9 knot | 1-3km SWV: 0.004 | 1-3km SHEAR: 21.2 | | 1-3km SRH: 69.2
-    ==============================================================
+File <span class="ansi-green-intense-fg ansi-bold">~\miniforge3\envs\2024env\Lib\site-packages\sounderpy\model_data.py:307</span>, in <span class="ansi-cyan-fg">fetch_model</span><span class="ansi-blue-intense-fg ansi-bold">(model, latlon, year, month, day, hour, dataset, box_avg_size, hush, clean_it)</span>
+<span class="ansi-green-fg">    304</span>     query<span style="color: rgb(98,98,98)">.</span>lonlat_box(latlon_list[<span style="color: rgb(98,98,98)">0</span>], latlon_list[<span style="color: rgb(98,98,98)">1</span>], latlon_list[<span style="color: rgb(98,98,98)">2</span>], latlon_list[<span style="color: rgb(98,98,98)">3</span>])
+<span class="ansi-green-fg">    306</span>     <span style="color: rgb(95,135,135)"># load the data from TDS</span>
+<span class="ansi-green-intense-fg ansi-bold">--&gt; 307</span>     raw_data <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">data</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">get_data</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">query</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-fg">    309</span> <span style="color: rgb(95,135,135)">#########################################################################################################</span>
+<span class="ansi-green-fg">    310</span>
+<span class="ansi-green-fg">    311</span>
+<span class="ansi-green-intense-fg ansi-bold">   (...)</span>
+<span class="ansi-green-fg">    318</span> <span style="color: rgb(95,135,135)">### NCEP FNL REANALYSIS ###</span>
+<span class="ansi-green-fg">    319</span> <span style="color: rgb(95,135,135)">#########################################################################################################</span>
+<span class="ansi-green-fg">    320</span> <span style="color: rgb(175,0,0)">&#39;&#39;&#39;</span>
+<span class="ansi-green-fg">    321</span> <span style="color: rgb(175,0,0)">Get NCEP-FNL reanalysis data from NCEI THREDDS server, return a netcdf4 dataset</span>
+<span class="ansi-green-fg">    322</span> <span style="color: rgb(175,0,0)">&#39;&#39;&#39;</span>
 
+File <span class="ansi-green-intense-fg ansi-bold">~\miniforge3\envs\2024env\Lib\site-packages\siphon\ncss.py:114</span>, in <span class="ansi-cyan-fg">NCSS.get_data</span><span class="ansi-blue-intense-fg ansi-bold">(self, query)</span>
+<span class="ansi-green-fg">     93</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">get_data</span>(<span style="color: rgb(0,135,0)">self</span>, query):
+<span class="ansi-green-fg">     94</span> <span style="color: rgb(188,188,188)">    </span><span style="color: rgb(175,0,0)">&#34;&#34;&#34;Fetch parsed data from a THREDDS server using NCSS.</span>
+<span class="ansi-green-fg">     95</span>
+<span class="ansi-green-fg">     96</span> <span style="color: rgb(175,0,0)">    Requests data from the NCSS endpoint given the parameters in `query` and</span>
+<span class="ansi-green-intense-fg ansi-bold">   (...)</span>
+<span class="ansi-green-fg">    112</span>
+<span class="ansi-green-fg">    113</span> <span style="color: rgb(175,0,0)">    &#34;&#34;&#34;</span>
+<span class="ansi-green-intense-fg ansi-bold">--&gt; 114</span>     resp <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">get_query</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">query</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-fg">    115</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> response_handlers(resp, <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>unit_handler)
+
+File <span class="ansi-green-intense-fg ansi-bold">~\miniforge3\envs\2024env\Lib\site-packages\siphon\http_util.py:410</span>, in <span class="ansi-cyan-fg">HTTPEndPoint.get_query</span><span class="ansi-blue-intense-fg ansi-bold">(self, query)</span>
+<span class="ansi-green-fg">    390</span> <span style="color: rgb(175,0,0)">&#34;&#34;&#34;Make a GET request, including a query, to the endpoint.</span>
+<span class="ansi-green-fg">    391</span>
+<span class="ansi-green-fg">    392</span> <span style="color: rgb(175,0,0)">The path of the request is to the base URL assigned to the endpoint.</span>
+<span class="ansi-green-intense-fg ansi-bold">   (...)</span>
+<span class="ansi-green-fg">    407</span>
+<span class="ansi-green-fg">    408</span> <span style="color: rgb(175,0,0)">&#34;&#34;&#34;</span>
+<span class="ansi-green-fg">    409</span> url <span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_base[:<span style="color: rgb(98,98,98)">-</span><span style="color: rgb(98,98,98)">1</span>] <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_base[<span style="color: rgb(98,98,98)">-</span><span style="color: rgb(98,98,98)">1</span>] <span style="color: rgb(98,98,98)">==</span> <span style="color: rgb(175,0,0)">&#39;</span><span style="color: rgb(175,0,0)">/</span><span style="color: rgb(175,0,0)">&#39;</span> <span class="ansi-bold" style="color: rgb(0,135,0)">else</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_base
+<span class="ansi-green-intense-fg ansi-bold">--&gt; 410</span> <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">get</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">url</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">query</span><span class="ansi-yellow-bg">)</span>
+
+File <span class="ansi-green-intense-fg ansi-bold">~\miniforge3\envs\2024env\Lib\site-packages\siphon\http_util.py:492</span>, in <span class="ansi-cyan-fg">HTTPEndPoint.get</span><span class="ansi-blue-intense-fg ansi-bold">(self, path, params)</span>
+<span class="ansi-green-fg">    490</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">else</span>:
+<span class="ansi-green-fg">    491</span>         text <span style="color: rgb(98,98,98)">=</span> resp<span style="color: rgb(98,98,98)">.</span>text
+<span class="ansi-green-intense-fg ansi-bold">--&gt; 492</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> requests<span style="color: rgb(98,98,98)">.</span>HTTPError(<span style="color: rgb(175,0,0)">&#39;</span><span style="color: rgb(175,0,0)">Error accessing </span><span class="ansi-bold" style="color: rgb(175,95,135)">{0}</span><span class="ansi-bold" style="color: rgb(175,95,0)">\n</span><span style="color: rgb(175,0,0)">&#39;</span>
+<span class="ansi-green-fg">    493</span>                              <span style="color: rgb(175,0,0)">&#39;</span><span style="color: rgb(175,0,0)">Server Error (</span><span class="ansi-bold" style="color: rgb(175,95,135)">{1:d}</span><span style="color: rgb(175,0,0)">: </span><span class="ansi-bold" style="color: rgb(175,95,135)">{2}</span><span style="color: rgb(175,0,0)">)</span><span style="color: rgb(175,0,0)">&#39;</span><span style="color: rgb(98,98,98)">.</span>format(resp<span style="color: rgb(98,98,98)">.</span>request<span style="color: rgb(98,98,98)">.</span>url,
+<span class="ansi-green-fg">    494</span>                                                                 resp<span style="color: rgb(98,98,98)">.</span>status_code,
+<span class="ansi-green-fg">    495</span>                                                                 text))
+<span class="ansi-green-fg">    496</span> <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> resp
+
+<span class="ansi-red-intense-fg ansi-bold">HTTPError</span>: Error accessing https://www.ncei.noaa.gov/thredds/ncss/grid/model-rap252anl/202405/20240507/rap_252_20240507_0000_000.grb2?var=Dewpoint_temperature_height_above_ground&amp;var=u-component_of_wind_height_above_ground&amp;var=Pressure_surface&amp;var=v-component_of_wind_height_above_ground&amp;var=Temperature_isobaric&amp;var=Geopotential_height_surface&amp;var=u-component_of_wind_isobaric&amp;var=Relative_humidity_height_above_ground&amp;var=Temperature_height_above_ground&amp;var=Relative_humidity_isobaric&amp;var=v-component_of_wind_isobaric&amp;var=Vertical_velocity_pressure_isobaric&amp;var=Geopotential_height_isobaric&amp;west=35.12&amp;east=35.32&amp;south=-97.53999999999999&amp;north=-97.34&amp;addLatLon=True
+Server Error (404: FileNotFound: No such file or directory)
 </pre></div></div>
 </div>
 </section>
@@ -572,31 +630,25 @@
 <section id="Build-a-sounding-figure-with-special_parcels='simple'-using-our-reanalysis-data-object">
 <h4>Build a sounding figure with <code class="docutils literal notranslate"><span class="pre">special_parcels='simple'</span></code> using our reanalysis data object<a class="headerlink" href="#Build-a-sounding-figure-with-special_parcels='simple'-using-our-reanalysis-data-object" title="Link to this heading"></a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">reanl_data</span><span class="p">,</span> <span class="n">special_parcels</span><span class="o">=</span><span class="s1">&#39;simple&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&gt; SOUNDING PLOTTER FUNCTION
-  ---------------------------------
-- no radar data available -
-    &gt; COMPLETE --------
-    &gt; RUNTIME: 00:00:02
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/beginners_sounderpy_cookbook_19_1.png" src="_images/beginners_sounderpy_cookbook_19_1.png" />
-</div>
+<div class="highlight"><pre>
+<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
+<span class="ansi-red-intense-fg ansi-bold">NameError</span>                                 Traceback (most recent call last)
+Cell <span class="ansi-green-intense-fg ansi-bold">In[4], line 1</span>
+<span class="ansi-green-intense-fg ansi-bold">----&gt; 1</span> spy<span style="color: rgb(98,98,98)">.</span>build_sounding(<span class="ansi-yellow-bg">reanl_data</span>, special_parcels<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(175,0,0)">&#39;</span><span style="color: rgb(175,0,0)">simple</span><span style="color: rgb(175,0,0)">&#39;</span>)
+
+<span class="ansi-red-intense-fg ansi-bold">NameError</span>: name &#39;reanl_data&#39; is not defined
+</pre></div></div>
 </div>
 <p>Much faster!</p>
 </section>
@@ -864,7 +916,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, Kyle J Gillett.</p>
+    <p>&#169; Copyright 2025, Kyle J Gillett.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

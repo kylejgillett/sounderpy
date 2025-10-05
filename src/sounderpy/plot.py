@@ -1008,9 +1008,9 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
                 gatefilter.exclude_equal('reflectivity', 1)
                 display = pyart.graph.RadarMapDisplay(radar)
                 rad_display = display.plot_ppi_map(field='reflectivity',
-                                                   sweep=0,ax=map_ax,vmin=-32,vmax=95,title_flag=False,
-                                                   colorbar_flag=False,cmap=rs_expertreflect_cmap,resolution='10m',
-                                                   lat_lines=None,lon_lines=None,add_grid_lines=False,zorder=4)
+                                                    sweep=0,ax=map_ax,vmin=-32,vmax=95,title_flag=False,
+                                                    colorbar_flag=False,cmap=rs_expertreflect_cmap,resolution='10m',
+                                                    lat_lines=None,lon_lines=None,add_grid_lines=False,zorder=4)
 
                 plt.figtext(0.80, 0.11, f'{nexrad_site}: {scan_timestamp}',
                         ha='center', alpha=0.9, weight='bold', fontsize=12, zorder=13, color=gen_txt_clr,

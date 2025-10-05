@@ -1,8 +1,8 @@
 from pyproj import Geod
 import numpy as np
 from matplotlib.colors import ListedColormap
-from datetime import datetime, timedelta
-import fsspec
+from datetime import datetime, timedelta, timezone
+import sys
 import importlib.resources as resources
 import warnings
 from siphon.catalog import TDSCatalog
@@ -38,16 +38,19 @@ with suppress_stdout_stderr():
 #########################################################################
 def define_radar_time(clean_data, radar_time):
     try:
-        data_dt = datetime(int(clean_data['site_info']['valid-time'][0]), int(clean_data['site_info']['valid-time'][1]),
-                           int(clean_data['site_info']['valid-time'][2]),
-                           int(clean_data['site_info']['valid-time'][3][0:2]))
+        data_dt = datetime(
+            int(clean_data['site_info']['valid-time'][0]),
+            int(clean_data['site_info']['valid-time'][1]),
+            int(clean_data['site_info']['valid-time'][2]),
+            int(clean_data['site_info']['valid-time'][3][0:2]),
+            tzinfo=timezone.utc)
     except:
         warnings.warn("Sounding Date/time invalid for this profile. Defaulting to 'now' unless a specific datetime.datetime() was provided", Warning)
-        data_dt = datetime.utcnow()
+        data_dt = datetime.now(timezone.utc)
         pass
 
     # get current time
-    curr_dt = datetime.utcnow()
+    curr_dt = datetime.now(timezone.utc)
 
     # if data time is after current time, default to now
     if data_dt > curr_dt:
@@ -169,35 +172,41 @@ def find_nearest_station(site_ids, lats, lons, target_lat, target_lon, max_dista
 #########################################################################
 def get_radar_data(nexrad_site, clean_data, radar_time):
 
+    # unload and reload fsspec each time this function is called
+    # to ensure the most up-to-date connection with s3 is achived
+    if 'fsspec' in sys.modules:
+        del sys.modules['fsspec']
+    import fsspec
+
+    # define time, date objs
     time, datestr, dt_obj = define_radar_time(clean_data, radar_time)
 
+    # connect to s3
     fs = fsspec.filesystem('s3', anon=True)
+
     # try current time, then fallback to previous hour if needed
-    for hour_offset in [0, -1]:
-        radar_dt = dt_obj + timedelta(hours=hour_offset)
-        time_candidates = [radar_dt + timedelta(minutes=delta) for delta in range(-15, 15)]
+    time_candidates = [dt_obj + timedelta(minutes=delta) for delta in range(-60,6)]
 
-        files = []
-        for t in time_candidates:
-            prefix = t.strftime(f"s3://noaa-nexrad-level2/%Y/%m/%d/{nexrad_site}/{nexrad_site}%Y%m%d_%H%M")
-            matches = fs.glob(prefix + "*")
-            matches = [f for f in matches if not f.endswith('_MDM')]
-            files.extend(matches)
+    files = []
+    for t in time_candidates:
+        prefix = t.strftime(f"s3://unidata-nexrad-level2/%Y/%m/%d/{nexrad_site}/{nexrad_site}%Y%m%d_%H%M")
+        matches = fs.glob(prefix + "*")
+        matches = [f for f in matches if not f.endswith('_MDM')]
+        files.extend(matches)
 
-        if files:
-            files = sorted(files)
-            file = files[int(len(files)/2)]
-            break
+    if files:
+        files = sorted(files)
+        file = files[-1]
     else:
         raise FileNotFoundError("    > RADAR ERROR: No single-site radar scan found")
 
     radar = pyart.io.read_nexrad_archive("s3://" + file)
 
     # extract timestamp from filename
-    scan_time = str(files[0][48:50] + ':' + files[0][50:52])
-    scan_date = str(files[0][39:43] + '-' + files[0][43:45] + '-' + files[-1][45:47])
+    scan_time = str(file[51:53] + ':' + file[53:55])
+    scan_date = str(file[42:46] + '-' + file[46:48] + '-' + file[48:50])
     scan_timestamp = str(scan_date + ' | ' + scan_time)
-    print(f"    > RADAR SCAN FOUND: Site: {nexrad_site} Scan: {scan_timestamp}")
+    print(f"    > RADAR SCAN FOUND: Site: {nexrad_site} Scan: {scan_timestamp}z")
 
     return radar, scan_timestamp, nexrad_site
 #########################################################################

@@ -48,7 +48,7 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
     r"""
        Return a ``dict`` of 'cleaned up' observed profile data
     
-       :param station: a three digit RAOB identifier (such as: 'DTX') or 11 digit IGRAv2 identifier (such as: 'GMM00010393')
+       :param station: a 3-4 digit RAOB identifier (such as: 'KDTX') or 11 digit IGRAv2 identifier (such as: 'GMM00010393')
        :type station: str, required
        :param year: launch year
        :type year: str, required
@@ -90,11 +90,30 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
     ### RAOB OBSERVATIONS ###
     #########################################################################################################
     if search_for == 'raob':
+        try:
+            row = RAOB_STATIONS.loc[RAOB_STATIONS['ICAO'].str.contains(station, na=False, case=True)]
+            name_idx = 'ICAO'
+            if row.empty:
+                row = RAOB_STATIONS.query(f"WMO == {int(station)}")
+                name_idx = 'WMO'
+                if row.empty:
+                    raise ValueError
+        except ValueError:
+            raise ValueError(
+                f"ICAO or WMO identifier '{station}' not found. "
+                "Please make sure you provided the correct RAOB ID. "
+                "If you think this is an error, contact the author: "
+                "https://kylejgillett.github.io/sounderpy/about.html#about-the-author"
+            )
+        station_idx  = row.index[0]
+        station_icao = row.loc[station_idx, "ICAO"]
+        station_wmo  = str(row.loc[station_idx, "WMO"])
+
         # try this process 10 times, sometimes requests fail due to temporary 404 errors
         for i in range(1, 11):
             try:
                 # try UW data request
-                df = WyomingUpperAir.request_data(datetime(int(year), int(month), int(day), int(hour)), station)
+                df = WyomingUpperAir.request_data(datetime(int(year), int(month), int(day), int(hour)), station_wmo)
                 got_data = True
                 if got_data:
                     print(f'    > PROFILE FOUND: {station} on {month}/{day}/{year} at {hour}z | From UW')
@@ -106,22 +125,6 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
         # search through RAOB sites list with provided RAOB ID, first try ICAO ID, then WMO ID
         if got_data:
             if clean_it:
-                try:
-                    station = \
-                    RAOB_STATIONS['ICAO'][np.where(RAOB_STATIONS['ICAO'].str.contains(station, na=False, case=True))[0]].values[
-                        0].strip()
-                    name_idx = 'ICAO'
-                except:
-                    try:
-                        station = RAOB_STATIONS['WMO'][np.where(RAOB_STATIONS['WMO'] == int(station))[0]].values[0]
-                        name_idx = 'WMO'
-                    except:
-                        raise ValueError(
-                            f'ICAO or WMO identifier not found, please make sure you provided the correct RAOB ID. If you think this is an error' +
-                            'contact the author: https://kylejgillett.github.io/sounderpy/about.html#about-the-author')
-                        pass
-                    pass
-
                 # begin loading data
                 # create dict of data
                 new_keys = ['p', 'z', 'T', 'Td', 'u', 'v']
@@ -132,11 +135,11 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
                 for old_key, new_key, unit in zip(old_keys, new_keys, units_list):
                     clean_data[new_key] = np.array(df.to_dict('list')[old_key])[non_dups] * units(unit)
                 clean_data['site_info'] = {
-                    'site-id': RAOB_STATIONS[RAOB_STATIONS[name_idx] == station][name_idx].values[0],
-                    'site-name': RAOB_STATIONS[RAOB_STATIONS[name_idx] == station]['NAME'].values[0],
-                    'site-lctn': RAOB_STATIONS[RAOB_STATIONS[name_idx] == station]['LOC'].values[0],
+                    'site-id': row.loc[station_idx, name_idx],
+                    'site-name': row.loc[station_idx, "NAME"],
+                    'site-lctn': row.loc[station_idx, "LOC"],
                     'site-latlon': get_latlon('raob', str(station)),
-                    'site-elv': RAOB_STATIONS[RAOB_STATIONS[name_idx] == station]['EL(m)'].values[0],
+                    'site-elv': row.loc[station_idx, "EL(m)"],
                     'source': 'RAOB OBSERVED PROFILE',
                     'model': 'no-model',
                     'fcst-hour': 'no-fcst-hour',

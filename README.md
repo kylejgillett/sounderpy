@@ -4,7 +4,7 @@
 </div>
 
 # SounderPy: An atmospheric sounding visualization and analysis tool for Python
-LATEST VERSION: v3.0.9 |  RELEASED: Aug, 2025  |  COPYRIGHT Kyle J Gillett, 2023-2025
+LATEST VERSION: v3.1.0 |  RELEASED: Oct, 2025  |  COPYRIGHT Kyle J Gillett, 2023-2025
 
 SounderPy is an open-source Python package for retrieving, processing, and visualizing atmospheric sounding data.
 
@@ -43,10 +43,18 @@ novices. A number of scientific Python libraries build the base of SounderPy’s
 durable functionality, such as NumPy, Matplotlib, xarray, Metpy, and SHARPpy. SounderPy is 
 available through GitHub and PyPi and is distributed under an MIT license. 
 
-Read more about SounderPy in this article published in the Journal of Open Source Software: [SounderPy: An atmospheric sounding visualization and analysis tool for Python](https://doi.org/10.21105/joss.08087)
-
-
 SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines, Columbia, and Grand Rapids National Weather Service Offices, the State University of New York at Albany, Mississippi State University, the University of North Dakota, and others. Many students at various universities have used SounderPy in projects, posters, and papers, such as students at The University of Oklahoma, Ohio State University, Central Michigan University, Iowa State University, & Rizal Technological University.
+
+
+
+## CITING SOUNDERPY
+
+To cite this package, please cite [SounderPy's JOSS article](https://doi.org/10.21105/joss.08087) in AMS format (below) or in BibTeX (see citation file).
+
+- Gillett, K. J., 2025: SounderPy: An atmospheric sounding visualization and analysis tool for Python. J. Open Source Software, 10 (112), 8087, https://doi.org/10.21105/joss.08087
+
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.08087/status.svg)](https://doi.org/10.21105/joss.08087)
+------
 
 
 
@@ -150,16 +158,6 @@ SounderPy has been used by several institutions. For example, this tool has been
 ##### *CONTRIBUTOR: Daryl Herzmann, Iowa State University | SounderPy Feedstock for conda-forge*
 ##### *CONTRIBUTOR: Ryan Vandersmith | Stepwise CAPE/CIN plot*
 
-------
-
-
-## CITING SOUNDERPY
-[![DOI](https://joss.theoj.org/papers/10.21105/joss.08087/status.svg)](https://doi.org/10.21105/joss.08087)
-
-
-in AMS format:
-
-- Gillett, K. J., 2025: SounderPy: An atmospheric sounding visualization and analysis tool for Python. J. Open Source Software, 10 (112), 8087, https://doi.org/10.21105/joss.08087
 ------
 
 
