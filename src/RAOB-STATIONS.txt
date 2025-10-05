@@ -1632,23 +1632,23 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 69686, KQUH, CAMP ABLE SENTRY,    MACEDONIA,  238,  41.58, N,   21.38, E
 69704, KQUZ, AL KHARJI,                  SD,  497,  24.13, N,   47.93, E
 69756, KQIZ, AL JABER,                   KW,  157,  28.93, N,   47.78, E
-70026, PBRW, BARROW/POST-ROG,         AK US,    3,  71.30, N,  156.78, W
+70026, PABR, BARROW/POST-ROG,         AK US,    3,  71.30, N,  156.78, W
 70086, PBTI, BARTER ISLAND,           AK US,   15,  70.13, N,  143.63, W
 70117, PATC, TIN CITY AFS,            AK US,   83,  65.57, N,  167.92, W
-70133, POTZ, KOTZEBUE,                AK US,    6,  66.87, N,  162.63, W
-70200, POME, NOME,                    AK US,    6,  64.50, N,  165.43, W
-70219, PBET, BETHEL ARPT,             AK US,   45,  60.78, N,  161.80, W
-70231, PMCG, MCGRATH,                 AK US,  103,  62.97, N,  155.62, W
+70133, PAOT, KOTZEBUE,                AK US,    6,  66.87, N,  162.63, W
+70200, PAOM, NOME,                    AK US,    6,  64.50, N,  165.43, W
+70219, PABE, BETHEL ARPT,             AK US,   45,  60.78, N,  161.80, W
+70231, PAMC, MCGRATH,                 AK US,  103,  62.97, N,  155.62, W
 70261, PAFA, FAIRBANKS,               AK US,  138,  64.82, N,  147.87, W
 70266, PABG, FORT GREELY,             AK US,  398,  63.97, N,  145.70, W
 70270, PAFR, FORT RICHARDSON,         AK US,  115,  61.27, N,  149.65, W
 70273, PANC, ANCHORAGE INTL,          AK US,   40,  61.17, N,  150.02, W
-70308, PSNP, SAINT PAUL IS.,          AK US,    8,  57.15, N,  170.22, W
-70316, PCDB, COLD BAY,                AK US,   31,  55.20, N,  162.72, W
+70308, PASN, SAINT PAUL IS.,          AK US,    8,  57.15, N,  170.22, W
+70316, PACD, COLD BAY,                AK US,   31,  55.20, N,  162.72, W
 70326, PAKN, KING SALMON,             AK US,   14,  58.68, N,  156.65, W
 70350, PADQ, KODIAK,                  AK US,   33,  57.73, N,  152.52, W
-70361, PYAK, YAKUTAT,                 AK US,    9,  59.50, N,  139.68, W
-70398, PANN, ANNETTE ISLAND,          AK US,   33,  55.03, N,  131.57, W
+70361, PAYA, YAKUTAT,                 AK US,    9,  59.50, N,  139.68, W
+70398, PANT, ANNETTE ISLAND,          AK US,   33,  55.03, N,  131.57, W
 70414, PASY, SHEMYA AFB,              AK US,   30,  52.72, N,  174.12, W
 70454, PADK, ADAK NS.,                AK US,    6,  51.88, N,  176.65, W
 71043, CYVQ, NORMAN WELLS,            NT CN,   73,  65.28, N,  126.80, W
