@@ -383,7 +383,7 @@ Example:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>station</strong> (<em>str</em><em>, </em><em>required</em>) – may be a three digit RAOB identifier (such as: ‘DTX’), 5 digit WMO identifier (such as: ‘72317’), or 11 digit IGRAv2 identifier (such as: ‘GMM00010393’)</p></li>
+<li><p><strong>station</strong> (<em>str</em><em>, </em><em>required</em>) – may be a 3-4 digit ICAO identifier (such as: ‘DTX’ or ‘KDTX’), 5 digit WMO identifier (such as: ‘72317’), or 11 digit IGRAv2 identifier (such as: ‘GMM00010393’).</p></li>
 <li><p><strong>year</strong> (<em>str</em><em>, </em><em>required</em>) – launch year</p></li>
 <li><p><strong>month</strong> (<em>str</em><em>, </em><em>required</em>) – launch month</p></li>
 <li><p><strong>day</strong> (<em>str</em><em>, </em><em>required</em>) – launch day</p></li>
@@ -404,6 +404,10 @@ Example:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Some data in these archives may be missing, incomplete or on occasion mislabled. If you can’t find a RAOB you know for sure exists, try increasing or decreasing the launch_hour by 1 hour.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some ICAO identifiers have the same “3-digt” suffix, such as “PABR” &amp; “KABR”, its recommended to always use the 4 digit identifier to get the correct station.</p>
 </div>
 <section id="available-raob-sites">
 <span id="raobsites"></span><h3>Available RAOB Sites:<a class="headerlink" href="#available-raob-sites" title="Link to this heading"></a></h3>

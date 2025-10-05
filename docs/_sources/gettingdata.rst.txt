@@ -252,7 +252,7 @@ Observed Data | RAOB & IGRAv2
 
    Return a ``dict`` of 'cleaned up' observed profile data
 
-   :param station: may be a three digit RAOB identifier (such as: 'DTX'), 5 digit WMO identifier (such as: '72317'), or 11 digit IGRAv2 identifier (such as: 'GMM00010393')
+   :param station: may be a 3-4 digit ICAO identifier (such as: 'DTX' or 'KDTX'), 5 digit WMO identifier (such as: '72317'), or 11 digit IGRAv2 identifier (such as: 'GMM00010393').
    :type station: str, required
    :param year: launch year
    :type year: str, required
@@ -272,6 +272,8 @@ Observed Data | RAOB & IGRAv2
 .. note::
    Some data in these archives may be missing, incomplete or on occasion mislabled. If you can't find a RAOB you know for sure exists, try increasing or decreasing the launch_hour by 1 hour.
 
+.. note::
+   Some ICAO identifiers have the same "3-digt" suffix, such as "PABR" & "KABR", its recommended to always use the 4 digit identifier to get the correct station.
 
 .. _raobsites:
 

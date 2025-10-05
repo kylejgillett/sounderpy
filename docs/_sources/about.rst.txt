@@ -42,6 +42,33 @@ SounderPy has been used by several institutions. For example, this tool has been
 
 ☕ SounderPy is an open-source package developed on my own time. If you would you like to support continued SounderPy development, consider "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"! ☕
 
+
+Citing SounderPy
+-----------------
+
+    To cite this package, please cite `SounderPy's JOSS article <https://doi.org/10.21105/joss.08087>`_ in AMS format (or BibTeX via github):
+
+        Gillett, K. J., 2025: SounderPy: An atmospheric sounding visualization and analysis tool for Python. J. Open Source Software, 10 (112), 8087, https://doi.org/10.21105/joss.08087
+
+    .. image:: https://joss.theoj.org/papers/10.21105/joss.08087/status.svg
+        :target: https://doi.org/10.21105/joss.08087
+
+***************************************************************
+
+
+Authors and Contributors 
+-------------------------
+    **AUTHOR: Kyle J Gillett, University of North Dakota**
+
+	*CONTRIBUTOR: Scott Thomas, NWS Grand Rapids | VWP Hodograph, Buoy-sites listing*
+	*CONTRIBUTOR: Amelia R H Urquhart, University of Oklahoma | ecape-parcels library*
+	*CONTRIBUTOR: Daryl Herzmann, Iowa State University | SounderPy Feedstock for conda-forge*
+	*CONTRIBUTOR: Ryan Vandersmith | Stepwise CAPE/CIN plot*
+    *CONTRIBUTOR: David E Levin, NOAA/NWS | Alaskan RAOB site IDs*
+
+***************************************************************
+
+
 Installation
 ------------
 
@@ -99,31 +126,6 @@ Those three basic lines will make this!:
 
 
 More examples of these plots are available :ref:`here<gallery>`
-
-
-***************************************************************
-
-
-
-Authors and Contributors 
--------------------------
-    **AUTHOR: Kyle J Gillett, University of North Dakota**
-
-	*CONTRIBUTOR: Scott Thomas, NWS Grand Rapids | VWP Hodograph, Buoy-sites listing*
-	*CONTRIBUTOR: Amelia R H Urquhart, University of Oklahoma | ecape-parcels library*
-	*CONTRIBUTOR: Daryl Herzmann, Iowa State University | SounderPy Feedstock for conda-forge*
-	*CONTRIBUTOR: Ryan Vandersmith | Stepwise CAPE/CIN plot*
-
-***************************************************************
-
-Citing SounderPy
------------------
-    .. image:: https://joss.theoj.org/papers/10.21105/joss.08087/status.svg
-        :target: https://doi.org/10.21105/joss.08087
-
-
-    in AMS format:
-        Gillett, K. J., 2025: SounderPy: An atmospheric sounding visualization and analysis tool for Python. J. Open Source Software, 10 (112), 8087, https://doi.org/10.21105/joss.08087
 
 
 ***************************************************************
