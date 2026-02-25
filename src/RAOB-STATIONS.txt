@@ -747,7 +747,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 41895, VGRJ, RAJSHAHI,                   BW,   20,  24.37, N,   88.70, E
 41907, VGIS, ISHURDI,                    BW,   14,  24.13, N,   89.05, E
 41909, ----, TANGAIL,                    BW,   56,  24.25, N,   89.93, E
-41923, ----, COMILLA,                    BW,    9,  23.43, N,   91.18, E
+41923, VGTJ, DHAKA,                      BW,    9,  23.76, N,   90.23, E
 41929, ----, FARODPUR,                   BW,    9,  23.60, N,   89.85, E
 41936, ----, JESSORE,                    BW,    7,  23.11, N,   89.10, E
 41943, ----, FENI,                       BW,    8,  23.03, N,   91.42, E
@@ -2382,3 +2382,4 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 99018, LDWR, SHIP MIKE,                  NO,    0,  66.00, N,    2.00, E
 99023, GACA, SHIP ROMEO,                 FR,    0,  47.00, N,   17.00, E
 99999
+
