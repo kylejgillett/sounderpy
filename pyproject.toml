@@ -45,8 +45,9 @@ dependencies = [
 "PyPi" = "https://pypi.org/project/sounderpy/"
 "My Website" = "https://kylegillettphoto.com"
 
+
 [tool.setuptools]
-packages = ["sounderpy"]
+packages = { find = { where = ["src"] } }
 package-dir = {"" = "src"}
 
 [tool.setuptools.package-data]
