@@ -1677,7 +1677,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 71488, CYKJ, KEY LAKE,                SA CN,  509,  57.25, N,  105.62, W
 71569, CXBK, BRATT'S LAKE,            SA CN,  580,  50.20, N,  104.70, W
 71600, CWSA, SABLE ISLAND,            NS CN,    4,  43.93, N,   60.02, W
-71603, CWQI, YARMOUTH,                NS CN,   41,  43.83, N,   66.08, W
+71603, CYQI, YARMOUTH,                NS CN,   41,  43.83, N,   66.08, W
 71621, CYTR, TRENTON,                 ON CN,   86,  44.12, N,   77.53, W
 71625, CYWA, PETAWAWA,                ON CN,  130,  45.95, N,   77.32, W
 71627, CYUL, MONTREAL,                QB CN,   36,  45.47, N,   73.73, W
