@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 
 from metpy.units import units
+from metpy.calc import wind_components
 
 from siphon.simplewebservice.wyoming import WyomingUpperAir
 from siphon.simplewebservice.igra2 import IGRAUpperAir
@@ -75,16 +76,12 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
 
     got_data = False
 
-    # set up siphon API call for raob data -- if station ID is found in RAOB_STATIONS, it is
-    # a RAOB ID and siphon UW or ISU must be used to get data
+    # set up API call for raob data -- if station ID is found in RAOB_STATIONS, it is
+    # a RAOB ID and UW or ISU must be used to get data
     if len(station) == 11:
         search_for = 'igra'
     else:
         search_for = 'raob'
-
-
-
-
 
 
     ### RAOB OBSERVATIONS ###
@@ -112,11 +109,23 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
         # try this process 10 times, sometimes requests fail due to temporary 404 errors
         for i in range(1, 11):
             try:
-                # try UW data request
-                df = WyomingUpperAir.request_data(datetime(int(year), int(month), int(day), int(hour)), station_wmo)
+                # ---------------- NEW UW API DATA REQUEST ----------------
+                # Format the datetime string exactly as the new API expects. 
+                # zfill(2) ensures single digit months/days/hours get a leading zero.
+                dt_str = f"{year}-{str(month).zfill(2)}-{str(day).zfill(2)} {str(hour).zfill(2)}:00:00"
+                
+                # The URL needs %20 for spaces to be a valid web request
+                dt_str_encoded = dt_str.replace(" ", "%20")
+                
+                # Construct the new parameterized UW API URL
+                url = f"https://weather.uwyo.edu/wsgi/sounding?datetime={dt_str_encoded}&id={station_wmo}&src=BUFR&type=TEXT:CSV"
+                
+                # Read the CSV output directly into a Pandas DataFrame
+                df = pd.read_csv(url)
+                
                 got_data = True
                 if got_data:
-                    print(f'    > PROFILE FOUND: {station} on {month}/{day}/{year} at {hour}z | From UW')
+                    print(f'    > PROFILE FOUND: {station} on {month}/{day}/{year} at {hour}z | From UW (New API)')
                     break
             except:
                 got_data = False
@@ -125,15 +134,29 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
         # search through RAOB sites list with provided RAOB ID, first try ICAO ID, then WMO ID
         if got_data:
             if clean_it:
-                # begin loading data
-                # create dict of data
-                new_keys = ['p', 'z', 'T', 'Td', 'u', 'v']
-                old_keys = ['pressure', 'height', 'temperature', 'dewpoint', 'u_wind', 'v_wind']  # 'latitude', 'longitude']
-                units_list = ['hPa', 'meter', 'degC', 'degC', 'kt', 'kt']
+                # ---------------- PARSE THE NEW CSV DATA ----------------
+                
+                # Assign units to the speed (m/s) and direction (degrees) columns
+                # Then calculate the u and v wind components
+                speed = df['wind speed_m/s'].values * units('m/s')
+                direction = df['wind direction_degree'].values * units('degree')
+                u_wind, v_wind = wind_components(speed, direction)
+                
                 clean_data = {}
-                non_dups = np.concatenate(([True], np.diff(df.to_dict('list')['pressure']) != 0))
-                for old_key, new_key, unit in zip(old_keys, new_keys, units_list):
-                    clean_data[new_key] = np.array(df.to_dict('list')[old_key])[non_dups] * units(unit)
+                
+                # Remove duplicate pressure levels as before
+                non_dups = np.concatenate(([True], np.diff(df['pressure_hPa']) != 0))
+                
+                # Build the clean_data dictionary pulling directly from the new CSV column headers
+                clean_data['p'] = np.array(df['pressure_hPa'])[non_dups] * units('hPa')
+                clean_data['z'] = np.array(df['geopotential height_m'])[non_dups] * units('meter')
+                clean_data['T'] = np.array(df['temperature_C'])[non_dups] * units('degC')
+                clean_data['Td'] = np.array(df['dew point temperature_C'])[non_dups] * units('degC')
+                
+                # Isolate the u/v wind arrays by non_dups, then convert m/s to kt
+                clean_data['u'] = u_wind[non_dups].to('kt')
+                clean_data['v'] = v_wind[non_dups].to('kt')
+
                 clean_data['site_info'] = {
                     'site-id': row.loc[station_idx, name_idx],
                     'site-name': row.loc[station_idx, "NAME"],
@@ -149,7 +172,7 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
                 try:
                     # trim data to 98hPa and below for less process time
                     slc = (len(clean_data['p']) - np.where(clean_data['p'] <= 98. * units('hPa'))[0][0])
-                    for key in new_keys:
+                    for key in ['p', 'z', 'T', 'Td', 'u', 'v']:
                         clean_data[key] = clean_data[key][:-slc]
                 except:
                     pass
@@ -158,11 +181,6 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
                 f'Wyoming Upper Air Archive connection failed -- ensure you have the correct dates and corresponding station identifier\n' +
                 f'There is likely no available data for station {station} on {month}/{day}/{year} at {hour}z')
     #########################################################################################################
-
-
-
-
-
 
 
     ### IGRAv2 OBSERVATIONS ###
@@ -219,8 +237,6 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
                 f'IGRAv2 Dataset connection failed -- ensure you have the correct dates and corresponding station identifier\n' +
                 f'There is likely no available data for station {station} on {month}/{day}/{year} at {hour}z')
     #########################################################################################################
-
-
 
 
     if clean_it:
@@ -285,9 +301,6 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
             'right_title': f"{clean_data['site_info']['site-id']} - {clean_data['site_info']['site-name']}, {clean_data['site_info']['site-lctn']} | {clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]}    "
         }
 
-
-
-
         print('    > COMPLETE --------')
         elapsed_time = time.time() - st
         print('    > RUNTIME:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
@@ -303,9 +316,10 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
 
         return clean_data
 
-
     else:
         # if user sets `clean_it=False` return raw data ('dirty') format
         return df
+
+    #########################################################################################################
 
     #########################################################################################################
