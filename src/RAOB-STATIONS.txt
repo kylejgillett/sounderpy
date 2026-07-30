@@ -60,23 +60,23 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 03377, EGXW, WADDINGTON RAF,             UK,   70,  53.17, N,    0.52, W
 03414, EGOS, SHAWBURY RAF,               UK,   76,  52.80, N,    2.67, W
 03496, ----, HEMSBY,                     UK,   14,  52.68, N,    1.68, E
-03501, ----, CAPE DEWI,                  UK,   92,  55.42, N,    4.00, W
+03501, ----, PE DEWI,                  UK,   92,  55.42, N,    4.00, W
 03502, EGUC, ABERPORTH,                  UK,  134,  52.13, N,    4.57, W
-03559, ----, CARDINGTON,                 UK,   30,  52.10, N,    0.42, W
+03559, ----, RDINGTON,                 UK,   30,  52.10, N,    0.42, W
 03590, EGUW, WATTISHAM RAF,              UK,   87,  52.12, N,    0.97, E
 03614, ----, CILFYNYDD,                  UK,  194,  51.63, N,    3.30, W
 03649, EGVN, BRIZE NORTON RAF,           UK,   88,  51.75, N,    1.58, W
 03693, ----, SHOEBURYNESS,               UK,    3,  51.55, N,    0.85, E
-03715, EGFF, CARDIFF-WALES,              UK,   67,  51.40, N,    3.35, W
+03715, EGFF, RDIFF-WALES,              UK,   67,  51.40, N,    3.35, W
 03743, ----, LARKHILL,                   UK,  133,  51.20, N,    1.80, W
 03774, ----, CRAWLEY,                    UK,  144,  51.08, N,    0.22, W
-03808, ----, CAMBORNE,                   UK,   88,  50.22, N,    5.32, W
+03808, ----, MBORNE,                   UK,   88,  50.22, N,    5.32, W
 03810, ----, PENDENNIS POINT,            UK,   35,  50.15, N,    5.07, W
 03815, ----, LIZARD LIGHTHOU,            UK,   60,  49.97, N,    5.20, W
 03872, ----, THORNEY ISLAND,             UK,    4,  50.82, N,    0.92, W
 03882, ----, HERSTOMONCEUX WEST,         UK,   54,  50.90, N,    0.32, E
 03894, EGJB, GUERNSEY AIRPORT,           UK,  102,  49.43, N,    2.60, W
-03918, ----, CASTOR BAY,                 UK,   17,  54.50, N,    6.33, W
+03918, ----, STOR BAY,                 UK,   17,  54.50, N,    6.33, W
 03920, ----, HILLSBOROUGH,               UK,   38,  54.80, N,    6.17, W
 03953, ----, VALENTIA OBSERVATORY,       IE,   14,  51.93, N,   10.25, W
 04001, ----, HVALLATUR,                  IL,   17,  65.53, N,   24.47, W
@@ -133,28 +133,28 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 07412, ----, CONIAC,                     FR,   30,  45.67, N,    0.32, W
 07480, LFLY, LYON/BRON,                  FR,  201,  45.72, N,    4.95, E
 07481, LFLL, LYON/SATOLAS,               FR,  240,  45.73, N,    5.08, E
-07500, ----, CAPE FERRET,                FR,   10,  44.63, N,    1.25, W
+07500, ----, PE FERRET,                FR,   10,  44.63, N,    1.25, W
 07510, LFBD, BORDEAUX/MERIGNAC,          FR,   61,  44.83, N,    0.70, W
-07579, LFMO, ORANGE/CARITAT,             FR,   55,  44.13, N,    4.83, E
+07579, LFMO, ORANGE/RITAT,             FR,   55,  44.13, N,    4.83, E
 07645, LFME, NIMES/COURBESSAC,           FR,   62,  43.87, N,    4.40, E
 07690, LFMN, NICE/COTE D'AZUR,           FR,   10,  43.65, N,    7.20, E
-07749, ----, CAPE BEAR,                  FR,   86,  42.52, N,    3.13, E
-07761, LFKJ, AJACCIO/CAMPO ORO,          FR,    9,  41.92, N,    8.80, E
+07749, ----, PE BEAR,                  FR,   86,  42.52, N,    3.13, E
+07761, LFKJ, AJACCIO/MPO ORO,          FR,    9,  41.92, N,    8.80, E
 08001, ----, LA CORUNA CITY,             SP,   67,  43.37, N,    8.42, W
 08002, LECO, LA CORUNA/ALVED,            SP,  103,  43.30, N,    8.38, W
 08023, ----, SANTANDER CITY,             SP,   65,  43.47, N,    3.82, W
 08029, LESO, SAN SEBASTIAN,              SP,    8,  43.35, N,    1.80, W
-08094, ----, HUESCA/MONFLORITE,          SP,  554,  42.08, N,    0.33, W
+08094, ----, HUES/MONFLORITE,          SP,  554,  42.08, N,    0.33, W
 08140, LEVD, VALLADOLID (MIL/CIV),       SP,  854,  41.72, N,    4.85, W
 08160, LEZG, ZARAGOZA (MIL/CIV),         SP,  258,  41.67, N,    1.02, W
 08190, LBCN, BARCELONA,                  SP,   98,  41.62, N,    2.20, E
 08221, LEMD, MADRID/BARAJAS,             SP,  582,  40.45, N,    3.55, W
 08222, ----, MADRID,                     SP,  655,  40.42, N,    3.68, W
-08301, ----, PALMA DE MALLORCA,          SP,    6,  39.55, N,    2.62, E
+08301, ----, PALMA DE MALLOR,          SP,    6,  39.55, N,    2.62, E
 08302, ----, PALMA/SON BONET,            SP,   41,  39.60, N,    2.70, E
 08383, ----, HUELVA,                     SP,   20,  37.28, N,    6.91, W
 08430, ----, MURCIA CITY,                SP,   62,  38.00, N,    1.17, W
-08431, ----, CASTILLO GALERA,            SP,  217,  37.58, N,    1.00, W
+08431, ----, STILLO GALERA,            SP,  217,  37.58, N,    1.00, W
 08449, LERT, ROTA NAS,                   SP,   27,  36.65, N,    6.35, W
 08495, LXGB, GIBRALTAR (CIV/MIL),        GI,    5,  36.15, N,    5.35, W
 08506, ----, HORTA,                      PO,   62,  38.52, N,   28.63, W
@@ -167,7 +167,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 08554, ----, FARO,                       PO,    7,  37.02, N,    7.97, W
 08579, ----, LISBON/GAGO COUTINHO,       PO,  105,  38.77, N,    9.13, W
 08589, ----, PRAIA,                      CV,   35,  14.90, N,   23.52, W
-08594, GVAC, SAL ISL/AMILCAR CAB,        CV,   55,  16.73, N,   22.95, W
+08594, GVAC, SAL ISL/AMILR B,        CV,   55,  16.73, N,   22.95, W
 10035, ----, SCHLESWIG,                  DL,   48,  54.53, N,    9.55, E
 10044, ----, KIEL,                       DL,   23,  54.50, N,   10.28, E
 10046, ----, KIEL/HOLTENAU,              DL,   32,  54.38, N,   10.15, E
@@ -230,7 +230,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 12105, ----, KOSZALIN,                   PL,   34,  54.20, N,   16.20, E
 12120, ----, LEBA,                       PL,    2,  54.75, N,   17.53, E
 12185, ----, KETRZYN,                    PL,  110,  54.07, N,   21.37, E
-12330, EPPO, POZNAN/LAWICA,              PL,   92,  52.42, N,   16.83, E
+12330, EPPO, POZNAN/LAWI,              PL,   92,  52.42, N,   16.83, E
 12365, ----, BRWINOW,                    PL,   98,  52.13, N,   20.72, E
 12374, ----, LEGIONOWO,                  PL,   96,  52.40, N,   20.97, E
 12424, EPWR, WROCLAW/STRACHOW,           PL,  121,  51.10, N,   16.87, E
@@ -247,14 +247,14 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 14015, ----, LUUBLUANA/BEZIGRAD,         LJ,  316,  46.07, N,   14.52, E
 14240, LDDD, ZAGREB/MAKSIMIR,            RH,  123,  45.82, N,   16.03, E
 14241, LDZA, ZAGREB/PLESO,               RH,  107,  45.73, N,   16.07, E
-14320, ----, CRIKVENICA,                 RH,    2,  45.17, N,   14.70, E
+14320, ----, CRIKVENI,                 RH,    2,  45.17, N,   14.70, E
 14430, LDZD, ZADAR ZEMUNIK,              RH,   82,  44.10, N,   15.35, E
 15001, ----, AVRAMENI,                   RO,  240,  48.02, N,   26.95, E
 15010, ----, SATU MARE,                  RO,  122,  47.78, N,   22.88, E
 15080, ----, ORADEA,                     RO,  136,  47.05, N,   21.93, E
 15090, ----, IASI,                       RO,  102,  47.17, N,   27.60, E
-15120, LRCL, CLUJ-NAPOCA/SOMESEN,        RO,  413,  46.78, N,   23.57, E
-15150, ----, BACAU,                      RO,  182,  46.57, N,   26.98, E
+15120, LRCL, CLUJ-NAPO/SOMESEN,        RO,  413,  46.78, N,   23.57, E
+15150, ----, BAU,                      RO,  182,  46.57, N,   26.98, E
 15189, ----, DUMBRAVENI,                 RO,  318,  46.23, N,   24.57, E
 15200, ----, ARAD,                       RO,  108,  46.17, N,   21.32, E
 15209, ----, BLAJ,                       RO,  334,  46.18, N,   23.92, E
@@ -274,29 +274,29 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 15730, ----, KARDJALI,                   BU,  336,  41.63, N,   25.40, E
 16008, ----, S. VALENTINO,               IY, 1461,  45.75, N,   10.53, E
 16020, LIPB, BOLZANO,                    IY,  241,  46.47, N,   11.33, E
-16044, LIPD, UDINE/CAMPOFORMIDO,         IY,   92,  46.03, N,   13.18, E
+16044, LIPD, UDINE/MPOFORMIDO,         IY,   92,  46.03, N,   13.18, E
 16045, LIPI, RIVOLTO AFB,                IY,   53,  45.98, N,   13.03, E
 16080, LIML, MILANO/LINATE,              IY,  103,  45.43, N,    9.28, E
 16088, LIPL, GHEDI (IT-AFB),             IY,   92,  45.42, N,   10.28, E
 16113, ----, CUNEO-LEVALDIGI,            IY,  386,  44.53, N,    7.62, E
 16129, LIQP, PALMARIA ISLAND,            IY,  192,  44.03, N,    9.83, E
 16142, ----, RIFREDO MUGELLO,            IY,  887,  44.05, N,   11.38, E
-16144, ----, S. PIETRO CAPOFIUME,        IY,   38,  44.65, N,   11.62, E
+16144, ----, S. PIETRO POFIUME,        IY,   38,  44.65, N,   11.62, E
 16148, LIPC, CERVIA (IT-AFB),            IY,   10,  44.22, N,   12.30, E
 16170, LIRQ, FIRENZE,                    IY,   38,  43.80, N,   11.20, E
 16242, ----, ROMA/FIUMICINO,             IY,    5,  41.80, N,   12.23, E
-16245, LIRE, PRATICA DI MARE(AB),        IY,   12,  41.65, N,   12.43, E
-16310, LIQK, CAPE PALINURO,              IY,  185,  40.02, N,   15.28, E
+16245, LIRE, PRATI DI MARE(AB),        IY,   12,  41.65, N,   12.43, E
+16310, LIQK, PE PALINURO,              IY,  185,  40.02, N,   15.28, E
 16316, LIBU, LATRONICO,                  IY,  896,  40.08, N,   16.02, E
-16320, LIBR, BRINDISI/CASALE AFB,        IY,   10,  40.65, N,   17.95, E
+16320, LIBR, BRINDISI/SALE AFB,        IY,   10,  40.65, N,   17.95, E
 16325, LIBH, MARINA DI GINOS,            IY,   12,  40.43, N,   16.88, E
 16350, LIBC, CROTONE,                    IY,  161,  39.00, N,   17.07, E
 16420, LICF, MESSINA,                    IY,   51,  38.20, N,   15.55, E
 16429, LICT, TRAPANI/BIRGI (AFB),        IY,    7,  37.92, N,   12.50, E
 16459, LICZ, SIGONELLA,                  IY,   22,  37.40, N,   14.92, E
-16522, LIEH, CAPE CACCIA,                IY,  205,  40.57, N,    8.17, E
+16522, LIEH, PE CCIA,                IY,  205,  40.57, N,    8.17, E
 16546, LIED, DECIMOMANNU,                IY,   30,  39.35, N,    8.97, E
-16560, LIEE, CAGLIARI/ELMAS(AFB),        IY,    1,  39.25, N,    9.05, E
+16560, LIEE, GLIARI/ELMAS(AFB),        IY,    1,  39.25, N,    9.05, E
 16597, ----, LUQA,                    MALTA,   91,  35.85, N,   14.48, E
 16610, ----, KOMOTINI,                   GR,   31,  41.12, N,   25.40, E
 16622, LGTS, THESSALONIKI/MIKRA,         GR,    4,  40.52, N,   22.97, E
@@ -336,12 +336,12 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 17601, LCRA, AKROTIRI (RAF),             CY,   23,  34.58, N,   32.98, E
 17606, ----, NICOSIA,                    CY,  224,  35.20, N,   33.30, E
 17607, LCNC, NICOSIA/ATHALASSA,          CY,  161,  35.20, N,   33.40, E
-17609, LCLK, LARNACA AIRPORT,            CY,    2,  34.88, N,   33.63, E
+17609, LCLK, LARNA AIRPORT,            CY,    2,  34.88, N,   33.63, E
 20046, ----, OSTROV KHEISA,           DK RA,   20,  80.62, N,   58.05, E
 20069, ----, OSTROV LIEZ,             DK RA,   12,  79.50, N,   76.98, E
 20107, ----, BARENCBURG,              AR RS,   49,  78.07, N,   14.22, E
 20274, ----, UJEDINENIJA ISLAND,      DK RA,   23,  77.50, N,   82.23, E
-20292, ----, CAPE CELJUSKIN,          DK RA,   13,  77.72, N,  104.30, E
+20292, ----, PE CELJUSKIN,          DK RA,   13,  77.72, N,  104.30, E
 20353, ----, MYS ZHELANIA,            DK RA,    8,  76.95, N,   68.58, E
 20667, ----, BELY ISLAND,             DK RA,    6,  73.33, N,   70.03, E
 20674, ----, DIKSON ISLAND,           DK RA,   47,  73.53, N,   80.40, E
@@ -350,7 +350,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 21358, ----, OSTROV ZOHOVA,           TK RA,   14,  76.15, N,  152.83, E
 21432, ----, KOTEL'NYJ ISLAND,        TK RA,   10,  76.00, N,  137.90, E
 21504, ----, PREOBRAZENIJA ISLAND,    TK RA,   57,  74.67, N,  112.93, E
-21647, ----, CAPE SALAUROVA,          TK RA,   22,  73.18, N,  143.93, E
+21647, ----, PE SALAUROVA,          TK RA,   22,  73.18, N,  143.93, E
 21824, ----, TIKSI,                   TK RA,    8,  71.58, N,  128.92, E
 21908, ----, DZALINDA,                TK RA,   62,  70.13, N,  113.97, E
 21946, ----, COKURDAH,                TK RA,   61,  70.62, N,  147.90, E
@@ -405,8 +405,8 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 24959, UEEE, YAKUTSK AIRPORT,         HA RA,  103,  62.08, N,  129.75, E
 25042, ----, AJON ISLAND,             HB RA,   16,  69.83, N,  168.67, E
 25123, ----, CERSKIJ,                 HA RA,   32,  68.80, N,  161.28, E
-25173, ----, CAPE SMIDTA,             HA RA,    7,  68.92, N,  179.48, E
-25399, ----, CAPE UELEN,              HA RA,    7,  66.17, N,  169.83, W
+25173, ----, PE SMIDTA,             HA RA,    7,  68.92, N,  179.48, E
+25399, ----, PE UELEN,              HA RA,    7,  66.17, N,  169.83, W
 25400, ----, ZYRJANKA,                HA RA,   43,  65.73, N,  150.90, E
 25403, ----, ZYRYANKA,                HA RA,   43,  65.73, N,  150.90, E
 25428, ----, OMOLON,                  HA RA,  253,  65.22, N,  160.50, E
@@ -414,7 +414,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 25563, UHMA, ANADYR',                 HA RA,   62,  64.78, N,  177.57, E
 25594, ----, BUKHTA PROVIDENCIA,      HA RA,    3,  64.43, N,  173.23, W
 25677, ----, UGOLNAJA,                HA RA,   85,  63.05, N,  179.32, E
-25703, ----, SEJMCAN,                 HA RA,  207,  62.92, N,  152.42, E
+25703, ----, SEJMN,                 HA RA,  207,  62.92, N,  152.42, E
 25822, ----, KUSHKA,                  HA RA,   20,  61.95, N,  160.37, E
 25913, UHMM, MAGADAN,                 HA RA,  118,  59.58, N,  150.78, E
 25954, ----, KORF,                    HA RA,    3,  60.35, N,  166.00, E
@@ -473,10 +473,10 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 28952, ----, KUSTANAJ,                AL RA,  156,  53.22, N,   63.62, E
 29231, ----, KOLPASEV,                NO RA,   76,  58.30, N,   82.90, E
 29263, UNII, YENISEYSK,               NO RA,   78,  58.45, N,   92.15, E
-29282, ----, BOGUCANY,                NO RA,  134,  58.42, N,   97.40, E
+29282, ----, BOGUNY,                NO RA,  134,  58.42, N,   97.40, E
 29348, ----, PERVOMAJSKOE,            NO RA,  115,  57.07, N,   86.22, E
 29498, ----, SITKINO,                 NO RA,  221,  56.35, N,   98.37, E
-29563, ----, KACA,                       RA,  479,  56.12, N,   92.20, E
+29563, ----, KA,                       RA,  479,  56.12, N,   92.20, E
 29572, ----, EMEL'JANOVO,             NO RA,  296,  56.18, N,   92.62, E
 29574, ----, KRASNOJARSK,             NO RA,  206,  56.00, N,   92.88, E
 29612, ----, BARABINSK,               NO RA,  120,  55.37, N,   78.37, E
@@ -491,7 +491,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 30054, ----, VITIM,                   HA RA,  193,  59.45, N,  112.58, E
 30230, UIKK, KIRENSK,                 IR RA,  258,  57.77, N,  108.12, E
 30309, UIBB, BRATSK,                  IR RA,  489,  56.07, N,  101.83, E
-30372, ----, CARA,                    IR RA,  711,  56.92, N,  118.37, E
+30372, ----, RA,                    IR RA,  711,  56.92, N,  118.37, E
 30457, ----, BAUNT,                      RA, 1078,  55.27, N,  113.13, E
 30507, ----, IKEJ,                    IR RA,  527,  54.18, N,  100.08, E
 30521, ----, ZIGALOVO,                IR RA,  428,  54.80, N,  105.22, E
@@ -499,7 +499,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 30557, ----, BAGDARIN,                IR RA,  995,  54.47, N,  113.58, E
 30565, ----, UST-KARENGA,             IR RA,  686,  54.45, N,  116.52, E
 30635, ----, UST-BARGUZIN,            IR RA,  457,  54.42, N,  109.02, E
-30673, ----, MOGOCA,                  IR RA,  619,  53.73, N,  119.78, E
+30673, ----, MOGO,                  IR RA,  619,  53.73, N,  119.78, E
 30692, ----, SKOVORODINO,             HA RA,  400,  54.00, N,  123.97, E
 30710, ----, IRKUTSK,                 IR RA,  437,  52.40, N,  104.20, E
 30715, ----, ANGARSK,                 IR RA,  450,  52.48, N,  103.85, E
@@ -512,7 +512,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 31088, ----, OHOTSK,                  HA RA,    6,  59.37, N,  143.20, E
 31168, ----, AJAN,                    HA RA,    9,  56.45, N,  138.15, E
 31300, ----, ZEJA,                    HA RA,  232,  53.75, N,  127.23, E
-31329, UHBP, EKIMCAN,                 HA RA,  543,  53.07, N,  132.93, E
+31329, UHBP, EKIMN,                 HA RA,  543,  53.07, N,  132.93, E
 31369, UHNN, NIKOLAEVSK,              HA RA,   68,  53.15, N,  140.70, E
 31510, ----, BLAGOVESCENSK,           HA RA,  137,  50.27, N,  127.50, E
 31538, ----, SUTUR,                   HA RA,  349,  50.07, N,  132.13, E
@@ -620,7 +620,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 38507, ----, KRASNOVODSK,             TA RA,   89,  40.03, N,   52.98, E
 38606, ----, KOKAND,                  TA RA,  405,  40.55, N,   70.95, E
 38613, ----, DZALAL-ABAD,             TA RA,  765,  40.92, N,   72.95, E
-38687, ----, CARDZOU,                 TA RA,  193,  39.08, N,   63.60, E
+38687, ----, RDZOU,                 TA RA,  193,  39.08, N,   63.60, E
 38750, ----, GASAN-KULI,              TA RA,  -23,  37.47, N,   53.97, E
 38755, ----, BYGDAILI,                TA RA,    1,  38.53, N,   54.30, E
 38836, UTDD, DUSANBE,                 TA RA,  803,  38.55, N,   68.78, E
@@ -705,7 +705,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 41217, OMAA, ABU DHABI INTL,             ER,   27,  24.43, N,   54.65, E
 41218, OMAL, AL AIN INTL AIRPORT,        ER,  262,  24.25, N,   55.60, E
 41254, OOSQ, SAIQ,                       OM, 1755,  23.07, N,   57.65, E
-41256, OOMS, SEEB INTL/MUSCAT,           OM,    8,  23.58, N,   58.28, E
+41256, OOMS, SEEB INTL/MUST,           OM,    8,  23.58, N,   58.28, E
 41288, ----, MASIRAH,                    OM,   21,  20.68, N,   58.90, E
 41316, OOSA, SALALAH,                    OM,   20,  17.03, N,   54.08, E
 41344, ----, SANA'A (CIV/MIL),           YE, 2190,  15.52, N,   44.18, E
@@ -821,8 +821,8 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 42767, ----, PACHMARHI,                  IN, 1061,  22.47, N,   78.43, E
 42798, VEJS, JAMSHEDPUR,                 IN,  142,  22.81, N,   86.18, E
 42805, ----, ULUBERIA,                   IN,   57,  22.50, N,   87.95, E
-42807, ----, CALCUTTA AIRPORT,           IN,    5,  22.53, N,   88.33, E
-42809, VECC, CALCUTTA/DUM DUM,           IN,    6,  22.65, N,   88.45, E
+42807, ----, LCUTTA AIRPORT,           IN,    5,  22.53, N,   88.33, E
+42809, VECC, LCUTTA/DUM DUM,           IN,    6,  22.65, N,   88.45, E
 42830, ----, PORBANDAR,                  IN,    5,  21.65, N,   69.67, E
 42867, VANP, NAGPUR SONEGAON AFB,        IN,  310,  21.10, N,   79.05, E
 42874, ----, PBO RAIPUR,                 IN,  298,  21.22, N,   81.67, E
@@ -876,7 +876,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 43349, ----, VEDARANNIYAM,               IN,    2,  10.37, N,   79.85, E
 43353, VOCC, COCHIN (IN-NAVY),           IN,    3,   9.95, N,   76.27, E
 43359, ----, MADURAI,                    IN,  132,   9.92, N,   78.12, E
-43368, ----, CAR NICOBAR,                IN,   14,   9.15, N,   92.82, E
+43368, ----, R NICOBAR,                IN,   14,   9.15, N,   92.82, E
 43369, ----, MINICOY ISLAND,             IN,    2,   8.30, N,   73.15, E
 43371, ----, THIRUVANANTHAPURAM,         IN,   64,   8.48, N,   76.95, E
 43377, ----, KANNIYAKUMARI,              IN,   37,   8.08, N,   77.50, E
@@ -1089,7 +1089,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 48887, ----, PHAN THIET,                 VS,    8,  10.93, N,  108.10, E
 48900, VVTS, HO CHI MINH/TANSONN,        VS,   19,  10.82, N,  106.67, E
 48910, ----, VINH LONG,                  VS,    3,  10.25, N,  105.95, E
-48914, ----, CA MAU (POINT),             VS,    3,   9.17, N,  105.17, E
+48914, ----,  MAU (POINT),             VS,    3,   9.17, N,  105.17, E
 48918, ----, CON SON,                    VS,    5,   8.70, N,  106.58, E
 48936, ----, PAKLAY,                     LA,  220,  18.20, N,  101.20, E
 48968, ----, KRAKOR,                     KP,    5,  12.52, N,  104.18, E
@@ -1303,7 +1303,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 60096, GSVO, VILLA CISNEROS MIL/DAKHLA,  MC,    9,  23.71, N,   15.93, W
 60115, ----, OUJDA,                      MC,  468,  34.78, N,    1.95, W
 60120, GMMY, KENITRA,                    MC,   14,  34.30, N,    6.60, W
-60155, GMMC, CASABLANCA/ANFA,            MC,   62,  33.57, N,    7.67, W
+60155, GMMC, SABLAN/ANFA,            MC,   62,  33.57, N,    7.67, W
 60191, ----, BENI-MELLAL,                MC,  468,  32.37, N,    6.40, W
 60252, GMAD, AL MASSIRA MC,              MC,   74,  30.33, N,    9.42, W
 60265, ----, OUARZAZATE,                 MC, 1131,  30.93, N,    6.90, W
@@ -1332,7 +1332,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 60680, ----, TAMANRASSET,                AL, 1378,  22.78, N,    5.52, E
 60710, DTKA, TABARKA,                    TS,   21,  36.95, N,    8.75, E
 60714, ----, BIZERTE,                    TS,    2,  37.23, N,    9.82, E
-60715, DTTA, TUNIS/CARTHAGE,             TS,    4,  36.83, N,   10.23, E
+60715, DTTA, TUNIS/RTHAGE,             TS,    4,  36.83, N,   10.23, E
 60720, ----, KELIBIA,                    TS,    4,  37.07, N,   11.03, E
 60725, ----, SOUK EL ARBA/JENDOUBA,      TS,  144,  36.48, N,    8.80, E
 60735, ----, KAIROUAN,                   TS,   68,  35.67, N,   10.10, E
@@ -1388,7 +1388,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 61995, ----, VACOAS,                     MA,  425,  20.30, S,   57.50, E
 61996, ----, MARTIN DE VIVIES,           FR,   29,  37.80, S,   77.53, E
 61997, ----, ALFRED FAURE/CROZET,        FR,  146,  46.43, S,   51.87, E
-61998, ----, PORT-AUX-FRANCAIS,          FR,   30,  49.35, S,   70.25, E
+61998, ----, PORT-AUX-FRANIS,          FR,   30,  49.35, S,   70.25, E
 62010, HLLT, TRIPOLI INTL ARPT,          LY,   81,  32.67, N,   13.15, E
 62019, ----, SIRTE,                      LY,   13,  31.20, N,   16.58, E
 62053, HLLB, BENINA/BENGHAZI,            LY,  132,  32.08, N,   20.27, E
@@ -1407,7 +1407,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 62333, HEPS, PORT SAID,                  EG,    6,  31.27, N,   32.30, E
 62337, HEAR, EL ARISH,                   EG,   32,  31.08, N,   33.83, E
 62338, ----, GHAZZA,                     EG,   16,  31.50, N,   34.45, E
-62371, ----, CAIRO HQ,                   EG,   26,  30.08, N,   31.28, E
+62371, ----, IRO HQ,                   EG,   26,  30.08, N,   31.28, E
 62378, ----, HELWAN,                     EG,  141,  29.87, N,   31.33, E
 62387, ----, MINYA,                      EG,   40,  28.08, N,   30.73, E
 62397, ----, SOHAG,                      EG,   61,  26.57, N,   37.70, E
@@ -1510,7 +1510,7 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 65660, ----, ROBERTS FIELD,         LIBERIA,    9,   6.25, N,   10.35, W
 66152, ----, DUNDO,                  ANGOLA,  762,   7.37, S,   20.80, E
 66160, ----, LUANDA,                 ANGOLA,   84,   8.85, S,   13.23, E
-66422, ----, MOCAMEDES,              ANGOLA,   52,  15.20, S,   12.15, E
+66422, ----, MOMEDES,              ANGOLA,   52,  15.20, S,   12.15, E
 67001, ----, MORONI,                COMOROS,    6,  11.70, S,   43.23, E
 67002, ----, HAHAYA AIRPORT,        COMOROS,   29,  11.53, S,   43.27, E
 67005, ----, DZAOUDZI,              MAYOTTE,    7,  12.80, S,   45.28, E
@@ -1592,21 +1592,21 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 68588, FADN, DURBAN/LOUIS BOTHA,         ZA,    8,  29.97, S,   30.95, E
 68592, FALE, KING SHAKA INTL AIRPORT,    ZA,  109,  29.61, S,   31.12, E
 68715, ----, MALMEBURY,                  ZA,  102,  33.47, S,   18.72, E
-68816, FACT, CAPETOWN/DF MALAN,          ZA,   42,  33.98, S,   18.60, E
+68816, FACT, PETOWN/DF MALAN,          ZA,   42,  33.98, S,   18.60, E
 68828, ----, GEORGE,                     ZA,  218,  33.97, S,   22.42, E
 68842, FAPE, PORT ELIZABETH,             ZA,   60,  33.98, S,   23.60, E
 68858, ----, EAST LONDON,                ZA,  130,  33.03, S,   27.83, E
 68906, FAGE, GOUGH ISLAND,               ZA,    0,  40.35, S,    9.88, W
-68916, ----, CAPE POINT,                 ZA,  226,  34.35, S,   18.50, E
+68916, ----, PE POINT,                 ZA,  226,  34.35, S,   18.50, E
 68994, FAME, MARION ISLAND,              ZA,   22,  46.88, S,   37.87, E
-69002, KHGT, JOLON/HUNTER LIGGETT MIL,CA US,  317,  36.00, N,  121.23, W
+69002, KHGT, JOLON/HUNTER LIGGETT MIL, US,  317,  36.00, N,  121.23, W
 69003, ----, WEST VERTICLE,           UT US, 1400,  40.20, N,  111.22, W
-69007, KOAR, FORT ORD/FRITZS,         CA US,   41,  36.68, N,  121.77, W
-69008, KSYL, CAMP ROBERTS,            CA US,  220,  35.75, N,  120.70, W
-69014, KNZJ, EL TORO/MCAS,               US,  116,  33.67, N,  117.73, W
-69016, KNTK, TUSTIN/MCAF,                US,   17,  33.68, N,  117.80, W
-69055, KQCA, GLOGOVAC,               KOSOVO,  609,  42.37, N,   20.55, E
-69061, KQDI, DAKOVICA NEW AIRPORT,   KOSOVO,  399,  42.25, N,   20.26, E
+69007, KOAR, FORT ORD/FRITZS,          US,   41,  36.68, N,  121.77, W
+69008, KSYL, MP ROBERTS,             US,  220,  35.75, N,  120.70, W
+69014, KNZJ, EL TORO/MS,               US,  116,  33.67, N,  117.73, W
+69016, KNTK, TUSTIN/MF,                US,   17,  33.68, N,  117.80, W
+69055, KQ, GLOGOVAC,               KOSOVO,  609,  42.37, N,   20.55, E
+69061, KQDI, DAKOVI NEW AIRPORT,   KOSOVO,  399,  42.25, N,   20.26, E
 69066, KQDN, ORAHOVAC,               KOSOVO,  375,  42.18, N,   20.36, E
 69089, KQHD, FARKE,                 ALBANIA,  258,  41.32, N,   19.87, E
 69110, KQAA, PRIZREN,                KOSOVO,  460,  42.13, N,   20.45, E
@@ -1706,7 +1706,8 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 71855, CYDN, DAUPHIN LAKE,            MN CN,  304,  51.10, N,  100.05, W
 71861, CWIK, BROADVIEW,               SA CN,  602,  50.38, N,  102.68, W
 71863, CYQR, REGINA,                  SK CN,  577,  50.42, N,  104.67, W
-71866, CYXE, SASKATOON,               AB CN,  504,  52.17, N,  106.70, W
+71169, CXXX, SASKATOON,               SK CN,  504,  52.17, N,  106.71, W
+71866, CYXE, SASKATOON,               SK CN,  504,  52.17, N,  106.70, W
 71867, CYQD, THE PAS,                 MN CN,  271,  53.97, N,  101.10, W
 71869, CYPA, PRINCE ALBERT,           MN CN,  428,  53.22, N,  105.68, W
 71874, CYQL, LETHBRIDGE,              AB CN,  929,  49.62, N,  112.80, W
