@@ -102,6 +102,8 @@ def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_ho
             model3 = 'gfs3'
         else:
             model3 = model
+        if model == 'nam' and run_hour in ["06", "18"]:
+            model3 = 'namm'
         data_conn = f'https://mtarchive.geol.iastate.edu/{run_year}/{run_month}/{run_day}/bufkit/{run_hour}/{model}/{model3}_{url_station.lower()}.buf'
 
 

@@ -28,12 +28,30 @@ from .calc import sounding_params
     data. Functions here are referenced by sounderpy.py
 
 
-    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2026
 """
 
 
 
 
+def _choose_profile_stride(values, target_len=300):
+    """Return a slicing stride that keeps an array length near ``target_len``."""
+    length = len(values)
+    if length <= target_len:
+        return 1
+
+    interval = max(1, int(np.round(length / target_len)))
+    best_interval = interval
+    best_diff = abs(int(np.ceil(length / interval)) - target_len)
+
+    for candidate in [max(1, interval - 1), interval, interval + 1]:
+        sampled_len = int(np.ceil(length / candidate))
+        diff = abs(sampled_len - target_len)
+        if diff < best_diff:
+            best_diff = diff
+            best_interval = candidate
+
+    return best_interval 
 
 
 #######################
@@ -132,8 +150,15 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
                 units_list = ['hPa', 'meter', 'degC', 'degC', 'kt', 'kt']
                 clean_data = {}
                 non_dups = np.concatenate(([True], np.diff(df.to_dict('list')['pressure']) != 0))
+                profile_values = np.array(df.to_dict('list')['pressure'])[non_dups]
+                stride = _choose_profile_stride(profile_values)
+
                 for old_key, new_key, unit in zip(old_keys, new_keys, units_list):
-                    clean_data[new_key] = np.array(df.to_dict('list')[old_key])[non_dups] * units(unit)
+                    if old_key in ['u_wind', 'v_wind']:
+                        clean_data[new_key] = (np.array(df.to_dict('list')[old_key])[non_dups][::stride] * 1.94384 )* units(unit)
+                    else:   
+                        clean_data[new_key] = np.array(df.to_dict('list')[old_key])[non_dups][::stride] * units(unit)
+
                 clean_data['site_info'] = {
                     'site-id': row.loc[station_idx, name_idx],
                     'site-name': row.loc[station_idx, "NAME"],
@@ -153,6 +178,7 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
                         clean_data[key] = clean_data[key][:-slc]
                 except:
                     pass
+
         else:
             raise ValueError(
                 f'Wyoming Upper Air Archive connection failed -- ensure you have the correct dates and corresponding station identifier\n' +
@@ -197,8 +223,11 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
                 zflag = np.array(df['zflag'])
                 pflag = np.array(df['pflag'])
                 tflag = np.array(df['tflag'])
+                mask = zflag + pflag + tflag >= 4
+                profile_values = np.array(df.to_dict('list')['pressure'])[mask]
+                stride = _choose_profile_stride(profile_values)
                 for old_key, new_key, unit in zip(old_keys, new_keys, units_list):
-                    clean_data[new_key] = np.array(df.to_dict('list')[old_key])[zflag + pflag + tflag >= 4] * units(unit)
+                    clean_data[new_key] = np.array(df.to_dict('list')[old_key])[mask][::stride] * units(unit)
                 clean_data['site_info'] = {
                     'site-id': IGRA_STATIONS[IGRA_STATIONS['ID'] == station]['ID'].str.strip().values[0],
                     'site-name': IGRA_STATIONS[IGRA_STATIONS['ID'] == station]['NAME'].str.strip().values[0],

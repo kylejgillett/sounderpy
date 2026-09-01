@@ -60,7 +60,7 @@ with suppress_stdout_stderr():
     figures from data provided by the user. Functions here are referenced
     by sounderpy.py.     
 
-    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2026
 """
 
 
@@ -100,7 +100,7 @@ def plot_boundary(ax, angle_deg, color):
 
 def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels=None, 
                     radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None,
-                    show_theta=False, hodo_boundary=None):
+                    show_theta=False, hodo_boundary=None, dpi=100):
     
     
     # record process time 
@@ -110,10 +110,10 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     # define display mode colors and alphas    
     if dark_mode == True:
         gen_txt_clr = 'white'
-        bckgrnd_clr = 'black'
+        bckgrnd_clr = "#161616"
         brdr_clr    = 'white'
         barb_clr    = 'white'
-        shade_alpha = 0.06
+        shade_alpha = 0.04
         skw_ln_clr = 'white'
         marker_clr = 'white'
     else: 
@@ -137,6 +137,8 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     #################################################################
     ### SET UP THE DATA ###
     #################################################################
+    print(f'    > PREPARING DATA')
+
     # SFC CORRECTION
     if str(type(modify_sfc)) == "<class 'dict'>":
         sounding_data = modify_surface(clean_data, modify_sfc)
@@ -181,8 +183,9 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     ### CREATE FIGURE ###
     #################################################################
     #################################################################
+    print(f'    > BUILDING SKEW-T LOG-P DIAGRAM')
     # create master figure
-    fig = plt.figure(figsize=(22,13), linewidth=10, edgecolor=brdr_clr)         
+    fig = plt.figure(figsize=(22,13), linewidth=10, edgecolor=brdr_clr, dpi=dpi)         
     # create skew-t obj and axes params
     skew = SkewT(fig, rotation=47, rect=(0.1124, 0.1005, 0.60, 0.85))  
     skew.ax.set_box_aspect(0.87)
@@ -332,7 +335,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
                 parcel_name = str.upper(f"{parcel.split('_')[0]} {parcel_details['term2'][parcel.split('_')[1]][1]} {parcel.split('_')[2]}")
                 # if parcel exists, plot it
                 if parcel in special_parcels[0]:
-                            skew.plot(parcel_dict[parcel][0], parcel_dict[parcel][-1], color='red', linestyle='--',  
+                            skew.plot(parcel_dict[parcel][0], parcel_dict[parcel][-1], color='k', linestyle='--',  
                                              linewidth=2, alpha=1, label=parcel_name)
                 # if parcel exists, plot it
                 elif parcel in special_parcels[1]:
@@ -342,7 +345,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     
     
     
-    # ADD BASIC PARCEL TRACES IF NO SPECIAL PARCFELS ARE 
+    # ADD BASIC PARCEL TRACES IF NO SPECIAL PARCELS ARE 
     # PROVIDED BY THE USER.
     elif special_parcels in [None, 'simple']:
         if (special_parcels != 'simple'):
@@ -358,35 +361,27 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
                 trace_Trho = density_temperature(trace[2], trace[3], trace[4])
 
                 muecapeline = skew.plot(trace[0], trace_Trho, 
-                                        linestyle='--', linewidth=3, alpha=1, color='red',
+                                        linestyle='--', linewidth=3, alpha=1, color='k',
                                         label='MUECAPE PARCEL')
             
-#                 print(trace_Trho[0:len(T)].m-273.15)
-#                 return trace[0]
-                
-#                 skew.ax.fill_betweenx(p, T, trace_Trho[0:len(T)].m-273.15,
-#                                       color='red', alpha=0.1)
-                
-                #skew.shade_cape(p, T, np.linspace(trace_Trho[0], trace_Trho[-1], len(T)), color='red', alpha=0.4) 
-                #skew.shade_cape(p, T, mu_parcel_path, color='orange') 
-        
-        # if CAPE for SB, MU, ML parcels is >0, plotm them
+
+        # if CAPE for SB, MU, ML parcels is >0, plot them
         if thermo['sbcape'] > 0:
             sbparcelline = skew.plot(thermo['sbP_trace'], thermo['sbT_trace'], 
-                                     linestyle='--', linewidth=2, alpha=0.5, color='#808080', 
+                                     linestyle='--', linewidth=2, alpha=0.75, color='#c62828', 
                                      label='SBCAPE PARCEL')    
         if thermo['mlcape'] > 0:
             mlparcelline = skew.plot(thermo['mlP_trace'], thermo['mlT_trace'],
-                                     linestyle='--', linewidth=2, alpha=0.5, color='#808080',
+                                     linestyle='--', linewidth=2, alpha=0.75, color='#d95f02',
                                      label='MLCAPE PARCEL') 
         if thermo['mucape'] > 0:
             muparcelline = skew.plot(thermo['muP_trace'], thermo['muT_trace'],
-                                     linestyle='--', linewidth=2, alpha=0.5, color='#808080',
+                                     linestyle='--', linewidth=2, alpha=0.75, color='#8828c3',
                                      label='MUCAPE PARCEL')
 
             
     # ADD DOWNDRAFT PARCEL TRACE
-    skew.plot(thermo['dparcel_p'], thermo['dparcel_T'], linestyle='--',linewidth=0.7, color='purple', 
+    skew.plot(thermo['dparcel_p'], thermo['dparcel_T'], linestyle='--',linewidth=0.75, color='purple', 
               alpha=0.8, label='DWNDRFT PARCEL')
     
     
@@ -433,47 +428,63 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
         
     # PARCEL HEIGHT ANNOTATIONS------------------------------------------------------------- 
     # plot the SBLCL and draw a line between the sfc and the lcl
-    plt.text((0.82), (thermo['sb_lcl_p']), "←SBLCL", weight='bold',color='gray',
+    plt.text((0.82), (thermo['mu_lcl_p']), "←LCL-MU", weight='bold',color='#8828c3',
              alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform(), clip_on=True)
-    lcl_line = plt.Line2D([0.86, 0.86], (p[0], thermo['sb_lcl_p']), 
-                          color='gray', linestyle=':', alpha=1, transform=skew.ax.get_yaxis_transform())
+    plt.text((0.82), (thermo['ml_lcl_p']), "←LCL-ML", weight='bold',color='#d95f02',
+             alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform(), clip_on=True)
+    lcl_line = plt.Line2D([0.86, 0.86], (p[0], thermo['mu_lcl_p']), 
+                          color='#8828c3', linestyle=':', alpha=1, transform=skew.ax.get_yaxis_transform())
     skew.ax.add_artist(lcl_line)
+
     
     # if a mulfc doesn't exist,
     # plot the sblfc, and sbel and draw a line between the lcl and lfc and the lcl to the el
-    if ma.is_masked(thermo['mu_lfc_z']) == True:
-        plt.text((0.82), (thermo['sb_lfc_p']), "←SBLFC", weight='bold',color='gray',
-                 alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform(), clip_on=True)
-        plt.text((0.82), (thermo['sb_el_p']), "←SBEL", weight='bold',color='gray', 
-                 alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform(), clip_on=True)
-        el_line = plt.Line2D([0.86, 0.86], (p[0], thermo['sb_el_p']), 
-                             color='gray', linestyle=':', alpha=0.3, transform=skew.ax.get_yaxis_transform())
-        skew.ax.add_artist(el_line)
-        lfc_line = plt.Line2D([0.86, 0.86], (p[0], thermo['sb_lfc_p']), 
-                              color='gray', linestyle=':', alpha=0.7, transform=skew.ax.get_yaxis_transform())
-        skew.ax.add_artist(lfc_line)
+    # if ma.is_masked(thermo['mu_lfc_z']) == True:
+    #     plt.text((0.82), (thermo['sb_lfc_p']), "←LFC-SB", weight='bold',color='#c62828',
+    #              alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform(), clip_on=True)
+    #     plt.text((0.82), (thermo['sb_el_p']), "←EL-SB", weight='bold',color='#c62828', 
+    #              alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform(), clip_on=True)
+    #     el_line = plt.Line2D([0.86, 0.86], (p[0], thermo['sb_el_p']), 
+    #                          color='#c62828', linestyle=':', alpha=0.3, transform=skew.ax.get_yaxis_transform())
+    #     skew.ax.add_artist(el_line)
+    #     lfc_line = plt.Line2D([0.86, 0.86], (p[0], thermo['sb_lfc_p']), 
+    #                           color='#c62828', linestyle=':', alpha=0.7, transform=skew.ax.get_yaxis_transform())
+    #     skew.ax.add_artist(lfc_line)
     
-    else: 
-        # if not, plot mulfc and muel and draw a line between the lcl and lfc and the lcl to the el
-        plt.text((0.82), (thermo['mu_lfc_p']), "←MULFC", weight='bold',color='gray',
+    if ma.is_masked(thermo['mu_lfc_z']) == False:
+        # MOST UNSTABLE LFC, EL
+        plt.text((0.82), (thermo['mu_lfc_p']), "←LFC-MU", weight='bold',color='#8828c3',
                  alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform(), clip_on=True)
-        plt.text((0.82), (thermo['mu_el_p']), "←MUEL", weight='bold',color='gray',
+        plt.text((0.82), (thermo['mu_el_p']), "←EL-MU", weight='bold',color='#8828c3',
                  alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform(), clip_on=True)
         el_line = plt.Line2D([0.86, 0.86], (p[0], thermo['mu_el_p']), 
-                             color='gray', linestyle=':', alpha=0.3, transform=skew.ax.get_yaxis_transform())
+                             color='#8828c3', linestyle=':', alpha=0.3, transform=skew.ax.get_yaxis_transform())
         skew.ax.add_artist(el_line)
         lfc_line = plt.Line2D([0.86, 0.86], (p[0], thermo['mu_lfc_p']), 
-                              color='gray', linestyle=':', alpha=0.7, transform=skew.ax.get_yaxis_transform())
+                              color='#8828c3', linestyle=':', alpha=0.7, transform=skew.ax.get_yaxis_transform())
         skew.ax.add_artist(lfc_line)
-        
+
         # plot mumpl, but if its above 110 hPa, just plot whatever the value is at 110 hPa
         if thermo['mu_mpl_p'] < 110:
-            plt.text((0.82), (110), f"↑MUMPL: {mag(thermo['mu_mpl_p'])}hPa", weight='bold',color='gray',
+            plt.text((0.82), (110), f"↑MPL-MU: {mag(thermo['mu_mpl_p'])}hPa", weight='bold',color='#8828c3',
                      alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform(), clip_on=True)
         else: 
-            plt.text((0.82), (thermo['mu_mpl_p']), "←MUMPL", weight='bold',color='gray',
+            plt.text((0.82), (thermo['mu_mpl_p']), "←MPL-MU", weight='bold',color='#8828c3',
                      alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform(), clip_on=True)
-        
+
+
+
+    # 100hPa MIXED LAYER LFC EL
+    plt.text((0.82), (thermo['ml_lfc_p']), "←LFC-ML", weight='bold',color='#d95f02',
+                alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform(), clip_on=True)
+    plt.text((0.82), (thermo['ml_el_p']), "←EL-ML", weight='bold',color='#d95f02',
+                alpha=0.9, fontsize=15, transform=skew.ax.get_yaxis_transform(), clip_on=True)
+    el_line = plt.Line2D([0.86, 0.86], (p[0], thermo['ml_el_p']), 
+                            color='#d95f02', linestyle=':', alpha=0.3, transform=skew.ax.get_yaxis_transform())
+    skew.ax.add_artist(el_line)
+    lfc_line = plt.Line2D([0.86, 0.86], (p[0], thermo['ml_lfc_p']), 
+                            color='#d95f02', linestyle=':', alpha=0.7, transform=skew.ax.get_yaxis_transform())
+    skew.ax.add_artist(lfc_line)
         
         
         
@@ -500,22 +511,22 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     # 0-3km & 0-6km CAPE ANNOTATIONS--------------------------------------------------------
     if thermo['mu3cape'] > 10:
         idx = find_nearest(thermo['muZ_trace'], 3000)
-        cape03_label = " ←{}J/kg".format(mag(thermo['mu3cape']))     
-        plt.annotate(cape03_label,  ((thermo['muT_trace'][idx]+7), intrp['pINTRP'][intrp['hgt_lvls']['h3']]),  textcoords="offset points",  xytext=(20, 0), 
-                     color='red', alpha=0.7, fontsize=13.5, ha='right')
+        cape03_label = f" ←{mag(thermo['mu3cape'])} " + r"$\mathrm{Jkg^{-1}}$"   
+        plt.annotate(cape03_label,  ((thermo['muT_trace'][idx]+7), intrp['pINTRP'][intrp['hgt_lvls']['h3']]),  textcoords="offset points",  xytext=(11, 0), 
+                     color='#8828c3', alpha=0.7, fontsize=13.5, ha='right')
             
             
     if thermo['mu6cape'] > thermo['mu3cape']:
         idx = find_nearest(thermo['muZ_trace'], 6000)
-        cape06_label = " ←{}J/kg".format(mag(thermo['mu6cape']))                                            
-        plt.annotate(cape06_label, ((thermo['muT_trace'][idx]+7), intrp['pINTRP'][intrp['hgt_lvls']['h6']]), textcoords="offset points",  xytext=(10, 0), 
-                         color='red', alpha=0.7, fontsize=13.5, ha='right')
+        cape06_label = f" ←{mag(thermo['mu6cape'])} " + r"$\mathrm{Jkg^{-1}}$"                                         
+        plt.annotate(cape06_label, ((thermo['muT_trace'][idx]+7), intrp['pINTRP'][intrp['hgt_lvls']['h6']]), textcoords="offset points",  xytext=(8, 0), 
+                         color='#8828c3', alpha=0.7, fontsize=13.5, ha='right')
             
             
     if thermo['mucape'] > thermo['mu6cape']:
-            cape_label = "←{}J/kg".format(mag(thermo['mucape']))                                            
+            cape_label = f" ←{mag(thermo['mucape'])} " + r"$\mathrm{Jkg^{-1}}$"                                    
             plt.annotate(cape_label,((thermo['mu_el_T']), thermo['mu_el_p']), textcoords="offset points",  xytext=(5, 0), 
-                         color='red', alpha=0.7, fontsize=13.5, ha='left')
+                         color='#8828c3', alpha=0.7, fontsize=13.5, ha='left')
             
             
             
@@ -555,7 +566,6 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
             
     # RELATIVE HUMIDITY ANNOTATIONS --------------------------      
     hgts = [10, 30, 60, 90, 120]
-
     try:
         for hgt_idx in hgts:
             label = "{}% →".format(int(intrp['rhINTRP'][hgt_idx]))
@@ -587,10 +597,20 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     skew.plot_barbs(pressure=p[idx], u=u[idx], v=v[idx], xloc=0.955, fill_empty=True, color=barb_clr,
                     sizes=dict(emptybarb=0.075, width=0.18, height=0.4), length=8)
 
+    skew.plot_barbs(pressure=p[idx], u=u[idx]-(kinem['sm_u']*units.kts), v=v[idx]-(kinem['sm_v']*units.kts), xloc=0.955, fill_empty=True, color=barb_clr, alpha=0.4,
+                    sizes=dict(emptybarb=0.075, width=0.18, height=0.4), length=8)
+
     # Draw line underneath wind barbs
     line = mlines.Line2D([0.955, 0.955], [0.01,0.95],color=barb_clr,linewidth=0.5,
                          transform=skew.ax.transAxes,clip_on=False,zorder=1)
     skew.ax.add_line(line)  
+
+
+    plt.text((0.931), (115), f"Ground\nRelative", weight='bold', color=barb_clr, ha='center',
+             alpha=1, fontsize=8, transform=skew.ax.get_yaxis_transform(), clip_on=True)
+
+    plt.text((0.977), (115), f"Storm\nRelative", weight='bold', color=barb_clr, ha='center',
+             alpha=0.4, fontsize=8, transform=skew.ax.get_yaxis_transform(), clip_on=True)
     ################################################################
     
     
@@ -602,6 +622,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     #################################################################
     ### DEFINE HODOGRAPH BOUNDS ###
     #################################################################
+    print(f'    > BUILDING HODOGRAPH')
     # restructure u and v, p, ws and z data arrays based on corrected u and v arrays and hodo_layer depth
     if (z.max().m - z[0].m) > 9001: 
         hodo_hgt = 9000*units.m
@@ -708,7 +729,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     h.plot(intrp['uINTRP'][intrp['hgt_lvls']['h05']],intrp['vINTRP'][intrp['hgt_lvls']['h05']],marker='.', markeredgecolor='black',
            color='white', alpha=1, markersize=30, clip_on=True, zorder=5)
     h.ax.annotate(str('.5'),(intrp['uINTRP'][intrp['hgt_lvls']['h05']],intrp['vINTRP'][intrp['hgt_lvls']['h05']]),
-                  weight='bold', fontsize=11, color='black',xytext=(0.02,-5),
+                  weight='bold', fontsize=11, color='black',xytext=(0.02,-7),
                   textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=6) 
 
     # add hgt markers 
@@ -722,7 +743,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
             h.plot(intrp['uINTRP'][lvl],intrp['vINTRP'][lvl], marker='.', color='white', 
                    markeredgecolor='black', alpha=1, markersize=30, zorder=5)
             h.ax.annotate(str(int(round(intrp['zINTRP'][lvl]/1000,0))),(intrp['uINTRP'][lvl],intrp['vINTRP'][lvl]), 
-                          weight='bold', fontsize=11, color='black',xytext=(0.02,-5),
+                          weight='bold', fontsize=11, color='black',xytext=(0.02,-7),
                           textcoords='offset pixels',horizontalalignment='center',clip_on=True, zorder=5.1) 
     #################################################################
     
@@ -858,97 +879,9 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     
     
     #################################################################
-    ### TEMPERATURE ADVECTION ###
-    #################################################################
-    # GET TOP AND BOTTOM BOUND FOR EACH 'BIN'
-    bot_arr, top_arr = np.hsplit(thermo['temp_adv'][1],2)
-    bot_arr, top_arr = bot_arr.flatten(), top_arr.flatten()
-    #CREATE FIGURE
-    temp_adv_ax = plt.axes((0.701,0.1003,0.04,0.85))
-    temp_adv_ax.spines["top"].set_color(brdr_clr)
-    temp_adv_ax.spines["left"].set_color(brdr_clr)
-    temp_adv_ax.spines["right"].set_color(brdr_clr)
-    temp_adv_ax.spines["bottom"].set_color(brdr_clr)
-    temp_adv_ax.spines["bottom"].set_color(brdr_clr)   
-    temp_adv_ax.set_facecolor(bckgrnd_clr)    
-    plt.yscale('log')
-    temp_adv_ax.set_ylim(1050, 100)
-    temp_adv_ax.set_xlim(np.nanmin(thermo['temp_adv'][0])-4, np.nanmax(thermo['temp_adv'][0])+4)
-    plt.ylabel(' '), plt.xlabel(' ')
-    temp_adv_ax.set_yticklabels([]), temp_adv_ax.set_xticklabels([])
-    temp_adv_ax.tick_params(axis='y', length = 0), temp_adv_ax.tick_params(axis='x', length = 0)
-    # ADD LINES
-    lvls = [1000, 900, 800, 700, 600, 500, 400, 300, 200]
-    for lvl in lvls:
-        plt.plot((-20,20), (lvl,lvl), color='gray', alpha=0.8, linewidth=1, linestyle='-', clip_on=True)
-    # PLOT TEMP ADV BINS 
-    for i in range(len(thermo['temp_adv'][0])):
-                        if thermo['temp_adv'][0][i] <= 0:
-                            temp_adv_bxclr = 'cornflowerblue'
-                        elif thermo['temp_adv'][0][i]  > 0:
-                            temp_adv_bxclr = 'red'
-                        temp_adv_ax.barh(top_arr[i], thermo['temp_adv'][0][i], align='center', 
-                                         height=bot_arr[i]-top_arr[i], edgecolor='black', alpha=0.3, color=temp_adv_bxclr)
-                        if thermo['temp_adv'][0][i] > 0:
-                            temp_adv_ax.annotate((np.round(thermo['temp_adv'][0][i],1)), 
-                                                 xy=(0.3, top_arr[i]+10), color=gen_txt_clr, textcoords='data', 
-                                                 ha='left', weight='bold')
-                        if thermo['temp_adv'][0][i] < 0:
-                            temp_adv_ax.annotate((np.round(thermo['temp_adv'][0][i],1)), 
-                                                 xy=(-0.3, top_arr[i]+10), color=gen_txt_clr, textcoords='data', 
-                                                 ha='right', weight='bold')
-    temp_adv_ax.axvline(x=0, color=gen_txt_clr, linewidth=1, linestyle='--', clip_on=True)
-    #################################################################
-
-
-
-
-
-    #################################################################
-    ### OMEGA PLOT ###
-    #################################################################
-    if 'omega' in sounding_data.keys():
-
-        # convert omega (Pa/sec) to Pa/sec raised by an order of magnitude
-        # for plotting simplicity
-        omega = sounding_data['omega'] * 10
-
-        # create omega axis
-        omega_ax = plt.axes((0.127,0.1003,0.3,0.85))
-        omega_ax.set_zorder(10)
-
-        # set axis ticks
-        plt.yscale('log')
-        omega_ax.set_ylim(1050, 100)
-        omega_ax.set_xlim(40, -300)
-
-        omega_pos = np.where(omega > 0, omega, np.nan)
-        omega_neg = np.where(omega < 0, omega, np.nan)
-
-        # Plot the line for all omega values
-        omega_ax.plot(omega, p, linewidth=2, color='black', alpha=0.1)
-
-        # Fill the positive (red) and negative (blue) regions
-        omega_ax.fill_betweenx(p, 0, omega_neg, where=omega_neg < 0, color='firebrick', alpha=0.08, interpolate=True)
-        omega_ax.fill_betweenx(p, 0, omega_pos, where=omega_pos > 0, color='cornflowerblue', alpha=0.08, interpolate=True)
-
-        omega_ax.axvline(x=0, color='b', alpha=0.2)
-        omega_ax.axvline(x=10, color='purple', linestyle='-.', alpha=0.2)
-        omega_ax.axvline(x=-10, color='purple', linestyle='-.', alpha=0.2)
-        omega_ax.text(10, 150, "+10", weight="bold", alpha=0.4, color='k', fontsize=12, ha='center')
-        omega_ax.text(-10, 150, "-10", weight="bold", alpha=0.4, color='k', fontsize=12, ha='center')
-        omega_ax.set_axis_off()
-        omega_ax.patch.set_alpha(0)
-    #################################################################
-
-
-
-
-    
-    
-    #################################################################
     ### SOUNDING MAP INSET -- TEST ###
     #################################################################
+    print(f'    > BUILDING MAP INSET')
     # BUILD SIMPLE MAP -----------------------------------------------------------------------------------------------------
     if map_zoom > 0:
         proj = ccrs.PlateCarree()
@@ -1030,14 +963,101 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
                     markersize='18', transform=ccrs.PlateCarree(), zorder=10, clip_on=True)
 
     #################################################################
+
+
+    #################################################################
+    ### TEMPERATURE ADVECTION ###
+    #################################################################
+    print(f'    > BUILDING ACCESSORY PLOTS')
+    # GET TOP AND BOTTOM BOUND FOR EACH 'BIN'
+    bot_arr, top_arr = np.hsplit(thermo['temp_adv'][1],2)
+    bot_arr, top_arr = bot_arr.flatten(), top_arr.flatten()
+    #CREATE FIGURE
+    temp_adv_ax = plt.axes((0.701,0.1003,0.04,0.85))
+    temp_adv_ax.spines["top"].set_color(brdr_clr)
+    temp_adv_ax.spines["left"].set_color(brdr_clr)
+    temp_adv_ax.spines["right"].set_color(brdr_clr)
+    temp_adv_ax.spines["bottom"].set_color(brdr_clr)
+    temp_adv_ax.spines["bottom"].set_color(brdr_clr)   
+    temp_adv_ax.set_facecolor(bckgrnd_clr)    
+    plt.yscale('log')
+    temp_adv_ax.set_ylim(1050, 100)
+    temp_adv_ax.set_xlim(np.nanmin(thermo['temp_adv'][0])-4, np.nanmax(thermo['temp_adv'][0])+4)
+    plt.ylabel(' '), plt.xlabel(' ')
+    temp_adv_ax.set_yticklabels([]), temp_adv_ax.set_xticklabels([])
+    temp_adv_ax.tick_params(axis='y', length = 0), temp_adv_ax.tick_params(axis='x', length = 0)
+    # ADD LINES
+    lvls = [1000, 900, 800, 700, 600, 500, 400, 300, 200]
+    for lvl in lvls:
+        plt.plot((-20,20), (lvl,lvl), color='gray', alpha=0.8, linewidth=1, linestyle='-', clip_on=True)
+    # PLOT TEMP ADV BINS 
+    for i in range(len(thermo['temp_adv'][0])):
+                        if thermo['temp_adv'][0][i] <= 0:
+                            temp_adv_bxclr = 'cornflowerblue'
+                        elif thermo['temp_adv'][0][i]  > 0:
+                            temp_adv_bxclr = 'red'
+                        temp_adv_ax.barh(top_arr[i], thermo['temp_adv'][0][i], align='center', 
+                                            height=bot_arr[i]-top_arr[i], edgecolor='black', alpha=0.3, color=temp_adv_bxclr)
+                        if thermo['temp_adv'][0][i] > 0:
+                            temp_adv_ax.annotate((np.round(thermo['temp_adv'][0][i],1)), 
+                                                    xy=(0.3, top_arr[i]+10), color=gen_txt_clr, textcoords='data', 
+                                                    ha='left', weight='bold')
+                        if thermo['temp_adv'][0][i] < 0:
+                            temp_adv_ax.annotate((np.round(thermo['temp_adv'][0][i],1)), 
+                                                    xy=(-0.3, top_arr[i]+10), color=gen_txt_clr, textcoords='data', 
+                                                    ha='right', weight='bold')
+    temp_adv_ax.axvline(x=0, color=gen_txt_clr, linewidth=1, linestyle='--', clip_on=True)
+    #################################################################
+
+
+
     
     
+    #################################################################
+    ### OMEGA PLOT ###
+    #################################################################
+    if 'omega' in sounding_data.keys():
+
+        # convert omega (Pa/sec) to Pa/sec raised by an order of magnitude
+        # for plotting simplicity
+        omega = sounding_data['omega'] * 10
+
+        # create omega axis
+        omega_ax = plt.axes((0.127,0.1003,0.3,0.85))
+        omega_ax.set_zorder(10)
+
+        # set axis ticks
+        plt.yscale('log')
+        omega_ax.set_ylim(1050, 100)
+        omega_ax.set_xlim(40, -300)
+
+        omega_pos = np.where(omega > 0, omega, np.nan)
+        omega_neg = np.where(omega < 0, omega, np.nan)
+
+        # Plot the line for all omega values
+        omega_ax.plot(omega, p, linewidth=2, color='black', alpha=0.1)
+
+        # Fill the positive (red) and negative (blue) regions
+        omega_ax.fill_betweenx(p, 0, omega_neg, where=omega_neg < 0, color='firebrick', alpha=0.08, interpolate=True)
+        omega_ax.fill_betweenx(p, 0, omega_pos, where=omega_pos > 0, color='cornflowerblue', alpha=0.08, interpolate=True)
+
+        omega_ax.axvline(x=0, color='b', alpha=0.2)
+        omega_ax.axvline(x=10, color='purple', linestyle='-.', alpha=0.2)
+        omega_ax.axvline(x=-10, color='purple', linestyle='-.', alpha=0.2)
+        omega_ax.text(10, 150, "+10", weight="bold", alpha=0.4, color='k', fontsize=12, ha='center')
+        omega_ax.text(-10, 150, "-10", weight="bold", alpha=0.4, color='k', fontsize=12, ha='center')
+        omega_ax.set_axis_off()
+        omega_ax.patch.set_alpha(0)
+    #################################################################
+    
+
+
     #################################################################
     ### STREAMWISENESS AND RH W/HGT ###
     #################################################################
     # PLOT AXIS/LOC
     strmws_ax = plt.axes((0.945, -0.13, 0.065, 0.23))
-    plt.figtext(0.978, 0.07, f'Streamwiseness\n of ζ (%)', color=gen_txt_clr, weight='bold', fontsize=10, ha='center', alpha=0.9)
+    plt.figtext(0.978, 0.07, f'Streamwiseness\n of ω (%)', color=gen_txt_clr, weight='bold', fontsize=10, ha='center', alpha=0.9)
     strmws_ax.spines["top"].set_color(brdr_clr)
     strmws_ax.spines["left"].set_color(brdr_clr)
     strmws_ax.spines["right"].set_color(brdr_clr)
@@ -1086,7 +1106,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     ### VORTICITY W/HGT ###
     #################################################################
     vort_ax = plt.axes((1.01, -0.13, 0.066, 0.23))
-    plt.figtext(1.043, 0.05, f'Total ζ &\n Streamwise ζ \n(/sec)', color=gen_txt_clr, weight='bold',
+    plt.figtext(1.043, 0.05, f'Total ω &\n Streamwise ω \n(/sec)', color=gen_txt_clr, weight='bold',
                 fontsize=12, ha='center', alpha=0.9)
     vort_ax.spines["top"].set_color(brdr_clr)
     vort_ax.spines["left"].set_color(brdr_clr)
@@ -1151,10 +1171,10 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     wind_ax.tick_params(axis='y', length = 0)
     wind_ax.tick_params(axis="x",direction="in", pad=-12)
 
-    wind_ax.text(40, thermo['sb_lcl_z'], '-LCL-', fontsize=10, weight='bold',
+    wind_ax.text(35, thermo['sb_lcl_z'], '-LCL-', fontsize=10, weight='bold',
                  alpha=1, color=gen_txt_clr, clip_on=True)
     if thermo['mu_lfc_z'] < 2500:
-        wind_ax.text(40, thermo['mu_lfc_z'], '-LFC-', fontsize=10, weight='bold',
+        wind_ax.text(35, thermo['mu_lfc_z'], '-LFC-', fontsize=10, weight='bold',
                      alpha=1, color=gen_txt_clr, clip_on=True)
 
 
@@ -1303,7 +1323,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     #########################################################################
     ############################## TEXT PLOTS ###############################
     #########################################################################
-
+    print(f'    > PLOTTING SOUNDING PARAMETERS')
     
     
     #################################################################
@@ -1333,46 +1353,46 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     #################################################################
     ### THERMODYNAMICS ###
     #################################################################
-    plt.figtext( 0.17, 0.07, 'SR-ECAPE       CAPE         6CAPE         3CAPE          CIN            LCL', 
-                color=gen_txt_clr, weight='bold', fontsize=15)
+    plt.figtext( 0.17, 0.07, 'SR-ECAPE       CAPE         6CAPE         3CAPE          CIN            LCL',  color=gen_txt_clr, weight='bold', fontsize=15)
     #SBCAPE
     plt.figtext( 0.13,  0.04, f"SB:", weight='bold',   fontsize=15, color=gen_txt_clr)
-    plt.figtext( 0.17,  0.04, f"{mag(thermo['sb_ecape'])} J/kg",  fontsize=15, color='firebrick', weight='bold')
-    plt.figtext( 0.235,  0.04, f"{mag(thermo['sbcape'])} J/kg",  fontsize=15, color='orangered', weight='bold')
-    plt.figtext( 0.30,  0.04, f"{mag(thermo['sb6cape'])} J/kg", fontsize=15, color='orangered', weight='bold')
-    plt.figtext( 0.364, 0.04, f"{mag(thermo['sb3cape'])} J/kg", fontsize=15, color='orangered', weight='bold')
-    plt.figtext( 0.425, 0.04, f"{mag(thermo['sbcin'])} J/kg",   fontsize=15, color='orangered', weight='bold')
-    plt.figtext( 0.485, 0.04, f"{mag(thermo['sb_lcl_z'])} m",   fontsize=15, color='orangered', weight='bold')
-    #MUCAPE
-    plt.figtext( 0.13,  0.01, f"MU:", weight='bold',   fontsize=15, color=gen_txt_clr)
-    plt.figtext( 0.17,  0.01, f"{mag(thermo['mu_ecape'])} J/kg",  fontsize=15, color='firebrick', weight='bold')
-    plt.figtext( 0.235,  0.01, f"{mag(thermo['mucape'])} J/kg",  fontsize=15, color='orangered', weight='bold')
-    plt.figtext( 0.30,  0.01, f"{mag(thermo['mu6cape'])} J/kg", fontsize=15, color='orangered', weight='bold')
-    plt.figtext( 0.364, 0.01, f"{mag(thermo['mu3cape'])} J/kg", fontsize=15, color='orangered', weight='bold')
-    plt.figtext( 0.425, 0.01, f"{mag(thermo['mucin'])} J/kg",   fontsize=15, color='orangered', weight='bold')
-    plt.figtext( 0.485, 0.01, f"{mag(thermo['mu_lcl_z'])} m",   fontsize=15, color='orangered', weight='bold')
+    plt.figtext( 0.17,  0.04, f"{mag(thermo['sb_ecape'])} "+ r"$\mathrm{\mathbf{Jkg^{-1}}}$",  fontsize=15, color='#c62828', weight='bold')
+    plt.figtext( 0.235,  0.04, f"{mag(thermo['sbcape'])} "+ r"$\mathrm{\mathbf{Jkg^{-1}}}$",  fontsize=15, color='#c62828', weight='bold')
+    plt.figtext( 0.30,  0.04, f"{mag(thermo['sb6cape'])} "+ r"$\mathrm{\mathbf{Jkg^{-1}}}$", fontsize=15, color='#c62828', weight='bold')
+    plt.figtext( 0.364, 0.04, f"{mag(thermo['sb3cape'])} "+ r"$\mathrm{\mathbf{Jkg^{-1}}}$", fontsize=15, color='#c62828', weight='bold')
+    plt.figtext( 0.425, 0.04, f"{mag(thermo['sbcin'])} "+ r"$\mathrm{\mathbf{Jkg^{-1}}}$",   fontsize=15, color='#c62828', weight='bold')
+    plt.figtext( 0.485, 0.04, f"{mag(thermo['sb_lcl_z'])} "+r"$\mathrm{\mathbf{m}}$",   fontsize=15, color='#c62828', weight='bold')
     #MLCAPE
-    plt.figtext( 0.13,  -0.02, f"ML:", weight='bold',   fontsize=15, color=gen_txt_clr)
-    plt.figtext( 0.17,  -0.02, f"{mag(thermo['ml_ecape'])} J/kg",  fontsize=15, color='firebrick', weight='bold')
-    plt.figtext( 0.235,  -0.02, f"{mag(thermo['mlcape'])} J/kg",  fontsize=15, color='orangered', weight='bold')
-    plt.figtext( 0.30,  -0.02, f"{mag(thermo['ml6cape'])} J/kg", fontsize=15, color='orangered', weight='bold')
-    plt.figtext( 0.364, -0.02, f"{mag(thermo['ml3cape'])} J/kg", fontsize=15, color='orangered', weight='bold')
-    plt.figtext( 0.425, -0.02, f"{mag(thermo['mlcin'])} J/kg",   fontsize=15, color='orangered', weight='bold')
-    plt.figtext( 0.485, -0.02, f"{mag(thermo['ml_lcl_z'])} m",   fontsize=15, color='orangered', weight='bold')
+    plt.figtext( 0.13,  0.01, f"ML:", weight='bold',   fontsize=15, color=gen_txt_clr)
+    plt.figtext( 0.13,  0.002, f"100 hPa", weight='bold', fontsize=7, color=gen_txt_clr, alpha=0.5)
+    plt.figtext( 0.17,  0.01, f"{mag(thermo['ml_ecape'])} "+ r"$\mathrm{\mathbf{Jkg^{-1}}}$",  fontsize=15, color='#d95f02', weight='bold')
+    plt.figtext( 0.235,  0.01, f"{mag(thermo['mlcape'])} "+ r"$\mathrm{\mathbf{Jkg^{-1}}}$",  fontsize=15, color='#d95f02', weight='bold')
+    plt.figtext( 0.30,  0.01, f"{mag(thermo['ml6cape'])} "+ r"$\mathrm{\mathbf{Jkg^{-1}}}$", fontsize=15, color='#d95f02', weight='bold')
+    plt.figtext( 0.364, 0.01, f"{mag(thermo['ml3cape'])} "+ r"$\mathrm{\mathbf{Jkg^{-1}}}$", fontsize=15, color='#d95f02', weight='bold')
+    plt.figtext( 0.425, 0.01, f"{mag(thermo['mlcin'])} "+ r"$\mathrm{\mathbf{Jkg^{-1}}}$",   fontsize=15, color='#d95f02', weight='bold')
+    plt.figtext( 0.485, 0.01, f"{mag(thermo['ml_lcl_z'])} "+r"$\mathrm{\mathbf{m}}$",   fontsize=15, color='#d95f02', weight='bold')
+    #MUCAPE
+    plt.figtext( 0.13,  -0.02, f"MU:", weight='bold',   fontsize=15, color=gen_txt_clr)
+    plt.figtext( 0.17,  -0.02, f"{mag(thermo['mu_ecape'])} "+ r"$\mathrm{\mathbf{Jkg^{-1}}}$",  fontsize=15, color="#8828c3", weight='bold')
+    plt.figtext( 0.235,  -0.02, f"{mag(thermo['mucape'])} "+ r"$\mathrm{\mathbf{Jkg^{-1}}}$",  fontsize=15, color='#8828c3', weight='bold')
+    plt.figtext( 0.30,  -0.02, f"{mag(thermo['mu6cape'])} "+ r"$\mathrm{\mathbf{Jkg^{-1}}}$", fontsize=15, color='#8828c3', weight='bold')
+    plt.figtext( 0.364, -0.02, f"{mag(thermo['mu3cape'])} "+ r"$\mathrm{\mathbf{Jkg^{-1}}}$", fontsize=15, color='#8828c3', weight='bold')
+    plt.figtext( 0.425, -0.02, f"{mag(thermo['mucin'])} "+ r"$\mathrm{\mathbf{Jkg^{-1}}}$",   fontsize=15, color='#8828c3', weight='bold')
+    plt.figtext( 0.485, -0.02, f"{mag(thermo['mu_lcl_z'])} "+r"$\mathrm{\mathbf{m}}$",   fontsize=15, color='#8828c3', weight='bold')
     #DCAPE
     plt.figtext( 0.13,  -0.046, f"DCAPE:", weight='bold', fontsize=15, color=gen_txt_clr)
-    plt.figtext( 0.175, -0.046, f"{mag(thermo['dcape'])} J/kg", fontsize=15, color='cornflowerblue', alpha=0.7, weight='bold')
-    plt.figtext( 0.13,  -0.066, f"DCIN:", weight='bold', fontsize=15, color=gen_txt_clr)
-    plt.figtext( 0.175, -0.066, f"{mag(thermo['dcin'])} J/kg", fontsize=15, color='cornflowerblue', alpha=0.7, weight='bold')
+    plt.figtext( 0.175, -0.046, f"{mag(thermo['dcape'])} "+ r"$\mathrm{\mathbf{Jkg^{-1}}}$", fontsize=15, color='cornflowerblue', alpha=0.7, weight='bold')
+    plt.figtext( 0.13,  -0.070, f"DCIN:", weight='bold', fontsize=15, color=gen_txt_clr)
+    plt.figtext( 0.175, -0.070, f"{mag(thermo['dcin'])} "+ r"$\mathrm{\mathbf{Jkg^{-1}}}$", fontsize=15, color='cornflowerblue', alpha=0.7, weight='bold')
     # MUNCAPE
     plt.figtext( 0.24,  -0.061, f"MUNCAPE:", weight='bold', fontsize=15, color=gen_txt_clr)
     plt.figtext( 0.295, -0.061, f" {(thermo['mu_ncape'])}", fontsize=15, color='brown', alpha=0.7, weight='bold')
     #0-3KM LR
     plt.figtext( 0.335, -0.061, f"Γ₀₋₃:", weight='bold', fontsize=16, color=gen_txt_clr)
-    plt.figtext( 0.365, -0.061, f"{mag(thermo['lr_03km'])} Δ°C/km", fontsize=15, color='saddlebrown', weight='bold')
+    plt.figtext( 0.365, -0.061, f"{mag(thermo['lr_03km'])} "+r"$\mathrm{\mathbf{\Delta^{\circ}Ckm^{-1}}}$", fontsize=15, color='saddlebrown', weight='bold')
     #3-6km LR
     plt.figtext( 0.425, -0.061, f"Γ₃₋₆:", weight='bold', fontsize=16, color=gen_txt_clr)
-    plt.figtext( 0.458, -0.061, f"{mag(thermo['lr_36km'])} Δ°C/km", fontsize=15, color='saddlebrown', weight='bold')
+    plt.figtext( 0.458, -0.061, f"{mag(thermo['lr_36km'])} "+r"$\mathrm{\mathbf{\Delta^{\circ}Ckm^{-1}}}$", fontsize=15, color='saddlebrown', weight='bold')
     #################################################################
     
 
@@ -1380,37 +1400,37 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     #################################################################
     ### MOSITURE ###
     ################################################################# 
-    plt.figtext( 0.55,  0.07, '          RH(%)       ω', color=gen_txt_clr, weight='bold', fontsize=15)
+    plt.figtext( 0.55,  0.07, '       RelHum     MixRto', color=gen_txt_clr, weight='bold', fontsize=15)
     plt.figtext( 0.54,  0.04, f"0-.5ₖₘ:", fontsize=15, color=gen_txt_clr, weight='bold')
-    plt.figtext( 0.541, 0.06, f"___", fontsize=15, color='black' , alpha=1, weight='bold')
-    plt.figtext( 0.585, 0.04, f"{mag(general['rh_0_500'])} %", fontsize=15, color='forestgreen', alpha=1, weight='bold')
-    plt.figtext( 0.62,  0.04, f"{mag_round(general['w_0_500'],1)} g/kg", fontsize=15, color='forestgreen', alpha=1, weight='bold')
+    plt.figtext( 0.541, 0.06, f"___", fontsize=15, color=gen_txt_clr , alpha=1, weight='bold')
+    plt.figtext( 0.585, 0.04, f"{mag(general['rh_0_500'])}"+r"%", fontsize=15, color='forestgreen', alpha=1, weight='bold')
+    plt.figtext( 0.62,  0.04, f"{mag_round(general['w_0_500'],1)}"+r"$\mathrm{\mathbf{gkg^{-1}}}$", fontsize=15, color='forestgreen', alpha=1, weight='bold')
 
     plt.figtext( 0.54,  0.01, f"0-1ₖₘ:", fontsize=15, color=gen_txt_clr, weight='bold',)
-    plt.figtext( 0.541, 0.03, f"___", fontsize=15, color='black' , alpha=0.9, weight='bold')
-    plt.figtext( 0.585, 0.01, f"{mag(general['rh_0_1000'])} %", fontsize=15, color='forestgreen', alpha=0.9, weight='bold')
-    plt.figtext( 0.62,  0.01, f"{mag_round(general['w_0_1000'],1)} g/kg", fontsize=15, color='forestgreen', alpha=0.9, weight='bold')
+    plt.figtext( 0.541, 0.03, f"___", fontsize=15, color=gen_txt_clr, alpha=0.9, weight='bold')
+    plt.figtext( 0.585, 0.01, f"{mag(general['rh_0_1000'])}"+r"%", fontsize=15, color='forestgreen', alpha=0.9, weight='bold')
+    plt.figtext( 0.62,  0.01, f"{mag_round(general['w_0_1000'],1)}"+r"$\mathrm{\mathbf{gkg^{-1}}}$", fontsize=15, color='forestgreen', alpha=0.9, weight='bold')
 
     plt.figtext( 0.54,  -0.02, f"1-3ₖₘ:", fontsize=15, color=gen_txt_clr, weight='bold',)
-    plt.figtext( 0.541, -0.00, f"___", fontsize=15, color='black' , alpha=0.8, weight='bold')
-    plt.figtext( 0.585, -0.02, f"{mag(general['rh_1_3000'])} %", fontsize=15, color='forestgreen', alpha=0.8, weight='bold')
-    plt.figtext( 0.62,  -0.02, f"{mag_round(general['w_1_3000'],1)} g/kg", fontsize=15, color='forestgreen', alpha=0.8, weight='bold')
+    plt.figtext( 0.541, -0.00, f"___", fontsize=15, color=gen_txt_clr, alpha=0.8, weight='bold')
+    plt.figtext( 0.585, -0.02, f"{mag(general['rh_1_3000'])}"+r"%", fontsize=15, color='forestgreen', alpha=0.8, weight='bold')
+    plt.figtext( 0.62,  -0.02, f"{mag_round(general['w_1_3000'],1)}"+r"$\mathrm{\mathbf{gkg^{-1}}}$", fontsize=15, color='forestgreen', alpha=0.8, weight='bold')
 
     plt.figtext( 0.54,  -0.05, f"3-6ₖₘ:", fontsize=15, color=gen_txt_clr, weight='bold',)
-    plt.figtext( 0.541, -0.03, f"___", fontsize=15, color='black' , alpha=0.7, weight='bold')
-    plt.figtext( 0.585, -0.05, f"{mag(general['rh_3_6000'])} %", fontsize=15, color='forestgreen', alpha=0.7, weight='bold')
-    plt.figtext( 0.62,  -0.05, f"{mag_round(general['w_3_6000'],1)} g/kg", fontsize=15, color='forestgreen', alpha=0.7, weight='bold')
+    plt.figtext( 0.541, -0.03, f"___", fontsize=15, color=gen_txt_clr, alpha=0.7, weight='bold')
+    plt.figtext( 0.585, -0.05, f"{mag(general['rh_3_6000'])}"+r"%", fontsize=15, color='forestgreen', alpha=0.7, weight='bold')
+    plt.figtext( 0.62,  -0.05, f"{mag_round(general['w_3_6000'],1)}"+r"$\mathrm{\mathbf{gkg^{-1}}}$", fontsize=15, color='forestgreen', alpha=0.7, weight='bold')
 
     plt.figtext( 0.54,  -0.08, f"6-9ₖₘ:", fontsize=15, color=gen_txt_clr, weight='bold',)
-    plt.figtext( 0.541, -0.06, f"___", fontsize=15, color='black', alpha=0.64, weight='bold')
-    plt.figtext( 0.585, -0.08, f"{mag(general['rh_6_9000'])} %", fontsize=15, color='forestgreen', alpha=0.64, weight='bold')
-    plt.figtext( 0.62,  -0.08, f"{mag_round(general['w_6_9000'],1)} g/kg", fontsize=15, color='forestgreen',alpha=0.64, weight='bold')
+    plt.figtext( 0.541, -0.06, f"___", fontsize=15, color=gen_txt_clr, alpha=0.64, weight='bold')
+    plt.figtext( 0.585, -0.08, f"{mag(general['rh_6_9000'])}"+r"%", fontsize=15, color='forestgreen', alpha=0.64, weight='bold')
+    plt.figtext( 0.62,  -0.08, f"{mag_round(general['w_6_9000'],1)}"+r"$\mathrm{\mathbf{gkg^{-1}}}$", fontsize=15, color='forestgreen',alpha=0.64, weight='bold')
 
     plt.figtext( 0.54,  -0.102, f"PWAT:", fontsize=12, weight='bold', color=gen_txt_clr)
-    plt.figtext( 0.59, -0.102, f"{str(general['pwat'])} in", fontsize=12, color='darkgreen', ha='center', weight='bold')
+    plt.figtext( 0.59, -0.102, f"{str(general['pwat'])}in", fontsize=12, color='darkgreen', ha='center', weight='bold')
 
     plt.figtext( 0.625, -0.102, f"WB:", fontsize=12, weight='bold', color=gen_txt_clr, ha='center')
-    plt.figtext( 0.655,  -0.102, f"{mag(general['wet_bulb'][0])} °C", fontsize=12, color='darkgreen', ha='center', weight='bold')
+    plt.figtext( 0.655,  -0.102, f"{mag(general['wet_bulb'][0])}"+r"$\mathrm{\mathbf{^{\circ}C}}$", fontsize=12, color='darkgreen', ha='center', weight='bold')
     
     plt.figtext( 0.54,  -0.122, f"FRZ:", fontsize=12, weight='bold', color=gen_txt_clr)
     plt.figtext( 0.59, -0.122, f"{mag(general['frz_pt_z'])}m", fontsize=12, color='cornflowerblue', ha='center', weight='bold')
@@ -1424,52 +1444,53 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     
     #################################################################
     ### KINEMATICS ###
-    #################################################################   
-    met_per_sec = (units.m*units.m)/(units.sec*units.sec)
+    ################################################################# 
+    # }"+r"$m^2s^{-2}$"
+    # }+r"$s^{-1}$"
 
-    plt.figtext( 0.735, 0.07, 'BWD       SRH       SRW   SWζ%    SWζ', color=gen_txt_clr, weight='bold', fontsize=15, alpha=0.8)
+    plt.figtext( 0.735, 0.07, 'BWD       SRH       SRW   SWω%    SWω', color=gen_txt_clr, weight='bold', fontsize=15, alpha=0.8)
 
     plt.figtext( 0.689, 0.04, f"0-.5ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
-    plt.figtext( 0.732, 0.04, f"{mag(kinem['shear_0_to_500'])} kt", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.769, 0.04, f"{mag(kinem['srh_0_to_500'])* met_per_sec:~P}", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.828, 0.04, f"{mag(kinem['srw_0_to_500'])} kt", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.870, 0.04, f"{mag(kinem['swv_perc_0_to_500'])}", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.905, 0.04, f"{mag_round(kinem['swv_0_to_500'], 3)}", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.732, 0.04, f"{mag(kinem['shear_0_to_500'])}"+r"$\mathrm{\mathbf{kt}}$", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.769, 0.04, f"{mag(kinem['srh_0_to_500'])}"+r"$\mathrm{\mathbf{m^2s^{-2}}}$", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.827, 0.04, f"{mag(kinem['srw_0_to_500'])}"+r"$\mathrm{\mathbf{kt}}$", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.864, 0.04, f"{mag(kinem['swv_perc_0_to_500'])}"+r"%", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.895, 0.04, f"{mag_round(kinem['swv_0_to_500'], 3)}"+r"$\mathrm{\mathbf{s^{-1}}}$", fontsize=15, color='#6495ED', weight='bold')
 
     plt.figtext( 0.689, 0.01, f"0-1ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
-    plt.figtext( 0.732, 0.01, f"{mag(kinem['shear_0_to_1000'])} kt", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.769, 0.01, f"{mag(kinem['srh_0_to_1000'])* met_per_sec:~P}", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.828, 0.01, f"{mag(kinem['srw_0_to_1000'])} kt", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.870, 0.01, f"{mag(kinem['swv_perc_0_to_1000'])}", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.905, 0.01, f"{mag_round(kinem['swv_0_to_1000'], 3)}", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.732, 0.01, f"{mag(kinem['shear_0_to_1000'])}"+r"$\mathrm{\mathbf{kt}}$", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.769, 0.01, f"{mag(kinem['srh_0_to_1000'])}"+r"$\mathrm{\mathbf{m^2s^{-2}}}$", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.827, 0.01, f"{mag(kinem['srw_0_to_1000'])}"+r"$\mathrm{\mathbf{kt}}$", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.864, 0.01, f"{mag(kinem['swv_perc_0_to_1000'])}"+r"%", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.895, 0.01, f"{mag_round(kinem['swv_0_to_1000'], 3)}"+r"$\mathrm{\mathbf{s^{-1}}}$", fontsize=15, color='#6495ED', weight='bold')
 
     plt.figtext( 0.689, -0.02, f"1-3ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
-    plt.figtext( 0.732, -0.02, f"{mag(kinem['shear_1_to_3000'])} kt", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.769, -0.02, f"{mag(kinem['srh_1_to_3000'])* met_per_sec:~P}", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.828, -0.02, f"{mag(kinem['srw_1_to_3000'])} kt", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.870, -0.02, f"{mag(kinem['swv_perc_1_to_3000'])}", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.905, -0.02, f"{mag_round(kinem['swv_1_to_3000'], 3)}", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.732, -0.02, f"{mag(kinem['shear_1_to_3000'])}"+r"$\mathrm{\mathbf{kt}}$", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.769, -0.02, f"{mag(kinem['srh_1_to_3000'])}"+r"$\mathrm{\mathbf{m^2s^{-2}}}$", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.827, -0.02, f"{mag(kinem['srw_1_to_3000'])}"+r"$\mathrm{\mathbf{kt}}$", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.864, -0.02, f"{mag(kinem['swv_perc_1_to_3000'])}"+r"%", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.895, -0.02, f"{mag_round(kinem['swv_1_to_3000'], 3)}"+r"$\mathrm{\mathbf{s^{-1}}}$", fontsize=15, color='#6495ED', weight='bold')
 
     plt.figtext( 0.689, -0.05, f"3-6ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
-    plt.figtext( 0.732, -0.05, f"{mag(kinem['shear_3_to_6000'])} kt", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.769, -0.05, f"{mag(kinem['srh_3_to_6000'])* met_per_sec:~P}", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.828, -0.05, f"{mag(kinem['srw_3_to_6000'])} kt", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.870, -0.05, f"{mag(kinem['swv_perc_3_to_6000'])}", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.905, -0.05, f"{mag_round(kinem['swv_3_to_6000'], 3)}", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.732, -0.05, f"{mag(kinem['shear_3_to_6000'])}"+r"$\mathrm{\mathbf{kt}}$", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.769, -0.05, f"{mag(kinem['srh_3_to_6000'])}"+r"$\mathrm{\mathbf{m^2s^{-2}}}$", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.827, -0.05, f"{mag(kinem['srw_3_to_6000'])}"+r"$\mathrm{\mathbf{kt}}$", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.864, -0.05, f"{mag(kinem['swv_perc_3_to_6000'])}"+r"%", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.895, -0.05, f"{mag_round(kinem['swv_3_to_6000'], 3)}"+r"$\mathrm{\mathbf{s^{-1}}}$", fontsize=15, color='#6495ED', weight='bold')
     
     plt.figtext( 0.689, -0.08, f"6-9ₖₘ:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
-    plt.figtext( 0.732, -0.08, f"{mag(kinem['shear_6_to_9000'])} kt", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.769, -0.08, f"{mag(kinem['srh_6_to_9000'])* met_per_sec:~P}", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.828, -0.08, f"{mag(kinem['srw_6_to_9000'])} kt", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.870, -0.08, f"{mag(kinem['swv_perc_6_to_9000'])}", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.905, -0.08, f"{mag_round(kinem['swv_6_to_9000'], 3)}", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.732, -0.08, f"{mag(kinem['shear_6_to_9000'])}"+r"$\mathrm{\mathbf{kt}}$", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.769, -0.08, f"{mag(kinem['srh_6_to_9000'])}"+r"$\mathrm{\mathbf{m^2s^{-2}}}$", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.827, -0.08, f"{mag(kinem['srw_6_to_9000'])}"+r"$\mathrm{\mathbf{kt}}$", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.864, -0.08, f"{mag(kinem['swv_perc_6_to_9000'])}"+r"%", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.895, -0.08, f"{mag_round(kinem['swv_6_to_9000'], 3)}"+r"$\mathrm{\mathbf{s^{-1}}}$", fontsize=15, color='#6495ED', weight='bold')
     
     plt.figtext( 0.689, -0.11, f"EIL:", weight='bold', fontsize=15, color=gen_txt_clr, alpha=0.9)
-    plt.figtext( 0.732, -0.11, f"{mag(kinem['shear_eil'])} kt", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.769, -0.11, f"{mag(kinem['srh_eil'])* met_per_sec:~P}", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.828, -0.11, f"{mag(kinem['srw_eil'])} kt", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.870, -0.11, f"{mag(kinem['swv_perc_eil'])}", fontsize=15, color='#6495ED', weight='bold')
-    plt.figtext( 0.905, -0.11, f"{mag_round(kinem['swv_eil'], 3)}", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.732, -0.11, f"{mag(kinem['shear_eil'])}"+r"$\mathrm{\mathbf{kt}}$", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.769, -0.11, f"{mag(kinem['srh_eil'])}"+r"$\mathrm{\mathbf{m^2s^{-2}}}$", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.827, -0.11, f"{mag(kinem['srw_eil'])}"+r"$\mathrm{\mathbf{kt}}$", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.864, -0.11, f"{mag(kinem['swv_perc_eil'])}"+r"%", fontsize=15, color='#6495ED', weight='bold')
+    plt.figtext( 0.895, -0.11, f"{mag_round(kinem['swv_eil'], 3)}"+r"$\mathrm{\mathbf{s^{-1}}}$", fontsize=15, color='#6495ED', weight='bold')
     #################################################################
 
 
@@ -1479,19 +1500,19 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     ### OTHER KINEMATICS ###
     #################################################################
     plt.figtext(1.136, 0.219, f"  0-3ₖₘ SRH,", weight='bold', fontsize=13, color=gen_txt_clr, alpha=0.9, ha='center')
-    plt.figtext(1.136, 0.196, f"{mag(kinem['srh_0_to_3000']) * met_per_sec:~P}", weight='bold', fontsize=13,
+    plt.figtext(1.136, 0.196, f"{mag(kinem['srh_0_to_3000'])}"+r"$\mathrm{\mathbf{m^2s^{-2}}}$", weight='bold', fontsize=13,
                 color='#4169E1', alpha=0.9, ha='center')
 
     plt.figtext(1.183, 0.219, f"BWD", weight='bold', fontsize=13, color=gen_txt_clr, alpha=0.9, ha='center')
-    plt.figtext(1.183, 0.196, f"{mag(kinem['shear_0_to_3000'])} kt", weight='bold', fontsize=13, color='#4169E1',
+    plt.figtext(1.183, 0.196, f"{mag(kinem['shear_0_to_3000'])}"+r"$\mathrm{\mathbf{kt}}$", weight='bold', fontsize=13, color='#4169E1',
                 alpha=0.9, ha='center')
 
     plt.figtext(1.136, 0.173, f"  0-6ₖₘ SRH,", weight='bold', fontsize=13, color=gen_txt_clr, alpha=0.9, ha='center')
-    plt.figtext(1.136, 0.152, f"{mag(kinem['srh_0_to_6000']) * met_per_sec:~P}", weight='bold', fontsize=13,
+    plt.figtext(1.136, 0.152, f"{mag(kinem['srh_0_to_6000'])}"+r"$\mathrm{\mathbf{m^2s^{-2}}}$", weight='bold', fontsize=13,
                 color='#4169E1', alpha=0.9, ha='center')
 
     plt.figtext(1.183, 0.173, f"BWD", weight='bold', fontsize=13, color=gen_txt_clr, alpha=0.9, ha='center')
-    plt.figtext(1.183, 0.152, f"{mag(kinem['shear_0_to_6000'])} kt", weight='bold', fontsize=13, color='#4169E1',
+    plt.figtext(1.183, 0.152, f"{mag(kinem['shear_0_to_6000'])}"+r"$\mathrm{\mathbf{kt}}$", weight='bold', fontsize=13, color='#4169E1',
                 alpha=0.9, ha='center')
 
     plt.figtext(1.12, 0.128, f"SCP", weight='bold', fontsize=13, color=gen_txt_clr, alpha=0.9, ha='center')
@@ -1518,7 +1539,8 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
 
     #########################################################################
     ############################# PLOT EXTRAS ############################### 
-    #########################################################################   
+    ######################################################################### 
+    print(f'    > FIGURE LOADING...')  
     plt.figtext( 0.125, 0.985, top_title, weight='bold', ha='left', fontsize=30, color=gen_txt_clr)
     plt.figtext( 0.125, 0.959, left_title, ha='left', fontsize=23, color=gen_txt_clr)
     plt.figtext( 1.22, 0.959, right_title, ha='right', fontsize=23, color=gen_txt_clr)
@@ -1569,18 +1591,25 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
 ############################ HODOGRAPH ##################################
 
 def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc,
-                     radar, radar_time, map_zoom, hodo_boundary):
+                     radar, radar_time, map_zoom, hodo_boundary, dpi):
 
 
+    # define display mode colors and alphas    
     if dark_mode == True:
         gen_txt_clr = 'white'
-        bckgrnd_clr = 'black'
+        bckgrnd_clr = "#161616"
         brdr_clr    = 'white'
+        barb_clr    = 'white'
+        shade_alpha = 0.04
+        skw_ln_clr = 'white'
         marker_clr = 'white'
     else: 
         gen_txt_clr = 'black'
         bckgrnd_clr = 'white'
         brdr_clr    = 'black'
+        barb_clr    = 'black'
+        shade_alpha = 0.02
+        skw_ln_clr = 'black'
         marker_clr = 'black'
     
     
@@ -1698,7 +1727,7 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc,
     #################################################################
     ### CREATE HODOGRAPH OBJECT ###
     #################################################################
-    fig = plt.figure(figsize=(16, 12), linewidth=1.5, edgecolor=brdr_clr)
+    fig = plt.figure(figsize=(16, 12), linewidth=1.5, edgecolor=brdr_clr, dpi=dpi)
     fig.set_facecolor(bckgrnd_clr)  
     hod_ax = plt.axes((0.13, 0.11, 0.77, 0.77))
     h = Hodograph(hod_ax, component_range=180.)
@@ -2179,11 +2208,11 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc,
                                   vmin=-32, vmax=95, cmap=rs_expertreflect_cmap, alpha=1, zorder=4)
                 radar_timestamp = f"{str(radar_data['time'].values[0])[5:10]} | {str(radar_data['time'].values[0])[11:16]}"
 
-                plt.figtext(0.80, 0.11, f'Valid: {radar_timestamp}',
+                plt.figtext(0.81, 0.11, f'Valid: {radar_timestamp}',
                         ha='center', alpha=0.9, weight='bold', fontsize=13, zorder=13, color=gen_txt_clr,
                         bbox=dict(facecolor=bckgrnd_clr, alpha=0.8, edgecolor=gen_txt_clr, pad=3))
             except:
-                plt.figtext(0.80, 0.11, f'RADAR UNAVAILABLE',
+                plt.figtext(0.81, 0.11, f'RADAR UNAVAILABLE',
                             ha='center', alpha=0.9, weight='bold', fontsize=13, zorder=13, color=gen_txt_clr,
                             bbox=dict(facecolor=bckgrnd_clr, alpha=0.8, edgecolor=gen_txt_clr, pad=3))
                 pass
@@ -2208,11 +2237,11 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc,
                                                    colorbar_flag=False,cmap=rs_expertreflect_cmap,resolution='10m',
                                                    lat_lines=None,lon_lines=None,add_grid_lines=False,zorder=4)
 
-                plt.figtext(0.722, 0.12, f'{nexrad_site}: {scan_timestamp}',
+                plt.figtext(0.75, 0.12, f'{nexrad_site}: {scan_timestamp}',
                         ha='center', alpha=0.9, weight='bold', fontsize=11, zorder=13, color=gen_txt_clr,
                         bbox=dict(facecolor=bckgrnd_clr, alpha=0.8, edgecolor=gen_txt_clr, pad=3))
             except:
-                plt.figtext(0.722, 0.12, f'RADAR UNAVAILABLE',
+                plt.figtext(0.75, 0.12, f'RADAR UNAVAILABLE',
                             ha='center', alpha=0.9, weight='bold', fontsize=11, zorder=13, color=gen_txt_clr,
                             bbox=dict(facecolor=bckgrnd_clr, alpha=0.8, edgecolor=gen_txt_clr, pad=3))
                 pass
@@ -2331,7 +2360,7 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc,
     plt.figtext( 1.20, 0.89, f'{right_title}  ', ha='right', fontsize=16, color=gen_txt_clr)
     plt.figtext( 0.23, 0.92, top_title, ha='left', weight='bold', fontsize=22, color=gen_txt_clr) 
     plt.figtext( 0.23, 0.94, ' ') 
-    plt.figtext( 0.225, 0.09, f'SOUNDERPY VERTICAL PROFILE ANALYSIS TOOL | KYLE J GILLETT 2024',
+    plt.figtext( 0.225, 0.09, f'SOUNDERPY VERTICAL PROFILE ANALYSIS TOOL | KYLE J GILLETT | sounderpysoundings.anvil.app',
                 ha='left', color='cornflowerblue', alpha=0.8, weight='bold', fontsize=10)
     
     img = Image.open(urlopen('https://user-images.githubusercontent.com/100786530/251580013-2e9477c9-e36a-4163-accb-fe46780058dd.png'))

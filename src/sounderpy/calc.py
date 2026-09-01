@@ -358,7 +358,7 @@ class sounding_params:
 
         #--- MIXED LAYER PARCEL PROPERTIES ---#
         # ---------------------------------------------------------------
-        mlpcl_p, mlpcl_T, mlpcl_Td = mpcalc.mixed_parcel(p, T, Td, bottom=p[0], depth=50*units.hPa, interpolate=True)[0:3]
+        mlpcl_p, mlpcl_T, mlpcl_Td = mpcalc.mixed_parcel(p, T, Td, bottom=p[0], depth=100*units.hPa, interpolate=True)[0:3]
         mlpcl = parcelx(prof, flag=5, pres=mlpcl_p.m, tmpc=mlpcl_T.m, dwpc=mlpcl_Td.m)
         thermo['mlT_trace'] = mlpcl.ttrace
         thermo['mlP_trace'] = mlpcl.ptrace
@@ -841,17 +841,30 @@ class vad_params:
 
 
 
-        def interpolate(var,hgts,step):
-            levels=np.arange(0,np.max(hgts),step)
-            varinterp=np.zeros(len(levels))
-            for i in range(0,len(levels)):
-                try:
-                    lower=np.where(hgts-levels[i]<=0,hgts-levels[i],-np.inf).argmax()
-                    varinterp[i]=(((var[lower+1]-var[lower])/(hgts[lower+1]-hgts[lower]))*(levels[i]-hgts[lower])+var[lower])
-                except IndexError:
-                    # Handle the case where the index is out of bounds
-                    varinterp[i] = np.nan 
-            return varinterp 
+        def interpolate(var, hgts, step):
+            var = np.asarray(var, dtype=float)
+            hgts = np.asarray(hgts, dtype=float)
+
+            # Remove invalid values
+            valid = np.isfinite(var) & np.isfinite(hgts)
+            var = var[valid]
+            hgts = hgts[valid]
+
+            # Sort by height
+            order = np.argsort(hgts)
+            hgts = hgts[order]
+            var = var[order]
+
+            # Highest complete interpolation level available
+            max_level = np.floor(np.max(hgts) / step) * step
+
+            # Include the upper endpoint
+            levels = np.arange(0, max_level + step, step)
+
+            # Linear interpolation
+            varinterp = np.interp(levels, hgts, var)
+
+            return varinterp
 
         resolution=100
         
@@ -1055,16 +1068,16 @@ class vad_params:
                                               bottom=None, depth=500*units.m,  
                                               storm_u=kinem['sm_u']*units.kts, storm_v=kinem['sm_v']*units.kts)
             kinem['srh_0_to_1000'] = calc_srh(u_comp=intrp['uINTRP']*units.kts, v_comp=intrp['vINTRP']*units.kts, z=intrp['zINTRP']*units.m, 
-                                              bottom=None, depth=1000*units.m, 
+                                              bottom=1000*units.m, depth=2000*units.m, 
                                               storm_u=kinem['sm_u']*units.kts, storm_v=kinem['sm_v']*units.kts)
             kinem['srh_1_to_3000'] = calc_srh(u_comp=intrp['uINTRP']*units.kts, v_comp=intrp['vINTRP']*units.kts, z=intrp['zINTRP']*units.m, 
                                               bottom=1000*units.m, depth=3000*units.m, 
                                               storm_u=kinem['sm_u']*units.kts, storm_v=kinem['sm_v']*units.kts)
             kinem['srh_3_to_6000'] = calc_srh(u_comp=intrp['uINTRP']*units.kts, v_comp=intrp['vINTRP']*units.kts, z=intrp['zINTRP']*units.m, 
-                                              bottom=3000*units.m, depth=6000*units.m, 
+                                              bottom=3000*units.m, depth=3000*units.m, 
                                               storm_u=kinem['sm_u']*units.kts, storm_v=kinem['sm_v']*units.kts)
             kinem['srh_6_to_9000'] = calc_srh(u_comp=intrp['uINTRP']*units.kts, v_comp=intrp['vINTRP']*units.kts, z=intrp['zINTRP']*units.m, 
-                                              bottom=6000*units.m, depth=9000*units.m, 
+                                              bottom=6000*units.m, depth=3000*units.m, 
                                               storm_u=kinem['sm_u']*units.kts, storm_v=kinem['sm_v']*units.kts)
         else:
             kinem['srh_0_to_500']  = ma.masked

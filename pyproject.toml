@@ -4,14 +4,22 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sounderpy"
-version = "3.1.0dev1"
+
+version = "3.2.0"
+
 authors = [
   { name="Kyle J Gillett, University of North Dakota", email="kyle.gillett@und.edu" },
 ]
+
 description = "Vertical Profile Data Retrieval and Analysis Tool For Python"
+
 readme = "README.md"
+
 keywords = ["meteorology", "science", "data-analysis", "weather", "forecasting"]
-requires-python = ">=3.1"
+
+requires-python = ">=3.10"
+
+
 classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3.10",
@@ -23,6 +31,8 @@ classifiers = [
     "Operating System :: OS Independent",
     "License :: OSI Approved :: MIT License",
 ]
+
+
 dependencies = [
 	"cartopy>=0.21.0",
 	"cdsapi>=0.7.3",
@@ -33,9 +43,17 @@ dependencies = [
 	"numpy>=1.20.0",
 	"pandas>=1.2.0",
 	"arm-pyart>=2.0.0",
-	"siphon>=0.9",
+	"siphon>=0.11.0",
 	"scipy>= 1.10.1",
 	"xarray>=0.18.0",
+	"beautifulsoup4",
+	"cfgrib",
+	"eccodes",
+	"fsspec",
+	"requests",
+	"s3fs",
+	"pillow",
+	"pyproj",
 ]
 
 [project.urls]
@@ -45,12 +63,41 @@ dependencies = [
 "PyPi" = "https://pypi.org/project/sounderpy/"
 "My Website" = "https://kylegillettphoto.com"
 
+[project.scripts]
+sounderpy = "sounderpy.cli:main"
+
 [tool.setuptools]
-packages = ["sounderpy"]
 package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["sounderpy*"]
+exclude = [
+    "sounderpy.SHARPPYMAIN.sharppy.tests",
+    "sounderpy.SHARPPYMAIN.sharppy.tests.*",
+]
 
 [tool.setuptools.package-data]
 "sounderpy" = [
     "rs_reflectivity.txt",
     "nexrad_locations.txt",
+]
+
+"sounderpy.SHARPPYMAIN" = [
+    "LICENSE.rst",
+    "README.md",
+]
+
+"sounderpy.SHARPPYMAIN.sharppy.sharptab" = [
+    "PW-mean-inches.txt",
+    "PW-stdev-inches.txt",
+    "sars_hail.txt",
+    "sars_supercell.txt",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "network: tests that contact live external data services",
+    "slow: computationally heavier plotting/rendering tests",
 ]

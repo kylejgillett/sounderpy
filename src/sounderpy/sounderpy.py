@@ -11,6 +11,7 @@ from .obs_data import fetch_obs
 from .acars_data import *
 from .wrf_utils import make_wrf_profile
 from .cm1_utils import make_cm1_profile
+from .rapruc_grib_retriever import get_rapruc_data
 #########################################################################################################
 
 
@@ -21,7 +22,7 @@ from .cm1_utils import make_cm1_profile
     SOUNDERPY | Vertical Profile Data Retrieval and Analysis Tool For Python
     -------------------------------------------------------------------------
     SounderPy is an open-source atmospheric science Python package for vertical profile analysis. 
-    This tool is designed to get data, ‘clean it up’ for simple use, and plot the data on advanced-sounding 
+    This tool is designed to get data, 'clean it up' for simple use, and plot the data on advanced-sounding 
     plots. SounderPy was developed with the goal in mind to keep the code simple and efficient for users of 
     all experience levels and for reliability in all use cases. 
 
@@ -40,7 +41,7 @@ from .cm1_utils import make_cm1_profile
 
     COPYRIGHT
     ---------
-    Created & maintained by Kyle J Gillett (@wxkylegillett) 2023, 2024, 2025
+    Created & maintained by Kyle J Gillett (@wxkylegillett) 2023, 2024, 2025, 2026
     
 '''
 
@@ -50,11 +51,11 @@ from .cm1_utils import make_cm1_profile
 citation_text = f"""
 ## ---------------------------------- SOUNDERPY ----------------------------------- ##
 ##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
-##                   v3.1.0 | October 2025 | (C) Kyle J Gillett                     ##
+##                     v3.2.0 | August 2026 | (C) Kyle J Gillett                    ##
 ##                 Docs: https://kylejgillett.github.io/sounderpy/                  ##
 ## --------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------ ##
 """
-print(citation_text)
+#print(citation_text)
 
 #########################################################################################################
 
@@ -102,7 +103,10 @@ def get_model_data(model: str, latlon: list, year: str, month: str, day: str, ho
        :rtype: dict
     """
 
-    data = fetch_model(model, latlon, year, month, day, hour, dataset, box_avg_size, hush, clean_it)
+    if model.casefold() in ['rap', 'ruc', 'rap-ruc']:
+        data = get_rapruc_data(latlon, year, month, day, hour, dataset, box_avg_size, hush)
+    else:
+        data = fetch_model(model, latlon, year, month, day, hour, dataset, box_avg_size, hush, clean_it)
 
     return data
 
@@ -178,15 +182,6 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
 
 
 
-    
-
-############
-# ACARS DATA 
-#########################################################################
-
-
-
-
 
 
 
@@ -206,7 +201,7 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
 #########################################################################
 def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False, storm_motion='right_moving',
                    special_parcels=None, radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None,
-                   show_theta=False, hodo_boundary=None, save=False, filename='sounderpy_sounding'):
+                   show_theta=False, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_sounding'):
     
     '''
     Return a full sounding plot of SounderPy data, ``plt``
@@ -235,6 +230,8 @@ def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False,
     :type show_theta: bool, optional
     :param hodo_boundary: plot a "boundary" (straight line) on the hodograph axis. Do so by providing an angle and a color. The angle represents the angle between zero-degrees (north) and the upper-half of the boundary line, to the right. Multiple boundaries can be plotted. Default is ``None``
     :type hodo_boundary: dict of lists -- structured as ``{'angle':[], 'color':[]}``, optional
+    :param dpi: Dots per inch resolution of the figure, default is 100.
+    :type dpi: int, optional
     :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
     :type save: bool, optional
     :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
@@ -245,7 +242,7 @@ def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False,
     
     print(f'> SOUNDING PLOTTER FUNCTION\n  ---------------------------------')
 
-    plt = __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, radar, radar_time, map_zoom, modify_sfc, show_theta, hodo_boundary)
+    plt = __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, radar, radar_time, map_zoom, modify_sfc, show_theta, hodo_boundary, dpi)
     if save:
         plt.savefig(filename, bbox_inches='tight')
     else:
@@ -260,17 +257,13 @@ def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False,
 # FULL HODOGRAPH
 #########################################################################
 def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr_hodo=False, modify_sfc=None,
-                    radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, save=False, filename='sounderpy_hodograph'):
+                    radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_hodograph'):
 
     '''
        Return a full sounding plot of SounderPy data, ``plt`` 
 
        :param clean_data: the dictionary of data to be plotted (see :doc:`gettingdata`)
        :type clean_data: dict, required
-       :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
-       :type save: bool, optional
-       :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
-       :type filename: str, optional
        :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding. Default is ``False``.
        :type dark_mode: bool, optional
        :param storm_motion: the storm motion used for plotting and calculations. Default is 'right_moving'. Custom storm motions are accepted as a `list` of `floats` representing direction and speed. Ex: ``[270.0, 25.0]`` where '270.0' is the *direction in degrees* and '25.0' is the *speed in kts*. See the :ref:`storm_motions` section for more details.
@@ -287,16 +280,21 @@ def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr
        :type modify_sfc: None or dict, optional, default is None
        :param hodo_boundary: plot a "boundary" (straight line) on the hodograph axis. Do so by providing an angle and a color. The angle represents the angle between zero-degrees (north) and the upper-half of the boundary line, to the right. Multiple boundaries can be plotted. Default is ``None``
        :type hodo_boundary: dict of lists -- structured as ``{'angle':[], 'color':[]}``, optional
+       :param dpi: Dots per inch resolution of the figure, default is 100.
+       :type dpi: int, optional
+       :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
+       :type save: bool, optional
+       :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
+       :type filename: str, optional
+       
        :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
        :rtype: plt
     '''
 
 
-
-
     print(f'> HODOGRAPH PLOTTER FUNCTION --\n-------------------------------')
 
-    plt = __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc, radar, radar_time, map_zoom, hodo_boundary)
+    plt = __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc, radar, radar_time, map_zoom, hodo_boundary, dpi)
     if save:
         plt.savefig(filename, bbox_inches='tight')
     else:
