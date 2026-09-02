@@ -30,7 +30,29 @@ or:
 
    mamba install conda-forge::sounderpy
 
+
+You may also install a specific release version of SounderPy from GitHub:
+
+.. code-block:: bash
+
+   pip install "git+https://github.com/kylejgillett/sounderpy.git@v3.2.0"
+
+
+or you may install the development version of SounderPy from Github:
+
+.. code-block:: bash
+
+   pip install "git+https://github.com/kylejgillett/sounderpy.git@main"
+
+.. note::
+
+   - Installing directly from GitHub requires ``git`` to be installed and available on your system.
+   - The ``main`` branch may contain changes that have not yet been included in an official SounderPy release. For reproducible installations, use a tagged release such as ``v3.2.0``.
+
 **********************************************************
+
+
+
 
 Step 2: Import SounderPy
 ========================
