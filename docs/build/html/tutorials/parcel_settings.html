@@ -1,0 +1,361 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🧪 Parcel Settings &mdash; SounderPy v3.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/homepage.css?v=c01db7d2" />
+      <link rel="stylesheet" type="text/css" href="../_static/gallery.css?v=6ceaf42b" />
+      <link rel="stylesheet" type="text/css" href="../_static/case_studies.css?v=0461955f" />
+
+  
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b4d93468"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="🌀 Hodograph Options" href="hodograph_options.html" />
+    <link rel="prev" title="🗺️ Maps &amp; Radar" href="maps_radar.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SounderPy
+              <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">🚀 Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">📖 About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">❓ Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">🌍 Community</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../customdatasources.html">✏️ Custom Data Sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clean_data_scheme.html">🧼 The <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plottingdata.html">📈 Tools for Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpertools.html">🛠️ Helper Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">💻 Command Line Interface (CLI)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../beginners_sounderpy_cookbook.html">👨‍🍳 SounderPy Beginner’s Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examplegallery.html">📊 Plot Gallery</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">📚 Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plot_appearance.html">🎨 Plot Appearance &amp; Accessibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="maps_radar.html">🗺️ Maps &amp; Radar</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">🧪 Parcel Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#retrieve-the-example-sounding">Retrieve the Example Sounding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#default-parcel-behavior">Default Parcel Behavior</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#simple-parcel-behavior">Simple Parcel Behavior</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-parcel-configuration">Custom Parcel Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#understanding-parcel-codes">Understanding Parcel Codes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#parcel-type">Parcel Type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#adiabatic-scheme">Adiabatic Scheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cape-type">CAPE Type</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#valid-parcel-codes">Valid Parcel Codes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#highlight-multiple-parcels">Highlight Multiple Parcels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-considerations">Performance Considerations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hodograph_options.html">🌀 Hodograph Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_sources.html">🌎 Working with Data Sources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="composite_soundings.html">📚 Composite Soundings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_data.html">💾 Exporting Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_workflows.html">💻 Command Line Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tutorial-overview">Tutorial Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#gallery-figures">Gallery Figures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../case_studies/mound_city_20240828.html">🌪️ Case Study: Mound City, SD</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SounderPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">📚 Tutorials</a></li>
+      <li class="breadcrumb-item active">🧪 Parcel Settings</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/parcel_settings.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="parcel-settings">
+<span id="tutorial-parcel-settings"></span><h1>🧪 Parcel Settings<a class="headerlink" href="#parcel-settings" title="Link to this heading"></a></h1>
+<p>SounderPy sounding plots can display several parcel traces. The
+<code class="docutils literal notranslate"><span class="pre">special_parcels</span></code> argument provides three useful levels of control:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> — standard SounderPy parcel behavior;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;simple&quot;</span></code> — omit the additional most-unstable ECAPE trace while retaining
+the basic parcel traces;</p></li>
+<li><p>a custom nested list — explicitly select highlighted and background parcel
+traces.</p></li>
+</ul>
+<p>The custom parcel calculations use parcel definitions supported by the
+<code class="docutils literal notranslate"><span class="pre">ecape-parcels</span></code> integration.</p>
+<hr class="docutils" />
+<section id="retrieve-the-example-sounding">
+<h2>Retrieve the Example Sounding<a class="headerlink" href="#retrieve-the-example-sounding" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sounderpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">spy</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span>
+    <span class="s2">&quot;OAX&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;2014&quot;</span><span class="p">,</span> <span class="s2">&quot;06&quot;</span><span class="p">,</span> <span class="s2">&quot;16&quot;</span><span class="p">,</span> <span class="s2">&quot;18&quot;</span><span class="p">,</span>
+    <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="default-parcel-behavior">
+<h2>Default Parcel Behavior<a class="headerlink" href="#default-parcel-behavior" title="Link to this heading"></a></h2>
+<p>With <code class="docutils literal notranslate"><span class="pre">special_parcels=None</span></code>, SounderPy uses its normal parcel configuration:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">special_parcels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/parcels_default.png"><img alt="SounderPy sounding using default parcel settings" class="align-center" src="../_images/parcels_default.png" style="width: 85%;" />
+</a>
+<p>When applicable to the profile, the default behavior includes the standard
+surface-based, mixed-layer, and most-unstable CAPE parcel traces and the
+additional most-unstable ECAPE trace.</p>
+</section>
+<hr class="docutils" />
+<section id="simple-parcel-behavior">
+<h2>Simple Parcel Behavior<a class="headerlink" href="#simple-parcel-behavior" title="Link to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">special_parcels=&quot;simple&quot;</span></code> for the simpler parcel configuration:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">special_parcels</span><span class="o">=</span><span class="s2">&quot;simple&quot;</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/parcels_simple.png"><img alt="SounderPy sounding using simple parcel settings" class="align-center" src="../_images/parcels_simple.png" style="width: 85%;" />
+</a>
+<p>The simple option retains the standard CAPE parcel traces while skipping the
+additional most-unstable ECAPE parcel calculation/trace.</p>
+</section>
+<hr class="docutils" />
+<section id="custom-parcel-configuration">
+<h2>Custom Parcel Configuration<a class="headerlink" href="#custom-parcel-configuration" title="Link to this heading"></a></h2>
+<p>For full control, provide a nested list containing exactly two lists:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">special_parcels</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s2">&quot;highlighted parcels&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;background parcels&quot;</span><span class="p">],</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>The first list contains parcel codes that should be emphasized. The second list
+contains parcel codes that should be shown as background/reference traces.</p>
+<p>For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">custom_parcels</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s2">&quot;sb_ia_ecape&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;sb_ps_ecape&quot;</span><span class="p">,</span> <span class="s2">&quot;sb_ps_cape&quot;</span><span class="p">],</span>
+<span class="p">]</span>
+
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">special_parcels</span><span class="o">=</span><span class="n">custom_parcels</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/parcels_custom.png"><img alt="SounderPy sounding using custom parcel settings" class="align-center" src="../_images/parcels_custom.png" style="width: 85%;" />
+</a>
+</section>
+<hr class="docutils" />
+<section id="understanding-parcel-codes">
+<h2>Understanding Parcel Codes<a class="headerlink" href="#understanding-parcel-codes" title="Link to this heading"></a></h2>
+<p>Each parcel code contains three components:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PARCELTYPE_ADIABATICSCHEME_CAPETYPE
+</pre></div>
+</div>
+<p>For example:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>sb_ia_ecape
+│  │   │
+│  │   └── ECAPE
+│  └────── irreversible-adiabatic
+└───────── surface-based
+</pre></div>
+</div>
+<section id="parcel-type">
+<h3>Parcel Type<a class="headerlink" href="#parcel-type" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">sb</span></code></dt><dd><p>Surface-based parcel.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ml</span></code></dt><dd><p>Mixed-layer parcel.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mu</span></code></dt><dd><p>Most-unstable parcel.</p>
+</dd>
+</dl>
+</section>
+<section id="adiabatic-scheme">
+<h3>Adiabatic Scheme<a class="headerlink" href="#adiabatic-scheme" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">ps</span></code></dt><dd><p>Pseudoadiabatic.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ia</span></code></dt><dd><p>Irreversible-adiabatic.</p>
+</dd>
+</dl>
+</section>
+<section id="cape-type">
+<h3>CAPE Type<a class="headerlink" href="#cape-type" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">cape</span></code></dt><dd><p>Traditional CAPE parcel.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ecape</span></code></dt><dd><p>Entraining CAPE parcel.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="valid-parcel-codes">
+<h2>Valid Parcel Codes<a class="headerlink" href="#valid-parcel-codes" title="Link to this heading"></a></h2>
+<p>The currently supported codes are:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>mu_ps_cape
+mu_ia_cape
+mu_ps_ecape
+mu_ia_ecape
+
+ml_ps_cape
+ml_ia_cape
+ml_ps_ecape
+ml_ia_ecape
+
+sb_ps_cape
+sb_ia_cape
+sb_ps_ecape
+sb_ia_ecape
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="highlight-multiple-parcels">
+<h2>Highlight Multiple Parcels<a class="headerlink" href="#highlight-multiple-parcels" title="Link to this heading"></a></h2>
+<p>Multiple parcel traces can be emphasized:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">custom_parcels</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span>
+        <span class="s2">&quot;sb_ia_ecape&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ml_ia_ecape&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="p">[</span>
+        <span class="s2">&quot;sb_ps_cape&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ml_ps_cape&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">]</span>
+
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">special_parcels</span><span class="o">=</span><span class="n">custom_parcels</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="performance-considerations">
+<h2>Performance Considerations<a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h2>
+<p>Custom ECAPE parcel calculations are more computationally expensive than the
+basic CAPE traces. If you only need the common parcel paths for a quick-look
+figure, <code class="docutils literal notranslate"><span class="pre">special_parcels=&quot;simple&quot;</span></code> is the lighter-weight option.</p>
+<p>For publication or detailed analysis, a custom parcel configuration can make
+the intended parcel comparison much clearer than plotting every available
+trace.</p>
+</section>
+<hr class="docutils" />
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<p>Continue to <a class="reference internal" href="hodograph_options.html"><span class="doc">Hodograph Options</span></a> to customize storm
+motion and ground-relative/storm-relative wind displays.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../plottingdata.html"><span class="doc">Plotting Data</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="maps_radar.html" class="btn btn-neutral float-left" title="🗺️ Maps &amp; Radar" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hodograph_options.html" class="btn btn-neutral float-right" title="🌀 Hodograph Options" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kyle J Gillett.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

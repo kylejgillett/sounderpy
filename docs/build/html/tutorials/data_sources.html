@@ -1,0 +1,429 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🌎 Working with Data Sources &mdash; SounderPy v3.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/homepage.css?v=c01db7d2" />
+      <link rel="stylesheet" type="text/css" href="../_static/gallery.css?v=6ceaf42b" />
+      <link rel="stylesheet" type="text/css" href="../_static/case_studies.css?v=0461955f" />
+
+  
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b4d93468"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="📚 Composite Soundings" href="composite_soundings.html" />
+    <link rel="prev" title="🌀 Hodograph Options" href="hodograph_options.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SounderPy
+              <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">🚀 Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">📖 About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">❓ Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">🌍 Community</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../customdatasources.html">✏️ Custom Data Sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clean_data_scheme.html">🧼 The <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plottingdata.html">📈 Tools for Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpertools.html">🛠️ Helper Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">💻 Command Line Interface (CLI)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../beginners_sounderpy_cookbook.html">👨‍🍳 SounderPy Beginner’s Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examplegallery.html">📊 Plot Gallery</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">📚 Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plot_appearance.html">🎨 Plot Appearance &amp; Accessibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="maps_radar.html">🗺️ Maps &amp; Radar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parcel_settings.html">🧪 Parcel Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hodograph_options.html">🌀 Hodograph Options</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">🌎 Working with Data Sources</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-core-clean-data-structure">The Core <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#observed-raob-igra-profiles">Observed RAOB / IGRA Profiles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rap-ruc-reanalysis">RAP/RUC Reanalysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#other-model-reanalysis-sources">Other Model/Reanalysis Sources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bufkit-forecast-profiles">BUFKIT Forecast Profiles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acars-aircraft-profiles">ACARS Aircraft Profiles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#why-clean-data-matters">Why <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> Matters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-output-and-custom-data">Model Output and Custom Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cli-equivalents">CLI Equivalents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="composite_soundings.html">📚 Composite Soundings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_data.html">💾 Exporting Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_workflows.html">💻 Command Line Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tutorial-overview">Tutorial Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#gallery-figures">Gallery Figures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../case_studies/mound_city_20240828.html">🌪️ Case Study: Mound City, SD</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SounderPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">📚 Tutorials</a></li>
+      <li class="breadcrumb-item active">🌎 Working with Data Sources</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/data_sources.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="working-with-data-sources">
+<span id="tutorial-data-sources"></span><h1>🌎 Working with Data Sources<a class="headerlink" href="#working-with-data-sources" title="Link to this heading"></a></h1>
+<p>One of SounderPy’s central design ideas is that many different atmospheric
+profile sources are converted into a common dictionary structure called
+<code class="docutils literal notranslate"><span class="pre">clean_data</span></code>.</p>
+<p>That means this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>works whether <code class="docutils literal notranslate"><span class="pre">data</span></code> came from an observed RAOB, RAP/RUC reanalysis, BUFKIT
+forecast, ACARS aircraft profile, or another supported/converted source.</p>
+<p>This tutorial demonstrates four common retrieval workflows and introduces the
+shared <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> structure.</p>
+<hr class="docutils" />
+<section id="the-core-clean-data-structure">
+<h2>The Core <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> Structure<a class="headerlink" href="#the-core-clean-data-structure" title="Link to this heading"></a></h2>
+<p>A typical cleaned profile contains at least:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>clean_data
+├── p          pressure
+├── z          height
+├── T          temperature
+├── Td         dewpoint
+├── u          u-component wind
+├── v          v-component wind
+└── site_info  profile metadata
+</pre></div>
+</div>
+<p>Many SounderPy profiles also contain plotting metadata such as <code class="docutils literal notranslate"><span class="pre">titles</span></code> or
+derived wind-direction/wind-speed fields.</p>
+<p>The meteorological arrays use MetPy/Pint units. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;u&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Profile metadata are stored beneath:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;site_info&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Useful metadata may include:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;site_info&quot;</span><span class="p">][</span><span class="s2">&quot;site-id&quot;</span><span class="p">]</span>
+<span class="n">data</span><span class="p">[</span><span class="s2">&quot;site_info&quot;</span><span class="p">][</span><span class="s2">&quot;site-name&quot;</span><span class="p">]</span>
+<span class="n">data</span><span class="p">[</span><span class="s2">&quot;site_info&quot;</span><span class="p">][</span><span class="s2">&quot;site-latlon&quot;</span><span class="p">]</span>
+<span class="n">data</span><span class="p">[</span><span class="s2">&quot;site_info&quot;</span><span class="p">][</span><span class="s2">&quot;source&quot;</span><span class="p">]</span>
+<span class="n">data</span><span class="p">[</span><span class="s2">&quot;site_info&quot;</span><span class="p">][</span><span class="s2">&quot;model&quot;</span><span class="p">]</span>
+<span class="n">data</span><span class="p">[</span><span class="s2">&quot;site_info&quot;</span><span class="p">][</span><span class="s2">&quot;valid-time&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="observed-raob-igra-profiles">
+<h2>Observed RAOB / IGRA Profiles<a class="headerlink" href="#observed-raob-igra-profiles" title="Link to this heading"></a></h2>
+<p>Retrieve an observed sounding with <code class="docutils literal notranslate"><span class="pre">get_obs_data()</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sounderpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">spy</span>
+
+<span class="n">raob</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span>
+    <span class="s2">&quot;OAX&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;2014&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;06&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;16&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;18&quot;</span><span class="p">,</span>
+    <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Plot it normally:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span>
+    <span class="n">raob</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/data_raob.png"><img alt="SounderPy sounding using observed RAOB data" class="align-center" src="../_images/data_raob.png" style="width: 82%;" />
+</a>
+<p>The <code class="docutils literal notranslate"><span class="pre">station</span></code> argument may be a supported RAOB station identifier or IGRAv2
+identifier.</p>
+</section>
+<hr class="docutils" />
+<section id="rap-ruc-reanalysis">
+<h2>RAP/RUC Reanalysis<a class="headerlink" href="#rap-ruc-reanalysis" title="Link to this heading"></a></h2>
+<p>RAP/RUC profiles are requested through <code class="docutils literal notranslate"><span class="pre">get_model_data()</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rap</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_model_data</span><span class="p">(</span>
+    <span class="s2">&quot;rap-ruc&quot;</span><span class="p">,</span>
+    <span class="p">[</span><span class="mf">44.58</span><span class="p">,</span> <span class="o">-</span><span class="mf">100.82</span><span class="p">],</span>
+    <span class="s2">&quot;2024&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;08&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;28&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;18&quot;</span><span class="p">,</span>
+    <span class="n">box_avg_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+    <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The location is given as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>and <code class="docutils literal notranslate"><span class="pre">box_avg_size</span></code> controls the area-average box size in degrees.</p>
+<a class="reference internal image-reference" href="../_images/data_rap_ruc.png"><img alt="SounderPy sounding using RAP/RUC reanalysis" class="align-center" src="../_images/data_rap_ruc.png" style="width: 82%;" />
+</a>
+<p>For modern RAP data, SounderPy’s RAP/RUC workflow uses GRIB2 retrieval with the
+configured archive/fallback logic before converting the profile into
+<code class="docutils literal notranslate"><span class="pre">clean_data</span></code>.</p>
+</section>
+<hr class="docutils" />
+<section id="other-model-reanalysis-sources">
+<h2>Other Model/Reanalysis Sources<a class="headerlink" href="#other-model-reanalysis-sources" title="Link to this heading"></a></h2>
+<p>The same model interface is used for other supported model/reanalysis sources:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_model_data</span><span class="p">(</span>
+    <span class="s2">&quot;era5&quot;</span><span class="p">,</span>
+    <span class="p">[</span><span class="mf">44.58</span><span class="p">,</span> <span class="o">-</span><span class="mf">100.82</span><span class="p">],</span>
+    <span class="s2">&quot;2024&quot;</span><span class="p">,</span> <span class="s2">&quot;08&quot;</span><span class="p">,</span> <span class="s2">&quot;28&quot;</span><span class="p">,</span> <span class="s2">&quot;18&quot;</span><span class="p">,</span>
+    <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_model_data</span><span class="p">(</span>
+    <span class="s2">&quot;ncep&quot;</span><span class="p">,</span>
+    <span class="p">[</span><span class="mf">44.58</span><span class="p">,</span> <span class="o">-</span><span class="mf">100.82</span><span class="p">],</span>
+    <span class="s2">&quot;2024&quot;</span><span class="p">,</span> <span class="s2">&quot;08&quot;</span><span class="p">,</span> <span class="s2">&quot;28&quot;</span><span class="p">,</span> <span class="s2">&quot;18&quot;</span><span class="p">,</span>
+    <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Some sources may require additional credentials, external services, or
+source-specific data availability. See <a class="reference internal" href="../gettingdata.html"><span class="doc">Getting Data</span></a> for
+the current requirements.</p>
+</section>
+<hr class="docutils" />
+<section id="bufkit-forecast-profiles">
+<h2>BUFKIT Forecast Profiles<a class="headerlink" href="#bufkit-forecast-profiles" title="Link to this heading"></a></h2>
+<p>A current/recent BUFKIT profile can be requested with:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bufkit</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_bufkit_data</span><span class="p">(</span>
+    <span class="s2">&quot;gfs&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;KMOP&quot;</span><span class="p">,</span>
+    <span class="mi">6</span><span class="p">,</span>
+    <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The first three arguments are:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>model
+station
+forecast hour
+</pre></div>
+</div>
+<p>For an archived model run, provide the initialization date/time:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bufkit</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_bufkit_data</span><span class="p">(</span>
+    <span class="s2">&quot;gfs&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;KMOP&quot;</span><span class="p">,</span>
+    <span class="mi">6</span><span class="p">,</span>
+    <span class="s2">&quot;2023&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;08&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;05&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;12&quot;</span><span class="p">,</span>
+    <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/data_bufkit.png"><img alt="SounderPy sounding using BUFKIT forecast data" class="align-center" src="../_images/data_bufkit.png" style="width: 82%;" />
+</a>
+</section>
+<hr class="docutils" />
+<section id="acars-aircraft-profiles">
+<h2>ACARS Aircraft Profiles<a class="headerlink" href="#acars-aircraft-profiles" title="Link to this heading"></a></h2>
+<p>ACARS retrieval is a two-step workflow.</p>
+<p>First, create a connection for the requested date/hour:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">acars</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">acars_data</span><span class="p">(</span>
+    <span class="s2">&quot;2024&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;05&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;21&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;18&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>List available profiles:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profiles</span> <span class="o">=</span> <span class="n">acars</span><span class="o">.</span><span class="n">list_profiles</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">profiles</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then retrieve one returned profile ID:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">acars</span><span class="o">.</span><span class="n">get_profile</span><span class="p">(</span>
+    <span class="n">profiles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/data_acars.png"><img alt="SounderPy sounding using ACARS data" class="align-center" src="../_images/data_acars.png" style="width: 82%;" />
+</a>
+<p>ACARS profile identifiers are archive-dependent, so listing profiles first is
+the most robust workflow.</p>
+</section>
+<hr class="docutils" />
+<section id="why-clean-data-matters">
+<h2>Why <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> Matters<a class="headerlink" href="#why-clean-data-matters" title="Link to this heading"></a></h2>
+<p>After retrieval, all four examples can use the same plotting function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">raob</span><span class="p">)</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">rap</span><span class="p">)</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">bufkit</span><span class="p">)</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The same is true for:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_hodograph</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">sounding_params</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This separation between <strong>retrieval</strong> and <strong>analysis/plotting</strong> is what allows
+SounderPy workflows to remain consistent across different source types.</p>
+</section>
+<hr class="docutils" />
+<section id="model-output-and-custom-data">
+<h2>Model Output and Custom Data<a class="headerlink" href="#model-output-and-custom-data" title="Link to this heading"></a></h2>
+<p>SounderPy also includes utilities for converting model/custom inputs into
+<code class="docutils literal notranslate"><span class="pre">clean_data</span></code>.</p>
+<p>CM1 input sounding:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;latlon&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">48.57</span><span class="p">,</span> <span class="o">-</span><span class="mf">100.98</span><span class="p">],</span>
+    <span class="s2">&quot;elev&quot;</span><span class="p">:</span> <span class="mi">450</span><span class="p">,</span>
+    <span class="s2">&quot;top_title&quot;</span><span class="p">:</span> <span class="s2">&quot;CM1 INPUT SOUNDING&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;left_title&quot;</span><span class="p">:</span> <span class="s2">&quot;CUSTOM PROFILE&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;right_title&quot;</span><span class="p">:</span> <span class="s2">&quot;CM1&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">cm1_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">make_cm1_profile</span><span class="p">(</span>
+    <span class="s2">&quot;input_sounding&quot;</span><span class="p">,</span>
+    <span class="n">metadata</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>WRF output can similarly be converted with <code class="docutils literal notranslate"><span class="pre">spy.make_wrf_profile(...)</span></code>.</p>
+<p>Once converted, these profiles use the same SounderPy analysis and plotting
+functions as retrieved profiles.</p>
+<p>See <a class="reference internal" href="../customdatasources.html"><span class="doc">Custom Data Sources</span></a> for detailed input
+requirements.</p>
+</section>
+<hr class="docutils" />
+<section id="cli-equivalents">
+<h2>CLI Equivalents<a class="headerlink" href="#cli-equivalents" title="Link to this heading"></a></h2>
+<p>Observed profile:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span>
+</pre></div>
+</div>
+<p>RAP/RUC:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>model<span class="w"> </span>rap-ruc<span class="w"> </span><span class="m">44</span>.58<span class="w"> </span>-100.82<span class="w"> </span><span class="m">2024</span>-08-28<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--box-size<span class="w"> </span><span class="m">0</span>.25
+</pre></div>
+</div>
+<p>Archived BUFKIT:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>bufkit<span class="w"> </span>gfs<span class="w"> </span>KMOP<span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--run<span class="w"> </span><span class="m">2023</span>-08-05<span class="w"> </span><span class="m">12</span>
+</pre></div>
+</div>
+<p>List ACARS profiles:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>acars<span class="w"> </span>list<span class="w"> </span><span class="m">2024</span>-05-21<span class="w"> </span><span class="m">18</span>
+</pre></div>
+</div>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<p>Continue to <a class="reference internal" href="composite_soundings.html"><span class="doc">Composite Soundings</span></a> to compare
+multiple profiles on one figure.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../gettingdata.html"><span class="doc">Getting Data</span></a></p></li>
+<li><p><a class="reference internal" href="../customdatasources.html"><span class="doc">Custom Data Sources</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hodograph_options.html" class="btn btn-neutral float-left" title="🌀 Hodograph Options" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="composite_soundings.html" class="btn btn-neutral float-right" title="📚 Composite Soundings" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kyle J Gillett.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

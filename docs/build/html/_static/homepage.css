@@ -1,0 +1,274 @@
+/* SounderPy documentation landing page
+ *
+ * Save as:
+ *   docs/source/_static/homepage.css
+ *
+ * Then add "homepage.css" to html_css_files in conf.py.
+ */
+
+.home-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: 2.25rem;
+    align-items: center;
+    padding: 1.75rem 0 2.5rem 0;
+}
+
+.home-hero-copy,
+.home-hero-figure {
+    min-width: 0;
+}
+
+.home-kicker {
+    margin: 0 0 0.65rem 0;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    font-weight: 750;
+    letter-spacing: 0.10em;
+    color: var(--color-foreground-secondary, #667085);
+}
+
+.home-lead {
+    margin: 0 0 1.25rem 0;
+    font-size: 1.28rem;
+    line-height: 1.55;
+    color: var(--color-foreground-primary, #2d333b);
+}
+
+.home-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin: 1.1rem 0 1.25rem 0;
+}
+
+.home-actions > p {
+    display: contents;
+}
+
+.home-actions a {
+    display: inline-block;
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--color-border, #d0d7de);
+    border-radius: 0.45rem;
+    text-decoration: none;
+    font-weight: 650;
+}
+
+.home-actions a:first-child {
+    background: var(--color-brand-primary, #4066a5);
+    border-color: var(--color-brand-primary, #4066a5);
+    color: white;
+}
+
+.home-hero-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 0.55rem;
+    border: 1px solid var(--color-border, #d8dee4);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.10);
+}
+
+.home-card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 1.25rem 0 2.4rem 0;
+}
+
+.home-card {
+    min-width: 0;
+    padding: 1.15rem 1.2rem;
+    border: 1px solid var(--color-border, #d8dee4);
+    border-radius: 0.5rem;
+    background: var(--color-background-secondary, #f7f8fa);
+}
+
+.home-card p {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.home-card a {
+    font-weight: 650;
+    text-decoration: none;
+}
+
+.home-code-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.1rem;
+    margin: 1rem 0 2.4rem 0;
+}
+
+.home-code-panel {
+    min-width: 0;
+}
+
+.home-code-panel .highlight {
+    margin-top: 0.5rem;
+}
+
+.workflow-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: stretch;
+    margin: 1.25rem 0 2.5rem 0;
+}
+
+.workflow-step {
+    min-width: 0;
+    padding: 1.1rem;
+    text-align: center;
+    border: 1px solid var(--color-border, #d8dee4);
+    border-radius: 0.5rem;
+}
+
+.workflow-clean {
+    background: var(--color-background-secondary, #f7f8fa);
+}
+
+.workflow-number {
+    display: inline-flex;
+    width: 2rem;
+    height: 2rem;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    border-radius: 50%;
+    border: 1px solid var(--color-border, #d8dee4);
+    font-weight: 750;
+}
+
+.workflow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    opacity: 0.55;
+}
+
+.featured-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 1.25rem 0 2.5rem 0;
+}
+
+.featured-card {
+    min-width: 0;
+}
+
+.featured-card img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 0.4rem;
+    border: 1px solid var(--color-border, #d8dee4);
+    margin-bottom: 0.75rem;
+}
+
+.featured-card p {
+    margin-top: 0.4rem;
+}
+
+.source-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 1.1rem 0 1.25rem 0;
+}
+
+.source-pill {
+    min-width: 0;
+    text-align: center;
+    padding: 0.8rem 0.65rem;
+    border-top: 3px solid var(--color-brand-primary, #4066a5);
+    background: var(--color-background-secondary, #f7f8fa);
+    border-radius: 0.3rem;
+}
+
+.source-pill p {
+    margin: 0.15rem 0;
+}
+
+.release-panel {
+    margin: 1rem 0 2.3rem 0;
+    padding: 1.2rem 1.35rem;
+    border-left: 4px solid var(--color-brand-primary, #4066a5);
+    background: var(--color-background-secondary, #f7f8fa);
+}
+
+.research-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.research-links > p {
+    display: contents;
+}
+
+.research-links a {
+    font-weight: 600;
+}
+
+/* Keep gallery/code content from creating page-level horizontal scroll. */
+.home-card,
+.home-code-panel,
+.featured-card,
+.workflow-step,
+.source-pill {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+    .home-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .home-card-grid,
+    .featured-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .source-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .workflow-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .workflow-arrow {
+        transform: rotate(90deg);
+        min-height: 1.5rem;
+    }
+}
+
+@media (max-width: 620px) {
+    .home-card-grid,
+    .home-code-grid,
+    .featured-grid,
+    .source-strip {
+        grid-template-columns: 1fr;
+    }
+
+    .home-lead {
+        font-size: 1.08rem;
+    }
+
+    .home-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .home-actions a {
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+    }
+}

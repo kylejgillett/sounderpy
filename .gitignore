@@ -3,8 +3,6 @@
 /MANIFEST
 **/*.egg-info/
 /.pytest_cache/
-/docs/build
-/docs/source
 /.eggs
 /cov.xml
 **/__pycache__/
@@ -19,3 +17,4 @@ CHANGELOG.md
 make_docs_figures.ipynb
 .venv/
 sounderpy_sounding.png
+sounderpy_data

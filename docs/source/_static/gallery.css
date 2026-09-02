@@ -1,0 +1,33 @@
+/* Optional styling for the SounderPy plot gallery.
+ *
+ * Save as: _static/gallery.css
+ * Add "gallery.css" to html_css_files in conf.py.
+ */
+
+.gallery-table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.gallery-table td {
+    vertical-align: top;
+    border: none !important;
+    padding: 0.8rem !important;
+}
+
+.gallery-table img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.35rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.gallery-table img:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+.gallery-table p {
+    margin-top: 0.45rem;
+}

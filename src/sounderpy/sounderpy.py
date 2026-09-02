@@ -29,7 +29,7 @@ from .rapruc_grib_retriever import get_rapruc_data
 
     THIS RELEASE
     -------
-    Version: 3.1.0 | October 2025
+    Version: 3.2.0 | September 2026
 
 
     DOCUMENTATION
@@ -51,7 +51,7 @@ from .rapruc_grib_retriever import get_rapruc_data
 citation_text = f"""
 ## ---------------------------------- SOUNDERPY ----------------------------------- ##
 ##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
-##                     v3.2.0 | August 2026 | (C) Kyle J Gillett                    ##
+##                   v3.2.0 | September 2026 | (C) Kyle J Gillett                   ##
 ##                 Docs: https://kylejgillett.github.io/sounderpy/                  ##
 ## --------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------ ##
 """

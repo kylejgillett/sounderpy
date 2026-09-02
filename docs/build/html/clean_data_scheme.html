@@ -1,0 +1,529 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🧼 The clean_data Schema &mdash; SounderPy v3.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/homepage.css?v=c01db7d2" />
+      <link rel="stylesheet" type="text/css" href="_static/gallery.css?v=6ceaf42b" />
+      <link rel="stylesheet" type="text/css" href="_static/case_studies.css?v=0461955f" />
+
+  
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=b4d93468"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="📈 Tools for Plotting Data" href="plottingdata.html" />
+    <link rel="prev" title="✏️ Custom Data Sources" href="customdatasources.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SounderPy
+              <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">🚀 Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">❓ Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community.html">🌍 Community</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customdatasources.html">✏️ Custom Data Sources</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">🧼 The <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#core-schema">Core Schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#profile-array-requirements">Profile Array Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#units">Units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#site-info-metadata"><code class="docutils literal notranslate"><span class="pre">site_info</span></code> Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plot-titles">Plot Titles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-profile-variables">Optional Profile Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-clean-data-dictionary">Example <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#inspecting-a-profile">Inspecting a Profile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#why-the-schema-matters">Why the Schema Matters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpertools.html">🛠️ Helper Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">💻 Command Line Interface (CLI)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="beginners_sounderpy_cookbook.html">👨‍🍳 SounderPy Beginner’s Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">📚 Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="case_studies/mound_city_20240828.html">🌪️ Case Study: Mound City, SD</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SounderPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">🧼 The <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> Schema</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/clean_data_scheme.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="the-clean-data-schema">
+<span id="clean-data-scheme"></span><h1>🧼 The <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> Schema<a class="headerlink" href="#the-clean-data-schema" title="Link to this heading"></a></h1>
+<p>SounderPy converts supported atmospheric-profile data sources into a common dictionary structure called <code class="docutils literal notranslate"><span class="pre">clean_data</span></code>. This common structure is the interface between SounderPy’s data-retrieval, analysis, plotting, and export tools.</p>
+<p>In other words:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>RAOB ────────┐
+ACARS ───────┤
+BUFKIT ──────┤
+RAP / RUC ───┤
+ERA5 ────────┼──&gt; clean_data ──&gt; calculations
+NCEP ────────┤                  ├─&gt; sounding
+WRF ─────────┤                  ├─&gt; hodograph
+CM1 ─────────┤                  ├─&gt; composite
+custom data ─┘                  └─&gt; export
+</pre></div>
+</div>
+<p>Once a profile has been converted into <code class="docutils literal notranslate"><span class="pre">clean_data</span></code>, the same SounderPy functions can be used regardless of the original data source.</p>
+<hr class="docutils" />
+<section id="core-schema">
+<h2>Core Schema<a class="headerlink" href="#core-schema" title="Link to this heading"></a></h2>
+<p>A valid SounderPy profile contains the following core fields:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 25.0%" />
+<col style="width: 20.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Variable</p></th>
+<th class="head"><p>Standard unit</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">p</span></code></p></td>
+<td><p>Pressure</p></td>
+<td><p>hPa</p></td>
+<td><p>Atmospheric pressure at each profile level.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">z</span></code></p></td>
+<td><p>Height</p></td>
+<td><p>m</p></td>
+<td><p>Vertical coordinate associated with each profile level.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">T</span></code></p></td>
+<td><p>Temperature</p></td>
+<td><p>degC</p></td>
+<td><p>Environmental air temperature.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Td</span></code></p></td>
+<td><p>Dewpoint</p></td>
+<td><p>degC</p></td>
+<td><p>Environmental dewpoint temperature.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">u</span></code></p></td>
+<td><p>U-component wind</p></td>
+<td><p>knots</p></td>
+<td><p>Zonal wind component.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">v</span></code></p></td>
+<td><p>V-component wind</p></td>
+<td><p>knots</p></td>
+<td><p>Meridional wind component.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">site_info</span></code></p></td>
+<td><p>Profile metadata</p></td>
+<td><p>—</p></td>
+<td><p>Dictionary describing the source, location, and valid time of the
+profile.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<hr class="docutils" />
+<section id="profile-array-requirements">
+<h2>Profile Array Requirements<a class="headerlink" href="#profile-array-requirements" title="Link to this heading"></a></h2>
+<p>The six atmospheric-profile variables:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>p
+z
+T
+Td
+u
+v
+</pre></div>
+</div>
+<p>must follow several rules.</p>
+<p><strong>1. Each variable must be one-dimensional.</strong></p>
+<p>For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+<p>might return:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>(73,)
+</pre></div>
+</div>
+<p><strong>2. All profile arrays must have the same length.</strong></p>
+<p>A single index must represent the same atmospheric level across all variables:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">i</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;Td&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;u&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;v&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+</pre></div>
+</div>
+<p><strong>3. Profile arrays must carry physical units.</strong></p>
+<p>SounderPy uses Pint/MetPy quantities rather than unitless NumPy arrays.</p>
+<p>For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;u&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>may produce values similar to:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>970 hectopascal
+24.3 degree_Celsius
+12.5 knot
+</pre></div>
+</div>
+<p><strong>4. The vertical profile should be ordered from the surface upward.</strong></p>
+<p>Generally:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">z</span></code> increases monotonically with array index;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p</span></code> decreases monotonically with array index.</p></li>
+</ul>
+<p>Conceptually:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>index       z          p
+-----     ------     ------
+  0         0 m       970 hPa
+  1       250 m       942 hPa
+  2       500 m       915 hPa
+  ...       ...         ...
+  n      15000 m       120 hPa
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="units">
+<h2>Units<a class="headerlink" href="#units" title="Link to this heading"></a></h2>
+<p>SounderPy normally uses the following units internally:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 66.7%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Unit</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">p</span></code></p></td>
+<td><p>hectopascals (<code class="docutils literal notranslate"><span class="pre">hPa</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">z</span></code></p></td>
+<td><p>meters (<code class="docutils literal notranslate"><span class="pre">m</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">T</span></code></p></td>
+<td><p>degrees Celsius (<code class="docutils literal notranslate"><span class="pre">degC</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Td</span></code></p></td>
+<td><p>degrees Celsius (<code class="docutils literal notranslate"><span class="pre">degC</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">u</span></code></p></td>
+<td><p>knots (<code class="docutils literal notranslate"><span class="pre">kt</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">v</span></code></p></td>
+<td><p>knots (<code class="docutils literal notranslate"><span class="pre">kt</span></code>)</p></td>
+</tr>
+</tbody>
+</table>
+<p>These values should remain unit-aware when constructing custom SounderPy
+profiles.</p>
+<p>For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">metpy.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">units</span>
+
+<span class="n">pressure</span> <span class="o">=</span> <span class="n">pressure_values</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">hPa</span>
+<span class="n">height</span> <span class="o">=</span> <span class="n">height_values</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">m</span>
+<span class="n">temperature</span> <span class="o">=</span> <span class="n">temperature_values</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">degC</span>
+<span class="n">dewpoint</span> <span class="o">=</span> <span class="n">dewpoint_values</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">degC</span>
+<span class="n">u_wind</span> <span class="o">=</span> <span class="n">u_values</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">kt</span>
+<span class="n">v_wind</span> <span class="o">=</span> <span class="n">v_values</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">kt</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="site-info-metadata">
+<h2><code class="docutils literal notranslate"><span class="pre">site_info</span></code> Metadata<a class="headerlink" href="#site-info-metadata" title="Link to this heading"></a></h2>
+<p>Profile metadata are stored in:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;site_info&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The exact metadata available can vary with the original data source.</p>
+<p>Common SounderPy metadata fields include:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">site-id</span></code></p></td>
+<td><p>Station, airport, or profile identifier.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">site-name</span></code></p></td>
+<td><p>Human-readable site name.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">site-lctn</span></code></p></td>
+<td><p>Location description.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">site-latlon</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[latitude,</span> <span class="pre">longitude]</span></code> pair.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">site-elv</span></code></p></td>
+<td><p>Surface/site elevation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">source</span></code></p></td>
+<td><p>Description of the original data source.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">model</span></code></p></td>
+<td><p>Model identifier when applicable.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fcst-hour</span></code></p></td>
+<td><p>Forecast hour when applicable.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">run-time</span></code></p></td>
+<td><p>Model initialization time when applicable.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">valid-time</span></code></p></td>
+<td><p>Valid time of the atmospheric profile.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Some data sources may contain additional metadata such as <code class="docutils literal notranslate"><span class="pre">box_area</span></code>.</p>
+<p>For example, a model profile may contain:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;site_info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;site-id&quot;</span><span class="p">:</span> <span class="s2">&quot;no-site-id&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;site-name&quot;</span><span class="p">:</span> <span class="s2">&quot;no-site-name&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;site-lctn&quot;</span><span class="p">:</span> <span class="s2">&quot;no-site-location&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;site-latlon&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">44.58</span><span class="p">,</span> <span class="o">-</span><span class="mf">100.82</span><span class="p">],</span>
+    <span class="s2">&quot;site-elv&quot;</span><span class="p">:</span> <span class="mf">520.0</span><span class="p">,</span>
+    <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="s2">&quot;MODEL REANALYSIS&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="s2">&quot;RAP&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fcst-hour&quot;</span><span class="p">:</span> <span class="s2">&quot;F00&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;run-time&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;2024&quot;</span><span class="p">,</span> <span class="s2">&quot;08&quot;</span><span class="p">,</span> <span class="s2">&quot;28&quot;</span><span class="p">,</span> <span class="s2">&quot;18&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;valid-time&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;2024&quot;</span><span class="p">,</span> <span class="s2">&quot;08&quot;</span><span class="p">,</span> <span class="s2">&quot;28&quot;</span><span class="p">,</span> <span class="s2">&quot;18&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;box_area&quot;</span><span class="p">:</span> <span class="s2">&quot;0.25° x 0.25° BOX AVG&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="plot-titles">
+<h2>Plot Titles<a class="headerlink" href="#plot-titles" title="Link to this heading"></a></h2>
+<p>Many SounderPy-generated profiles also contain a <code class="docutils literal notranslate"><span class="pre">titles</span></code> dictionary used for figure annotation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;titles&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>A typical example is:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;top_title&quot;</span><span class="p">:</span> <span class="s2">&quot;MODEL REANALYSIS VERTICAL PROFILE | 18Z RAP F00&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;left_title&quot;</span><span class="p">:</span> <span class="s2">&quot;18Z RAP F00 | VALID: 08/28/2024 18Z&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;right_title&quot;</span><span class="p">:</span> <span class="s2">&quot;44.58, -100.82 | 0.25° x 0.25° BOX AVG&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="optional-profile-variables">
+<h2>Optional Profile Variables<a class="headerlink" href="#optional-profile-variables" title="Link to this heading"></a></h2>
+<p>Some SounderPy data sources contain additional atmospheric variables.</p>
+<p>Examples include:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 26.7%" />
+<col style="width: 40.0%" />
+<col style="width: 33.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Variable</p></th>
+<th class="head"><p>Typical unit</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rh</span></code></p></td>
+<td><p>Relative humidity</p></td>
+<td><p>percent</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">omega</span></code></p></td>
+<td><p>Pressure vertical velocity</p></td>
+<td><p>Pa s^-1</p></td>
+</tr>
+</tbody>
+</table>
+<p>These fields are <strong>not part of the minimum ``clean_data`` contract</strong> required for general SounderPy plotting and analysis.</p>
+<p>Additional source-specific fields may also be present. For example <code class="docutils literal notranslate"><span class="pre">omega</span></code> is available for model forecasts and reanalysis but not for observations.</p>
+</section>
+<hr class="docutils" />
+<section id="example-clean-data-dictionary">
+<h2>Example <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> Dictionary<a class="headerlink" href="#example-clean-data-dictionary" title="Link to this heading"></a></h2>
+<p>A simplified SounderPy profile can be represented as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">metpy.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">units</span>
+
+<span class="n">clean_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">950</span><span class="p">,</span> <span class="mi">900</span><span class="p">,</span> <span class="mi">850</span><span class="p">]</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">hPa</span><span class="p">,</span>
+    <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">1500</span><span class="p">]</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">m</span><span class="p">,</span>
+    <span class="s2">&quot;T&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">24</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">14</span><span class="p">]</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">degC</span><span class="p">,</span>
+    <span class="s2">&quot;Td&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">degC</span><span class="p">,</span>
+    <span class="s2">&quot;u&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">25</span><span class="p">]</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">kt</span><span class="p">,</span>
+    <span class="s2">&quot;v&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">]</span> <span class="o">*</span> <span class="n">units</span><span class="o">.</span><span class="n">kt</span><span class="p">,</span>
+
+    <span class="s2">&quot;site_info&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;site-id&quot;</span><span class="p">:</span> <span class="s2">&quot;EXAMPLE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;site-name&quot;</span><span class="p">:</span> <span class="s2">&quot;Example Profile&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;site-lctn&quot;</span><span class="p">:</span> <span class="s2">&quot;North Dakota&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;site-latlon&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">47.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">97.0</span><span class="p">],</span>
+        <span class="s2">&quot;site-elv&quot;</span><span class="p">:</span> <span class="mi">250</span><span class="p">,</span>
+        <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="s2">&quot;CUSTOM PROFILE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="s2">&quot;no-model&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;fcst-hour&quot;</span><span class="p">:</span> <span class="s2">&quot;no-fcst-hour&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;run-time&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;valid-time&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;2026&quot;</span><span class="p">,</span> <span class="s2">&quot;09&quot;</span><span class="p">,</span> <span class="s2">&quot;01&quot;</span><span class="p">,</span> <span class="s2">&quot;18&quot;</span><span class="p">],</span>
+    <span class="p">},</span>
+
+    <span class="s2">&quot;titles&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;top_title&quot;</span><span class="p">:</span> <span class="s2">&quot;CUSTOM VERTICAL PROFILE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;left_title&quot;</span><span class="p">:</span> <span class="s2">&quot;VALID: 09/01/2026 18Z&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;right_title&quot;</span><span class="p">:</span> <span class="s2">&quot;47.9, -97.0&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="inspecting-a-profile">
+<h2>Inspecting a Profile<a class="headerlink" href="#inspecting-a-profile" title="Link to this heading"></a></h2>
+<p>You can inspect the structure of any retrieved SounderPy profile with:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>and:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;site_info&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>To inspect units:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;Td&quot;</span><span class="p">,</span> <span class="s2">&quot;u&quot;</span><span class="p">,</span> <span class="s2">&quot;v&quot;</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="why-the-schema-matters">
+<h2>Why the Schema Matters<a class="headerlink" href="#why-the-schema-matters" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> schema allows SounderPy’s major tools to operate independently of the original data source.</p>
+<p>For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="n">spy</span><span class="o">.</span><span class="n">build_hodograph</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="n">general</span><span class="p">,</span> <span class="n">thermo</span><span class="p">,</span> <span class="n">kinem</span><span class="p">,</span> <span class="n">intrp</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">sounding_params</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">calc</span><span class="p">()</span>
+
+<span class="n">spy</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;csv&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>all consume the same general profile structure.</p>
+<p>This means data retrieval and atmospheric analysis remain separate:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>retrieve / import
+       ↓
+   clean_data
+       ↓
+┌──────┼─────────┐
+↓      ↓         ↓
+plot  calculate  export
+</pre></div>
+</div>
+<hr class="docutils" />
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="customdatasources.html" class="btn btn-neutral float-left" title="✏️ Custom Data Sources" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="plottingdata.html" class="btn btn-neutral float-right" title="📈 Tools for Plotting Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kyle J Gillett.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

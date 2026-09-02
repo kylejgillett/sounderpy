@@ -1,0 +1,699 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🌐 Tools for Getting Data &mdash; SounderPy v3.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/homepage.css?v=c01db7d2" />
+      <link rel="stylesheet" type="text/css" href="_static/gallery.css?v=6ceaf42b" />
+      <link rel="stylesheet" type="text/css" href="_static/case_studies.css?v=0461955f" />
+
+  
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=b4d93468"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="✏️ Custom Data Sources" href="customdatasources.html" />
+    <link rel="prev" title="🌍 Community" href="community.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SounderPy
+              <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">🚀 Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">❓ Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community.html">🌍 Community</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">🌐 Tools for Getting Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#available-data-sources">Available Data Sources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#model-reanalysis-data-rap-ruc-era5-ncep">Model Reanalysis Data | RAP/RUC, ERA5, NCEP</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spy.get_model_data"><code class="docutils literal notranslate"><span class="pre">spy.get_model_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-key-names">Model key names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dataset-key-names">Dataset key names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#latitude-longitude-pairs">Latitude-Longitude pairs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#model-forecast-data-bufkit-profiles">Model Forecast Data | BUFKIT Profiles</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spy.get_bufkit_data"><code class="docutils literal notranslate"><span class="pre">spy.get_bufkit_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#available-bufkit-sites">Available BUFKIT Sites:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#available-models">Available Models:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#forecastkeys">Model key names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#latest-available-forecast">Latest Available Forecast</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#observed-data-raob-igrav2-profiles">Observed Data | RAOB &amp; IGRAv2 Profiles</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spy.get_obs_data"><code class="docutils literal notranslate"><span class="pre">spy.get_obs_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#station-identifiers">Station Identifiers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#available-raob-sites">Available RAOB Sites:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#observed-data-acars-aircraft-profiles">Observed Data | ACARS Aircraft Profiles</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#acars_data"><code class="docutils literal notranslate"><span class="pre">acars_data</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acars_data.list_profiles"><code class="docutils literal notranslate"><span class="pre">acars_data.list_profiles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acars_data.get_profile"><code class="docutils literal notranslate"><span class="pre">acars_data.get_profile()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acars-data-retrieval-example">ACARS Data Retrieval Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#what-does-sounderpy-return">What Does SounderPy Return?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="customdatasources.html">✏️ Custom Data Sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="clean_data_scheme.html">🧼 The <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpertools.html">🛠️ Helper Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">💻 Command Line Interface (CLI)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="beginners_sounderpy_cookbook.html">👨‍🍳 SounderPy Beginner’s Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">📚 Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="case_studies/mound_city_20240828.html">🌪️ Case Study: Mound City, SD</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SounderPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">🌐 Tools for Getting Data</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/gettingdata.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tools-for-getting-data">
+<h1>🌐 Tools for Getting Data<a class="headerlink" href="#tools-for-getting-data" title="Link to this heading"></a></h1>
+<p>SounderPy provides a common interface for retrieving atmospheric vertical
+profiles from observations, forecasts, analyses, and reanalyses.</p>
+<p>Regardless of source, supported retrieval functions return SounderPy’s
+<code class="docutils literal notranslate"><span class="pre">clean_data</span></code> structure, allowing the same plotting and analysis workflow
+to be used with each dataset.</p>
+<p>See <a class="reference internal" href="clean_data_scheme.html#clean-data-scheme"><span class="std std-ref">clean_data schema</span></a> for details on the returned
+data structure.</p>
+<section id="available-data-sources">
+<h2>Available Data Sources<a class="headerlink" href="#available-data-sources" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.0%" />
+<col style="width: 25.0%" />
+<col style="width: 22.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Data source</p></th>
+<th class="head"><p>Function</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Availability</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ERA5</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">get_model_data()</span></code></p></td>
+<td><p>Reanalysis</p></td>
+<td><p>1940–present</p></td>
+</tr>
+<tr class="row-odd"><td><p>RAP / RUC</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">get_model_data()</span></code></p></td>
+<td><p>Analysis / reanalysis</p></td>
+<td><p>Historical archive</p></td>
+</tr>
+<tr class="row-even"><td><p>NCEP-FNL</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">get_model_data()</span></code></p></td>
+<td><p>Analysis</p></td>
+<td><p>Historical archive</p></td>
+</tr>
+<tr class="row-odd"><td><p>BUFKIT</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">get_bufkit_data()</span></code></p></td>
+<td><p>Model forecast</p></td>
+<td><p>Recent + archived runs</p></td>
+</tr>
+<tr class="row-even"><td><p>RAOB / IGRAv2</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">get_obs_data()</span></code></p></td>
+<td><p>Observation</p></td>
+<td><p>Historical archive</p></td>
+</tr>
+<tr class="row-odd"><td><p>ACARS</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">acars_data()</span></code></p></td>
+<td><p>Observation</p></td>
+<td><p>Archive-dependent</p></td>
+</tr>
+</tbody>
+</table>
+<hr class="docutils" />
+</section>
+<section id="model-reanalysis-data-rap-ruc-era5-ncep">
+<span id="modeldata"></span><h2>Model Reanalysis Data | RAP/RUC, ERA5, NCEP<a class="headerlink" href="#model-reanalysis-data-rap-ruc-era5-ncep" title="Link to this heading"></a></h2>
+<p>SounderPy provides <code class="docutils literal notranslate"><span class="pre">get_model_data()</span></code> for retrieving vertical profiles from
+RAP/RUC analyses, ERA5 reanalysis, and NCEP-FNL analysis data.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><strong>RAP/RUC access was modernized in SounderPy 3.2.0.</strong></p>
+<p>Modern RAP data are retrieved from NOAA’s AWS GRIB2 archive, while older
+RAP/RUC data are retrieved through the NCEI historical GRIB archive.</p>
+<p>Availability of historical NCEI data may occasionally be affected by
+upstream archive outages.</p>
+</div>
+<ul class="simple">
+<li><p>The retrieval workflow accesses pressure-level and near-surface model fields, samples them over a small geographic box surrounding the requested latitude/longitude, and converts the resulting vertical profile into SounderPy’s <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> format.</p></li>
+<li><p>The size of the averaging area is controlled with <code class="docutils literal notranslate"><span class="pre">box_avg_size</span></code>. See <a class="reference internal" href="clean_data_scheme.html#clean-data-scheme"><span class="std std-ref">clean_data schema</span></a> for details on the returned profile structure.</p></li>
+<li><p>For RAP/RUC requests, SounderPy automatically determines the appropriate archive and dataset for the requested date and time. The optional <code class="docutils literal notranslate"><span class="pre">dataset</span></code>  argument may be used to target a specific historical RAP/RUC dataset rather than allowing SounderPy to search automatically. This option applies to archive datasets that expose dataset identifiers; NOAA AWS RAP retrieval does not use dataset keys.</p></li>
+</ul>
+<p>We can use the simple <code class="docutils literal notranslate"><span class="pre">spy.get_model_data()</span></code> function:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="spy.get_model_data">
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">get_model_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latlon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hour</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box_avg_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean_it</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.get_model_data" title="Link to this definition"></a></dt>
+<dd><p>Return a <code class="docutils literal notranslate"><span class="pre">dict</span></code> of ‘cleaned up’ model reanalysis data from a given model, for a given location, date, and time</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>str</em><em>, </em><em>required</em>) – the requested model to use (“rap-ruc”, “era5”, “ncep”)</p></li>
+<li><p><strong>latlon</strong> (<em>list</em><em>, </em><em>required</em>) – the latitude &amp; longitude pair for sounding ([44.92, -84.72])</p></li>
+<li><p><strong>year</strong> (<em>str</em><em>, </em><em>required</em>) – valid year</p></li>
+<li><p><strong>month</strong> (<em>str</em><em>, </em><em>required</em>) – valid month</p></li>
+<li><p><strong>day</strong> (<em>str</em><em>, </em><em>required</em>) – valid day</p></li>
+<li><p><strong>hour</strong> (<em>str</em><em>, </em><em>required</em>) – required, valid hour</p></li>
+<li><p><strong>dataset</strong> (str, optional, default is <cite>None</cite>) – target a specific dataset instead of searching for the first one with data (“rap-ruc” only).</p></li>
+<li><p><strong>box_avg_size</strong> (float, optional, default is <code class="docutils literal notranslate"><span class="pre">0.10</span></code>) – Width, in degrees, of the geographic box used to spatially average gridded model data around the requested location.</p></li>
+<li><p><strong>hush</strong> (bool, optional, default is <cite>False</cite>) – whether to ‘hush’ a read-out of thermodynamic and kinematic parameters when getting data.</p></li>
+<li><p><strong>clean_it</strong> (bool, optional, default is <cite>True</cite>) – whether to return the raw_data object or a clean_data dict.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A SounderPy <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> dictionary containing the retrieved vertical profile and associated metadata. See <a class="reference internal" href="clean_data_scheme.html#clean-data-scheme"><span class="std std-ref">clean_data schema</span></a>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="model-key-names">
+<span id="reanalysiskeys"></span><h3>Model key names<a class="headerlink" href="#model-key-names" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'era5'</span></code>: ECMWF renalysis v5 (ERA5), reanalysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'rap'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'rap-ruc'</span></code>: NCEP Rapid Refresh model (RAP) / Rapid Update Cycle model (RUC), reanalysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'ncep'</span></code>: NCEP Global Data Assimilation System/Final 0.25 degree (ncep-fnl), reanalysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'rap-now'</span></code>: NCEP Rapid Refresh model, latest analysis</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="dataset-key-names">
+<span id="datasetkeys"></span><h3>Dataset key names<a class="headerlink" href="#dataset-key-names" title="Link to this heading"></a></h3>
+<p>Most users should leave <code class="docutils literal notranslate"><span class="pre">dataset=None</span></code> and allow SounderPy to select the
+appropriate archive automatically.</p>
+<p>For advanced troubleshooting or reproducibility, a specific historical
+RAP/RUC dataset may be selected with <code class="docutils literal notranslate"><span class="pre">dataset=</span></code>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'RAP_25km'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RAP_25km_old'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RAP_25km_anl'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RAP_25km_anl_old'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RAP_13km'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RAP_13km_old'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RAP_13km_anl'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RAP_13km_anl_old'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RUC_13km'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RUC_13km_old'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RUC_25km'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'RUC_25km_old'</span></code></p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="latitude-longitude-pairs">
+<span id="latlonpairs"></span><h3>Latitude-Longitude pairs<a class="headerlink" href="#latitude-longitude-pairs" title="Link to this heading"></a></h3>
+<p>Locations are supplied as a two-element list in the form:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">44.92</span><span class="p">,</span> <span class="o">-</span><span class="mf">84.72</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Scientific consideration:</strong> Model analyses and reanalyses are gridded
+representations of the atmosphere and should not be interpreted as direct
+observations. Their spatial resolution, assimilation system, model physics,
+and the <code class="docutils literal notranslate"><span class="pre">box_avg_size</span></code> used by SounderPy should be considered when
+interpreting a retrieved profile.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><strong>Using ERA5 requires ECMWF CDS API access.</strong></p>
+<p>Before retrieving ERA5 data, you must:</p>
+<ul class="simple">
+<li><p>create a Climate Data Store account;</p></li>
+<li><p>configure your CDS API personal access token; and</p></li>
+<li><p>create the required <code class="docutils literal notranslate"><span class="pre">$HOME/.cdsapirc</span></code> file.</p></li>
+</ul>
+<p>Follow the official CDS API setup instructions:
+<a class="reference external" href="https://cds.climate.copernicus.eu/how-to-api">https://cds.climate.copernicus.eu/how-to-api</a></p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><strong>Is data access taking forever?</strong> Sometimes the NCEP (RAP-RUC, NCEP-FNL) &amp; ECMWF CDS (ERA5) servers are down and not able to be accessed. Sometimes these issues are resolved within hours, other times possibly a few days.</p>
+</div>
+</section>
+<section id="example">
+<h3>Example<a class="headerlink" href="#example" title="Link to this heading"></a></h3>
+<p>Retrieve a RAP analysis near central South Dakota:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sounderpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">spy</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_model_data</span><span class="p">(</span><span class="s2">&quot;rap-ruc&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">44.58</span><span class="p">,</span> <span class="o">-</span><span class="mf">100.82</span><span class="p">],</span> <span class="s2">&quot;2024&quot;</span><span class="p">,</span> <span class="s2">&quot;08&quot;</span><span class="p">,</span> <span class="s2">&quot;28&quot;</span><span class="p">,</span> <span class="s2">&quot;18&quot;</span><span class="p">,</span>
+                         <span class="n">box_avg_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The returned <code class="docutils literal notranslate"><span class="pre">data</span></code> object can be passed directly to SounderPy’s plotting
+and analysis tools:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+</section>
+</section>
+<section id="model-forecast-data-bufkit-profiles">
+<span id="bufkitdata"></span><h2>Model Forecast Data | BUFKIT Profiles<a class="headerlink" href="#model-forecast-data-bufkit-profiles" title="Link to this heading"></a></h2>
+<p>SounderPy provides <code class="docutils literal notranslate"><span class="pre">get_bufkit_data()</span></code> for retrieving model forecast
+vertical profiles from BUFKIT sites.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="spy.get_bufkit_data">
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">get_bufkit_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fcst_hour</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_month</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_day</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_hour</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean_it</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.get_bufkit_data" title="Link to this definition"></a></dt>
+<dd><p>Retrieve a BUFKIT model forecast profile for a requested model, site,
+forecast hour, and optionally a specific model run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>str</em><em>, </em><em>required</em>) – the model <a class="reference internal" href="#forecastkeys"><span class="std std-ref">‘key’</span></a> name to request data from</p></li>
+<li><p><strong>station</strong> (<em>str</em><em>, </em><em>required</em>) – a 3-4 digit BUFKIT site identifier</p></li>
+<li><p><strong>fcst_hour</strong> (<em>int</em><em>, </em><em>required</em>) – valid forecast hour</p></li>
+<li><p><strong>run_year</strong> (<em>str</em><em>, </em><em>optional</em><em>, </em><em>Default=None</em>) – valid year</p></li>
+<li><p><strong>run_month</strong> (<em>str</em><em>, </em><em>optional</em><em>, </em><em>Default=None</em>) – valid month</p></li>
+<li><p><strong>run_day</strong> (<em>str</em><em>, </em><em>optional</em><em>, </em><em>Default=None</em>) – valid day</p></li>
+<li><p><strong>run_hour</strong> (<em>str</em><em>, </em><em>optional</em><em>, </em><em>Default=None</em>) – valid hour</p></li>
+<li><p><strong>hush</strong> (bool, optional, default is <cite>False</cite>) – whether to ‘hush’ a read-out of thermodynamic and kinematic parameters when getting data.</p></li>
+<li><p><strong>clean_it</strong> (bool, optional, default is <cite>True</cite>) – whether to return the raw_data object or a clean_data dict.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#datadescription"><span class="std std-ref">clean_data</span></a>, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, omega, &amp; model information</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="available-bufkit-sites">
+<span id="forecastsites"></span><h3>Available BUFKIT Sites:<a class="headerlink" href="#available-bufkit-sites" title="Link to this heading"></a></h3>
+<embed>
+    <iframe src="https://kylejgillett.github.io/sounderpy/bufkit_map" width="100%" height="500"></iframe>
+</embed><p></p>
+</section>
+<section id="available-models">
+<span id="forecastmodels"></span><h3>Available Models:<a class="headerlink" href="#available-models" title="Link to this heading"></a></h3>
+<p><strong>Recent model runs</strong>: Recent runs are retrieved through the Penn State BUFKIT feed.</p>
+<ul class="simple">
+<li><p>GFS</p></li>
+<li><p>NAM</p></li>
+<li><p>NAMNEST</p></li>
+<li><p>RAP</p></li>
+<li><p>HRRR</p></li>
+<li><p>SREF</p></li>
+<li><p>HIRESW</p></li>
+</ul>
+<p><strong>Archived model runs</strong>: Archived runs are retrieved through the Iowa State BUFKIT archive.</p>
+<ul class="simple">
+<li><p>GFS</p></li>
+<li><p>NAM</p></li>
+<li><p>NAMNEST</p></li>
+<li><p>RAP</p></li>
+<li><p>HRRR</p></li>
+</ul>
+<p></p>
+</section>
+<section id="forecastkeys">
+<span id="id1"></span><h3>Model key names<a class="headerlink" href="#forecastkeys" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">hrrr</span></code>: High Resolution Rapid Refresh, analysis (F00) &amp; forecast; out to forecast hour 48</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rap</span></code>: Rapid Refresh Model, analysis (F00) &amp; forecast; out to forecast hour 51</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nam</span></code>: North American Mesoscale Model, analysis (F00) &amp; forecast; out to forecast hour 48</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">namnest</span></code>: Nested North American Mesoscale model, analysis (F00) &amp; forecast; out to forecast hour 60</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gfs</span></code>: Global Forecast System, analysis (F00) &amp; forecast; out to forecast hour 180</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sref</span></code>: Short Range Ensemble Forecast, analysis (F00) &amp; forecast; out to forecast hour 84</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hiresw</span></code>: High Resolution Window Forecast System, analysis (F00) &amp; forecast; out to forecast hour 48</p></li>
+</ul>
+</div></blockquote>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Running the <code class="docutils literal notranslate"><span class="pre">get_bufkit_data()</span></code> function without date kwargs will return the latest available forecast. Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="c1"># RAP model for site KGFK at forecast hour 5</span>
+<span class="linenos">2</span><span class="n">spy</span><span class="o">.</span><span class="n">get_bufkit_data</span><span class="p">(</span><span class="s1">&#39;rap&#39;</span><span class="p">,</span> <span class="s1">&#39;kgfk&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>BUFKIT profiles are model forecast data,
+not observations. Profiles are available only at designated BUFKIT
+locations and represent the model atmosphere at those sites.</p>
+<p>Interpretation should therefore consider the model, initialization time,
+forecast hour, and model resolution.</p>
+</div>
+</section>
+<section id="id2">
+<h3>Example<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<p>Retrieve a GFS BUFKIT forecast from the 12 UTC 5 August 2023 model run at
+<code class="docutils literal notranslate"><span class="pre">KMOP</span></code>, valid at forecast hour 6:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sounderpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">spy</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_bufkit_data</span><span class="p">(</span>
+    <span class="s2">&quot;gfs&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;KMOP&quot;</span><span class="p">,</span>
+    <span class="mi">6</span><span class="p">,</span>
+    <span class="s2">&quot;2023&quot;</span><span class="p">,</span> <span class="s2">&quot;08&quot;</span><span class="p">,</span> <span class="s2">&quot;05&quot;</span><span class="p">,</span> <span class="s2">&quot;12&quot;</span><span class="p">,</span>
+    <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The returned profile can be used directly with SounderPy plotting and
+analysis tools:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="latest-available-forecast">
+<h3>Latest Available Forecast<a class="headerlink" href="#latest-available-forecast" title="Link to this heading"></a></h3>
+<p>If the model-run date arguments are omitted, SounderPy retrieves the latest
+available BUFKIT forecast. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_bufkit_data</span><span class="p">(</span>
+    <span class="s2">&quot;rap&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;KGFK&quot;</span><span class="p">,</span>
+    <span class="mi">5</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>This requests the latest available RAP forecast for <code class="docutils literal notranslate"><span class="pre">KGFK</span></code> at forecast
+hour 5.</p>
+<hr class="docutils" />
+</section>
+</section>
+<section id="observed-data-raob-igrav2-profiles">
+<span id="obsdata"></span><h2>Observed Data | RAOB &amp; IGRAv2 Profiles<a class="headerlink" href="#observed-data-raob-igrav2-profiles" title="Link to this heading"></a></h2>
+<p>SounderPy provides <code class="docutils literal notranslate"><span class="pre">get_obs_data()</span></code> for retrieving observed radiosonde
+profiles from supported RAOB and IGRAv2 archives.</p>
+<p>The appropriate archive is selected automatically based on the supplied
+station identifier.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="spy.get_obs_data">
+<span class="sig-prename descclassname"><span class="pre">spy.</span></span><span class="sig-name descname"><span class="pre">get_obs_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hour</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean_it</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spy.get_obs_data" title="Link to this definition"></a></dt>
+<dd><p>Retrieve an observed atmospheric profile for a requested station,
+date, and launch hour.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>station</strong> (<em>str</em><em>, </em><em>required</em>) – Station identifier. Supported formats include ICAO, WMO, and IGRAv2 identifiers. See :ref:<a href="#id3"><span class="problematic" id="id4">`</span></a>’site ids’ &lt;siteids&gt;`for details.</p></li>
+<li><p><strong>year</strong> (<em>str</em><em>, </em><em>required</em>) – launch year</p></li>
+<li><p><strong>month</strong> (<em>str</em><em>, </em><em>required</em>) – launch month</p></li>
+<li><p><strong>day</strong> (<em>str</em><em>, </em><em>required</em>) – launch day</p></li>
+<li><p><strong>hour</strong> (<em>str</em><em>, </em><em>required</em>) – launch hour</p></li>
+<li><p><strong>hush</strong> (bool, optional, default is <cite>False</cite>) – whether to ‘hush’ a read-out of thermodynamic and kinematic parameters when getting data.</p></li>
+<li><p><strong>clean_it</strong> (bool, optional, default is <cite>True</cite>) – whether to return the raw_data object or a clean_data dict.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#datadescription"><span class="std std-ref">clean_data</span></a>, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, &amp; profile information</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Archived observations may occasionally be missing, incomplete, or assigned
+to a nearby launch hour. If a known sounding cannot be found, try the
+preceding or following UTC hour.</p>
+</div>
+<p></p>
+<section id="station-identifiers">
+<span id="siteids"></span><h3>Station Identifiers<a class="headerlink" href="#station-identifiers" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">get_obs_data()</span></code> accepts several station-identifier formats:</p>
+<ul class="simple">
+<li><p>ICAO identifier: <code class="docutils literal notranslate"><span class="pre">&quot;DTX&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;KDTX&quot;</span></code> – <strong>note that using 4-character ICAOs is recommended</strong>.</p></li>
+<li><p>WMO identifier: <code class="docutils literal notranslate"><span class="pre">&quot;72317&quot;</span></code></p></li>
+<li><p>IGRAv2 identifier: <code class="docutils literal notranslate"><span class="pre">&quot;GMM00010393&quot;</span></code></p></li>
+</ul>
+<p>SounderPy uses the identifier format to determine the appropriate
+observational archive automatically.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Some stations share the same three-character suffix. For example,
+<code class="docutils literal notranslate"><span class="pre">&quot;PABR&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;KABR&quot;</span></code> both end in <code class="docutils literal notranslate"><span class="pre">&quot;ABR&quot;</span></code>.</p>
+<p>When ambiguity is possible, use the full four-character station identifier.</p>
+</div>
+<p></p>
+</section>
+<section id="available-raob-sites">
+<span id="raobsites"></span><h3>Available RAOB Sites:<a class="headerlink" href="#available-raob-sites" title="Link to this heading"></a></h3>
+<embed>
+    <iframe src="https://kylejgillett.github.io/sounderpy/raob_map" width="100%" height="500"></iframe>
+</embed></section>
+<section id="id5">
+<h3>Example<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<p>Retrieve the 18 UTC Omaha, Nebraska sounding from 16 June 2014:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sounderpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">spy</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s2">&quot;OAX&quot;</span><span class="p">,</span> <span class="s2">&quot;2014&quot;</span><span class="p">,</span> <span class="s2">&quot;06&quot;</span><span class="p">,</span> <span class="s2">&quot;16&quot;</span><span class="p">,</span> <span class="s2">&quot;18&quot;</span><span class="p">,</span> <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">,)</span>
+</pre></div>
+</div>
+<p>The returned profile can be passed directly to SounderPy’s plotting and
+analysis tools:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+</section>
+</section>
+<section id="observed-data-acars-aircraft-profiles">
+<span id="acarsdata"></span><h2>Observed Data | ACARS Aircraft Profiles<a class="headerlink" href="#observed-data-acars-aircraft-profiles" title="Link to this heading"></a></h2>
+<p>SounderPy provides the <code class="docutils literal notranslate"><span class="pre">acars_data</span></code> class for retrieving observed aircraft
+vertical profiles from the ACARS archive.</p>
+<p>Unlike the retrieval functions above, ACARS access uses a two-step workflow:</p>
+<ol class="arabic simple">
+<li><p>Create an <code class="docutils literal notranslate"><span class="pre">acars_data</span></code> object for a requested date and hour.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">.list_profiles()</span></code> to find available profiles, then retrieve one with <code class="docutils literal notranslate"><span class="pre">.get_profile()</span></code>.</p></li>
+</ol>
+<ul class="simple">
+<li><p>To learn more about ACARS, check out the ‘AIRCRAFT’ section of this webpage: <a class="reference external" href="https://www.weather.gov/about/observation-equipment">NOAA Observing Systems</a></p></li>
+</ul>
+<dl class="py class">
+<dt class="sig sig-object py" id="acars_data">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">acars_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hour</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#acars_data" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>year</strong> (<em>str</em><em>, </em><em>required</em>) – observation year</p></li>
+<li><p><strong>month</strong> (<em>str</em><em>, </em><em>required</em>) – observation month</p></li>
+<li><p><strong>day</strong> (<em>str</em><em>, </em><em>required</em>) – observation day</p></li>
+<li><p><strong>hour</strong> (<em>str</em><em>, </em><em>required</em>) – observation hour</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="acars_data.list_profiles">
+<span class="sig-name descname"><span class="pre">list_profiles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#acars_data.list_profiles" title="Link to this definition"></a></dt>
+<dd><p>Return a list of profile identifiers available for the selected
+date and hour.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Available ACARS profile identifiers.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acars_data.get_profile">
+<span class="sig-name descname"><span class="pre">get_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean_it</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#acars_data.get_profile" title="Link to this definition"></a></dt>
+<dd><p>Retrieve and process a selected ACARS profile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>profile</strong> (<em>str</em><em>, </em><em>required</em>) – Profile identifier returned by <code class="docutils literal notranslate"><span class="pre">list_profiles()</span></code>.</p></li>
+<li><p><strong>hush</strong> (bool, optional, default is <code class="docutils literal notranslate"><span class="pre">False</span></code>) – Suppress the default parameter-summary output.</p></li>
+<li><p><strong>clean_it</strong> (bool, optional, default is <code class="docutils literal notranslate"><span class="pre">True</span></code>) – Return SounderPy <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> when <code class="docutils literal notranslate"><span class="pre">True</span></code>; return
+the raw source data when <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A SounderPy <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> dictionary containing the aircraft
+profile and associated metadata. See
+<a class="reference internal" href="clean_data_scheme.html#clean-data-scheme"><span class="std std-ref">clean_data schema</span></a>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<section id="acars-data-retrieval-example">
+<span id="acarslists"></span><h3>ACARS Data Retrieval Example<a class="headerlink" href="#acars-data-retrieval-example" title="Link to this heading"></a></h3>
+<p>Create an ACARS archive connection:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sounderpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">spy</span>
+
+<span class="n">acars</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">acars_data</span><span class="p">(</span><span class="s2">&quot;2024&quot;</span><span class="p">,</span> <span class="s2">&quot;05&quot;</span><span class="p">,</span> <span class="s2">&quot;21&quot;</span><span class="p">,</span> <span class="s2">&quot;18&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>List the profiles available during that hour:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profiles</span> <span class="o">=</span> <span class="n">acars</span><span class="o">.</span><span class="n">list_profiles</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">profiles</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Retrieve one of the returned profile IDs:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">acars</span><span class="o">.</span><span class="n">get_profile</span><span class="p">(</span><span class="n">profiles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The returned profile can then be used with SounderPy’s plotting and analysis
+tools:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Profile identifiers typically contain an airport/site identifier and observation
+time, for example:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ATL_1450
+AUS_1430
+BNA_1420
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Scientific consideration:</strong> ACARS profiles are aircraft observations and
+are often shallower than radiosonde profiles. Many profiles extend only
+through the lower or middle troposphere rather than reaching traditional
+sounding-top levels near 100 hPa.</p>
+<p>Aircraft profiles may also contain occasional quality-control issues,
+including unrealistic dewpoints or wind values. Users should inspect the
+profile before interpreting derived thermodynamic or kinematic parameters.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The contents of <code class="docutils literal notranslate"><span class="pre">list_profiles()</span></code> vary by date and hour. If no profiles
+are returned, try a nearby hour or a different date.</p>
+</div>
+<hr class="docutils" />
+</section>
+</section>
+<section id="what-does-sounderpy-return">
+<span id="datadescription"></span><h2>What Does SounderPy Return?<a class="headerlink" href="#what-does-sounderpy-return" title="Link to this heading"></a></h2>
+<p>SounderPy retrieval functions return a <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> dictionary containing
+the atmospheric profile and associated metadata.</p>
+<p>The core fields are:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>p          pressure
+z          height
+T          temperature
+Td         dewpoint
+u          u-component wind
+v          v-component wind
+site_info  profile metadata
+</pre></div>
+</div>
+<p>Some sources may also provide fields such as <code class="docutils literal notranslate"><span class="pre">rh</span></code>, <code class="docutils literal notranslate"><span class="pre">omega</span></code>, and <code class="docutils literal notranslate"><span class="pre">titles</span></code>.</p>
+<p>For the complete structure, units, metadata fields, and custom-data
+requirements, see <a class="reference internal" href="clean_data_scheme.html#clean-data-scheme"><span class="std std-ref">clean_data schema</span></a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="community.html" class="btn btn-neutral float-left" title="🌍 Community" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="customdatasources.html" class="btn btn-neutral float-right" title="✏️ Custom Data Sources" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kyle J Gillett.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

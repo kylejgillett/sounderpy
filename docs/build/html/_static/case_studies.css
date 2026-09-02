@@ -1,0 +1,22 @@
+
+.case-study-summary {
+    margin: 1.25rem 0;
+    padding: 1rem 1.2rem;
+    border-left: 4px solid var(--color-brand-primary, #4066a5);
+    background: var(--color-background-secondary, #f7f8fa);
+}
+
+.case-study-timeline {
+    margin: 1.25rem 0;
+}
+
+.case-study-hero img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.45rem;
+}
+
+.case-study-figure figcaption,
+.case-study-figure .caption {
+    margin-top: 2rem;
+}

@@ -1,0 +1,362 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🗺️ Maps &amp; Radar &mdash; SounderPy v3.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/homepage.css?v=c01db7d2" />
+      <link rel="stylesheet" type="text/css" href="../_static/gallery.css?v=6ceaf42b" />
+      <link rel="stylesheet" type="text/css" href="../_static/case_studies.css?v=0461955f" />
+
+  
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b4d93468"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="🧪 Parcel Settings" href="parcel_settings.html" />
+    <link rel="prev" title="🎨 Plot Appearance &amp; Accessibility" href="plot_appearance.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SounderPy
+              <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">🚀 Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">📖 About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">❓ Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">🌍 Community</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../customdatasources.html">✏️ Custom Data Sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clean_data_scheme.html">🧼 The <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plottingdata.html">📈 Tools for Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpertools.html">🛠️ Helper Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">💻 Command Line Interface (CLI)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../beginners_sounderpy_cookbook.html">👨‍🍳 SounderPy Beginner’s Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examplegallery.html">📊 Plot Gallery</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">📚 Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plot_appearance.html">🎨 Plot Appearance &amp; Accessibility</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">🗺️ Maps &amp; Radar</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#retrieve-an-example-sounding">Retrieve an Example Sounding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disable-the-map">Disable the Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#display-a-map-without-radar">Display a Map without Radar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#change-the-map-extent">Change the Map Extent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#single-site-radar">Single-Site Radar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radar-mosaic">Radar Mosaic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#radar-timing">Radar Timing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-same-options-on-hodographs">The Same Options on Hodographs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cli-examples">CLI Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="parcel_settings.html">🧪 Parcel Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hodograph_options.html">🌀 Hodograph Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_sources.html">🌎 Working with Data Sources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="composite_soundings.html">📚 Composite Soundings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_data.html">💾 Exporting Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_workflows.html">💻 Command Line Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tutorial-overview">Tutorial Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#gallery-figures">Gallery Figures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../case_studies/mound_city_20240828.html">🌪️ Case Study: Mound City, SD</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SounderPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">📚 Tutorials</a></li>
+      <li class="breadcrumb-item active">🗺️ Maps &amp; Radar</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/maps_radar.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="maps-radar">
+<span id="tutorial-maps-radar"></span><h1>🗺️ Maps &amp; Radar<a class="headerlink" href="#maps-radar" title="Link to this heading"></a></h1>
+<p>SounderPy sounding and hodograph plots can include a geographic inset showing
+the profile location and, when available, radar reflectivity.</p>
+<p>This tutorial covers:</p>
+<ul class="simple">
+<li><p>disabling the map entirely;</p></li>
+<li><p>displaying the map without radar;</p></li>
+<li><p>changing the map extent;</p></li>
+<li><p>displaying single-site WSR-88D reflectivity;</p></li>
+<li><p>displaying recent CONUS mosaic reflectivity;</p></li>
+<li><p>selecting the radar valid time.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Map and radar features require internet access to external data and mapping
+services. Radar availability also depends on the requested date, location,
+and upstream archive.</p>
+</div>
+<hr class="docutils" />
+<section id="retrieve-an-example-sounding">
+<h2>Retrieve an Example Sounding<a class="headerlink" href="#retrieve-an-example-sounding" title="Link to this heading"></a></h2>
+<p>The archived examples use the OAX sounding from 16 June 2014 at 18 UTC:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sounderpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">spy</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span>
+    <span class="s2">&quot;OAX&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;2014&quot;</span><span class="p">,</span> <span class="s2">&quot;06&quot;</span><span class="p">,</span> <span class="s2">&quot;16&quot;</span><span class="p">,</span> <span class="s2">&quot;18&quot;</span><span class="p">,</span>
+    <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="disable-the-map">
+<h2>Disable the Map<a class="headerlink" href="#disable-the-map" title="Link to this heading"></a></h2>
+<p>Set <code class="docutils literal notranslate"><span class="pre">map_zoom=0</span></code> to hide the map inset:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/map_off.png"><img alt="SounderPy sounding with the map disabled" class="align-center" src="../_images/map_off.png" style="width: 85%;" />
+</a>
+<p>This is useful when:</p>
+<ul class="simple">
+<li><p>the map does not add useful context;</p></li>
+<li><p>you are creating a cleaner publication figure;</p></li>
+<li><p>you are working with limited or no network connectivity.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="display-a-map-without-radar">
+<h2>Display a Map without Radar<a class="headerlink" href="#display-a-map-without-radar" title="Link to this heading"></a></h2>
+<p>Set <code class="docutils literal notranslate"><span class="pre">radar=None</span></code> while keeping <code class="docutils literal notranslate"><span class="pre">map_zoom</span></code> greater than zero:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/map_only.png"><img alt="SounderPy sounding with map but no radar" class="align-center" src="../_images/map_only.png" style="width: 85%;" />
+</a>
+</section>
+<hr class="docutils" />
+<section id="change-the-map-extent">
+<h2>Change the Map Extent<a class="headerlink" href="#change-the-map-extent" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">map_zoom</span></code> controls the size of the geographic area shown around the profile
+location.</p>
+<p>For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/map_zoom_4.png"><img alt="SounderPy sounding with a larger map extent" class="align-center" src="../_images/map_zoom_4.png" style="width: 85%;" />
+</a>
+<p>Use smaller or larger values depending on the geographic context you want to
+show. Setting <code class="docutils literal notranslate"><span class="pre">map_zoom=0</span></code> removes the inset completely.</p>
+</section>
+<hr class="docutils" />
+<section id="single-site-radar">
+<h2>Single-Site Radar<a class="headerlink" href="#single-site-radar" title="Link to this heading"></a></h2>
+<p>Set <code class="docutils literal notranslate"><span class="pre">radar=&quot;single&quot;</span></code> to request reflectivity from the nearest supported
+WSR-88D site:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="s2">&quot;single&quot;</span><span class="p">,</span>
+    <span class="n">radar_time</span><span class="o">=</span><span class="s2">&quot;sounding&quot;</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/radar_single.png"><img alt="SounderPy sounding with single-site radar reflectivity" class="align-center" src="../_images/radar_single.png" style="width: 85%;" />
+</a>
+<p>Single-site radar availability depends on the radar site and requested time.</p>
+</section>
+<hr class="docutils" />
+<section id="radar-mosaic">
+<h2>Radar Mosaic<a class="headerlink" href="#radar-mosaic" title="Link to this heading"></a></h2>
+<p>Set <code class="docutils literal notranslate"><span class="pre">radar=&quot;mosaic&quot;</span></code> to use the supported CONUS reflectivity mosaic:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="s2">&quot;mosaic&quot;</span><span class="p">,</span>
+    <span class="n">radar_time</span><span class="o">=</span><span class="s2">&quot;sounding&quot;</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/radar_mosaic.png"><img alt="SounderPy sounding with radar mosaic" class="align-center" src="../_images/radar_mosaic.png" style="width: 85%;" />
+</a>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Mosaic reflectivity is a recent-data product. Historical soundings outside
+the supported mosaic window should use <code class="docutils literal notranslate"><span class="pre">radar=&quot;single&quot;</span></code> when archived
+single-site radar is available, or <code class="docutils literal notranslate"><span class="pre">radar=None</span></code>.</p>
+</div>
+</section>
+<hr class="docutils" />
+<section id="radar-timing">
+<h2>Radar Timing<a class="headerlink" href="#radar-timing" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">radar_time</span></code> controls which time is requested for radar data.</p>
+<p>Use the sounding valid time:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">radar_time</span><span class="o">=</span><span class="s2">&quot;sounding&quot;</span>
+</pre></div>
+</div>
+<p>or request the current time:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">radar_time</span><span class="o">=</span><span class="s2">&quot;now&quot;</span>
+</pre></div>
+</div>
+<p>A typical sounding-time request is:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="s2">&quot;single&quot;</span><span class="p">,</span>
+    <span class="n">radar_time</span><span class="o">=</span><span class="s2">&quot;sounding&quot;</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="the-same-options-on-hodographs">
+<h2>The Same Options on Hodographs<a class="headerlink" href="#the-same-options-on-hodographs" title="Link to this heading"></a></h2>
+<p>The standalone hodograph accepts the same map/radar arguments:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_hodograph</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="s2">&quot;single&quot;</span><span class="p">,</span>
+    <span class="n">radar_time</span><span class="o">=</span><span class="s2">&quot;sounding&quot;</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_hodograph</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="cli-examples">
+<h2>CLI Examples<a class="headerlink" href="#cli-examples" title="Link to this heading"></a></h2>
+<p>Map disabled:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot<span class="w"> </span>sounding<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--map-zoom<span class="w"> </span><span class="m">0</span>
+</pre></div>
+</div>
+<p>The current CLI exposes map zoom directly. More specialized radar selection is
+available through the Python plotting API.</p>
+</section>
+<hr class="docutils" />
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<p>If the map works but radar does not:</p>
+<ul class="simple">
+<li><p>confirm that the requested radar mode is supported;</p></li>
+<li><p>confirm that radar data exist for the requested time;</p></li>
+<li><p>try <code class="docutils literal notranslate"><span class="pre">radar=None</span></code> to determine whether the issue is radar-specific;</p></li>
+<li><p>for mosaic data, try a recent sounding;</p></li>
+<li><p>for older cases, try <code class="docutils literal notranslate"><span class="pre">radar=&quot;single&quot;</span></code>.</p></li>
+</ul>
+<p>If neither map nor radar is needed, <code class="docutils literal notranslate"><span class="pre">map_zoom=0</span></code> provides the simplest and
+most robust plotting path.</p>
+</section>
+<hr class="docutils" />
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<p>Continue to <a class="reference internal" href="parcel_settings.html"><span class="doc">Parcel Settings</span></a> to customize the parcel
+traces displayed on a sounding.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../plottingdata.html"><span class="doc">Plotting Data</span></a></p></li>
+<li><p><a class="reference internal" href="../troubleshooting.html"><span class="doc">Troubleshooting</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="plot_appearance.html" class="btn btn-neutral float-left" title="🎨 Plot Appearance &amp; Accessibility" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="parcel_settings.html" class="btn btn-neutral float-right" title="🧪 Parcel Settings" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kyle J Gillett.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

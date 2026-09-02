@@ -1,0 +1,406 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🌪️ Case Study: Mound City, SD &mdash; SounderPy v3.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/homepage.css?v=c01db7d2" />
+      <link rel="stylesheet" type="text/css" href="../_static/gallery.css?v=6ceaf42b" />
+      <link rel="stylesheet" type="text/css" href="../_static/case_studies.css?v=0461955f" />
+
+  
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b4d93468"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="💻 Command Line Workflows" href="../tutorials/cli_workflows.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SounderPy
+              <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">🚀 Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">📖 About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">❓ Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">🌍 Community</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../customdatasources.html">✏️ Custom Data Sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clean_data_scheme.html">🧼 The <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plottingdata.html">📈 Tools for Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpertools.html">🛠️ Helper Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">💻 Command Line Interface (CLI)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../beginners_sounderpy_cookbook.html">👨‍🍳 SounderPy Beginner’s Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examplegallery.html">📊 Plot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">📚 Tutorials</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">🌪️ Case Study: Mound City, SD</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#case-study-goals">Case Study Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#event-timeline">Event Timeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#a-note-on-spatial-representativeness">A Note on Spatial Representativeness</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#morning-observed-environment">1. Morning Observed Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#morning-hrrr-forecast">2. Morning HRRR Forecast</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#evening-observed-environment">3. Evening Observed Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#local-rap-reanalysis">4. Local RAP Reanalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#compare-the-profiles">5. Compare the Profiles</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-thermodynamic-profile">The Thermodynamic Profile</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-kinematic-profile">The Kinematic Profile</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#event-context">Event Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#continue-exploring">Continue Exploring</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SounderPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">🌪️ Case Study: Mound City, SD</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/case_studies/mound_city_20240828.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="case-study-mound-city-sd">
+<span id="case-study-mound-city-20240828"></span><h1>🌪️ Case Study: Mound City, SD<a class="headerlink" href="#case-study-mound-city-sd" title="Link to this heading"></a></h1>
+<figure class="case-study-figure align-center">
+<a class="reference internal image-reference" href="../_images/header.jpg"><img alt="Supercell producing a tornado west of Mound City, South Dakota" src="../_images/header.jpg" style="width: 70%;" />
+</a>
+</figure>
+<p></p>
+<blockquote>
+<div><p><em>A wide view of the supercell as it was producing a tornado west of
+Mound City, South Dakota.</em></p>
+</div></blockquote>
+<hr class="docutils" />
+<p>On the evening of 28 August 2024, a supercell produced multiple tornadoes near
+Mound City, South Dakota along the intersection of the Missouri River and the
+South Dakota-North Dakota border. National Weather Service Aberdeen’s damage
+survey rated the first major tornado <strong>EF2</strong>, with estimated peak winds of <strong>130 mph</strong>,
+a path length of <strong>5.42 miles</strong>, and a maximum width of <strong>200 yards</strong>.</p>
+<p>The tornado began at approximately <strong>7:50 PM CDT</strong> on 28 August
+(<strong>00:50 UTC on 29 August</strong>) west-southwest of Mound City and persisted through
+approximately 8:20 PM CDT. The event later produced additional tornadic
+circulations east and southeast of Mound City.</p>
+<p>A complete NWS survey and review of this event can be found from <a class="reference external" href="https://www.weather.gov/abr/August28th2024TornadoEvent">NWS Aberdeen: 28 August 2024 Tornado Event</a></p>
+<hr class="docutils" />
+<section id="case-study-goals">
+<h2>Case Study Goals<a class="headerlink" href="#case-study-goals" title="Link to this heading"></a></h2>
+<p>This example asks a simple forecasting question:</p>
+<p><strong>How did the thermodynamic and kinematic environment evolve from the morning
+forecast period into the time of tornadogenesis?</strong></p>
+<p>We will compare four profiles:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 24.0%" />
+<col style="width: 22.0%" />
+<col style="width: 22.0%" />
+<col style="width: 32.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Profile</p></th>
+<th class="head"><p>Valid Time</p></th>
+<th class="head"><p>Location</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Morning ABR RAOB</strong></p></td>
+<td><p>12 UTC 28 Aug</p></td>
+<td><p>Aberdeen, SD</p></td>
+<td><p>Observed morning environment</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>12 UTC HRRR Forecast</strong></p></td>
+<td><p>01 UTC 29 Aug</p></td>
+<td><p>Mobridge, SD (KMBG)</p></td>
+<td><p>Morning model forecast for event time</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Evening ABR RAOB</strong></p></td>
+<td><p>00 UTC 29 Aug</p></td>
+<td><p>Aberdeen, SD</p></td>
+<td><p>Observed evening regional environment</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>RAP Analysis</strong></p></td>
+<td><p>01 UTC 29 Aug</p></td>
+<td><p>Near the tornado track</p></td>
+<td><p>Local model analysis during tornadogenesis</p></td>
+</tr>
+</tbody>
+</table>
+<p>This combination lets us examine three different questions:</p>
+<ol class="arabic simple">
+<li><p>How did the observed regional environment change from 12 UTC to 00 UTC?</p></li>
+<li><p>What did the morning HRRR forecast suggest the environment would look like
+near event time?</p></li>
+<li><p>How did a local RAP analysis near Mound City compare with the regional ABR
+observation and morning forecast?</p></li>
+</ol>
+</section>
+<section id="event-timeline">
+<h2>Event Timeline<a class="headerlink" href="#event-timeline" title="Link to this heading"></a></h2>
+<p>The first tornado occurred shortly after 00 UTC on 29 August.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>28 August 2024
+
+12 UTC /  7:00 AM CDT   ABR morning RAOB
+       │
+       │     HRRR 12 UTC forecast evolves toward event time
+       │
+00 UTC /  7:00 PM CDT   ABR evening RAOB
+       │
+00:50 UTC / 7:50 PM CDT EF2 tornado begins
+       │
+01 UTC /  8:00 PM CDT   RAP analysis / HRRR forecast comparison
+       │
+01:20 UTC / 8:20 PM CDT first EF2 tornado ends
+</pre></div>
+</div>
+</section>
+<section id="a-note-on-spatial-representativeness">
+<h2>A Note on Spatial Representativeness<a class="headerlink" href="#a-note-on-spatial-representativeness" title="Link to this heading"></a></h2>
+<p>The ABR radiosonde is an important observed regional profile, but Aberdeen is
+east of the Mound City tornado track. It should therefore be interpreted as a
+<strong>regional observed environment</strong>, not as a direct measurement of the
+near-storm inflow at Mound City.</p>
+<p>The RAP analysis is sampled near the tornado track to provide a more local
+estimate of the environment. Likewise, the HRRR BUFKIT profile uses <strong>KMBG
+(Mobridge)</strong> because it is much closer to the Mound City area than Aberdeen.</p>
+<p>This distinction is important in severe-weather analysis: proximity soundings
+from models and observations each provide useful but different information.</p>
+</section>
+<hr class="docutils" />
+<section id="morning-observed-environment">
+<h2>1. Morning Observed Environment<a class="headerlink" href="#morning-observed-environment" title="Link to this heading"></a></h2>
+<p>First retrieve the Aberdeen (<cite>KABR</cite>) observed sounding from the morning of the event:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sounderpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">spy</span>
+
+<span class="n">abr_12z</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s2">&quot;KABR&quot;</span><span class="p">,</span> <span class="s2">&quot;2024&quot;</span><span class="p">,</span> <span class="s2">&quot;08&quot;</span><span class="p">,</span> <span class="s2">&quot;28&quot;</span><span class="p">,</span> <span class="s2">&quot;12&quot;</span><span class="p">,</span> <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Plot the sounding:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">abr_12z</span><span class="p">,</span> <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/abr_12z_sounding.png"><img alt="Aberdeen 12 UTC 28 August 2024 observed sounding" class="align-center" src="../_images/abr_12z_sounding.png" style="width: 88%;" />
+</a>
+<p></p>
+<ul class="simple">
+<li><p>The 12 UTC sounding provides a baseline for the morning environment</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="morning-hrrr-forecast">
+<h2>2. Morning HRRR Forecast<a class="headerlink" href="#morning-hrrr-forecast" title="Link to this heading"></a></h2>
+<p>A useful forecast comparison is the <strong>12 UTC HRRR run</strong>, initialized around
+7 AM CDT, evaluated at approximately 01 UTC on 29 August.</p>
+<p>From a 12 UTC initialization, 01 UTC corresponds to forecast hour 13.</p>
+<p>Using the Mobridge, SD (<cite>KMBG</cite>) BUFKIT site:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hrrr_f13</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_bufkit_data</span><span class="p">(</span><span class="s2">&quot;hrrr&quot;</span><span class="p">,</span> <span class="s2">&quot;KMBG&quot;</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="s2">&quot;2024&quot;</span><span class="p">,</span> <span class="s2">&quot;08&quot;</span><span class="p">,</span> <span class="s2">&quot;28&quot;</span><span class="p">,</span> <span class="s2">&quot;12&quot;</span><span class="p">,</span> <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">,)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/hrrr_12z_f13_sounding.png"><img alt="HRRR 12 UTC forecast valid near 01 UTC 29 August 2024 at Mobridge" class="align-center" src="../_images/hrrr_12z_f13_sounding.png" style="width: 88%;" />
+</a>
+<p></p>
+<ul class="simple">
+<li><p>This profile represents what a forecaster using the morning HRRR could have examined for the environment near the expected event time.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>BUFKIT archive availability can vary by model, station, and cycle. The
+companion script uses KMBG because HRRR BUFKIT data are available for that
+station in the archive.</p>
+</div>
+</section>
+<hr class="docutils" />
+<section id="evening-observed-environment">
+<h2>3. Evening Observed Environment<a class="headerlink" href="#evening-observed-environment" title="Link to this heading"></a></h2>
+<p>The nominal 00 UTC Aberdeen (<cite>KABR</cite>) sounding was taken near the beginning of the
+evening severe-weather period:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">abr_00z</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s2">&quot;ABR&quot;</span><span class="p">,</span> <span class="s2">&quot;2024&quot;</span><span class="p">,</span> <span class="s2">&quot;08&quot;</span><span class="p">,</span> <span class="s2">&quot;29&quot;</span><span class="p">,</span> <span class="s2">&quot;00&quot;</span><span class="p">,</span> <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/abr_00z_sounding.png"><img alt="Aberdeen 00 UTC 29 August 2024 observed sounding" class="align-center" src="../_images/abr_00z_sounding.png" style="width: 88%;" />
+</a>
+<p></p>
+<ul class="simple">
+<li><p>Comparing the 12 UTC and 00 UTC observations provides a direct look at the regional environmental evolution over the course of the day.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="local-rap-reanalysis">
+<h2>4. Local RAP Reanalysis<a class="headerlink" href="#local-rap-reanalysis" title="Link to this heading"></a></h2>
+<p>The first EF2 tornado began around 00:50 UTC. An hourly RAP analysis at 01 UTC
+therefore provides a useful near-event model analysis.</p>
+<p>The sample location below is near the documented first tornado track:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mound_city</span> <span class="o">=</span> <span class="p">[</span><span class="mf">45.68</span><span class="p">,</span> <span class="o">-</span><span class="mf">100.18</span><span class="p">]</span>
+
+<span class="n">rap_01z</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_model_data</span><span class="p">(</span><span class="s2">&quot;rap-ruc&quot;</span><span class="p">,</span> <span class="n">mound_city</span><span class="p">,</span> <span class="s2">&quot;2024&quot;</span><span class="p">,</span> <span class="s2">&quot;08&quot;</span><span class="p">,</span> <span class="s2">&quot;29&quot;</span><span class="p">,</span> <span class="s2">&quot;01&quot;</span><span class="p">,</span> <span class="n">box_avg_size</span><span class="o">=</span><span class="mf">0.10</span><span class="p">,</span> <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/rap_01z_sounding.png"><img alt="RAP analysis near Mound City valid 01 UTC 29 August 2024" class="align-center" src="../_images/rap_01z_sounding.png" style="width: 88%;" />
+</a>
+<p></p>
+<ul class="simple">
+<li><p>The RAP profile is not an observation, but its local sampling makes it useful for evaluating spatial differences between the Aberdeen sounding and the environment near the tornadic supercell.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="compare-the-profiles">
+<h2>5. Compare the Profiles<a class="headerlink" href="#compare-the-profiles" title="Link to this heading"></a></h2>
+<p>SounderPy can place all four profiles on the same thermodynamic diagram:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">abr_12z</span><span class="p">,</span> <span class="n">hrrr_f13</span><span class="p">,</span> <span class="n">abr_00z</span><span class="p">,</span> <span class="n">rap_01z</span><span class="p">]</span>
+
+<span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span><span class="n">profiles</span><span class="p">,</span> <span class="n">shade_between</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dark_mode</span><span class="o">=</span><span class="s1">&#39;True&#39;</span><span class="p">,</span>
+    <span class="n">colors_to_use</span><span class="o">=</span><span class="p">[</span> <span class="s2">&quot;tab:blue&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:orange&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:green&quot;</span><span class="p">,</span> <span class="s2">&quot;tab:red&quot;</span><span class="p">],</span>
+    <span class="n">lw_to_use</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;mound_city_environment_composite.png&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/environment_composite.png"><img alt="Composite sounding comparison for the Mound City tornado case" class="align-center" src="../_images/environment_composite.png" style="width: 95%;" />
+</a>
+<p></p>
+<section id="the-thermodynamic-profile">
+<h3>The Thermodynamic Profile<a class="headerlink" href="#the-thermodynamic-profile" title="Link to this heading"></a></h3>
+<ul>
+<li><p>The composite is particularly useful for comparing:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>warming between the morning and evening observations;</p></li>
+<li><p>changes in boundary-layer moisture;</p></li>
+<li><p>differences between the HRRR forecast and the analyzed/observed environment;</p></li>
+<li><p>model-versus-observation differences in vertical temperature structure.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</section>
+<section id="the-kinematic-profile">
+<h3>The Kinematic Profile<a class="headerlink" href="#the-kinematic-profile" title="Link to this heading"></a></h3>
+<ul>
+<li><p>When comparing the hodographs, consider:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>How much <strong>low-level curvature</strong> was present in each profile?</p></li>
+<li><p>How did the low-level winds differ between the regional ABR observation and</p></li>
+</ul>
+<p>the near-storm RAP analysis?
+* How closely did the <strong>12 UTC HRRR forecast</strong> resemble the wind profile near
+the time of tornadogenesis?
+* How did the magnitude and orientation of <strong>deep-layer shear</strong> compare among
+the forecast, observation, and analysis?
+* Were important changes confined primarily to the low levels, or did the
+entire wind profile evolve?</p>
+</div></blockquote>
+</li>
+</ul>
+</section>
+</section>
+<section id="event-context">
+<h2>Event Context<a class="headerlink" href="#event-context" title="Link to this heading"></a></h2>
+<p>The NWS Aberdeen event summary describes a supercell that developed from a
+storm in western Corson County, moved into southern North Dakota, and later
+interacted with newly developing storms to its south before moving east across
+the Missouri River. After crossing the river, the storm produced multiple
+tornadoes across Campbell County.</p>
+<p>The first major tornado west/southwest of Mound City was rated EF2. The damage
+survey documented transmission-tower damage as well as damage to farmsteads,
+outbuildings, equipment, trees, and a travel trailer.</p>
+<p>For the official event chronology, damage survey, radar imagery, photographs,
+and tornado-track information, see:</p>
+<p><a class="reference external" href="https://www.weather.gov/abr/August28th2024TornadoEvent">National Weather Service Aberdeen — August 28th 2024 Tornado Event</a></p>
+</section>
+<hr class="docutils" />
+<section id="continue-exploring">
+<h2>Continue Exploring<a class="headerlink" href="#continue-exploring" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../tutorials/data_sources.html"><span class="doc">Working with Data Sources</span></a></p></li>
+<li><p><a class="reference internal" href="../tutorials/composite_soundings.html"><span class="doc">Composite Soundings</span></a></p></li>
+<li><p><a class="reference internal" href="../tutorials/hodograph_options.html"><span class="doc">Hodograph Options</span></a></p></li>
+<li><p><a class="reference internal" href="../examplegallery.html"><span class="doc">Plot Gallery</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../tutorials/cli_workflows.html" class="btn btn-neutral float-left" title="💻 Command Line Workflows" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kyle J Gillett.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,440 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>💻 Command Line Workflows &mdash; SounderPy v3.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/homepage.css?v=c01db7d2" />
+      <link rel="stylesheet" type="text/css" href="../_static/gallery.css?v=6ceaf42b" />
+      <link rel="stylesheet" type="text/css" href="../_static/case_studies.css?v=0461955f" />
+
+  
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b4d93468"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="🌪️ Case Study: Mound City, SD" href="../case_studies/mound_city_20240828.html" />
+    <link rel="prev" title="💾 Exporting Data" href="exporting_data.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SounderPy
+              <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">🚀 Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">📖 About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">❓ Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">🌍 Community</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../customdatasources.html">✏️ Custom Data Sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clean_data_scheme.html">🧼 The <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plottingdata.html">📈 Tools for Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpertools.html">🛠️ Helper Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">💻 Command Line Interface (CLI)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../beginners_sounderpy_cookbook.html">👨‍🍳 SounderPy Beginner’s Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examplegallery.html">📊 Plot Gallery</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">📚 Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plot_appearance.html">🎨 Plot Appearance &amp; Accessibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="maps_radar.html">🗺️ Maps &amp; Radar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parcel_settings.html">🧪 Parcel Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hodograph_options.html">🌀 Hodograph Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_sources.html">🌎 Working with Data Sources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="composite_soundings.html">📚 Composite Soundings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_data.html">💾 Exporting Data</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">💻 Command Line Workflows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#check-the-installation">Check the Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#observed-soundings">Observed Soundings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-reanalysis-profiles">Model/Reanalysis Profiles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bufkit-forecasts">BUFKIT Forecasts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acars-profiles">ACARS Profiles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-a-sounding-plot">Create a Sounding Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-a-hodograph">Create a Hodograph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plot-styling">Plot Styling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#export-a-profile">Export a Profile</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#combine-retrieval-export-and-plotting">Combine Retrieval, Export, and Plotting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#json-output">JSON Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#json-and-a-saved-plot">JSON and a Saved Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#verbose-mode">Verbose Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#simple-shell-batch-workflow">Simple Shell Batch Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#check-exit-status-in-scripts">Check Exit Status in Scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-python-m-sounderpy">Use <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">sounderpy</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tutorial-overview">Tutorial Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#gallery-figures">Gallery Figures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../case_studies/mound_city_20240828.html">🌪️ Case Study: Mound City, SD</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SounderPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">📚 Tutorials</a></li>
+      <li class="breadcrumb-item active">💻 Command Line Workflows</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/cli_workflows.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="command-line-workflows">
+<span id="tutorial-cli-workflows"></span><h1>💻 Command Line Workflows<a class="headerlink" href="#command-line-workflows" title="Link to this heading"></a></h1>
+<p>SounderPy includes a command line interface (CLI) for common retrieval,
+plotting, export, and machine-readable output workflows.</p>
+<p>The CLI is useful when:</p>
+<ul class="simple">
+<li><p>you want a quick sounding without opening Python;</p></li>
+<li><p>you want to retrieve and save a profile in one command;</p></li>
+<li><p>you want to script repeated SounderPy operations in a shell;</p></li>
+<li><p>another program needs SounderPy data as JSON.</p></li>
+</ul>
+<p>For the full command reference, see <a class="reference internal" href="../cli.html"><span class="doc">Command Line Tool</span></a>.</p>
+<hr class="docutils" />
+<section id="check-the-installation">
+<h2>Check the Installation<a class="headerlink" href="#check-the-installation" title="Link to this heading"></a></h2>
+<p>Display help:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>--help
+</pre></div>
+</div>
+<p>Check the installed version:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>--version
+</pre></div>
+</div>
+<p>The CLI can also be launched as a Python module:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>sounderpy<span class="w"> </span>--help
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="observed-soundings">
+<h2>Observed Soundings<a class="headerlink" href="#observed-soundings" title="Link to this heading"></a></h2>
+<p>Retrieve an observed RAOB/IGRA profile:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span>
+</pre></div>
+</div>
+<p>The default terminal output is a concise profile summary.</p>
+</section>
+<hr class="docutils" />
+<section id="model-reanalysis-profiles">
+<h2>Model/Reanalysis Profiles<a class="headerlink" href="#model-reanalysis-profiles" title="Link to this heading"></a></h2>
+<p>Retrieve RAP/RUC:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>model<span class="w"> </span>rap-ruc<span class="w"> </span><span class="m">44</span>.58<span class="w"> </span>-100.82<span class="w"> </span><span class="m">2024</span>-08-28<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--box-size<span class="w"> </span><span class="m">0</span>.25
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="bufkit-forecasts">
+<h2>BUFKIT Forecasts<a class="headerlink" href="#bufkit-forecasts" title="Link to this heading"></a></h2>
+<p>Most recent supported run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>bufkit<span class="w"> </span>gfs<span class="w"> </span>KMOP<span class="w"> </span><span class="m">6</span>
+</pre></div>
+</div>
+<p>Archived run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>bufkit<span class="w"> </span>gfs<span class="w"> </span>KMOP<span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--run<span class="w"> </span><span class="m">2023</span>-08-05<span class="w"> </span><span class="m">12</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="acars-profiles">
+<h2>ACARS Profiles<a class="headerlink" href="#acars-profiles" title="Link to this heading"></a></h2>
+<p>List available profiles:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>acars<span class="w"> </span>list<span class="w"> </span><span class="m">2024</span>-05-21<span class="w"> </span><span class="m">18</span>
+</pre></div>
+</div>
+<p>Retrieve one profile returned by the list:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>acars<span class="w"> </span>get<span class="w"> </span><span class="m">2024</span>-05-21<span class="w"> </span><span class="m">18</span><span class="w"> </span>PROFILE_ID
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="create-a-sounding-plot">
+<h2>Create a Sounding Plot<a class="headerlink" href="#create-a-sounding-plot" title="Link to this heading"></a></h2>
+<p>Interactive:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot<span class="w"> </span>sounding
+</pre></div>
+</div>
+<p>Save the plot:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot<span class="w"> </span>sounding<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--map-zoom<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot-file<span class="w"> </span>oax_sounding.png
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="create-a-hodograph">
+<h2>Create a Hodograph<a class="headerlink" href="#create-a-hodograph" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot<span class="w"> </span>hodograph<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--map-zoom<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot-file<span class="w"> </span>oax_hodograph.png
+</pre></div>
+</div>
+<p>Storm-relative:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot<span class="w"> </span>hodograph<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--storm-relative<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--map-zoom<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot-file<span class="w"> </span>oax_sr_hodograph.png
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="plot-styling">
+<h2>Plot Styling<a class="headerlink" href="#plot-styling" title="Link to this heading"></a></h2>
+<p>Dark mode:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot<span class="w"> </span>sounding<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--dark-mode<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--map-zoom<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot-file<span class="w"> </span>oax_dark.png
+</pre></div>
+</div>
+<p>Color-deficiency-friendly sounding:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot<span class="w"> </span>sounding<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--color-blind<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--map-zoom<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot-file<span class="w"> </span>oax_colorblind.png
+</pre></div>
+</div>
+<p>Theta/theta-e:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot<span class="w"> </span>sounding<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--show-theta<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--map-zoom<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot-file<span class="w"> </span>oax_theta.png
+</pre></div>
+</div>
+<p>Higher DPI:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot<span class="w"> </span>sounding<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--map-zoom<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--dpi<span class="w"> </span><span class="m">200</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot-file<span class="w"> </span>oax_200dpi.png
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="export-a-profile">
+<h2>Export a Profile<a class="headerlink" href="#export-a-profile" title="Link to this heading"></a></h2>
+<p>CSV:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>oax.csv
+</pre></div>
+</div>
+<p>SHARPpy:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>oax.snd
+</pre></div>
+</div>
+<p>CM1:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>input_sounding.cm1
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="combine-retrieval-export-and-plotting">
+<h2>Combine Retrieval, Export, and Plotting<a class="headerlink" href="#combine-retrieval-export-and-plotting" title="Link to this heading"></a></h2>
+<p>One retrieval can produce several outputs:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>model<span class="w"> </span>rap-ruc<span class="w"> </span><span class="m">44</span>.58<span class="w"> </span>-100.82<span class="w"> </span><span class="m">2024</span>-08-28<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--box-size<span class="w"> </span><span class="m">0</span>.25<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>rap_profile.csv<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot<span class="w"> </span>sounding<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--map-zoom<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot-file<span class="w"> </span>rap_sounding.png
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="json-output">
+<h2>JSON Output<a class="headerlink" href="#json-output" title="Link to this heading"></a></h2>
+<p>Write <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> to standard output as JSON:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span>--json
+</pre></div>
+</div>
+<p>Redirect it to a file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--json<span class="w"> </span>&gt;<span class="w"> </span>oax.json
+</pre></div>
+</div>
+<p>Validate/pretty-print the output with Python:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span>--json<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>python<span class="w"> </span>-m<span class="w"> </span>json.tool
+</pre></div>
+</div>
+<p>SounderPy preserves quantity units in JSON using <code class="docutils literal notranslate"><span class="pre">value</span></code> and <code class="docutils literal notranslate"><span class="pre">units</span></code>
+fields.</p>
+</section>
+<hr class="docutils" />
+<section id="json-and-a-saved-plot">
+<h2>JSON and a Saved Plot<a class="headerlink" href="#json-and-a-saved-plot" title="Link to this heading"></a></h2>
+<p>Machine-readable JSON can be combined with a saved plot:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--json<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot<span class="w"> </span>sounding<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--map-zoom<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot-file<span class="w"> </span>oax.png<span class="w"> </span>&gt;<span class="w"> </span>oax.json
+</pre></div>
+</div>
+<p>An interactive plot is intentionally not allowed with <code class="docutils literal notranslate"><span class="pre">--json</span></code> because
+standard output must remain clean for machine use.</p>
+</section>
+<hr class="docutils" />
+<section id="verbose-mode">
+<h2>Verbose Mode<a class="headerlink" href="#verbose-mode" title="Link to this heading"></a></h2>
+<p>The CLI hides most of the underlying SounderPy status output by default.</p>
+<p>Show it with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span>--verbose
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="simple-shell-batch-workflow">
+<h2>Simple Shell Batch Workflow<a class="headerlink" href="#simple-shell-batch-workflow" title="Link to this heading"></a></h2>
+<p>Because the CLI is a normal shell command, it can be used in loops.</p>
+<p>For example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span>station<span class="w"> </span><span class="k">in</span><span class="w"> </span>OAX<span class="w"> </span>TOP<span class="w"> </span>DDC<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span>sounderpy<span class="w"> </span>obs<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$station</span><span class="s2">&quot;</span><span class="w"> </span><span class="m">2024</span>-05-21<span class="w"> </span><span class="m">00</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--output<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">station</span><span class="si">}</span><span class="s2">_20240521_00z.csv&quot;</span>
+<span class="k">done</span>
+</pre></div>
+</div>
+<p>Or save several hodographs:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span>station<span class="w"> </span><span class="k">in</span><span class="w"> </span>OAX<span class="w"> </span>TOP<span class="w"> </span>DDC<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span>sounderpy<span class="w"> </span>obs<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$station</span><span class="s2">&quot;</span><span class="w"> </span><span class="m">2024</span>-05-21<span class="w"> </span><span class="m">00</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--plot<span class="w"> </span>hodograph<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--map-zoom<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--plot-file<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">station</span><span class="si">}</span><span class="s2">_hodo.png&quot;</span>
+<span class="k">done</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="check-exit-status-in-scripts">
+<h2>Check Exit Status in Scripts<a class="headerlink" href="#check-exit-status-in-scripts" title="Link to this heading"></a></h2>
+<p>The CLI returns a non-zero exit status when an error occurs, so shell scripts
+can react to failures.</p>
+<p>Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span>--output<span class="w"> </span>oax.csv<span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Sounding retrieved successfully&quot;</span>
+<span class="k">else</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Sounding retrieval failed&quot;</span>
+<span class="k">fi</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="use-python-m-sounderpy">
+<h2>Use <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">sounderpy</span></code><a class="headerlink" href="#use-python-m-sounderpy" title="Link to this heading"></a></h2>
+<p>Every CLI workflow can also use the module entry point:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span>
+</pre></div>
+</div>
+<p>This can be helpful when several Python environments are installed and you want
+to explicitly use the SounderPy installation associated with a particular
+Python interpreter.</p>
+</section>
+<hr class="docutils" />
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<p>You have now reached the end of the core tutorial series.</p>
+<p>Useful reference pages:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../cli.html"><span class="doc">Command Line Tool</span></a></p></li>
+<li><p><a class="reference internal" href="../gettingdata.html"><span class="doc">Getting Data</span></a></p></li>
+<li><p><a class="reference internal" href="../plottingdata.html"><span class="doc">Plotting Data</span></a></p></li>
+<li><p><a class="reference internal" href="../helpertools.html"><span class="doc">Helper Tools</span></a></p></li>
+<li><p><a class="reference internal" href="../examplegallery.html"><span class="doc">Plot Gallery</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="exporting_data.html" class="btn btn-neutral float-left" title="💾 Exporting Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../case_studies/mound_city_20240828.html" class="btn btn-neutral float-right" title="🌪️ Case Study: Mound City, SD" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kyle J Gillett.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

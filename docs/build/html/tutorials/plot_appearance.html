@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎨 Plot Appearance &amp; Accessibility &mdash; SounderPy v3.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/homepage.css?v=c01db7d2" />
+      <link rel="stylesheet" type="text/css" href="../_static/gallery.css?v=6ceaf42b" />
+      <link rel="stylesheet" type="text/css" href="../_static/case_studies.css?v=0461955f" />
+
+  
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b4d93468"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="🗺️ Maps &amp; Radar" href="maps_radar.html" />
+    <link rel="prev" title="📚 Tutorials" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SounderPy
+              <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">🚀 Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">📖 About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">❓ Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">🌍 Community</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../customdatasources.html">✏️ Custom Data Sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clean_data_scheme.html">🧼 The <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plottingdata.html">📈 Tools for Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpertools.html">🛠️ Helper Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">💻 Command Line Interface (CLI)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../beginners_sounderpy_cookbook.html">👨‍🍳 SounderPy Beginner’s Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examplegallery.html">📊 Plot Gallery</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">📚 Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">🎨 Plot Appearance &amp; Accessibility</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#retrieve-the-example-sounding">Retrieve the Example Sounding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#light-and-dark-soundings">Light and Dark Soundings</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#light-mode">Light Mode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dark-mode">Dark Mode</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#light-and-dark-hodographs">Light and Dark Hodographs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#color-deficiency-friendly-soundings">Color-Deficiency-Friendly Soundings</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#standard-colors">Standard Colors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#color-deficiency-friendly-colors">Color-Deficiency-Friendly Colors</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#combining-appearance-options">Combining Appearance Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#saving-figures">Saving Figures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cli-equivalents">CLI Equivalents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="maps_radar.html">🗺️ Maps &amp; Radar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parcel_settings.html">🧪 Parcel Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hodograph_options.html">🌀 Hodograph Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_sources.html">🌎 Working with Data Sources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="composite_soundings.html">📚 Composite Soundings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_data.html">💾 Exporting Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_workflows.html">💻 Command Line Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tutorial-overview">Tutorial Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#gallery-figures">Gallery Figures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../case_studies/mound_city_20240828.html">🌪️ Case Study: Mound City, SD</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SounderPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">📚 Tutorials</a></li>
+      <li class="breadcrumb-item active">🎨 Plot Appearance &amp; Accessibility</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/plot_appearance.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="plot-appearance-accessibility">
+<span id="tutorial-plot-appearance"></span><h1>🎨 Plot Appearance &amp; Accessibility<a class="headerlink" href="#plot-appearance-accessibility" title="Link to this heading"></a></h1>
+<p>SounderPy provides several options for changing the presentation of sounding
+and hodograph figures without changing the underlying atmospheric profile.</p>
+<p>In this tutorial you will:</p>
+<ul class="simple">
+<li><p>retrieve one observed sounding;</p></li>
+<li><p>compare light and dark plotting modes;</p></li>
+<li><p>compare standard and color-deficiency-friendly sounding colors;</p></li>
+<li><p>save figures and control output resolution;</p></li>
+<li><p>combine appearance options;</p></li>
+<li><p>reproduce the same workflow from the SounderPy CLI.</p></li>
+</ul>
+<p>Using the <strong>same profile for each comparison</strong> makes it easier to see exactly
+what each plotting option changes.</p>
+<hr class="docutils" />
+<section id="retrieve-the-example-sounding">
+<h2>Retrieve the Example Sounding<a class="headerlink" href="#retrieve-the-example-sounding" title="Link to this heading"></a></h2>
+<p>The examples use the OAX observed sounding from 16 June 2014 at 18 UTC.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sounderpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">spy</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span>
+    <span class="s2">&quot;OAX&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;2014&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;06&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;16&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;18&quot;</span><span class="p">,</span>
+    <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="light-and-dark-soundings">
+<h2>Light and Dark Soundings<a class="headerlink" href="#light-and-dark-soundings" title="Link to this heading"></a></h2>
+<section id="light-mode">
+<h3>Light Mode<a class="headerlink" href="#light-mode" title="Link to this heading"></a></h3>
+<p>The default SounderPy plot uses a light background:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">dark_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/sounding_light.png"><img alt="Light-mode SounderPy sounding" class="align-center" src="../_images/sounding_light.png" style="width: 85%;" />
+</a>
+</section>
+<section id="dark-mode">
+<h3>Dark Mode<a class="headerlink" href="#dark-mode" title="Link to this heading"></a></h3>
+<p>Set <code class="docutils literal notranslate"><span class="pre">dark_mode=True</span></code> to use the dark-background plotting theme:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/sounding_dark.png"><img alt="Dark-mode SounderPy sounding" class="align-center" src="../_images/sounding_dark.png" style="width: 85%;" />
+</a>
+<p>The profile data and parameter calculations are unchanged; only the
+presentation is different.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="light-and-dark-hodographs">
+<h2>Light and Dark Hodographs<a class="headerlink" href="#light-and-dark-hodographs" title="Link to this heading"></a></h2>
+<p>The same <code class="docutils literal notranslate"><span class="pre">dark_mode</span></code> argument is available for standalone hodographs.</p>
+<table class="gallery-table docutils align-default">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><a class="reference internal image-reference" href="../_images/hodograph_light.png"><img alt="Light-mode SounderPy hodograph" src="../_images/hodograph_light.png" style="width: 100%;" />
+</a>
+<p><strong>Light Mode</strong></p>
+</td>
+<td><a class="reference internal image-reference" href="../_images/hodograph_dark.png"><img alt="Dark-mode SounderPy hodograph" src="../_images/hodograph_dark.png" style="width: 100%;" />
+</a>
+<p><strong>Dark Mode</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Create them with:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_hodograph</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">dark_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">spy</span><span class="o">.</span><span class="n">build_hodograph</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="color-deficiency-friendly-soundings">
+<h2>Color-Deficiency-Friendly Soundings<a class="headerlink" href="#color-deficiency-friendly-soundings" title="Link to this heading"></a></h2>
+<p>SounderPy can change the dewpoint-trace styling to improve visual distinction
+for users with color-vision deficiencies.</p>
+<section id="standard-colors">
+<h3>Standard Colors<a class="headerlink" href="#standard-colors" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">color_blind</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/sounding_standard_colors.png"><img alt="SounderPy sounding using standard colors" class="align-center" src="../_images/sounding_standard_colors.png" style="width: 85%;" />
+</a>
+</section>
+<section id="color-deficiency-friendly-colors">
+<h3>Color-Deficiency-Friendly Colors<a class="headerlink" href="#color-deficiency-friendly-colors" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">color_blind</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/sounding_colorblind.png"><img alt="SounderPy color-deficiency-friendly sounding" class="align-center" src="../_images/sounding_colorblind.png" style="width: 85%;" />
+</a>
+</section>
+</section>
+<hr class="docutils" />
+<section id="combining-appearance-options">
+<h2>Combining Appearance Options<a class="headerlink" href="#combining-appearance-options" title="Link to this heading"></a></h2>
+<p>Appearance options can be combined:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">color_blind</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="saving-figures">
+<h2>Saving Figures<a class="headerlink" href="#saving-figures" title="Link to this heading"></a></h2>
+<p>Set <code class="docutils literal notranslate"><span class="pre">save=True</span></code> and provide <code class="docutils literal notranslate"><span class="pre">filename</span></code> to save a figure instead of showing
+it interactively:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;oax_dark_sounding.png&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The default figure resolution is 100 DPI. Increase it with <code class="docutils literal notranslate"><span class="pre">dpi</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">dpi</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+    <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;oax_dark_sounding.png&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="cli-equivalents">
+<h2>CLI Equivalents<a class="headerlink" href="#cli-equivalents" title="Link to this heading"></a></h2>
+<p>Light-mode sounding:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot<span class="w"> </span>sounding<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--map-zoom<span class="w"> </span><span class="m">0</span>
+</pre></div>
+</div>
+<p>Dark-mode sounding:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot<span class="w"> </span>sounding<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--dark-mode<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--map-zoom<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot-file<span class="w"> </span>oax_dark.png
+</pre></div>
+</div>
+<p>Color-deficiency-friendly sounding:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot<span class="w"> </span>sounding<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--color-blind<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--map-zoom<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot-file<span class="w"> </span>oax_colorblind.png
+</pre></div>
+</div>
+<p>Combined:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot<span class="w"> </span>sounding<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--dark-mode<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--color-blind<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--map-zoom<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--dpi<span class="w"> </span><span class="m">200</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot-file<span class="w"> </span>oax_dark_colorblind.png
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<p>Continue to <a class="reference internal" href="maps_radar.html"><span class="doc">Maps &amp; Radar</span></a> to control the geographic inset
+and radar display.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../plottingdata.html"><span class="doc">Plotting Data</span></a></p></li>
+<li><p><a class="reference internal" href="../examplegallery.html"><span class="doc">Plot Gallery</span></a></p></li>
+<li><p><a class="reference internal" href="../cli.html"><span class="doc">Command Line Tool</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="📚 Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="maps_radar.html" class="btn btn-neutral float-right" title="🗺️ Maps &amp; Radar" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kyle J Gillett.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

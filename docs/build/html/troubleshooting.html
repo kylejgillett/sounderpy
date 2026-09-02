@@ -1,0 +1,215 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>❓ Troubleshooting &mdash; SounderPy v3.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/homepage.css?v=c01db7d2" />
+      <link rel="stylesheet" type="text/css" href="_static/gallery.css?v=6ceaf42b" />
+      <link rel="stylesheet" type="text/css" href="_static/case_studies.css?v=0461955f" />
+
+  
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=b4d93468"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="🌍 Community" href="community.html" />
+    <link rel="prev" title="📖 About" href="about.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SounderPy
+              <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">🚀 Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">❓ Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#testing-sounderpy">Testing SounderPy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#funky-plot-scaling">Funky Plot Scaling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-fix-saving-the-plot-to-a-file">The Fix: saving the plot to a file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#goofy-acars-profiles">Goofy ACARS Profiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#era5-data-access-not-working">ERA5 data access not working</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rap-data-won-t-load">RAP data won’t load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sounderpy-can-t-find-a-raob-sounding-you-know-exists">SounderPy can’t find a RAOB sounding you know exists</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="community.html">🌍 Community</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customdatasources.html">✏️ Custom Data Sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="clean_data_scheme.html">🧼 The <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpertools.html">🛠️ Helper Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">💻 Command Line Interface (CLI)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="beginners_sounderpy_cookbook.html">👨‍🍳 SounderPy Beginner’s Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">📚 Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="case_studies/mound_city_20240828.html">🌪️ Case Study: Mound City, SD</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SounderPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">❓ Troubleshooting</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/troubleshooting.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="troubleshooting">
+<h1>❓ Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h1>
+<p>Like any software, SounderPy is prone to errors now and then – some of them are known with fixes! If you are running into issues using SounderPy, check out this guide to troubleshooting below!</p>
+<p>If you have an error that you don’t see on this page, you can <a class="reference external" href="https://github.com/kylejgillett/sounderpy/issues">open a GitHub Issue</a> or feel free to shoot me a DM on <a class="reference external" href="https://twitter.com/wxkylegillett">Twitter</a>!</p>
+<section id="testing-sounderpy">
+<h2>Testing SounderPy<a class="headerlink" href="#testing-sounderpy" title="Link to this heading"></a></h2>
+<p>You can test your installation of SounderPy against this figure. To do so, run the following block of code. The figure produced should be the same.</p>
+<a class="reference internal image-reference" href="_images/test-figure_abr-2024-08-29-00z.png"><img alt="_images/test-figure_abr-2024-08-29-00z.png" class="align-center" src="_images/test-figure_abr-2024-08-29-00z.png" style="width: 300px;" />
+</a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sounderpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">spy</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s2">&quot;kabr&quot;</span><span class="p">,</span> <span class="s2">&quot;2024&quot;</span><span class="p">,</span> <span class="s2">&quot;08&quot;</span><span class="p">,</span> <span class="s2">&quot;29&quot;</span><span class="p">,</span> <span class="s2">&quot;00&quot;</span><span class="p">)</span>
+
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">color_blind</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">radar</span><span class="o">=</span><span class="s1">&#39;single&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="funky-plot-scaling">
+<h2>Funky Plot Scaling<a class="headerlink" href="#funky-plot-scaling" title="Link to this heading"></a></h2>
+<a class="reference internal image-reference" href="_images/funky_layout_example.jpg"><img alt="_images/funky_layout_example.jpg" class="align-left" src="_images/funky_layout_example.jpg" style="width: 300px;" />
+</a>
+<p>When using SounderPy’s plot function, sometimes the matplotlib formatting operations the plot functions use (<code class="docutils literal notranslate"><span class="pre">build_sounding()</span></code>, <code class="docutils literal notranslate"><span class="pre">build_hodograph()</span></code>, <code class="docutils literal notranslate"><span class="pre">build_composite()</span></code>) don’t agree with some screen sizes. This throws off the scaling of the plots when plotting them ‘inline’. Thankfully there is a fix!</p>
+<p>Each of SounderPy’s plotting functions have a <code class="docutils literal notranslate"><span class="pre">save</span></code> key-word-argument (kwarg). By default these are set to <em>False</em>, but when setting the kwarg to <em>True</em> you can save the plot to a .png file.</p>
+<p>When the plot is saved to a file it will preserve the correct scaling and dimensions.</p>
+<section id="the-fix-saving-the-plot-to-a-file">
+<h3>The Fix: saving the plot to a file<a class="headerlink" href="#the-fix-saving-the-plot-to-a-file" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>Add the <code class="docutils literal notranslate"><span class="pre">save=True</span></code> kwarg to your plot function (<code class="docutils literal notranslate"><span class="pre">build_sounding()</span></code>, <code class="docutils literal notranslate"><span class="pre">build_hodograph()</span></code>, <code class="docutils literal notranslate"><span class="pre">build_composite()</span></code>).</p>
+<p>You can optionally add the <code class="docutils literal notranslate"><span class="pre">filename</span></code> kwarg that allows you to set a specific filename. By default, this filename is <em>‘sounderpy_sounding.png’</em>.</p>
+</div></blockquote>
+</section>
+</section>
+<hr class="docutils" />
+<section id="goofy-acars-profiles">
+<h2>Goofy ACARS Profiles<a class="headerlink" href="#goofy-acars-profiles" title="Link to this heading"></a></h2>
+<a class="reference internal image-reference" href="_images/example-goofy-acars.png"><img alt="_images/example-goofy-acars.png" class="align-left" src="_images/example-goofy-acars.png" style="width: 300px;" />
+</a>
+<p>Sometimes ACARS data just comes with errors that can not be fixed. Because these observations are taken by aircraft during arrivals and departures, they can be prone to errors such as too-dry dewpoints, too-strong wind velocity, and strange height data. Unfortunately these errors can not be fixed.</p>
+<p>The best way to check if ACARS observations are correct is by comparing them to recent forecast model profiles (at forecast hour 0) for that location.</p>
+</section>
+<hr class="docutils" />
+<section id="era5-data-access-not-working">
+<h2>ERA5 data access not working<a class="headerlink" href="#era5-data-access-not-working" title="Link to this heading"></a></h2>
+<p>To access ERA5 data, some extra steps are involved. Make sure you create an account with the ECMWF Climate Data Store (CDS) to gain access to their API.</p>
+<p>Also note that CDS has recently updated their API (September 2024). Thus, even if you have done this before, you have to migrate to the new API.</p>
+<dl>
+<dt>Basic steps include:</dt><dd><blockquote>
+<div><ul class="simple">
+<li><p>creating a CDS API account</p></li>
+<li><p>Setting up a CDS API personal access token</p></li>
+<li><p>Creating a $HOME/.cdsapirc file</p></li>
+</ul>
+</div></blockquote>
+<p>Follow the instructions on the CDSAPI “how to” documentation – See: <a class="reference external" href="https://cds.climate.copernicus.eu/how-to-api">https://cds.climate.copernicus.eu/how-to-api</a></p>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="rap-data-won-t-load">
+<h2>RAP data won’t load<a class="headerlink" href="#rap-data-won-t-load" title="Link to this heading"></a></h2>
+<p>Sometimes, this just happens. The NCEP server (THREDDS) is prone to high latency or even simply being down. Therefore, data access may take several minutes or data access is not possible.</p>
+<p>Sometimes these issues are resolved within hours, other times possibly a few days. Trying again at a later time is generally the best fix.</p>
+</section>
+<hr class="docutils" />
+<section id="sounderpy-can-t-find-a-raob-sounding-you-know-exists">
+<h2>SounderPy can’t find a RAOB sounding you know exists<a class="headerlink" href="#sounderpy-can-t-find-a-raob-sounding-you-know-exists" title="Link to this heading"></a></h2>
+<p>Ah, this one is fun. Different databases store RAOB data differently. As such, you may find that a sounding that you believe was launched at ‘18z’ is actually stored as ‘19z’ or ‘17z’. Its annoying.</p>
+<p>This will cause the <cite>get_obs_data()</cite> to “not find” the sounding you want because the database it’s searching through has it listed under a different time.</p>
+<p>Try increasing or decreasing the launch_hour by 1 hour.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="about.html" class="btn btn-neutral float-left" title="📖 About" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="community.html" class="btn btn-neutral float-right" title="🌍 Community" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kyle J Gillett.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

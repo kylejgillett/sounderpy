@@ -1,0 +1,402 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📚 Composite Soundings &mdash; SounderPy v3.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/homepage.css?v=c01db7d2" />
+      <link rel="stylesheet" type="text/css" href="../_static/gallery.css?v=6ceaf42b" />
+      <link rel="stylesheet" type="text/css" href="../_static/case_studies.css?v=0461955f" />
+
+  
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=b4d93468"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="💾 Exporting Data" href="exporting_data.html" />
+    <link rel="prev" title="🌎 Working with Data Sources" href="data_sources.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SounderPy
+              <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">🚀 Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">📖 About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">❓ Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">🌍 Community</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../customdatasources.html">✏️ Custom Data Sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clean_data_scheme.html">🧼 The <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plottingdata.html">📈 Tools for Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpertools.html">🛠️ Helper Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">💻 Command Line Interface (CLI)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../beginners_sounderpy_cookbook.html">👨‍🍳 SounderPy Beginner’s Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examplegallery.html">📊 Plot Gallery</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">📚 Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plot_appearance.html">🎨 Plot Appearance &amp; Accessibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="maps_radar.html">🗺️ Maps &amp; Radar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parcel_settings.html">🧪 Parcel Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hodograph_options.html">🌀 Hodograph Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_sources.html">🌎 Working with Data Sources</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">📚 Composite Soundings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#retrieve-several-profiles">Retrieve Several Profiles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#basic-composite">Basic Composite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dark-mode-composite">Dark-Mode Composite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#shading-between-temperature-and-dewpoint">Shading between Temperature and Dewpoint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#choosing-a-colormap">Choosing a Colormap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-colors">Custom Colors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#line-styles">Line Styles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#line-widths">Line Widths</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#opacity">Opacity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#combine-styling-options">Combine Styling Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compare-different-data-sources">Compare Different Data Sources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#save-the-figure">Save the Figure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_data.html">💾 Exporting Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_workflows.html">💻 Command Line Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tutorial-overview">Tutorial Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#gallery-figures">Gallery Figures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../case_studies/mound_city_20240828.html">🌪️ Case Study: Mound City, SD</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SounderPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">📚 Tutorials</a></li>
+      <li class="breadcrumb-item active">📚 Composite Soundings</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/composite_soundings.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="composite-soundings">
+<span id="tutorial-composite-soundings"></span><h1>📚 Composite Soundings<a class="headerlink" href="#composite-soundings" title="Link to this heading"></a></h1>
+<p>Composite soundings place multiple vertical profiles on the same thermodynamic
+diagram. They are useful for:</p>
+<ul class="simple">
+<li><p>comparing environmental evolution through time;</p></li>
+<li><p>comparing observations with model/reanalysis data;</p></li>
+<li><p>comparing forecast hours;</p></li>
+<li><p>comparing multiple nearby locations;</p></li>
+<li><p>comparing experimental or custom profiles.</p></li>
+</ul>
+<p>SounderPy creates these figures with <code class="docutils literal notranslate"><span class="pre">build_composite()</span></code>.</p>
+<hr class="docutils" />
+<section id="retrieve-several-profiles">
+<h2>Retrieve Several Profiles<a class="headerlink" href="#retrieve-several-profiles" title="Link to this heading"></a></h2>
+<p>This example compares three OAX soundings surrounding the 16 June 2014 severe
+weather event:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sounderpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">spy</span>
+
+<span class="n">data_12z</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span>
+    <span class="s2">&quot;OAX&quot;</span><span class="p">,</span> <span class="s2">&quot;2014&quot;</span><span class="p">,</span> <span class="s2">&quot;06&quot;</span><span class="p">,</span> <span class="s2">&quot;16&quot;</span><span class="p">,</span> <span class="s2">&quot;12&quot;</span><span class="p">,</span>
+    <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">data_18z</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span>
+    <span class="s2">&quot;OAX&quot;</span><span class="p">,</span> <span class="s2">&quot;2014&quot;</span><span class="p">,</span> <span class="s2">&quot;06&quot;</span><span class="p">,</span> <span class="s2">&quot;16&quot;</span><span class="p">,</span> <span class="s2">&quot;18&quot;</span><span class="p">,</span>
+    <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">data_00z</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span>
+    <span class="s2">&quot;OAX&quot;</span><span class="p">,</span> <span class="s2">&quot;2014&quot;</span><span class="p">,</span> <span class="s2">&quot;06&quot;</span><span class="p">,</span> <span class="s2">&quot;17&quot;</span><span class="p">,</span> <span class="s2">&quot;00&quot;</span><span class="p">,</span>
+    <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Put the profiles into a list:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profiles</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">data_12z</span><span class="p">,</span>
+    <span class="n">data_18z</span><span class="p">,</span>
+    <span class="n">data_00z</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="basic-composite">
+<h2>Basic Composite<a class="headerlink" href="#basic-composite" title="Link to this heading"></a></h2>
+<p>Create the comparison with:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span>
+    <span class="n">profiles</span><span class="p">,</span>
+    <span class="n">shade_between</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/composite_light.png"><img alt="Light-mode SounderPy composite sounding" class="align-center" src="../_images/composite_light.png" style="width: 88%;" />
+</a>
+</section>
+<hr class="docutils" />
+<section id="dark-mode-composite">
+<h2>Dark-Mode Composite<a class="headerlink" href="#dark-mode-composite" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span>
+    <span class="n">profiles</span><span class="p">,</span>
+    <span class="n">shade_between</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/composite_dark.png"><img alt="Dark-mode SounderPy composite sounding" class="align-center" src="../_images/composite_dark.png" style="width: 88%;" />
+</a>
+</section>
+<hr class="docutils" />
+<section id="shading-between-temperature-and-dewpoint">
+<h2>Shading between Temperature and Dewpoint<a class="headerlink" href="#shading-between-temperature-and-dewpoint" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">shade_between=True</span></code> lightly shades the region between each profile’s
+temperature and dewpoint traces:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span>
+    <span class="n">profiles</span><span class="p">,</span>
+    <span class="n">shade_between</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/composite_shaded.png"><img alt="SounderPy composite sounding with shading" class="align-center" src="../_images/composite_shaded.png" style="width: 88%;" />
+</a>
+</section>
+<hr class="docutils" />
+<section id="choosing-a-colormap">
+<h2>Choosing a Colormap<a class="headerlink" href="#choosing-a-colormap" title="Link to this heading"></a></h2>
+<p>By default, SounderPy samples colors from <code class="docutils literal notranslate"><span class="pre">viridis</span></code>. Any compatible
+Matplotlib colormap can be supplied:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span>
+    <span class="n">profiles</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;plasma&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span>
+    <span class="n">profiles</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="custom-colors">
+<h2>Custom Colors<a class="headerlink" href="#custom-colors" title="Link to this heading"></a></h2>
+<p>Provide one color for each profile with <code class="docutils literal notranslate"><span class="pre">colors_to_use</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span>
+    <span class="n">profiles</span><span class="p">,</span>
+    <span class="n">colors_to_use</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;tab:blue&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tab:orange&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tab:red&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>If custom colors are supplied, the list length should match the number of
+profiles.</p>
+</section>
+<hr class="docutils" />
+<section id="line-styles">
+<h2>Line Styles<a class="headerlink" href="#line-styles" title="Link to this heading"></a></h2>
+<p>Line styles can also be assigned profile-by-profile:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span>
+    <span class="n">profiles</span><span class="p">,</span>
+    <span class="n">ls_to_use</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;--&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;:&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="line-widths">
+<h2>Line Widths<a class="headerlink" href="#line-widths" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span>
+    <span class="n">profiles</span><span class="p">,</span>
+    <span class="n">lw_to_use</span><span class="o">=</span><span class="p">[</span>
+        <span class="mi">2</span><span class="p">,</span>
+        <span class="mi">4</span><span class="p">,</span>
+        <span class="mi">2</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="opacity">
+<h2>Opacity<a class="headerlink" href="#opacity" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span>
+    <span class="n">profiles</span><span class="p">,</span>
+    <span class="n">alphas_to_use</span><span class="o">=</span><span class="p">[</span>
+        <span class="mf">0.6</span><span class="p">,</span>
+        <span class="mf">1.0</span><span class="p">,</span>
+        <span class="mf">0.6</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="combine-styling-options">
+<h2>Combine Styling Options<a class="headerlink" href="#combine-styling-options" title="Link to this heading"></a></h2>
+<p>For example, emphasize the middle profile:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span>
+    <span class="n">profiles</span><span class="p">,</span>
+    <span class="n">colors_to_use</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;tab:blue&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tab:red&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tab:purple&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="n">ls_to_use</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;--&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="n">lw_to_use</span><span class="o">=</span><span class="p">[</span>
+        <span class="mi">2</span><span class="p">,</span>
+        <span class="mi">4</span><span class="p">,</span>
+        <span class="mi">2</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="n">alphas_to_use</span><span class="o">=</span><span class="p">[</span>
+        <span class="mf">0.6</span><span class="p">,</span>
+        <span class="mf">1.0</span><span class="p">,</span>
+        <span class="mf">0.6</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="n">shade_between</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="compare-different-data-sources">
+<h2>Compare Different Data Sources<a class="headerlink" href="#compare-different-data-sources" title="Link to this heading"></a></h2>
+<p>Composite inputs do not have to come from the same source.</p>
+<p>For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profiles</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">observed_data</span><span class="p">,</span>
+    <span class="n">rap_data</span><span class="p">,</span>
+    <span class="n">bufkit_data</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span>
+    <span class="n">profiles</span><span class="p">,</span>
+    <span class="n">colors_to_use</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;black&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tab:blue&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tab:orange&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Because each source has already been converted into <code class="docutils literal notranslate"><span class="pre">clean_data</span></code>,
+<code class="docutils literal notranslate"><span class="pre">build_composite()</span></code> can treat them consistently.</p>
+</section>
+<hr class="docutils" />
+<section id="save-the-figure">
+<h2>Save the Figure<a class="headerlink" href="#save-the-figure" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span>
+    <span class="n">profiles</span><span class="p">,</span>
+    <span class="n">shade_between</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;oax_composite.png&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<p>Continue to <a class="reference internal" href="exporting_data.html"><span class="doc">Exporting Data</span></a> to save retrieved profiles
+for other software and workflows.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../plottingdata.html"><span class="doc">Plotting Data</span></a></p></li>
+<li><p><a class="reference internal" href="data_sources.html"><span class="doc">Working with Data Sources</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="data_sources.html" class="btn btn-neutral float-left" title="🌎 Working with Data Sources" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="exporting_data.html" class="btn btn-neutral float-right" title="💾 Exporting Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kyle J Gillett.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

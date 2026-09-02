@@ -1,0 +1,1217 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>👨‍🍳 SounderPy Beginner’s Cookbook &mdash; SounderPy v3.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+      <link rel="stylesheet" type="text/css" href="_static/homepage.css?v=c01db7d2" />
+      <link rel="stylesheet" type="text/css" href="_static/gallery.css?v=6ceaf42b" />
+      <link rel="stylesheet" type="text/css" href="_static/case_studies.css?v=0461955f" />
+
+  
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=b4d93468"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="📊 Plot Gallery" href="examplegallery.html" />
+    <link rel="prev" title="💻 Command Line Interface (CLI)" href="cli.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SounderPy
+              <img src="https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">🚀 Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">📖 About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">❓ Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community.html">🌍 Community</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gettingdata.html">🌐 Tools for Getting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customdatasources.html">✏️ Custom Data Sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="clean_data_scheme.html">🧼 The <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plottingdata.html">📈 Tools for Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpertools.html">🛠️ Helper Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">💻 Command Line Interface (CLI)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">👨‍🍳 SounderPy Beginner’s Cookbook</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Before-We-Get-Started">Before We Get Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Helpful-resources">Helpful resources</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Recipe-1-—-Set-Up-SounderPy">Recipe 1 — Set Up SounderPy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Recipe-2-—-Retrieve-Your-First-Observed-Sounding">Recipe 2 — Retrieve Your First Observed Sounding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Recipe-3-—-Understand-clean_data">Recipe 3 — Understand <code class="docutils literal notranslate"><span class="pre">clean_data</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Recipe-4-—-Customize-a-SounderPy-Sounding">Recipe 4 — Customize a SounderPy Sounding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Recipe-5-—-Build-and-Modify-a-Hodograph">Recipe 5 — Build and Modify a Hodograph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Recipe-6-—-Retrieve-Other-Data-Sources">Recipe 6 — Retrieve Other Data Sources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Recipe-7-—-Calculate-Sounding-Parameters">Recipe 7 — Calculate Sounding Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Recipe-8-—-Compare-Multiple-Profiles">Recipe 8 — Compare Multiple Profiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Recipe-9-—-Export-a-Profile">Recipe 9 — Export a Profile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Recipe-10-—-Use-the-SounderPy-Command-Line">Recipe 10 — Use the SounderPy Command Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Troubleshooting-Tips">Troubleshooting Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#🎉-You-Finished-the-SounderPy-Beginner's-Cookbook!">🎉 You Finished the SounderPy Beginner’s Cookbook!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Where-to-go-next">Where to go next</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examplegallery.html">📊 Plot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">📚 Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="case_studies/mound_city_20240828.html">🌪️ Case Study: Mound City, SD</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SounderPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">👨‍🍳 SounderPy Beginner’s Cookbook</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/beginners_sounderpy_cookbook.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="👨‍🍳-SounderPy-Beginner's-Cookbook">
+<h1>👨‍🍳 SounderPy Beginner’s Cookbook<a class="headerlink" href="#👨‍🍳-SounderPy-Beginner's-Cookbook" title="Link to this heading"></a></h1>
+<p><strong>A beginner-friendly collection of recipes for retrieving, analyzing, plotting, and exporting atmospheric vertical-profile data.</strong></p>
+<p>This notebook is designed for users who are new to SounderPy, new to atmospheric sounding analysis in Python, or simply want a quick tour of the package.</p>
+<p><strong>Recipes in this cookbook</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Set up SounderPy</strong></p></li>
+<li><p><strong>Retrieve your first observed sounding</strong></p></li>
+<li><p><strong>Understand ``clean_data``</strong></p></li>
+<li><p><strong>Customize a SounderPy sounding</strong></p></li>
+<li><p><strong>Build and modify a hodograph</strong></p></li>
+<li><p><strong>Retrieve other data sources</strong></p></li>
+<li><p><strong>Calculate sounding parameters</strong></p></li>
+<li><p><strong>Compare multiple profiles</strong></p></li>
+<li><p><strong>Export a profile</strong></p></li>
+<li><p><strong>Use the SounderPy command line</strong></p></li>
+</ol>
+<p><strong>Time to learn</strong>: about 20–30 minutes</p>
+<blockquote>
+<div><p><strong>Note:</strong> Several recipes retrieve live or archived data from external services. An internet connection is required, and occasional upstream archive outages are outside SounderPy’s control.</p>
+</div></blockquote>
+<p><em>(C) Kyle J. Gillett, University of North Dakota, 2024–2026)</em></p>
+<hr class="docutils" />
+<section id="Before-We-Get-Started">
+<h2>Before We Get Started<a class="headerlink" href="#Before-We-Get-Started" title="Link to this heading"></a></h2>
+<p>You do <strong>not</strong> need to be an experienced Python programmer to use this notebook. A few terms will appear repeatedly:</p>
+<ul class="simple">
+<li><p><strong>Cookbook</strong> — a collection of “recipes”</p></li>
+<li><p><strong>Recipe</strong> — a set of steps that create a programmatic solution to a problem</p></li>
+<li><p><strong>Function / tool</strong> — reusable code that performs a task, such as retrieving data or building a sounding.</p></li>
+<li><p><strong>Argument</strong> — information passed into a function.</p></li>
+<li><p><strong>Keyword argument (``kwarg``)</strong> — an optional named setting passed to a function.</p></li>
+<li><p><strong>Dictionary</strong> — a Python object that stores values using named keys.</p></li>
+<li><p><strong>Alias</strong> — a shorthand name used when importing a package. We will use <code class="docutils literal notranslate"><span class="pre">spy</span></code> as the alias for SounderPy.</p></li>
+<li><p><strong>``clean_data``</strong> — SounderPy’s common vertical-profile data structure.</p></li>
+</ul>
+<section id="Helpful-resources">
+<h3>Helpful resources<a class="headerlink" href="#Helpful-resources" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://kylejgillett.github.io/sounderpy/">SounderPy documentation</a></p></li>
+<li><p><a class="reference external" href="https://kylejgillett.github.io/sounderpy/tutorials/index.html">SounderPy tutorials</a></p></li>
+<li><p><a class="reference external" href="https://kylejgillett.github.io/sounderpy/examplegallery.html">SounderPy plot gallery</a></p></li>
+<li><p><a class="reference external" href="https://unidata.github.io/python-training/">Unidata Python Training</a></p></li>
+</ul>
+<p>If you are running this notebook in Google Colab and SounderPy is not already installed, run the installation cell below.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uncomment this line if SounderPy is not installed in your environment.</span>
+<span class="c1"># %pip install -q sounderpy</span>
+<br/></pre></div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="Recipe-1-—-Set-Up-SounderPy">
+<h2>Recipe 1 — Set Up SounderPy<a class="headerlink" href="#Recipe-1-—-Set-Up-SounderPy" title="Link to this heading"></a></h2>
+<p><strong>Goal</strong>: Import SounderPy and make its public tools available in this notebook.</p>
+<p>The conventional alias is <code class="docutils literal notranslate"><span class="pre">spy</span></code>:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sounderpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">spy</span>
+<br/></pre></div>
+</div>
+</div>
+<p>That’s all the setup we need.</p>
+<p>Throughout the cookbook, calls such as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_hodograph</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>are using functions provided by SounderPy.</p>
+</section>
+<hr class="docutils" />
+<section id="Recipe-2-—-Retrieve-Your-First-Observed-Sounding">
+<h2>Recipe 2 — Retrieve Your First Observed Sounding<a class="headerlink" href="#Recipe-2-—-Retrieve-Your-First-Observed-Sounding" title="Link to this heading"></a></h2>
+<p><strong>Goal</strong>: Retrieve a real observed radiosonde profile and create a full SounderPy sounding.</p>
+<p>We will use the Omaha, Nebraska (<code class="docutils literal notranslate"><span class="pre">OAX</span></code>) sounding from <strong>16 June 2014 at 18 UTC</strong>, during the Pilger, Nebraska severe-weather event.</p>
+<p>SounderPy retrieves observed radiosonde data with:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="n">station</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">hour</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">obs_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s2">&quot;OAX&quot;</span><span class="p">,</span> <span class="s2">&quot;2014&quot;</span><span class="p">,</span> <span class="s2">&quot;06&quot;</span><span class="p">,</span> <span class="s2">&quot;16&quot;</span><span class="p">,</span> <span class="s2">&quot;18&quot;</span><span class="p">,</span> <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; OBSERVED DATA ACCESS FUNCTION
+  -----------------------------------
+    &gt; PROFILE FOUND: OAX on 06/16/2014 at 18z | From UW
+    &gt; COMPLETE --------
+    &gt; RUNTIME: 00:00:02
+</pre></div></div>
+</div>
+<p>Now build the sounding:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; SOUNDING PLOTTER FUNCTION
+  ---------------------------------
+    &gt; PREPARING DATA
+    &gt; BUILDING SKEW-T LOG-P DIAGRAM
+    &gt; BUILDING HODOGRAPH
+    &gt; BUILDING MAP INSET
+    &gt; BUILDING ACCESSORY PLOTS
+    &gt; PLOTTING SOUNDING PARAMETERS
+    &gt; FIGURE LOADING...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Ignoring fixed x limits to fulfill fixed data aspect with adjustable data limits.
+Ignoring fixed y limits to fulfill fixed data aspect with adjustable data limits.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+    &gt; COMPLETE --------
+    &gt; RUNTIME: 00:00:16
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/beginners_sounderpy_cookbook_9_3.png" src="_images/beginners_sounderpy_cookbook_9_3.png" />
+</div>
+</div>
+<p><strong>What you learned</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">get_obs_data()</span></code> retrieves an observed atmospheric profile.</p></li>
+<li><p>The returned object can be passed directly into <code class="docutils literal notranslate"><span class="pre">build_sounding()</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">radar=None</span></code> disables the radar inset.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">map_zoom=0</span></code> hides the map, which keeps this first example simple and avoids unnecessary external radar/map requests.</p></li>
+</ul>
+<p>This <strong>retrieve → plot</strong> pattern is the core SounderPy workflow.</p>
+</section>
+<hr class="docutils" />
+<section id="Recipe-3-—-Understand-clean_data">
+<h2>Recipe 3 — Understand <code class="docutils literal notranslate"><span class="pre">clean_data</span></code><a class="headerlink" href="#Recipe-3-—-Understand-clean_data" title="Link to this heading"></a></h2>
+<p><strong>Goal</strong>: Understand what SounderPy actually returned.</p>
+<p>SounderPy converts supported observations, forecasts, reanalyses, aircraft profiles, and model data into a common dictionary often referred to as <code class="docutils literal notranslate"><span class="pre">clean_data</span></code>.</p>
+<p>Inspect the available keys:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">obs_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+dict_keys([&#39;p&#39;, &#39;z&#39;, &#39;T&#39;, &#39;Td&#39;, &#39;u&#39;, &#39;v&#39;, &#39;site_info&#39;, &#39;titles&#39;])
+</pre></div></div>
+</div>
+<p>The core profile variables are typically:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">p</span></code></p></td>
+<td><p>pressure</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">z</span></code></p></td>
+<td><p>height</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">T</span></code></p></td>
+<td><p>temperature</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Td</span></code></p></td>
+<td><p>dewpoint</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">u</span></code></p></td>
+<td><p>u-component wind</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">v</span></code></p></td>
+<td><p>v-component wind</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">site_info</span></code></p></td>
+<td><p>profile metadata</p></td>
+</tr>
+</tbody>
+</table>
+<p>The meteorological arrays retain physical units through Pint/MetPy.</p>
+<p>Let’s inspect the metadata:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">obs_data</span><span class="p">[</span><span class="s2">&quot;site_info&quot;</span><span class="p">]</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;site-id&#39;: &#39;KOAX&#39;,
+ &#39;site-name&#39;: &#39;OMAHA VALLEY&#39;,
+ &#39;site-lctn&#39;: &#39;NE US&#39;,
+ &#39;site-latlon&#39;: [41.32, -96.37],
+ &#39;site-elv&#39;: np.float64(350.0),
+ &#39;source&#39;: &#39;RAOB OBSERVED PROFILE&#39;,
+ &#39;model&#39;: &#39;no-model&#39;,
+ &#39;fcst-hour&#39;: &#39;no-fcst-hour&#39;,
+ &#39;run-time&#39;: [&#39;none&#39;, &#39;none&#39;, &#39;none&#39;, &#39;none&#39;],
+ &#39;valid-time&#39;: [&#39;2014&#39;, &#39;06&#39;, &#39;16&#39;, &#39;18&#39;]}
+</pre></div></div>
+</div>
+<p>And look at a few values from the profile:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[54]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pressure:&quot;</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">][:</span><span class="mi">5</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Temperature:&quot;</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">][:</span><span class="mi">5</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dewpoint:&quot;</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">[</span><span class="s2">&quot;Td&quot;</span><span class="p">][:</span><span class="mi">5</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;U wind:&quot;</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">[</span><span class="s2">&quot;u&quot;</span><span class="p">][:</span><span class="mi">5</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;V wind:&quot;</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">[</span><span class="s2">&quot;v&quot;</span><span class="p">][:</span><span class="mi">5</span><span class="p">])</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Pressure: [965.0 962.0 936.9 925.0 904.9] hectopascal
+Temperature: [27.8 27.4 25.5 24.6 23.1] degree_Celsius
+Dewpoint: [23.8 22.8 21.7 21.2 20.4] degree_Celsius
+U wind: [-11.468656 -12.214049660704553 -17.170088628563903 -17.008599999999998 -14.360380604686835] knot
+V wind: [19.864294886529652 20.327592246720886 24.521427850468996 29.45975936561601 39.45482144615117] knot
+</pre></div></div>
+</div>
+<p><strong>Why ``clean_data`` matters</strong></p>
+<p>Once a data source has been converted into this common structure, the same SounderPy plotting, calculation, and export functions can be used regardless of where the profile came from.</p>
+<p>Conceptually:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>RAOB ─────┐
+RAP/RUC ──┤
+BUFKIT ───┤
+ACARS ────┼──&gt; clean_data ──&gt; calculations
+WRF ──────┤                  ├─&gt; sounding
+CM1 ──────┤                  ├─&gt; hodograph
+custom ───┘                  └─&gt; export
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="Recipe-4-—-Customize-a-SounderPy-Sounding">
+<h2>Recipe 4 — Customize a SounderPy Sounding<a class="headerlink" href="#Recipe-4-—-Customize-a-SounderPy-Sounding" title="Link to this heading"></a></h2>
+<p><strong>Goal</strong>: Learn a few of the most useful <code class="docutils literal notranslate"><span class="pre">build_sounding()</span></code> options.</p>
+<p>The default plot contains a large amount of information, but its appearance and layout can be customized.</p>
+<p><strong>A simplified parcel display</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">special_parcels=&quot;simple&quot;</span></code> keeps the standard SB/ML/MU CAPE parcel traces while omitting the additional MU ECAPE parcel trace.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">special_parcels</span><span class="o">=</span><span class="s2">&quot;simple&quot;</span><span class="p">,</span> <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; SOUNDING PLOTTER FUNCTION
+  ---------------------------------
+    &gt; PREPARING DATA
+    &gt; BUILDING SKEW-T LOG-P DIAGRAM
+    &gt; BUILDING HODOGRAPH
+    &gt; BUILDING MAP INSET
+    &gt; BUILDING ACCESSORY PLOTS
+    &gt; PLOTTING SOUNDING PARAMETERS
+    &gt; FIGURE LOADING...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Ignoring fixed x limits to fulfill fixed data aspect with adjustable data limits.
+Ignoring fixed y limits to fulfill fixed data aspect with adjustable data limits.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+    &gt; COMPLETE --------
+    &gt; RUNTIME: 00:00:03
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/beginners_sounderpy_cookbook_19_3.png" src="_images/beginners_sounderpy_cookbook_19_3.png" />
+</div>
+</div>
+<p><strong>Dark mode and color-deficiency-friendly colors</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">dark_mode=True</span></code> changes the presentation theme.</p>
+<p><code class="docutils literal notranslate"><span class="pre">color_blind=True</span></code> changes the conventional red/green thermodynamic trace combination to a more color-deficiency-friendly presentation.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">special_parcels</span><span class="o">=</span><span class="s2">&quot;simple&quot;</span><span class="p">,</span> <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color_blind</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; SOUNDING PLOTTER FUNCTION
+  ---------------------------------
+    &gt; PREPARING DATA
+    &gt; BUILDING SKEW-T LOG-P DIAGRAM
+    &gt; BUILDING HODOGRAPH
+    &gt; BUILDING MAP INSET
+    &gt; BUILDING ACCESSORY PLOTS
+    &gt; PLOTTING SOUNDING PARAMETERS
+    &gt; FIGURE LOADING...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Ignoring fixed x limits to fulfill fixed data aspect with adjustable data limits.
+Ignoring fixed y limits to fulfill fixed data aspect with adjustable data limits.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+    &gt; COMPLETE --------
+    &gt; RUNTIME: 00:00:04
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/beginners_sounderpy_cookbook_21_3.png" src="_images/beginners_sounderpy_cookbook_21_3.png" />
+</div>
+</div>
+<p><strong>Show potential-temperature traces</strong></p>
+<p>SounderPy can also display potential-temperature information with <code class="docutils literal notranslate"><span class="pre">show_theta=True</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">special_parcels</span><span class="o">=</span><span class="s2">&quot;simple&quot;</span><span class="p">,</span> <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">show_theta</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; SOUNDING PLOTTER FUNCTION
+  ---------------------------------
+    &gt; PREPARING DATA
+    &gt; BUILDING SKEW-T LOG-P DIAGRAM
+    &gt; BUILDING HODOGRAPH
+    &gt; BUILDING MAP INSET
+    &gt; BUILDING ACCESSORY PLOTS
+    &gt; PLOTTING SOUNDING PARAMETERS
+    &gt; FIGURE LOADING...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Ignoring fixed x limits to fulfill fixed data aspect with adjustable data limits.
+Ignoring fixed y limits to fulfill fixed data aspect with adjustable data limits.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+    &gt; COMPLETE --------
+    &gt; RUNTIME: 00:00:02
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/beginners_sounderpy_cookbook_23_3.png" src="_images/beginners_sounderpy_cookbook_23_3.png" />
+</div>
+</div>
+<p><strong>Try it yourself</strong></p>
+<p>Experiment with one option at a time:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">dark_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">color_blind</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">map_zoom</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For archived cases, radar availability depends on the selected radar mode and the underlying archive. If you are learning the plotting API, <code class="docutils literal notranslate"><span class="pre">radar=None</span></code> is the most reliable starting point.</p>
+</section>
+<hr class="docutils" />
+<section id="Recipe-5-—-Build-and-Modify-a-Hodograph">
+<h2>Recipe 5 — Build and Modify a Hodograph<a class="headerlink" href="#Recipe-5-—-Build-and-Modify-a-Hodograph" title="Link to this heading"></a></h2>
+<p><strong>Goal</strong>: Create both ground-relative and storm-relative hodographs.</p>
+<p>A standard hodograph is created with:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_hodograph</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; HODOGRAPH PLOTTER FUNCTION --
+-------------------------------
+&gt; RUNTIME: 00:00:03
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/beginners_sounderpy_cookbook_26_1.png" src="_images/beginners_sounderpy_cookbook_26_1.png" />
+</div>
+</div>
+<p><strong>Storm-relative hodograph</strong></p>
+<p>With <code class="docutils literal notranslate"><span class="pre">sr_hodo=True</span></code>, SounderPy subtracts the selected storm-motion vector from the wind profile.</p>
+<p>Here we use the canonical right-moving storm motion:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_hodograph</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">storm_motion</span><span class="o">=</span><span class="s2">&quot;right_moving&quot;</span><span class="p">,</span> <span class="n">sr_hodo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; HODOGRAPH PLOTTER FUNCTION --
+-------------------------------
+&gt; RUNTIME: 00:00:03
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/beginners_sounderpy_cookbook_28_1.png" src="_images/beginners_sounderpy_cookbook_28_1.png" />
+</div>
+</div>
+<p>SounderPy also accepts a custom storm motion as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">direction_degrees</span><span class="p">,</span> <span class="n">speed_knots</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>For example:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_hodograph</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">storm_motion</span><span class="o">=</span><span class="p">[</span><span class="mf">250.0</span><span class="p">,</span> <span class="mf">45.0</span><span class="p">],</span> <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; HODOGRAPH PLOTTER FUNCTION --
+-------------------------------
+&gt; RUNTIME: 00:00:04
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/beginners_sounderpy_cookbook_30_1.png" src="_images/beginners_sounderpy_cookbook_30_1.png" />
+</div>
+</div>
+<p><strong>What you learned</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">build_hodograph()</span></code> accepts the same <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> object as <code class="docutils literal notranslate"><span class="pre">build_sounding()</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sr_hodo=False</span></code> gives a ground-relative hodograph.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sr_hodo=True</span></code> gives a storm-relative hodograph.</p></li>
+<li><p>Storm motion can be calculated by SounderPy or supplied by the user.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="Recipe-6-—-Retrieve-Other-Data-Sources">
+<h2>Recipe 6 — Retrieve Other Data Sources<a class="headerlink" href="#Recipe-6-—-Retrieve-Other-Data-Sources" title="Link to this heading"></a></h2>
+<p><strong>Goal</strong>: See how the same SounderPy workflow applies to forecasts, model analyses, and aircraft observations.</p>
+<p>You do <strong>not</strong> need to run every example to complete the cookbook.</p>
+<p><strong>A. RAP/RUC analysis</strong></p>
+<p>For RAP/RUC data, use the model key <code class="docutils literal notranslate"><span class="pre">&quot;rap-ruc&quot;</span></code>.</p>
+<p>This example retrieves a RAP analysis valid at <strong>18 UTC 28 August 2024</strong> near central South Dakota:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rap_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_model_data</span><span class="p">(</span><span class="s2">&quot;rap-ruc&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">44.58</span><span class="p">,</span> <span class="o">-</span><span class="mf">100.82</span><span class="p">],</span> <span class="s2">&quot;2024&quot;</span><span class="p">,</span> <span class="s2">&quot;08&quot;</span><span class="p">,</span> <span class="s2">&quot;28&quot;</span><span class="p">,</span> <span class="s2">&quot;18&quot;</span><span class="p">,</span> <span class="n">box_avg_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; RAP/RUC REANALYSIS DATA ACCESS FUNCTION
+  ------------------------------------------
+    &gt; request: 2024-08-28 18Z | 44.58, -100.82
+    &gt; requested RAP date is &gt; 05-2021 - trying AWS
+    &gt; searching AWS RAP 13-km dataset
+    &gt; DATA FOUND AT: AWS RAP 13-km
+    &gt; parsing complete
+    &gt; temporary GRIB files will now be deleted
+    &gt; COMPLETE --------
+    &gt; RUNTIME: 00:00:22
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">rap_data</span><span class="p">,</span> <span class="n">special_parcels</span><span class="o">=</span><span class="s2">&quot;simple&quot;</span><span class="p">,</span> <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; SOUNDING PLOTTER FUNCTION
+  ---------------------------------
+    &gt; PREPARING DATA
+    &gt; BUILDING SKEW-T LOG-P DIAGRAM
+    &gt; BUILDING HODOGRAPH
+    &gt; BUILDING MAP INSET
+    &gt; BUILDING ACCESSORY PLOTS
+    &gt; PLOTTING SOUNDING PARAMETERS
+    &gt; FIGURE LOADING...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Ignoring fixed x limits to fulfill fixed data aspect with adjustable data limits.
+Ignoring fixed y limits to fulfill fixed data aspect with adjustable data limits.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+    &gt; COMPLETE --------
+    &gt; RUNTIME: 00:00:03
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/beginners_sounderpy_cookbook_34_3.png" src="_images/beginners_sounderpy_cookbook_34_3.png" />
+</div>
+</div>
+<blockquote>
+<div><p><strong>Note:</strong> RAP/RUC retrieval can take longer than a radiosonde request because archived GRIB2 data must be located, downloaded, parsed, spatially sampled, and cleaned before the profile is returned.</p>
+</div></blockquote>
+<p><strong>B. BUFKIT forecast</strong></p>
+<p>BUFKIT provides archived model forecast profiles.</p>
+<p>This example retrieves a GFS forecast from the <strong>12 UTC 5 August 2023</strong> run at <code class="docutils literal notranslate"><span class="pre">KMOP</span></code>, forecast hour 6:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bufkit_data</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_bufkit_data</span><span class="p">(</span><span class="s2">&quot;gfs&quot;</span><span class="p">,</span> <span class="s2">&quot;KMOP&quot;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;2023&quot;</span><span class="p">,</span> <span class="s2">&quot;08&quot;</span><span class="p">,</span> <span class="s2">&quot;05&quot;</span><span class="p">,</span> <span class="s2">&quot;12&quot;</span><span class="p">,</span> <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; BUFKIT DATA ACCESS FUNCTION
+   ---------------------------------
+    &gt; COMPLETE --------
+    &gt; RUNTIME: 00:00:01
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">bufkit_data</span><span class="p">,</span> <span class="n">special_parcels</span><span class="o">=</span><span class="s2">&quot;simple&quot;</span><span class="p">,</span> <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; SOUNDING PLOTTER FUNCTION
+  ---------------------------------
+    &gt; PREPARING DATA
+    &gt; BUILDING SKEW-T LOG-P DIAGRAM
+    &gt; BUILDING HODOGRAPH
+    &gt; BUILDING MAP INSET
+    &gt; BUILDING ACCESSORY PLOTS
+    &gt; PLOTTING SOUNDING PARAMETERS
+    &gt; FIGURE LOADING...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Ignoring fixed x limits to fulfill fixed data aspect with adjustable data limits.
+Ignoring fixed y limits to fulfill fixed data aspect with adjustable data limits.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+    &gt; COMPLETE --------
+    &gt; RUNTIME: 00:00:02
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/beginners_sounderpy_cookbook_37_3.png" src="_images/beginners_sounderpy_cookbook_37_3.png" />
+</div>
+</div>
+<p><strong>C. ACARS aircraft observations</strong></p>
+<p>ACARS profiles use a two-step workflow:</p>
+<ol class="arabic simple">
+<li><p>list the profiles available for a date/hour;</p></li>
+<li><p>retrieve one profile by ID.</p></li>
+</ol>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">acars</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">acars_data</span><span class="p">(</span><span class="s2">&quot;2024&quot;</span><span class="p">,</span> <span class="s2">&quot;05&quot;</span><span class="p">,</span> <span class="s2">&quot;21&quot;</span><span class="p">,</span> <span class="s2">&quot;18&quot;</span><span class="p">)</span>
+
+<span class="n">profiles</span> <span class="o">=</span> <span class="n">acars</span><span class="o">.</span><span class="n">list_profiles</span><span class="p">()</span>
+<span class="n">profiles</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; LIST ACARS PROFILES FUNCTION
+  ---------------------------------
+&gt; AVAILABLE ACARS PROFILES FOR 2024-05-21 18Z...
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:00
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;ATL_1820&#39;,
+ &#39;ATL_1830&#39;,
+ &#39;AUS_1820&#39;,
+ &#39;AUS_1850&#39;,
+ &#39;BNA_1800&#39;,
+ &#39;BNA_1820&#39;,
+ &#39;COS_1830&#39;,
+ &#39;DAL_1810&#39;,
+ &#39;DCA_1820&#39;,
+ &#39;DEN_1820&#39;]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Retrieve the first available profile from the returned list.</span>
+<span class="c1"># You can replace profiles[0] with another profile ID.</span>
+<span class="n">acars_data</span> <span class="o">=</span> <span class="n">acars</span><span class="o">.</span><span class="n">get_profile</span><span class="p">(</span><span class="n">profiles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; ACARS DATA ACCESS FUNCTION
+  ---------------------------------
+    &gt; COMPLETE --------
+    &gt; RUNTIME: 00:00:01
+</pre></div></div>
+</div>
+<p><strong>The important pattern</strong></p>
+<p>Despite coming from very different sources, the returned objects can all be used with the same downstream functions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">rap_data</span><span class="p">)</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">bufkit_data</span><span class="p">)</span>
+<span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span><span class="n">acars_data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>That common workflow is one of SounderPy’s main design goals.</p>
+</section>
+<hr class="docutils" />
+<section id="Recipe-7-—-Calculate-Sounding-Parameters">
+<h2>Recipe 7 — Calculate Sounding Parameters<a class="headerlink" href="#Recipe-7-—-Calculate-Sounding-Parameters" title="Link to this heading"></a></h2>
+<p><strong>Goal</strong>: Access SounderPy’s calculated thermodynamic and kinematic parameters directly, without relying only on the values printed on a figure.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">sounding_params()</span></code>:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">general</span><span class="p">,</span> <span class="n">thermo</span><span class="p">,</span> <span class="n">kinem</span><span class="p">,</span> <span class="n">intrp</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">sounding_params</span><span class="p">(</span><span class="n">obs_data</span><span class="p">,</span> <span class="n">storm_motion</span><span class="o">=</span><span class="s2">&quot;right_moving&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">calc</span><span class="p">()</span>
+<br/></pre></div>
+</div>
+</div>
+<p>The calculation returns four dictionaries:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">general</span></code> — general profile quantities;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">thermo</span></code> — thermodynamic parameters;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">kinem</span></code> — kinematic parameters;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">intrp</span></code> — interpolated profile data used by many calculations.</p></li>
+</ul>
+<p>Let’s inspect a few common severe-weather parameters:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[68]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MLCAPE:&quot;</span><span class="p">,</span> <span class="n">thermo</span><span class="p">[</span><span class="s2">&quot;mlcape&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MUCAPE:&quot;</span><span class="p">,</span> <span class="n">thermo</span><span class="p">[</span><span class="s2">&quot;mucape&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MU ECAPE:&quot;</span><span class="p">,</span> <span class="n">thermo</span><span class="p">[</span><span class="s2">&quot;mu_ecape&quot;</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;0–1 km SRH:&quot;</span><span class="p">,</span> <span class="n">kinem</span><span class="p">[</span><span class="s2">&quot;srh_0_to_1000&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;0–3 km SRH:&quot;</span><span class="p">,</span> <span class="n">kinem</span><span class="p">[</span><span class="s2">&quot;srh_0_to_3000&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;0–6 km shear:&quot;</span><span class="p">,</span> <span class="n">kinem</span><span class="p">[</span><span class="s2">&quot;shear_0_to_6000&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Effective-layer STP:&quot;</span><span class="p">,</span> <span class="n">kinem</span><span class="p">[</span><span class="s2">&quot;eil_stp&quot;</span><span class="p">])</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+MLCAPE: 4311.201116886886
+MUCAPE: 5769.720582789748
+MU ECAPE: 4901.590318796767
+0–1 km SRH: 356.7020447745256
+0–3 km SRH: 590.2701517549962
+0–6 km shear: 55.931652001498804
+Effective-layer STP: 13.013753182286617
+</pre></div></div>
+</div>
+<p><strong>Try it yourself</strong></p>
+<p>Explore the available keys:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">thermo</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="n">kinem</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="n">general</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This is often the easiest way to discover which calculated fields are available for further analysis.</p>
+</section>
+<hr class="docutils" />
+<section id="Recipe-8-—-Compare-Multiple-Profiles">
+<h2>Recipe 8 — Compare Multiple Profiles<a class="headerlink" href="#Recipe-8-—-Compare-Multiple-Profiles" title="Link to this heading"></a></h2>
+<p><strong>Goal</strong>: Use <code class="docutils literal notranslate"><span class="pre">build_composite()</span></code> to compare the evolution of profiles through time.</p>
+<p>Instead of comparing unrelated locations, we’ll retrieve three observations from the same station around the Pilger event:</p>
+<ul class="simple">
+<li><p>OAX — 12 UTC 16 June 2014</p></li>
+<li><p>OAX — 18 UTC 16 June 2014</p></li>
+<li><p>OAX — 00 UTC 17 June 2014</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">oax_12z</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s2">&quot;OAX&quot;</span><span class="p">,</span> <span class="s2">&quot;2014&quot;</span><span class="p">,</span> <span class="s2">&quot;06&quot;</span><span class="p">,</span> <span class="s2">&quot;16&quot;</span><span class="p">,</span> <span class="s2">&quot;12&quot;</span><span class="p">,</span> <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">oax_18z</span> <span class="o">=</span> <span class="n">obs_data</span>
+
+<span class="n">oax_00z</span> <span class="o">=</span> <span class="n">spy</span><span class="o">.</span><span class="n">get_obs_data</span><span class="p">(</span><span class="s2">&quot;OAX&quot;</span><span class="p">,</span> <span class="s2">&quot;2014&quot;</span><span class="p">,</span> <span class="s2">&quot;06&quot;</span><span class="p">,</span> <span class="s2">&quot;17&quot;</span><span class="p">,</span> <span class="s2">&quot;00&quot;</span><span class="p">,</span> <span class="n">hush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; OBSERVED DATA ACCESS FUNCTION
+  -----------------------------------
+    &gt; PROFILE FOUND: OAX on 06/16/2014 at 12z | From UW
+    &gt; COMPLETE --------
+    &gt; RUNTIME: 00:00:08
+&gt; OBSERVED DATA ACCESS FUNCTION
+  -----------------------------------
+    &gt; PROFILE FOUND: OAX on 06/17/2014 at 00z | From UW
+    &gt; COMPLETE --------
+    &gt; RUNTIME: 00:00:05
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">oax_12z</span><span class="p">,</span> <span class="n">oax_18z</span><span class="p">,</span> <span class="n">oax_00z</span><span class="p">]</span>
+
+<span class="n">spy</span><span class="o">.</span><span class="n">build_composite</span><span class="p">(</span><span class="n">data_list</span><span class="p">,</span> <span class="n">shade_between</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;viridis&quot;</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; COMPOSITE SOUNDING FUNCTION
+  -------------------------------
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Ignoring fixed y limits to fulfill fixed data aspect with adjustable data limits.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&gt; COMPLETE --------
+&gt; RUNTIME: 00:00:01
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/beginners_sounderpy_cookbook_49_3.png" src="_images/beginners_sounderpy_cookbook_49_3.png" />
+</div>
+</div>
+<p>Composite soundings are useful for examining:</p>
+<ul class="simple">
+<li><p>temporal evolution;</p></li>
+<li><p>forecast-versus-observation differences;</p></li>
+<li><p>analog comparisons;</p></li>
+<li><p>model-to-model differences;</p></li>
+<li><p>sensitivity experiments.</p></li>
+</ul>
+<p>You can also specify individual colors, line widths, line styles, and alpha values with <code class="docutils literal notranslate"><span class="pre">colors_to_use</span></code>, <code class="docutils literal notranslate"><span class="pre">lw_to_use</span></code>, <code class="docutils literal notranslate"><span class="pre">ls_to_use</span></code>, and <code class="docutils literal notranslate"><span class="pre">alphas_to_use</span></code>.</p>
+</section>
+<hr class="docutils" />
+<section id="Recipe-9-—-Export-a-Profile">
+<h2>Recipe 9 — Export a Profile<a class="headerlink" href="#Recipe-9-—-Export-a-Profile" title="Link to this heading"></a></h2>
+<p><strong>Goal</strong>: Write SounderPy <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> to a file for use outside the package.</p>
+<p><strong>CSV</strong></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;csv&quot;</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;oax_20140616_18z.csv&quot;</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<p>SounderPy can also export SHARPpy and CM1 formats:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span>
+    <span class="s2">&quot;sharppy&quot;</span><span class="p">,</span>
+    <span class="n">obs_data</span><span class="p">,</span>
+    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;oax_20140616_18z.snd&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">spy</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span>
+    <span class="s2">&quot;cm1&quot;</span><span class="p">,</span>
+    <span class="n">obs_data</span><span class="p">,</span>
+    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;input_sounding&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>For CM1 export, <code class="docutils literal notranslate"><span class="pre">convert_to_AGL=True</span></code> is the default and converts height to above-ground level.</p>
+</section>
+<hr class="docutils" />
+<section id="Recipe-10-—-Use-the-SounderPy-Command-Line">
+<h2>Recipe 10 — Use the SounderPy Command Line<a class="headerlink" href="#Recipe-10-—-Use-the-SounderPy-Command-Line" title="Link to this heading"></a></h2>
+<p><strong>Goal</strong>: See how many of the same workflows can be performed without writing a Python script.</p>
+<p>SounderPy 3.2 includes a command-line interface.</p>
+<p>From a terminal:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>--help
+</pre></div>
+</div>
+<p>Retrieve the same OAX observation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span>
+</pre></div>
+</div>
+<p>Create and save a sounding:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot<span class="w"> </span>sounding<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--map-zoom<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--plot-file<span class="w"> </span>oax_sounding.png
+</pre></div>
+</div>
+<p>Export the profile:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span>oax.csv
+</pre></div>
+</div>
+<p>Return machine-readable JSON:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sounderpy<span class="w"> </span>obs<span class="w"> </span>OAX<span class="w"> </span><span class="m">2014</span>-06-16<span class="w"> </span><span class="m">18</span><span class="w"> </span>--json
+</pre></div>
+</div>
+<p>The CLI is especially useful for shell scripts, quick checks, batch workflows, and users who do not need a full Python notebook.</p>
+</section>
+<hr class="docutils" />
+<section id="Troubleshooting-Tips">
+<h2>Troubleshooting Tips<a class="headerlink" href="#Troubleshooting-Tips" title="Link to this heading"></a></h2>
+<p><strong>A retrieval fails</strong></p>
+<p>SounderPy depends on several external archives and services. If a request that previously worked suddenly fails, the upstream data provider may be temporarily unavailable.</p>
+<p>Try the request again later and check the SounderPy documentation for source-specific availability notes.</p>
+<p><strong>A plot takes longer than expected</strong></p>
+<p>Full SounderPy plots perform many calculations and may also request radar/map data. For a lightweight workflow, use:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spy</span><span class="o">.</span><span class="n">build_sounding</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">special_parcels</span><span class="o">=</span><span class="s2">&quot;simple&quot;</span><span class="p">,</span>
+    <span class="n">radar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">map_zoom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>ECAPE or a storm-relative quantity is unavailable</strong></p>
+<p>Some calculations require sufficient vertical coverage, valid winds, and a valid storm-motion solution. Sparse or incomplete profiles may not support every diagnostic.</p>
+<p><strong>A model profile differs from a nearby observation</strong></p>
+<p>That does not necessarily indicate an error. Model profiles are gridded, spatially representative analyses or forecasts, while radiosondes are observations that drift through space and time.</p>
+</section>
+<hr class="docutils" />
+<section id="🎉-You-Finished-the-SounderPy-Beginner's-Cookbook!">
+<h2>🎉 You Finished the SounderPy Beginner’s Cookbook!<a class="headerlink" href="#🎉-You-Finished-the-SounderPy-Beginner's-Cookbook!" title="Link to this heading"></a></h2>
+<p>You now know how to:</p>
+<ul class="simple">
+<li><p>retrieve observed atmospheric profiles;</p></li>
+<li><p>understand SounderPy’s <code class="docutils literal notranslate"><span class="pre">clean_data</span></code> structure;</p></li>
+<li><p>build and customize soundings;</p></li>
+<li><p>create ground-relative and storm-relative hodographs;</p></li>
+<li><p>retrieve RAP/RUC, BUFKIT, and ACARS data;</p></li>
+<li><p>calculate thermodynamic and kinematic parameters;</p></li>
+<li><p>compare multiple profiles;</p></li>
+<li><p>export SounderPy data;</p></li>
+<li><p>use the SounderPy command line.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="Where-to-go-next">
+<h2>Where to go next<a class="headerlink" href="#Where-to-go-next" title="Link to this heading"></a></h2>
+<ul>
+<li><div class="line-block">
+<div class="line"><strong>Getting Started:</strong></div>
+<div class="line"><a class="reference external" href="https://kylejgillett.github.io/sounderpy/getting_started.html">https://kylejgillett.github.io/sounderpy/getting_started.html</a></div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line"><strong>Tutorials:</strong></div>
+<div class="line"><a class="reference external" href="https://kylejgillett.github.io/sounderpy/tutorials/index.html">https://kylejgillett.github.io/sounderpy/tutorials/index.html</a></div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line"><strong>Plot Gallery:</strong></div>
+<div class="line"><a class="reference external" href="https://kylejgillett.github.io/sounderpy/examplegallery.html">https://kylejgillett.github.io/sounderpy/examplegallery.html</a></div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line"><strong>Case Studies:</strong></div>
+<div class="line"><a class="reference external" href="https://kylejgillett.github.io/sounderpy/case_studies/index.html">https://kylejgillett.github.io/sounderpy/case_studies/index.html</a></div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line"><strong>Full Documentation:</strong></div>
+<div class="line"><a class="reference external" href="https://kylejgillett.github.io/sounderpy/">https://kylejgillett.github.io/sounderpy/</a></div>
+</div>
+</li>
+</ul>
+<p>Thanks for using SounderPy! 🌩️</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cli.html" class="btn btn-neutral float-left" title="💻 Command Line Interface (CLI)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="examplegallery.html" class="btn btn-neutral float-right" title="📊 Plot Gallery" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kyle J Gillett.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
