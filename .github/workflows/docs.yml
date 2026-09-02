@@ -36,6 +36,11 @@ jobs:
       - name: Install documentation dependencies
         run: |
           python -m pip install sphinx nbsphinx sphinx-rtd-theme
+      
+      - name: Install Pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
