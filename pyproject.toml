@@ -68,7 +68,6 @@ dependencies = [
 sounderpy = "sounderpy.cli:main"
 
 [tool.setuptools]
-packages = { find = { where = ["src"] } }
 package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
