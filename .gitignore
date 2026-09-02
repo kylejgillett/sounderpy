@@ -1,6 +1,7 @@
 /build
 /dist
 /MANIFEST
+docs/build/
 **/*.egg-info/
 /.pytest_cache/
 /.eggs
