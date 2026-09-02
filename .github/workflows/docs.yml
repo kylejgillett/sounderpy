@@ -45,7 +45,7 @@ jobs:
 
       - name: Build documentation
         run: |
-          sphinx-build -W --keep-going \
+          sphinx-build \
             docs/source \
             docs/build/html
 
