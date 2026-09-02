@@ -35,7 +35,7 @@ jobs:
 
       - name: Install documentation dependencies
         run: |
-          python -m pip install sphinx nbsphinx
+          python -m pip install sphinx nbsphinx sphinx-rtd-theme
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
