@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - main
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/main
   workflow_dispatch:
 
 permissions:
@@ -25,17 +21,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-<<<<<<< HEAD
         uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v6
-=======
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
->>>>>>> origin/main
         with:
           python-version: "3.12"
 
@@ -46,19 +35,10 @@ jobs:
 
       - name: Install documentation dependencies
         run: |
-<<<<<<< HEAD
           python -m pip install sphinx nbsphinx
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
-=======
-          python -m pip install \
-            sphinx \
-            nbsphinx
-
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
->>>>>>> origin/main
 
       - name: Build documentation
         run: |
@@ -82,8 +62,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-<<<<<<< HEAD
         uses: actions/deploy-pages@v4
-=======
-        uses: actions/deploy-pages@v4
->>>>>>> origin/main
