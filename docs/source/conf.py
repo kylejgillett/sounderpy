@@ -48,3 +48,9 @@ html_css_files = [
     "gallery.css",
     "case_studies.css",
 ]
+
+html_extra_path = [
+    "bufkit_map.html",
+    "raob_map.html",
+    "acars_map.html",
+]
