@@ -52,5 +52,5 @@ html_css_files = [
 html_extra_path = [
     "bufkit_map.html",
     "raob_map.html",
-    "acars_map.html",
+    "reanl_map_anvil.html",
 ]
