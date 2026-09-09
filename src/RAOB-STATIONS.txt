@@ -741,19 +741,19 @@ WMO,ICAO,NAME,LOC,EL(m),LAT,A,LON,B,
 41756, ----, JIWANI,                     PK,   57,  25.04, N,   61.48, E
 41768, ----, CHHOR,                      PK,    6,  25.52, N,   69.78, E
 41780, OPKC, KARACHI INTL ARPT,          PK,   22,  24.90, N,   67.13, E
-41859, ----, RANGPUR,                    BW,   34,  25.73, N,   89.23, E
-41883, ----, BOGRA,                      BW,   20,  24.85, N,   89.37, E
-41891, ----, SYLHET,                     BW,   35,  24.90, N,   91.88, E
-41895, VGRJ, RAJSHAHI,                   BW,   20,  24.37, N,   88.70, E
-41907, VGIS, ISHURDI,                    BW,   14,  24.13, N,   89.05, E
+41859, ----, RANGPUR,                    BD,   34,  25.73, N,   89.23, E
+41883, ----, BOGRA,                      BD,   20,  24.85, N,   89.37, E
+41891, ----, SYLHET,                     BD,   35,  24.90, N,   91.88, E
+41895, VGRJ, RAJSHAHI,                   BD,   20,  24.37, N,   88.70, E
+41907, VGIS, ISHURDI,                    BD,   14,  24.13, N,   89.05, E
 41909, ----, TANGAIL,                    BW,   56,  24.25, N,   89.93, E
-41923, ----, COMILLA,                    BW,    9,  23.43, N,   91.18, E
-41929, ----, FARODPUR,                   BW,    9,  23.60, N,   89.85, E
-41936, ----, JESSORE,                    BW,    7,  23.11, N,   89.10, E
-41943, ----, FENI,                       BW,    8,  23.03, N,   91.42, E
-41950, ----, BARISAL,                    BW,    4,  22.75, N,   90.37, E
-41977, ----, CHITTAGONG/AMBAGAN,         BW,   34,  22.35, N,   91.82, E
-41992, ----, COX'S BAZAR,                BW,    4,  21.43, N,   91.93, E
+41923, ----, DHAKA,                      BD,    9,  23.43, N,   91.18, E
+41929, ----, FARODPUR,                   BD,    9,  23.60, N,   89.85, E
+41936, ----, JESSORE,                    BD,    7,  23.11, N,   89.10, E
+41943, ----, FENI,                       BD,    8,  23.03, N,   91.42, E
+41950, ----, BARISAL,                    BD,    4,  22.75, N,   90.37, E
+41977, ----, CHITTAGONG/AMBAGAN,         BD,   34,  22.35, N,   91.82, E
+41992, ----, COX'S BAZAR,                BD,    4,  21.43, N,   91.93, E
 42027, ----, SRINAGAR,                   IN, 1587,  34.08, N,   74.83, E
 42056, ----, JAMMU,                      IN,  323,  32.67, N,   74.83, E
 42079, ----, SUNDERNAGAR,                IN,  875,  31.53, N,   76.90, E
