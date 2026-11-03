@@ -14,7 +14,7 @@ The CLI is useful when:
 * you want to script repeated SounderPy operations in a shell;
 * another program needs SounderPy data as JSON.
 
-For the full command reference, see :doc:`Command Line Tool </cli>`.
+For the full command reference, see :doc:`Command Line Tool </reference/cli>`.
 
 ***************************************************************
  
@@ -373,8 +373,8 @@ You have now reached the end of the core tutorial series.
 
 Useful reference pages:
 
-* :doc:`Command Line Tool </cli>`
-* :doc:`Getting Data </gettingdata>`
-* :doc:`Plotting Data </plottingdata>`
-* :doc:`Helper Tools </helpertools>`
-* :doc:`Plot Gallery </examplegallery>`
+* :doc:`Command Line Tool </reference/cli>`
+* :doc:`Getting Data </reference/gettingdata>`
+* :doc:`Plotting Data </reference/plottingdata>`
+* :doc:`Helper Tools </reference/helpertools>`
+* :doc:`Plot Gallery </gallery/examplegallery>`

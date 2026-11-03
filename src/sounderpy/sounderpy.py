@@ -1,6 +1,7 @@
 ### IMPORT SOFTWARE ###
 #########################################################################################################
 # SOUNDERPY
+import warnings
 from typing import List, Tuple, Optional
 
 from .plot import __full_sounding, __full_hodograph, __composite_sounding, __vad_hodograph
@@ -37,7 +38,7 @@ from .rapruc_grib_retriever import get_rapruc_data
     Docs: https://kylejgillett.github.io/sounderpy/
     Code: https://github.com/kylejgillett/sounderpy
     PyPi: https://pypi.org/project/sounderpy/
-    Operational Site: https://sounderpysoundings.anvil.app/
+    Operational Site: https://sounderpy.app/
 
     COPYRIGHT
     ---------
@@ -151,7 +152,7 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
     r"""Get BUFKIT forecast model vertical profile data
        Return a ``dict`` of 'cleaned up' model forecast data from a given model, for a given BUFKIT site identifier, forecast hour, & model-run-date
 
-       :param model: the requested model to use (such as hrrr, nam, gfs, etc)
+       :param model: the requested model to use (such as hrrr, rap, gfs, etc)
        :type model: str, required
        :param station: a 3-4 digit BUFKIT site identifier
        :type station: str, required
@@ -199,17 +200,15 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
 ############
 # FULL SOUNDING
 #########################################################################
-def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False, storm_motion='right_moving',
+def build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion='right_moving',
                    special_parcels=None, radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None,
-                   show_theta=False, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_sounding'):
+                   show_theta=False, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_sounding', max_levels=250, ylim=None, theme=None):
     
     '''
     Return a full sounding plot of SounderPy data, ``plt``
 
     :param clean_data: the dictionary of data to be plotted (see :doc:`gettingdata`)
     :type clean_data: dict, required
-    :param style: may be `simple` or `full`. Default is `full`.
-    :type style: str, optional
     :param color_blind: whether to change the dewpoint trace line from green to blue for improved readability for color deficient users/readers. Default is ``False``
     :type color_blind: bool, optional
     :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding. Default is ``False``.
@@ -236,13 +235,19 @@ def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False,
     :type save: bool, optional
     :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
     :type filename: str, optional
+    :param max_levels: the most vertical levels used to calculate and plot the sounding. Profiles with more levels are thinned to this many evenly spaced levels. Set to ``None`` to use every level. Default is ``250``.
+    :type max_levels: int or None, optional
+    :param ylim: the skew-t's pressure range as (bottom, top) in hPa, such as ``(1000, 700)``, to look at one part of the atmosphere. The temperature axis and pressure ticks fit to that range, while the rest of the figure still uses the full profile. Default is ``None``, which shows the full profile.
+    :type ylim: tuple of two numbers, optional
+    :param theme: changes to the figure's colors, such as ``{'border': 'k', 'temperature': 'navy', 'parcel': {'mu': 'black'}}``. An invalid name lists the valid ones. Default is ``None``.
+    :type theme: dict, optional
     :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
     :rtype: plt
     '''
     
     print(f'> SOUNDING PLOTTER FUNCTION\n  ---------------------------------')
 
-    plt = __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, radar, radar_time, map_zoom, modify_sfc, show_theta, hodo_boundary, dpi)
+    plt = __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, radar, radar_time, map_zoom, modify_sfc, show_theta, hodo_boundary, dpi, max_levels, ylim, theme)
     if save:
         plt.savefig(filename, bbox_inches='tight')
     else:
@@ -257,7 +262,7 @@ def build_sounding(clean_data, style='full', color_blind=False, dark_mode=False,
 # FULL HODOGRAPH
 #########################################################################
 def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr_hodo=False, modify_sfc=None,
-                    radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_hodograph'):
+                    radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_hodograph', max_levels=250, theme=None):
 
     '''
        Return a full sounding plot of SounderPy data, ``plt`` 
@@ -287,14 +292,16 @@ def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr
        :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
        :type filename: str, optional
        
-       :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
+       :param max_levels: the most vertical levels used to calculate and plot the hodograph. Profiles with more levels are thinned to this many evenly spaced levels. Set to ``None`` to use every level. Default is ``250``.
+    :type max_levels: int or None, optional
+    :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
        :rtype: plt
     '''
 
 
     print(f'> HODOGRAPH PLOTTER FUNCTION --\n-------------------------------')
 
-    plt = __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc, radar, radar_time, map_zoom, hodo_boundary, dpi)
+    plt = __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc, radar, radar_time, map_zoom, hodo_boundary, dpi, max_levels, theme)
     if save:
         plt.savefig(filename, bbox_inches='tight')
     else:
@@ -306,40 +313,74 @@ def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr
 ############
 # COMPOSITE SOUNDING
 #########################################################################
-def build_composite(data_list, shade_between=True, cmap='viridis', colors_to_use='none', ls_to_use='none', alphas_to_use='none',
-                    lw_to_use='none', dark_mode=False, save=False, filename='sounderpy_composite'):
+def build_composite(data_list, shade_between=True, cmap='viridis', colors=None, linestyles=None, alphas=None,
+                    linewidths=None, dark_mode=False, save=False, filename='sounderpy_composite',
+                    show_params=True, storm_motion='right_moving', max_levels=250, dpi=100, ylim=None,
+                    colors_to_use=None, ls_to_use=None, alphas_to_use=None, lw_to_use=None, theme=None, style='full', sr_hodo=False):
 
     '''
     Return a composite sounding plot of multiple profiles, ``plt``
 
-    :param data_list: a list of data dictionaries for each profile to be plotted
+    :param data_list: a list of data dictionaries for each profile to be plotted. Profiles may come from any mix of sources, such as observed, model, BUFKIT, ACARS, and custom data.
     :type data_list: list of dicts, required
     :param shade_between: Lightly shade between the dewpoint & temperature trace. In many cases, this improves readability. Default is ``True``.
     :type shade_between: bool, optional
-    :param cmap: a linear colormap, may be any custom or matplotlib cmap. Default is 'viridis'. If `colors_to_use` kwarg is provided, `colors_to_use` will be used instead.
+    :param cmap: a linear colormap, may be any custom or matplotlib cmap. Default is 'viridis', using only the part of it that stands out from the figure's background. If `colors` kwarg is provided, `colors` will be used instead.
     :type cmap: `matplotlib.colors.LinearSegmentedColormap` or `str` representing the name of a matplotlib cmap, optional
-    :param colors_to_use: A list of custom matplotlib color name stings. List length must match the number of profiles listed in ``data_list``. Default is 'none'.
-    :type colors_to_use: list of strings, optional
-    :param alphas_to_use: A list of custom alphas (0.0-1.0). List length must match the number of profiles listed in ``data_list``. Default is 'none'. Default alpha is 1.
-    :type alphas_to_use: list of floats, optional
-    :param ls_to_use: A list of custom matplotlib line styles. List length must match the number of profiles listed in ``data_list``. Default is 'none'. Default line style is '-'.
-    :type ls_to_use: list of stings, optional
-    :param lw_to_use: A list of custom line widths. List length must match the number of profiles listed in ``data_list``. Default is 'none'. Default line width is 3.
-    :type lw_to_use: list of floats, optional
+    :param colors: A list of custom matplotlib color name stings. List length must match the number of profiles listed in ``data_list``. Default is 'none'.
+    :type colors: list of strings, optional
+    :param alphas: A list of custom alphas (0.0-1.0). List length must match the number of profiles listed in ``data_list``. Default is 'none'. Default alpha is 1.
+    :type alphas: list of floats, optional
+    :param linestyles: A list of custom matplotlib line styles. List length must match the number of profiles listed in ``data_list``. Default is 'none'. Default line style is '-'.
+    :type linestyles: list of stings, optional
+    :param linewidths: A list of custom line widths. List length must match the number of profiles listed in ``data_list``. Default is 'none'. Default line width is 3.
+    :type linewidths: list of floats, optional
     :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding. Default is ``False``.
     :type dark_mode: bool, optional
     :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
     :type save: bool, optional
     :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
     :type filename: str, optional
+    :param show_params: whether to compute each profile's parameters and show them in the table. Setting this to ``False`` is faster. Default is ``True``.
+    :type show_params: bool, optional
+    :param storm_motion: the storm motion used to compute every profile's parameters. Default is ``right_moving``.
+    :type storm_motion: str or list of floats, optional
+    :param max_levels: the most vertical levels used to calculate and plot each profile. Profiles with more levels are thinned to this many evenly spaced levels. Set to ``None`` to use every level. Default is ``250``.
+    :type max_levels: int or None, optional
+    :param dpi: dots per inch resolution of the figure. Default is ``100``.
+    :type dpi: int, optional
+    :param ylim: the skew-t's pressure range as (bottom, top) in hPa, such as ``(1000, 700)``, to look at one part of the atmosphere. The temperature axis and pressure ticks fit to that range, while the rest of the figure still uses the full profile. Default is ``None``, which shows the full profile.
+    :type ylim: tuple of two numbers, optional
+    :param colors_to_use: deprecated, use ``colors``
+    :param ls_to_use: deprecated, use ``linestyles``
+    :param alphas_to_use: deprecated, use ``alphas``
+    :param lw_to_use: deprecated, use ``linewidths``
+    :param theme: changes to the figure's colors, such as ``{'border': 'k', 'temperature': 'navy', 'parcel': {'mu': 'black'}}``. An invalid name lists the valid ones. Default is ``None``.
+    :type theme: dict, optional
+    :param style: the panels to show. ``'full'`` shows the skew-t and hodograph, ``'sounding'`` shows only the skew-t, and ``'hodograph'`` shows only the hodograph. Each style's table lists the parameters that go with its panels. Default is ``'full'``.
+    :type style: str, optional
+    :param sr_hodo: draw the hodograph storm relative, shifting each profile's winds by its own storm motion from ``storm_motion``. Not used with ``style='sounding'``. If any profile has no storm motion, the hodograph stays ground relative. Default is ``False``.
+    :type sr_hodo: bool, optional
     :return: plt, a SounderPy composite sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
     :rtype: plt
     '''
     
     print(f'> COMPOSITE SOUNDING FUNCTION\n  -------------------------------')
 
-    plt =  __composite_sounding(data_list, shade_between, cmap, colors_to_use,
-            ls_to_use, alphas_to_use, lw_to_use, dark_mode)
+    # the old argument names still work for now
+    def _use_new_name(old_name, old_value, new_name, new_value):
+        if old_value is None:
+            return new_value
+        warnings.warn(f"'{old_name}' is deprecated and will be removed in a future release. Use '{new_name}' instead.", FutureWarning, stacklevel=3)
+        return old_value if new_value is None else new_value
+
+    colors = _use_new_name('colors_to_use', colors_to_use, 'colors', colors)
+    linestyles = _use_new_name('ls_to_use', ls_to_use, 'linestyles', linestyles)
+    alphas = _use_new_name('alphas_to_use', alphas_to_use, 'alphas', alphas)
+    linewidths = _use_new_name('lw_to_use', lw_to_use, 'linewidths', linewidths)
+
+    plt =  __composite_sounding(data_list, shade_between, cmap, colors,
+            linestyles, alphas, linewidths, dark_mode, show_params, storm_motion, max_levels, dpi, ylim, theme, style, sr_hodo)
     if save:
         plt.savefig(filename, bbox_inches='tight')
     else:
@@ -360,7 +401,7 @@ def build_composite(data_list, shade_between=True, cmap='viridis', colors_to_use
 # VAD HODOGRAPH
 #########################################################################
 def build_vad_hodograph(vad_data, save=False, dark_mode=False, storm_motion='right_moving', sr_hodo=False,
-                        filename='vad_hodograph'):
+                        filename='vad_hodograph', radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, theme=None):
     '''
        Return a VAD hodograph plot of SounderPy VAD data, ``plt``
 
@@ -376,13 +417,27 @@ def build_vad_hodograph(vad_data, save=False, dark_mode=False, storm_motion='rig
        :type storm_motion: str or list of floats, optional
        :param sr_hodo: transform the hodograph from ground relative to storm relative
        :type sr_hodo: bool, optional, default is ``False``
+:param radar: the type of radar on the map: ``'mosaic'``, ``'single-site'``, or ``None``. Default is ``'mosaic'``.
+:type radar: str or None, optional
+:param radar_time: the time of radar to show: ``'sounding'`` for the data's valid time, or ``'now'``. Default is ``'sounding'``.
+:type radar_time: str, optional
+:param map_zoom: a zoom level for the map inset. Setting ``map_zoom=0`` hides the map. Default is ``2``.
+:type map_zoom: int, optional
+:param hodo_boundary: plot a boundary on the hodograph, structured as ``{'angle':[], 'color':[]}``. Default is ``None``.
+:type hodo_boundary: dict of lists, optional
+:param dpi: dots per inch resolution of the figure. Default is ``100``.
+:type dpi: int, optional
+       :param theme: changes to the figure's colors, such as ``{'border': 'k', 'temperature': 'navy', 'parcel': {'mu': 'black'}}``. An invalid name lists the valid ones. Default is ``None``.
+       :type theme: dict, optional
+       :param theme: changes to the figure's colors, such as ``{'border': 'k', 'temperature': 'navy', 'parcel': {'mu': 'black'}}``. An invalid name lists the valid ones. Default is ``None``.
+       :type theme: dict, optional
        :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
        :rtype: plt
     '''
 
     print(f'> VAD HODOGRAPH PLOTTER FUNCTION --\n------------------------------------')
 
-    plt =  __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo)
+    plt =  __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo, radar, radar_time, map_zoom, hodo_boundary, dpi, theme)
     if save:
         plt.savefig(filename, bbox_inches='tight')
     else:

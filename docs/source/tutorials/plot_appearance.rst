@@ -60,7 +60,7 @@ The default SounderPy plot uses a light background:
        map_zoom=0,
    )
 
-.. image:: ../_static/gallery/themes/sounding_light.png
+.. image:: /_static/gallery/themes/sounding_light.png
    :alt: Light-mode SounderPy sounding
    :width: 85%
    :align: center
@@ -80,7 +80,7 @@ Set ``dark_mode=True`` to use the dark-background plotting theme:
        map_zoom=0,
    )
 
-.. image:: ../_static/gallery/themes/sounding_dark.png
+.. image:: /_static/gallery/themes/sounding_dark.png
    :alt: Dark-mode SounderPy sounding
    :width: 85%
    :align: center
@@ -100,13 +100,13 @@ The same ``dark_mode`` argument is available for standalone hodographs.
    :widths: 50 50
    :class: gallery-table
 
-   * - .. image:: ../_static/gallery/themes/hodograph_light.png
+   * - .. image:: /_static/gallery/themes/hodograph_light.png
           :alt: Light-mode SounderPy hodograph
           :width: 100%
 
        **Light Mode**
 
-     - .. image:: ../_static/gallery/themes/hodograph_dark.png
+     - .. image:: /_static/gallery/themes/hodograph_dark.png
           :alt: Dark-mode SounderPy hodograph
           :width: 100%
 
@@ -151,7 +151,7 @@ Standard Colors
        map_zoom=0,
    )
 
-.. image:: ../_static/gallery/accessibility/sounding_standard_colors.png
+.. image:: /_static/gallery/accessibility/sounding_standard_colors.png
    :alt: SounderPy sounding using standard colors
    :width: 85%
    :align: center
@@ -169,7 +169,7 @@ Color-Deficiency-Friendly Colors
        map_zoom=0,
    )
 
-.. image:: ../_static/gallery/accessibility/sounding_colorblind.png
+.. image:: /_static/gallery/accessibility/sounding_colorblind.png
    :alt: SounderPy color-deficiency-friendly sounding
    :width: 85%
    :align: center
@@ -191,6 +191,71 @@ Appearance options can be combined:
        radar=None,
        map_zoom=0,
    )
+
+
+***************************************************************
+ 
+Custom Colors
+=============
+
+Change individual colors with ``theme``. Only the colors you list change; the
+rest keep the light or dark color scheme:
+
+.. code-block:: python
+
+   spy.build_sounding(
+       data,
+       theme={
+           "temperature": "navy",
+           "dewpoint": "darkgreen",
+           "parcel": {"mu": "black"},
+       },
+   )
+
+``theme`` also works with ``dark_mode=True`` and ``color_blind=True``, and with
+hodographs and composites. See :ref:`plot_themes` for every color that can be
+changed.
+
+
+***************************************************************
+ 
+Zooming into the Lower Atmosphere
+=================================
+
+Set ``ylim`` to a (bottom, top) pressure range in hPa to focus the skew-T on
+one part of the atmosphere, such as the lowest 300 hPa. The rest of the figure
+still uses the full profile:
+
+.. code-block:: python
+
+   spy.build_sounding(
+       data,
+       ylim=(1000, 700),
+   )
+
+
+***************************************************************
+ 
+Changing the Watermark
+======================
+
+``spy.set_watermark()`` changes the logo and credit text on every figure made
+afterwards in the same Python session:
+
+.. code-block:: python
+
+   spy.set_watermark(
+       title="MY RESEARCH GROUP",
+       subtitle="Made with SounderPy",
+   )
+
+   # hide the watermark
+   spy.set_watermark(show=False)
+
+   # restore the default watermark
+   spy.set_watermark()
+
+See :ref:`watermark` for every setting.
 
 
 ***************************************************************
@@ -284,6 +349,6 @@ and radar display.
 
 See also:
 
-* :doc:`Plotting Data </plottingdata>`
-* :doc:`Plot Gallery </examplegallery>`
-* :doc:`Command Line Tool </cli>`
+* :doc:`Plotting Data </reference/plottingdata>`
+* :doc:`Plot Gallery </gallery/examplegallery>`
+* :doc:`Command Line Tool </reference/cli>`

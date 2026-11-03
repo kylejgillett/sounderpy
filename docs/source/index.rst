@@ -18,10 +18,10 @@
 
       .. container:: home-actions
 
-         :doc:`🚀 Get Started <getting_started>`   
-         :doc:`👨‍🍳 Tutorials <tutorials/index>`   
-         :doc:`📊 Plot Gallery <examplegallery>`   
-         :doc:`📚 Reference <gettingdata>`
+         :doc:`🚀 Get Started </user_guide/getting_started>`   
+         :doc:`👨‍🍳 Tutorials </tutorials/index>`   
+         :doc:`📊 Plot Gallery </gallery/examplegallery>`   
+         :doc:`📚 Reference </reference/gettingdata>`
 
       .. code-block:: bash
 
@@ -33,11 +33,11 @@
 
    .. container:: home-hero-figure
 
-      .. image:: _static/gallery/map_radar/radar_single.png
+      .. image:: /_static/gallery/map_radar/radar_single.png
          :alt: Example SounderPy vertical profile analysis figure
          :width: 100%
 
-      .. image:: _static/gallery/themes/hodograph_light.png
+      .. image:: /_static/gallery/themes/hodograph_light.png
          :alt: Example SounderPy vertical profile analysis figure
          :width: 100%
 
@@ -52,7 +52,7 @@ Start Here
 
       Install SounderPy, retrieve a profile, and create your first sounding.
 
-      :doc:`Start learning → <getting_started>`
+      :doc:`Start learning → </user_guide/getting_started>`
 
    .. container:: home-card
 
@@ -61,7 +61,7 @@ Start Here
       Step-by-step guides for plots, radar, parcels, hodographs, data sources,
       exports, and command-line workflows.
 
-      :doc:`Browse tutorials → <tutorials/index>`
+      :doc:`Browse tutorials → </tutorials/index>`
 
    .. container:: home-card
 
@@ -70,7 +70,7 @@ Start Here
       Explore sounding, hodograph, composite, radar, parcel, and data-source
       examples.
 
-      :doc:`View gallery → <examplegallery>`
+      :doc:`View gallery → </gallery/examplegallery>`
 
    .. container:: home-card
 
@@ -79,7 +79,7 @@ Start Here
       Work with RAOB, ACARS, RAP/RUC, BUFKIT, ERA5, NCEP, WRF, CM1, and custom
       vertical profiles.
 
-      :doc:`Explore data sources → <gettingdata>`
+      :doc:`Explore data sources → </reference/gettingdata>`
 
    .. container:: home-card
 
@@ -88,7 +88,7 @@ Start Here
       Find detailed retrieval, plotting, calculation, and helper-function
       documentation.
 
-      :doc:`Open reference → <plottingdata>`
+      :doc:`Open reference → </reference/plottingdata>`
 
    .. container:: home-card
 
@@ -96,7 +96,7 @@ Start Here
 
       Retrieve, plot, export, and automate SounderPy directly from a terminal.
 
-      :doc:`Use the CLI → <cli>`
+      :doc:`Use the CLI → </reference/cli>`
 
 
 Get a Sounding in Seconds
@@ -187,26 +187,31 @@ One Workflow, Many Data Sources, Several Plotting Options
       Several profiles on one sounding.
 
 
-:doc:`Learn how SounderPy handles data → <tutorials/data_sources>`
+:doc:`Learn how SounderPy handles data → </tutorials/data_sources>`
 
 
-What's New in SounderPy 3.2.0
-===========================
+What's New in SounderPy 3.3.0
+=============================
 
 .. container:: release-panel
 
-   **SounderPy 3.2.0 expands both how data are retrieved and how SounderPy can
-   be used.**
+   **SounderPy 3.3.0 rebuilds the plotting module and makes every figure easier
+   to customize.**
 
-   * 💻 New command line interface for retrieval, plotting, JSON, and export.
-   * 🌦️ Updated RAP/RUC reanalysis data access with modern GRIB2 archives.
-   * 📈 New and improved sounding plot features (such as storm-relative wind barbs and DPI settings)
-   * 🎈 Restored access to UW RAOB database.
-   * 📁 New file-io workflow for saving data to a file and for opening SHARPPY files.
-   * 📚 Expanded task-oriented tutorials and visual plot gallery.
-   * 🧰 Improved packaging, testing, and release infrastructure.
+   * 📈 SounderPy's plot module is fully rebuilt and refactored allowing for increased figure customization and generation speed. Most figures are roughly 50% faster.
+   * 🎨 The new figure kwarg ``theme`` lets you set your own colors while credit text and logo can be changed with ``spy.set_watermark()``.
+   * 🔍 Full sounding and composite figures now include a ``ylim`` kwarg, allowing you to adjust the Skew-T's y-axis (pressure) limits.
+   * 🧩 Composite soundings have been completely rebuilt. Composites include a table of various parameters, normalized kwarg names, and support for custom data sources.
+   * 🗺️ VAD hodographs now include the map, radar, hodograph boundary, and DPI options of the other figures.
+   * 🌦️ The NAM and NAMNEST (NAM3km) BUFKIT forecasts are archive only after their NCEP decommissioning on Nov. 2nd, 2026.
+   * 📚 Refactored and redesigned documentation to match new SounderPy web app: sounderpy.app
 
-   :doc:`Try the CLI → <cli>`
+   .. important::
+      ``sounding_params(...).calc()`` now returns a dictionary instead of a tuple, and
+      ``build_composite()``'s ``colors_to_use``, ``ls_to_use``, ``alphas_to_use``, and
+      ``lw_to_use`` are renamed. See :doc:`/reference/helpertools` and :doc:`/reference/plottingdata`.
+
+   :doc:`See the plotting reference → </reference/plottingdata>`
 
 
 Using SounderPy in Research?
@@ -217,43 +222,45 @@ profile retrieval, analysis, and visualization.
 
 .. container:: research-links
 
-   :doc:`About SounderPy <about>`   
+   :doc:`About SounderPy </user_guide/about>`   
    `GitHub <https://github.com/kylejgillett/sounderpy>`_   
    `PyPI <https://pypi.org/project/sounderpy/>`_   
-   `Operational SounderPy Site <https://sounderpysoundings.anvil.app/>`_
+   `Operational SounderPy Site <https://sounderpy.app/>`_
 
 
 ☕ SounderPy is a open-source package developed on my own time. Would you like to support continued SounderPy development? Consider "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"! ☕
 
 Directory
 ==================
-  .. toctree::
-     :maxdepth: 5
-     :caption: General:
-     
-     getting_started
-     about
-     troubleshooting
-     community
-
-  .. toctree::
-     :maxdepth: 5
-     :caption: API Reference:
+.. toctree::
+   :maxdepth: 5
+   :caption: General:
    
-     gettingdata
-     customdatasources
-     clean_data_scheme
-     plottingdata
-     helpertools
-     cli
+   user_guide/getting_started
+   user_guide/about
+   user_guide/troubleshooting
+   user_guide/community
+   user_guide/additional_resources
 
-  .. toctree::
-     :maxdepth: 5
-     :caption: Tutorials:  
+.. toctree::
+   :maxdepth: 5
+   :caption: API Reference:
+ 
+   reference/gettingdata
+   reference/customdatasources
+   reference/clean_data_scheme
+   reference/plottingdata
+   reference/helpertools
+   reference/cli
 
-     beginners_sounderpy_cookbook
-     examplegallery
-     tutorials/index
-     case_studies/mound_city_20240828
+.. toctree::
+   :maxdepth: 5
+   :caption: Tutorials:  
+
+   tutorials/beginners_sounderpy_cookbook
+   gallery/examplegallery
+   gallery/examplescripts
+   tutorials/index
+   case_studies/mound_city_20240828
 
 * :ref:`genindex`

@@ -50,7 +50,7 @@ The default hodograph is ground relative:
        map_zoom=0,
    )
 
-.. image:: ../_static/gallery/options/hodograph_ground_relative.png
+.. image:: /_static/gallery/options/hodograph_ground_relative.png
    :alt: Ground-relative SounderPy hodograph
    :width: 78%
    :align: center
@@ -73,7 +73,7 @@ winds:
        map_zoom=0,
    )
 
-.. image:: ../_static/gallery/options/hodograph_storm_relative.png
+.. image:: /_static/gallery/options/hodograph_storm_relative.png
    :alt: Storm-relative SounderPy hodograph
    :width: 78%
    :align: center
@@ -128,7 +128,7 @@ For example:
        map_zoom=0,
    )
 
-.. image:: ../_static/gallery/options/hodograph_custom_storm_motion.png
+.. image:: /_static/gallery/options/hodograph_custom_storm_motion.png
    :alt: SounderPy hodograph using custom storm motion
    :width: 78%
    :align: center
@@ -169,7 +169,7 @@ The argument is a dictionary containing matching lists of angles and colors:
        map_zoom=0,
    )
 
-.. image:: ../_static/gallery/options/hodograph_boundary.png
+.. image:: /_static/gallery/options/hodograph_boundary.png
    :alt: SounderPy hodograph with a boundary overlay
    :width: 78%
    :align: center
@@ -258,4 +258,4 @@ different profile sources feed the same SounderPy plotting workflow.
 
 See also:
 
-* :doc:`Plotting Data </plottingdata>`
+* :doc:`Plotting Data </reference/plottingdata>`

@@ -49,7 +49,7 @@ With ``special_parcels=None``, SounderPy uses its normal parcel configuration:
        map_zoom=0,
    )
 
-.. image:: ../_static/gallery/parcels/parcels_default.png
+.. image:: /_static/gallery/parcels/parcels_default.png
    :alt: SounderPy sounding using default parcel settings
    :width: 85%
    :align: center
@@ -75,7 +75,7 @@ Use ``special_parcels="simple"`` for the simpler parcel configuration:
        map_zoom=0,
    )
 
-.. image:: ../_static/gallery/parcels/parcels_simple.png
+.. image:: /_static/gallery/parcels/parcels_simple.png
    :alt: SounderPy sounding using simple parcel settings
    :width: 85%
    :align: center
@@ -117,7 +117,7 @@ For example:
        map_zoom=0,
    )
 
-.. image:: ../_static/gallery/parcels/parcels_custom.png
+.. image:: /_static/gallery/parcels/parcels_custom.png
    :alt: SounderPy sounding using custom parcel settings
    :width: 85%
    :align: center
@@ -256,4 +256,4 @@ motion and ground-relative/storm-relative wind displays.
 
 See also:
 
-* :doc:`Plotting Data </plottingdata>`
+* :doc:`Plotting Data </reference/plottingdata>`

@@ -1,9 +1,0 @@
-📖 BUFKIT Site Map
-===================
-
-Some words for the page 
-
-
-.. raw:: html
-
-	.. include:: _static/bufkit_map.html

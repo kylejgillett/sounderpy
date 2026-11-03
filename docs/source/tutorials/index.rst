@@ -86,5 +86,5 @@ redirection, and simple batch workflows.
 Gallery Figures
 ===============
 
-See :doc:`the Plot Gallery </examplegallery>` for a visual overview of the
+See :doc:`the Plot Gallery </gallery/examplegallery>` for a visual overview of the
 generated examples.

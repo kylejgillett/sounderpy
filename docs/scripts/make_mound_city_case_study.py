@@ -9,7 +9,7 @@ Run from the SounderPy repository root:
 
 Outputs
 -------
-docs/source/_static/case_studies/mound_city_20240828/
+docs/source/case_studies/mound_city_20240828/
 
     header.jpg
     abr_12z_sounding.png
@@ -48,9 +48,7 @@ import numpy.ma as ma
 import sounderpy as spy
 
 
-OUTPUT_DIR = Path(
-    "../source/case_studies/mound_city_20240828"
-)
+OUTPUT_DIR = Path("docs/source/case_studies/mound_city_20240828")
 
 HEADER_URL = (
     "https://www.weather.gov/images/abr/EventSummaries/"
@@ -60,7 +58,7 @@ HEADER_URL = (
 
 EVENT_LATLON = [45.68, -100.18]
 
-DPI = 160
+DPI = 200
 
 
 def banner(text: str) -> None:
@@ -205,19 +203,19 @@ def save_composite(profiles: dict[str, dict], filename: Path) -> None:
         data_list,
         dark_mode=True,
         shade_between=False,
-        colors_to_use=[
+        colors=[
             "tab:blue",
             "tab:orange",
             "tab:green",
             "tab:red",
         ],
-        lw_to_use=[
+        linewidths=[
             2,
             2,
             3,
             3,
         ],
-        alphas_to_use=[
+        alphas=[
             0.75,
             0.75,
             1.0,

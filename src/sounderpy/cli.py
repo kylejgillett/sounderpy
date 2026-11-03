@@ -429,7 +429,7 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Retrieve a BUFKIT forecast sounding.",
         description="Retrieve a BUFKIT forecast vertical profile.",
     )
-    bufkit.add_argument("model", help="BUFKIT model, e.g. gfs, hrrr, nam.")
+    bufkit.add_argument("model", help="BUFKIT model, e.g. gfs, hrrr, rap, rrfs.")
     bufkit.add_argument("station", help="BUFKIT station identifier.")
     bufkit.add_argument(
         "forecast_hour", type=_forecast_hour, metavar="FHR", help="Forecast hour."

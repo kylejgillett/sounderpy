@@ -39,7 +39,7 @@ def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_ho
     r"""Get BUFKIT forecast model vertical profile data
        Return a ``dict`` of 'cleaned up' model forecast data from a given model, for a given BUFKIT site identifier, forecast hour, & model-run-date
 
-       :param model: the requested model to use (such as hrrr, nam, gfs, etc)
+       :param model: the requested model to use (such as hrrr, rap, gfs, etc)
        :type model: str, required
        :param station: a 3-4 digit BUFKIT site identifier
        :type station: str, required
@@ -77,9 +77,9 @@ def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_ho
     # if date variables (year, month, day) are not given, the user has 'selected' a most
     # recent forecast run, get that from PSU
     if run_year == None:
-        if model not in ['gfs', 'nam', 'namnest', 'rap', 'hrrr', 'sref', 'hiresw']:
+        if model not in ['gfs', 'nam', 'namnest', 'rap', 'hrrr', 'rrfs', 'sref', 'hiresw']:
             raise ValueError(
-                f"{model} is not a valid model option. Valid models include ['GFS', 'NAM', 'NAMNEST', 'RAP', 'HRRR', 'SREF', 'HIRESW']")
+                f"{model} is not a valid model option. Valid models include ['GFS', 'NAM', 'NAMNEST', 'RAP', 'HRRR', 'RRFS', 'SREF', 'HIRESW']")
         if model == 'gfs':
             model3 = 'gfs3'
         else:
@@ -93,9 +93,9 @@ def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_ho
     # if date variables (year, month, day) are given, the user has 'selected' a
     # archived forecast for the given date
     else:
-        if model not in ['gfs', 'nam', 'namnest', 'rap', 'hrrr']:
+        if model not in ['gfs', 'nam', 'namnest', 'rap', 'hrrr', 'rrfs']:
             raise ValueError(
-                f"{model} is not a valid model option. Valid models include ['GFS', 'NAM', 'NAMNEST', 'RAP', 'HRRR']")
+                f"{model} is not a valid model option. Valid models include ['GFS', 'NAM', 'NAMNEST', 'RAP', 'HRRR', 'RRFS']")
         if model == 'namnest':
             model = 'nam4km'
         if model == 'gfs':
@@ -147,8 +147,8 @@ def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_ho
         run_dt = datetime(int(f'20{run_time[0:2]}'), int(run_time[2:4]), int(run_time[4:6]), int(run_time[7:9]))
         fct_dt = run_dt + timedelta(hours=fcst_hour)
         hr_deltas = {
-            'gfs': [1, 180], 'hrrr': [1, 48],
-            'rap': [1, 51], 'nam': [1, 84],
+            'gfs': [1, 180], 'hrrr': [1, 48], 'rrfs': [1, 84],
+            'rap': [1, 51], 'nam': [1, 48],
             'namnest': [1, 60], 'nam4km': [1, 60],
             'sref': [1, 84], 'hiresw': [1, 48]}
         stp_dt = fct_dt + timedelta(hours=hr_deltas[model][0])

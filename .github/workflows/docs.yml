@@ -28,15 +28,11 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install package
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install -e .
-
       - name: Install documentation dependencies
         run: |
-          python -m pip install sphinx nbsphinx sphinx-rtd-theme
-      
+          python -m pip install --upgrade pip
+          python -m pip install -r docs/requirements.txt
+
       - name: Install Pandoc
         run: |
           sudo apt-get update
@@ -47,7 +43,7 @@ jobs:
 
       - name: Build documentation
         run: |
-          sphinx-build \
+          sphinx-build -W --keep-going \
             docs/source \
             docs/build/html
 

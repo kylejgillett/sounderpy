@@ -1,0 +1,41 @@
+/* Styles for the site-lookup maps, adapted from the SounderPy web app's station-map.css. */
+html, body, #map { height: 100%; margin: 0; }
+body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+
+.leaflet-container { background: #3a4749; font: inherit; }
+.leaflet-control-attribution { background: rgb(58 71 73 / 88%) !important; color: #b3ab95; }
+.leaflet-control-attribution a { color: #ddd0ac; }
+.leaflet-bar { border-color: #6e6754 !important; }
+.leaflet-bar a { background: #4a4840; border-color: #6e6754; color: #efe6cf; }
+.leaflet-bar a:hover { background: #5a574d; color: #fff; }
+
+.leaflet-tooltip { border: 1px solid #7a7360; background: #4a4840; color: #efe6cf; box-shadow: none; font-size: .95rem; }
+.leaflet-tooltip-top::before { border-top-color: #6e6754; }
+
+.spy-popup .leaflet-popup-content-wrapper,
+.spy-popup .leaflet-popup-tip { border: 1px solid #a6926d; background: #45413a; color: #f6ebd2; box-shadow: 0 8px 24px rgb(0 0 0 / 35%); }
+.spy-popup .leaflet-popup-content { display: grid; gap: .2rem; margin: .8rem 1rem; font-size: 1rem; line-height: 1.4; }
+.spy-popup .leaflet-popup-content strong { color: #ddc386; font-size: 1.15rem; }
+.spy-popup .leaflet-popup-content small { color: #d9c9a7; }
+.spy-popup .leaflet-popup-close-button { color: #d9c9a7; }
+
+/* Station ID above each visible dot: small and faded, never intercepts clicks. */
+.spy-station-label { width: 0; height: 0; }
+.spy-station-label span {
+  position: absolute; transform: translate(-50%, calc(-100% - 6px)); white-space: nowrap;
+  color: rgb(243 234 214 / 62%); font-size: 10px; font-weight: 700; letter-spacing: .04em;
+  text-shadow: 0 0 3px #1a1712, 0 0 2px #1a1712;
+}
+
+/* Phones: how to move the map */
+.spy-map-touch-note { padding: .15rem .5rem; border-radius: 4px; background: rgb(74 72 64 / 88%); color: #efe6cf; font-size: 11px; pointer-events: none; }
+
+/* Town labels: a small dot with the name beside it; never intercepts clicks. */
+.leaflet-labels-pane { pointer-events: none; }
+.spy-place { width: 0; height: 0; }
+.spy-place span {
+  position: absolute; left: -2px; top: -2px; display: flex; align-items: center; gap: 4px; white-space: nowrap;
+  color: #e2d6b8; font-size: 11px; font-weight: 600; letter-spacing: .02em;
+  text-shadow: 0 0 3px #2b2822, 0 0 3px #2b2822, 0 0 2px #2b2822;
+}
+.spy-place span::before { content: ""; flex: none; width: 4px; height: 4px; border-radius: 50%; background: #a8956a; }

@@ -105,7 +105,7 @@ def from_sharppy(filepath):
 
     u, v = mpcalc.wind_components(ws, wd)
 
-    print("**NOTE**: to plot your SHARPPY file data with SounderPy, you'll have to manually provide additional site meta-data.\nThis process is fairly simple and is discussed in detail at https://kylejgillett.github.io/sounderpy/customdatasources.html#ingesting-your-own-data-into-sounderpy.\nBe sure to include a site ID, name, location, lat/lon, and elevation. You must also create plot titles for the sounding plot.")
+    print("**NOTE**: to plot your SHARPPY file data with SounderPy, you'll have to manually provide additional site meta-data.\nThis process is fairly simple and is discussed in detail at https://kylejgillett.github.io/sounderpy/reference/customdatasources.html#ingesting-your-own-data-into-sounderpy.\nBe sure to include a site ID, name, location, lat/lon, and elevation. You must also create plot titles for the sounding plot.")
 
 
     return {

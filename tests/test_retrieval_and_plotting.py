@@ -429,11 +429,76 @@ def test_build_composite_saves_rendered_png(
 
 
 @pytest.mark.slow
+@pytest.mark.parametrize("style", ["sounding", "hodograph"])
+def test_build_composite_single_panel_styles(
+    style,
+    clean_profile,
+    second_clean_profile,
+    offline_plot_assets,
+    tmp_path,
+):
+    output = tmp_path / f"composite_{style}.png"
+
+    result = spy.build_composite(
+        [clean_profile, second_clean_profile],
+        style=style,
+        save=True,
+        filename=str(output),
+    )
+
+    assert result is None
+    assert_nonempty_png(output)
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize("style", ["full", "hodograph"])
+def test_build_composite_storm_relative(
+    style,
+    clean_profile,
+    second_clean_profile,
+    offline_plot_assets,
+    tmp_path,
+):
+    output = tmp_path / f"composite_sr_{style}.png"
+
+    spy.build_composite(
+        [clean_profile, second_clean_profile],
+        style=style,
+        sr_hodo=True,
+        show_params=False,
+        save=True,
+        filename=str(output),
+    )
+
+    assert_nonempty_png(output)
+
+
+def test_composite_storm_relative_winds():
+    from sounderpy.plot.components import _get_missing_storm_motions, _make_winds_storm_relative
+    import numpy.ma as ma
+
+    winds = [{"z": np.array([0, 100]), "u": np.array([10.0, 20.0]), "v": np.array([5.0, 5.0])}]
+    params = [{"kinem": {"sm_u": 4.0, "sm_v": -1.0}}]
+    shifted = _make_winds_storm_relative(winds, params)[0]
+    np.testing.assert_allclose(shifted["u"], [6.0, 16.0])
+    np.testing.assert_allclose(shifted["v"], [6.0, 6.0])
+
+    missing = [None, {"kinem": {"sm_u": ma.masked, "sm_v": ma.masked}}, params[0]]
+    assert _get_missing_storm_motions(missing) == ["A", "B"]
+
+
+def test_build_composite_rejects_unknown_style(clean_profile):
+    with pytest.raises(ValueError, match="style"):
+        spy.build_composite([clean_profile], style="skewt")
+
+
+@pytest.mark.slow
 def test_build_vad_hodograph_saves_rendered_png(vad_profile, offline_plot_assets, tmp_path):
     output = tmp_path / "vad_hodograph.png"
 
     result = spy.build_vad_hodograph(
         vad_profile,
+        map_zoom=0,
         save=True,
         filename=str(output),
     )

@@ -8,9 +8,7 @@ availability.
 
 from __future__ import annotations
 
-import base64
 import copy
-import io
 
 import matplotlib
 
@@ -23,14 +21,6 @@ import numpy as np
 import pytest
 from metpy.units import units
 
-import sounderpy.plot as plot_module
-
-
-# A valid 1x1 PNG. SounderPy currently retrieves its logo over HTTP while
-# building plots; replacing urlopen keeps plot tests offline and deterministic.
-_TINY_PNG = base64.b64decode(
-    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
-)
 
 
 @pytest.fixture(autouse=True)
@@ -41,18 +31,14 @@ def close_matplotlib_figures():
 
 
 @pytest.fixture
-def offline_plot_assets(monkeypatch):
-    """Prevent plotting tests from downloading the SounderPy logo.
+def offline_plot_assets():
+    """Mark a test as needing no network.
 
-    Plot tests also pass ``map_zoom=0`` for sounding/hodograph plots so radar
-    and map retrieval code is not exercised here.  Live data-service behavior
-    belongs in the explicitly enabled network tests.
+    The SounderPy logo is bundled with the package.  Plot tests also pass
+    ``map_zoom=0`` for sounding/hodograph plots so radar and map retrieval code
+    is not exercised here.  Live data-service behavior belongs in the explicitly
+    enabled network tests.
     """
-
-    def fake_urlopen(*args, **kwargs):
-        return io.BytesIO(_TINY_PNG)
-
-    monkeypatch.setattr(plot_module, "urlopen", fake_urlopen)
 
 
 @pytest.fixture

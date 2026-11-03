@@ -98,7 +98,7 @@ Plot it normally:
        map_zoom=0,
    )
 
-.. image:: ../_static/gallery/data_sources/data_raob.png
+.. image:: /_static/gallery/data_sources/data_raob.png
    :alt: SounderPy sounding using observed RAOB data
    :width: 82%
    :align: center
@@ -135,7 +135,7 @@ The location is given as:
 
 and ``box_avg_size`` controls the area-average box size in degrees.
 
-.. image:: ../_static/gallery/data_sources/data_rap_ruc.png
+.. image:: /_static/gallery/data_sources/data_rap_ruc.png
    :alt: SounderPy sounding using RAP/RUC reanalysis
    :width: 82%
    :align: center
@@ -173,7 +173,7 @@ or:
    )
 
 Some sources may require additional credentials, external services, or
-source-specific data availability. See :doc:`Getting Data </gettingdata>` for
+source-specific data availability. See :doc:`Getting Data </reference/gettingdata>` for
 the current requirements.
 
 ***************************************************************
@@ -216,7 +216,7 @@ For an archived model run, provide the initialization date/time:
        hush=True,
    )
 
-.. image:: ../_static/gallery/data_sources/data_bufkit.png
+.. image:: /_static/gallery/data_sources/data_bufkit.png
    :alt: SounderPy sounding using BUFKIT forecast data
    :width: 82%
    :align: center
@@ -256,7 +256,7 @@ Then retrieve one returned profile ID:
        hush=True,
    )
 
-.. image:: ../_static/gallery/data_sources/data_acars.png
+.. image:: /_static/gallery/data_sources/data_acars.png
    :alt: SounderPy sounding using ACARS data
    :width: 82%
    :align: center
@@ -321,7 +321,7 @@ WRF output can similarly be converted with ``spy.make_wrf_profile(...)``.
 Once converted, these profiles use the same SounderPy analysis and plotting
 functions as retrieved profiles.
 
-See :doc:`Custom Data Sources </customdatasources>` for detailed input
+See :doc:`Custom Data Sources </reference/customdatasources>` for detailed input
 requirements.
 
 
@@ -365,5 +365,5 @@ multiple profiles on one figure.
 
 See also:
 
-* :doc:`Getting Data </gettingdata>`
-* :doc:`Custom Data Sources </customdatasources>`
+* :doc:`Getting Data </reference/gettingdata>`
+* :doc:`Custom Data Sources </reference/customdatasources>`

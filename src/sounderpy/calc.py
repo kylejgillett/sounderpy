@@ -2,7 +2,7 @@
 from .SHARPPYMAIN.sharppy.sharptab.profile import create_profile
 from .SHARPPYMAIN.sharppy.sharptab.interp import *
 from .SHARPPYMAIN.sharppy.sharptab.winds import *
-from .SHARPPYMAIN.sharppy.sharptab.utils import comp2vec
+from .SHARPPYMAIN.sharppy.sharptab.utils import comp2vec, KTS2MS
 from .SHARPPYMAIN.sharppy.sharptab.params import *
 
 
@@ -139,11 +139,12 @@ def dcape_calc(pressure, temperature, dewpoint):
 class sounding_params:
 
 
-    def __init__(self, clean_data, storm_motion='right_moving', modify_sfc=None, include_all_parcels=False):
+    def __init__(self, clean_data, storm_motion='right_moving', modify_sfc=None, include_all_parcels=False, parcel_depth=None):
             self.clean_data = clean_data 
             self.storm_motion = storm_motion
             self.modify_sfc = modify_sfc
             self.include_all_parcels = include_all_parcels
+            self.parcel_depth = parcel_depth
 
             
     ######################################################################################################
@@ -408,11 +409,17 @@ class sounding_params:
         #--- PARCEL PROFILES ---#
         # ---------------------------------------------------------------
         if self.include_all_parcels:
-            # Calculate parcels
-            parcels = [parcelx(prof, pres=p[i].m, tmpc=T[i].m, dwpc=Td[i].m) for i in range(len(p))]
-            thermo['cape_profile'] = np.array([pcl.bplus for pcl in parcels])
-            thermo['cin_profile'] = np.array([pcl.bminus for pcl in parcels])
-            thermo['3cape_profile'] = np.array([pcl.b3km for pcl in parcels])
+            # Calculate parcels. With a `parcel_depth` (m AGL), only levels up to that depth
+            # (plus two levels above it, for interpolation) are lifted. Levels above it are nan
+            n_parcels = len(p)
+            if self.parcel_depth is not None:
+                above_depth = np.nonzero((z.m - z.m[0]) >= self.parcel_depth)[0]
+                if above_depth.size > 0:
+                    n_parcels = min(above_depth[0] + 2, len(p))
+            parcels = [parcelx(prof, pres=p[i].m, tmpc=T[i].m, dwpc=Td[i].m) for i in range(n_parcels)]
+            for key, attr in (('cape_profile', 'bplus'), ('cin_profile', 'bminus'), ('3cape_profile', 'b3km')):
+                thermo[key] = np.full(len(p), np.nan)
+                thermo[key][:n_parcels] = np.array([getattr(pcl, attr) for pcl in parcels])
             # Interpolate
             intrp['cape_profileINTRP'] = interpolate(thermo['cape_profile'], zINTRP, resolution)
             intrp['cin_profileINTRP'] = interpolate(thermo['cin_profile'], zINTRP, resolution)
@@ -567,6 +574,15 @@ class sounding_params:
         kinem['shear_0_to_6000'] = comp2vec(shear_0_to_6000[0], shear_0_to_6000[1])[1]
         kinem['shear_eil'] = comp2vec(shear_eil[0], shear_eil[1])[1]
 
+        # effective bulk wind difference: EIL base to half the MU EL height
+        # Thompson, R. L., C. M. Mead, and R. Edwards, 2007
+        try:
+            ebwd_top = pres(prof, to_msl(prof, kinem['eil_z'][0] + (thermo['mu_el_z'] - kinem['eil_z'][0]) / 2))
+            ebwd = wind_shear(prof, pbot=kinem['eil'][0], ptop=ebwd_top)
+            kinem['ebwd'] = comp2vec(ebwd[0], ebwd[1])[1]
+        except:
+            kinem['ebwd'] = ma.masked
+
 
 
 
@@ -709,10 +725,10 @@ class sounding_params:
         if ma.is_masked(kinem['sm_u']) == False:
             # effective inflow layer significant tornado parameter
             # Thompson, R. L., B. T. Smith, J. S. Grams, A. R. Dean, and C. Broyles, 2012
-            kinem['eil_stp'] = stp_cin(thermo['mucape'], kinem['srh_eil'], kinem['shear_eil'], thermo['mu_lcl_z'], thermo['mucin'])
+            kinem['eil_stp'] = stp_cin(thermo['mlcape'], kinem['srh_eil'], KTS2MS(kinem['ebwd']), thermo['ml_lcl_z'], thermo['mlcin'])
             # effective inflow layer supercell composite
             # Thompson et al. 2004
-            kinem['eil_scp'] = scp(thermo['mucape'], kinem['srh_eil'], kinem['shear_eil'])
+            kinem['eil_scp'] = scp(thermo['mucape'], kinem['srh_eil'], KTS2MS(kinem['ebwd']))
             # most-unstable energy helicity index
             kinem['ehi_0_to_1000'] = ehi(prof, mupcl, 0, 1000, stu=kinem['sm_u'], stv=kinem['sm_v'])
             kinem['ehi_0_to_3000'] = ehi(prof, mupcl, 0, 3000, stu=kinem['sm_u'], stv=kinem['sm_v'])
@@ -766,7 +782,7 @@ class sounding_params:
         general['w_3_6000'] = np.mean(intrp['mrINTRP'][30:60]) 
         general['w_6_9000'] = np.mean(intrp['mrINTRP'][60:90]) 
         
-        return general, thermo, kinem, intrp 
+        return {"general": general, "thermo": thermo, "kinem": kinem, "intrp": intrp} 
 
     
     
@@ -774,8 +790,9 @@ class sounding_params:
     ### PRINT FUNCTION -- PRINT A FEW VALUES ###
     ######################################################################################################  
     def print_vals(self):
-        thermo = self.calc()[1]
-        kinem  = self.calc()[2]
+        params = self.calc()
+        thermo = params["thermo"]
+        kinem  = params["kinem"]
         print(' ')
         print(f'    > THERMODYNAMICS --------------------------------------------- ')
         print(f"    --- SBCAPE: {np.round(thermo['sbcape'], 1)} | MUCAPE: {np.round(thermo['mucape'], 1)} | MLCAPE: {np.round(thermo['mlcape'], 1)} | MUECAPE: {np.round(thermo['mu_ecape'], 1)}")

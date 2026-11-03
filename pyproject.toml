@@ -59,7 +59,7 @@ dependencies = [
 [project.urls]
 "Docs" = "https://kylejgillett.github.io/sounderpy/"
 "Code" = "https://github.com/kylejgillett/sounderpy"
-"Operational Site" = "https://sounderpysoundings.anvil.app/"
+"Operational Site" = "https://sounderpy.app/"
 "PyPi" = "https://pypi.org/project/sounderpy/"
 "My Website" = "https://kylegillettphoto.com"
 
@@ -82,6 +82,10 @@ exclude = [
 "sounderpy" = [
     "rs_reflectivity.txt",
     "nexrad_locations.txt",
+]
+
+"sounderpy.plot" = [
+    "sounderpy_logo.png",
 ]
 
 "sounderpy.SHARPPYMAIN" = [

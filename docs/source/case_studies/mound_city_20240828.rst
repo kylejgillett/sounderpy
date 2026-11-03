@@ -10,8 +10,6 @@
    :align: center
    :figclass: case-study-figure
 
-\ 
- 
    *A wide view of the supercell as it was producing a tornado west of
    Mound City, South Dakota.*
 
@@ -124,7 +122,7 @@ from models and observations each provide useful but different information.
 1. Morning Observed Environment
 =============================================
 
-First retrieve the Aberdeen (`KABR`) observed sounding from the morning of the event:
+First retrieve the Aberdeen (``KABR``) observed sounding from the morning of the event:
 
 .. code-block:: python
 
@@ -143,7 +141,6 @@ Plot the sounding:
    :width: 88%
    :align: center
 
-\ 
  
 - The 12 UTC sounding provides a baseline for the morning environment
 
@@ -161,7 +158,7 @@ A useful forecast comparison is the **12 UTC HRRR run**, initialized around
 
 From a 12 UTC initialization, 01 UTC corresponds to forecast hour 13.
 
-Using the Mobridge, SD (`KMBG`) BUFKIT site:
+Using the Mobridge, SD (``KMBG``) BUFKIT site:
 
 .. code-block:: python
 
@@ -173,7 +170,6 @@ Using the Mobridge, SD (`KMBG`) BUFKIT site:
    :width: 88%
    :align: center
 
-\ 
  
 - This profile represents what a forecaster using the morning HRRR could have examined for the environment near the expected event time.
 
@@ -190,7 +186,7 @@ Using the Mobridge, SD (`KMBG`) BUFKIT site:
 3. Evening Observed Environment
 =============================================
 
-The nominal 00 UTC Aberdeen (`KABR`) sounding was taken near the beginning of the
+The nominal 00 UTC Aberdeen (``KABR``) sounding was taken near the beginning of the
 evening severe-weather period:
 
 .. code-block:: python
@@ -202,7 +198,6 @@ evening severe-weather period:
    :width: 88%
    :align: center
 
-\ 
  
 - Comparing the 12 UTC and 00 UTC observations provides a direct look at the regional environmental evolution over the course of the day.
 
@@ -230,7 +225,6 @@ The sample location below is near the documented first tornado track:
    :width: 88%
    :align: center
 
-\ 
  
 - The RAP profile is not an observation, but its local sampling makes it useful for evaluating spatial differences between the Aberdeen sounding and the environment near the tornadic supercell.
 
@@ -249,8 +243,8 @@ SounderPy can place all four profiles on the same thermodynamic diagram:
    profiles = [abr_12z, hrrr_f13, abr_00z, rap_01z]
 
    spy.build_composite(profiles, shade_between=False, dark_mode='True',
-       colors_to_use=[ "tab:blue", "tab:orange", "tab:green", "tab:red"],
-       lw_to_use=[2, 2, 3, 3],
+       colors=[ "tab:blue", "tab:orange", "tab:green", "tab:red"],
+       linewidths=[2, 2, 3, 3],
        save=True,
        filename="mound_city_environment_composite.png",
    )
@@ -259,17 +253,17 @@ SounderPy can place all four profiles on the same thermodynamic diagram:
    :alt: Composite sounding comparison for the Mound City tornado case
    :width: 95%
    :align: center
-\ 
+
 
 The Thermodynamic Profile
 --------------------------
 
 - The composite is particularly useful for comparing:
 
-   * warming between the morning and evening observations;
-   * changes in boundary-layer moisture;
-   * differences between the HRRR forecast and the analyzed/observed environment;
-   * model-versus-observation differences in vertical temperature structure.
+  * warming between the morning and evening observations;
+  * changes in boundary-layer moisture;
+  * differences between the HRRR forecast and the analyzed/observed environment;
+  * model-versus-observation differences in vertical temperature structure.
 
 
 The Kinematic Profile
@@ -277,27 +271,21 @@ The Kinematic Profile
 
 - When comparing the hodographs, consider:
 
-   * How much **low-level curvature** was present in each profile?
-   * How did the low-level winds differ between the regional ABR observation and
-   the near-storm RAP analysis?
-   * How closely did the **12 UTC HRRR forecast** resemble the wind profile near
-   the time of tornadogenesis?
-   * How did the magnitude and orientation of **deep-layer shear** compare among
-   the forecast, observation, and analysis?
-   * Were important changes confined primarily to the low levels, or did the
-   entire wind profile evolve?
+  * How much **low-level curvature** was present in each profile?
+  * How did the low-level winds differ between the regional ABR observation and
+    the near-storm RAP analysis?
+  * How closely did the **12 UTC HRRR forecast** resemble the wind profile near
+    the time of tornadogenesis?
+  * How did the magnitude and orientation of **deep-layer shear** compare among
+    the forecast, observation, and analysis?
+  * Were important changes confined primarily to the low levels, or did the
+    entire wind profile evolve?
 
 
 
 
 Event Context
 =============
-
-The NWS Aberdeen event summary describes a supercell that developed from a
-storm in western Corson County, moved into southern North Dakota, and later
-interacted with newly developing storms to its south before moving east across
-the Missouri River. After crossing the river, the storm produced multiple
-tornadoes across Campbell County.
 
 The first major tornado west/southwest of Mound City was rated EF2. The damage
 survey documented transmission-tower damage as well as damage to farmsteads,
@@ -320,4 +308,4 @@ Continue Exploring
 * :doc:`Working with Data Sources </tutorials/data_sources>`
 * :doc:`Composite Soundings </tutorials/composite_soundings>`
 * :doc:`Hodograph Options </tutorials/hodograph_options>`
-* :doc:`Plot Gallery </examplegallery>`
+* :doc:`Plot Gallery </gallery/examplegallery>`

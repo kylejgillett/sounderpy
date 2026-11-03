@@ -1,0 +1,661 @@
+/* Recolors the Read the Docs theme to match the SounderPy web app and kylegillettphoto.com.
+ * The palette and fonts mirror the variables in those sites' src/styles/global.css.
+ * Update the values below to change the look of the whole documentation site.
+ */
+
+:root {
+    --paper: #302d29;
+    --paper-light: #45413a;
+    --paper-deep: #554f46;
+    --ink: #f6ebd2;
+    --ink-soft: #d9c9a7;
+    --forest: #d4c49a;
+    --forest-deep: #f2e4c5;
+    --moss: #b7a174;
+    --clay: #bc9074;
+    --ochre: #ddc386;
+    --line: #786d59;
+    --line-strong: #a6926d;
+    --control-bg: #514c44;
+    --control-bg-hover: #625c51;
+    --serif: Georgia, "Times New Roman", serif;
+    --sans: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+
+    /* Read by homepage.css, gallery.css and case_studies.css */
+    --color-foreground-primary: var(--ink);
+    --color-foreground-secondary: var(--ink-soft);
+    --color-background-secondary: var(--paper-light);
+    --color-brand-primary: var(--ochre);
+    --color-on-brand: var(--paper);
+    --color-border: var(--line);
+}
+
+/* Page */
+body,
+.wy-body-for-nav,
+.wy-nav-content-wrap,
+.wy-nav-content {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+}
+
+h1, h2, h3, h4, h5, h6, legend,
+.rst-content .toctree-wrapper > p.caption {
+    color: var(--forest-deep);
+    font-family: var(--serif);
+}
+
+a,
+a:visited,
+.rst-content a {
+    color: var(--ochre);
+}
+
+a:hover,
+.rst-content a:hover {
+    color: var(--forest-deep);
+}
+
+::selection {
+    background: var(--forest);
+    color: var(--paper-light);
+}
+
+/* Sections: every top-level section starts with a divider line. The pages' own
+   "****" transitions placed these lines unevenly, so they are hidden in favour of this. */
+.rst-content [itemprop="articleBody"] hr {
+    display: none;
+}
+
+.rst-content [itemprop="articleBody"] section > h2 {
+    margin: 3.5rem 0 1.25rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line);
+}
+
+.rst-content [itemprop="articleBody"] section > h3 {
+    margin: 2.25rem 0 0.9rem;
+}
+
+.rst-content [itemprop="articleBody"] section > h4 {
+    margin: 1.75rem 0 0.75rem;
+}
+
+hr {
+    border-top-color: var(--line);
+}
+
+footer,
+.rst-footer-buttons,
+.wy-breadcrumbs,
+.rst-content .wy-breadcrumbs li {
+    color: var(--ink-soft);
+}
+
+.btn-neutral,
+.btn-neutral:visited {
+    background: var(--control-bg) !important;
+    color: var(--ink) !important;
+    font-family: var(--sans);
+}
+
+.btn-neutral:hover {
+    background: var(--control-bg-hover) !important;
+}
+
+/* Sidebar */
+.wy-nav-side,
+.wy-side-scroll {
+    background: var(--paper-light);
+}
+
+.wy-side-nav-search,
+.wy-nav-top {
+    background: var(--paper-deep);
+    color: var(--ink);
+}
+
+.wy-side-nav-search > a,
+.wy-side-nav-search > a:hover,
+.wy-nav-top a,
+.wy-nav-top i {
+    background: transparent;
+    color: var(--forest-deep);
+}
+
+.wy-side-nav-search input[type="text"] {
+    background: var(--control-bg);
+    border-color: var(--line-strong);
+    box-shadow: none;
+    color: var(--ink);
+}
+
+.wy-side-nav-search input[type="text"]::placeholder {
+    color: var(--ink-soft);
+}
+
+.wy-menu-vertical header,
+.wy-menu-vertical p.caption {
+    color: var(--ochre);
+    font-family: var(--serif);
+}
+
+.wy-menu-vertical a,
+.wy-menu-vertical a:visited {
+    color: var(--ink-soft);
+}
+
+.wy-menu-vertical a:hover,
+.wy-menu-vertical li.current > a:hover,
+.wy-menu-vertical li.current a:hover,
+.wy-menu-vertical li.on a:hover {
+    background: var(--control-bg-hover);
+    color: var(--ink);
+}
+
+.wy-menu-vertical li.current,
+.wy-menu-vertical li.current a,
+.wy-menu-vertical li.toctree-l2.current > a,
+.wy-menu-vertical li.toctree-l2.current li.toctree-l3 > a,
+.wy-menu-vertical li.toctree-l3.current > a,
+.wy-menu-vertical li.toctree-l3.current li.toctree-l4 > a {
+    background: var(--control-bg);
+    border-color: var(--line);
+    color: var(--ink);
+}
+
+.wy-menu-vertical li.current > a,
+.wy-menu-vertical li.toctree-l1.current > a,
+.wy-menu-vertical li.on a {
+    background: var(--paper-deep);
+    border-color: var(--line);
+    color: var(--forest-deep);
+}
+
+.wy-menu-vertical code,
+.wy-menu-vertical code.literal,
+.wy-menu-vertical code .pre {
+    background: transparent;
+    border: 0;
+    color: inherit !important;
+}
+
+.wy-menu-vertical li span.toctree-expand,
+.wy-menu-vertical li button.toctree-expand,
+.wy-menu-vertical li.current > a button.toctree-expand,
+.wy-menu-vertical li.on a button.toctree-expand {
+    color: var(--ink-soft);
+}
+
+/* Code */
+.rst-content code,
+.rst-content tt,
+code {
+    background: var(--control-bg);
+    border-color: var(--line);
+    color: var(--forest-deep);
+}
+
+.rst-content code.literal,
+.rst-content tt.literal {
+    color: var(--ochre);
+}
+
+/* Inline code reads as part of the sentence: no box outline, a faint tint,
+   and the same baseline and line height as the surrounding text. */
+.rst-content p code.literal,
+.rst-content li code.literal,
+.rst-content dd code.literal,
+.rst-content td code.literal,
+.rst-content .admonition code.literal {
+    padding: 0.05em 0.3em;
+    border: 0;
+    border-radius: 3px;
+    background: rgb(221 195 134 / 10%);
+    font-size: 0.86em;
+    line-height: inherit;
+    vertical-align: baseline;
+    white-space: normal;
+}
+
+.rst-content pre,
+.rst-content pre.literal-block,
+.rst-content div[class^="highlight"],
+.rst-content div[class^="highlight"] div[class^="highlight"],
+.rst-content .highlight,
+.highlight {
+    background: #262320;
+    border-color: var(--line);
+    color: var(--ink);
+}
+
+.rst-content div[class^="highlight"] pre,
+.highlight pre {
+    color: var(--ink);
+}
+
+.rst-content .linenos,
+.highlight .linenos,
+.highlight .lineno {
+    background: transparent;
+    border-color: var(--line);
+    color: var(--moss);
+}
+
+/* API signatures: one card per function, one parameter per line */
+html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.citation):not(.glossary):not(.simple) > dt {
+    display: block;
+    margin: 1.5rem 0 1rem;
+    padding: 0.8rem 1rem;
+    border: 0;
+    border-left: 3px solid var(--ochre);
+    border-radius: 0 6px 6px 0;
+    background: #262320;
+    color: var(--ink);
+    font-family: SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* Methods inside a class */
+html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.citation):not(.glossary):not(.simple) dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.citation):not(.glossary):not(.simple) > dt {
+    margin: 1.25rem 0 0.75rem;
+    padding: 0.55rem 0.9rem;
+    border: 0;
+    border-left: 3px solid var(--line-strong);
+    border-radius: 0 6px 6px 0;
+    background: var(--paper-light);
+    color: var(--ink);
+}
+
+/* Methods sit on a lighter card, so their muted colors are lightened to stay readable */
+.rst-content dl.py dl.py > dt .sig-paren,
+.rst-content dl.py dl.py > dt .o {
+    color: #c9b588 !important;
+}
+
+.rst-content dl.py dl.py > dt .default_value {
+    color: #d4a585 !important;
+}
+
+/* The theme colors signature parts with long, very specific selectors. */
+.rst-content dl.py > dt .sig-prename,
+.rst-content dl.py > dt code.descclassname {
+    background: transparent !important;
+    color: var(--ink-soft) !important;
+    font-weight: 400 !important;
+}
+
+.rst-content dl.py > dt .sig-name,
+.rst-content dl.py > dt code.descname {
+    background: transparent !important;
+    color: var(--ochre) !important;
+    font-size: 1.05em;
+    font-weight: 700 !important;
+}
+
+.rst-content dl.py > dt .sig-paren,
+.rst-content dl.py > dt .o {
+    color: var(--moss) !important;
+}
+
+.rst-content dl.py > dt em.sig-param {
+    color: var(--ink) !important;
+    font-style: normal !important;
+}
+
+.rst-content dl.py > dt .default_value {
+    color: var(--clay) !important;
+}
+
+.rst-content dl.py > dt dl {
+    margin: 0;
+}
+
+.rst-content dl.py > dt dl > dd {
+    margin: 0 0 0 2em;
+}
+
+.rst-content dl.py > dt .headerlink {
+    color: var(--moss);
+}
+
+.rst-content dl.py > dd {
+    margin-left: 0;
+}
+
+/* Parameter lists ("Parameters", "Returns", ...) */
+html.writer-html5 .rst-content dl.field-list {
+    display: block;
+    margin: 0 0 1.5rem;
+}
+
+html.writer-html5 .rst-content dl.field-list > dt {
+    display: block;
+    margin: 1.25rem 0 0.6rem;
+    padding: 0 0 0.35rem;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    background: transparent;
+    color: var(--ochre);
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+html.writer-html5 .rst-content dl.field-list > dt .colon {
+    display: none;
+}
+
+html.writer-html5 .rst-content dl.field-list > dd {
+    margin: 0;
+    padding: 0;
+}
+
+.rst-content dl.field-list > dd > ul {
+    margin: 0;
+    padding: 0;
+}
+
+.rst-content dl.field-list > dd > ul > li {
+    margin: 0;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgb(120 109 89 / 45%);
+    list-style: none;
+}
+
+.rst-content dl.field-list > dd > ul > li:last-child {
+    border-bottom: 0;
+}
+
+.rst-content dl.field-list > dd > ul > li > p,
+.rst-content dl.field-list > dd > p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+.rst-content p.spy-param {
+    display: grid;
+    gap: 0.3rem;
+}
+
+.spy-param-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.75rem;
+}
+
+.rst-content .spy-param-name {
+    color: var(--ochre);
+    font-family: SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+.spy-param-type {
+    color: #c9b588;
+    font-size: 0.85rem;
+}
+
+.spy-param-type em,
+.spy-param-type cite {
+    font-style: normal;
+}
+
+.rst-content .spy-param-type code.literal {
+    padding: 0;
+    background: transparent;
+    color: #c9b588;
+    font-size: 0.95em;
+}
+
+.spy-param-desc,
+.rst-content dl.field-list > dd > p {
+    color: var(--ink-soft);
+}
+
+.rst-content .spy-return-type {
+    font-size: 1rem;
+}
+
+/* Admonitions */
+.rst-content .admonition,
+.rst-content .note,
+.rst-content .tip,
+.rst-content .hint,
+.rst-content .seealso,
+.rst-content .important,
+.rst-content .attention,
+.rst-content .warning,
+.rst-content .caution,
+.rst-content .danger,
+.rst-content .error {
+    background: var(--paper-light);
+    color: var(--ink);
+}
+
+.rst-content .admonition-title,
+.rst-content .note .admonition-title,
+.rst-content .tip .admonition-title,
+.rst-content .hint .admonition-title,
+.rst-content .seealso .admonition-title,
+.rst-content .important .admonition-title {
+    background: var(--moss);
+    color: #1a1712;
+}
+
+.rst-content .warning .admonition-title,
+.rst-content .caution .admonition-title,
+.rst-content .attention .admonition-title,
+.rst-content .danger .admonition-title,
+.rst-content .error .admonition-title {
+    background: var(--clay);
+    color: #1a1712;
+}
+
+/* Tables */
+.rst-content table.docutils,
+.rst-content table.docutils td,
+.rst-content table.docutils th,
+.rst-content table.field-list td,
+.wy-table-bordered-all,
+.wy-table-bordered-all td {
+    border-color: var(--line);
+    color: var(--ink);
+}
+
+.rst-content table.docutils thead th {
+    background: var(--paper-deep);
+    border-color: var(--line);
+    color: var(--forest-deep);
+}
+
+.rst-content table.docutils td,
+.rst-content table.docutils:not(.field-list) tr:nth-child(2n-1) td,
+.wy-table-backed,
+.wy-table-odd td,
+.wy-table-striped tr:nth-child(2n-1) td {
+    background: transparent;
+}
+
+.rst-content table.docutils:not(.field-list) tr:nth-child(2n-1) td {
+    background: var(--paper-light);
+}
+
+html.writer-html5 .rst-content table.docutils th,
+html.writer-html5 .rst-content table.docutils td {
+    border-color: var(--line);
+}
+
+/* Lists: consistent indents and breathing room */
+.rst-content [itemprop="articleBody"] ul,
+.rst-content [itemprop="articleBody"] ol {
+    margin: 0 0 1.1rem;
+    padding-left: 1.4rem;
+}
+
+.rst-content [itemprop="articleBody"] li {
+    margin: 0 0 0.3rem;
+    padding-left: 0.15rem;
+}
+
+.rst-content [itemprop="articleBody"] li > ul,
+.rst-content [itemprop="articleBody"] li > ol,
+.rst-content [itemprop="articleBody"] ol li > ul,
+.rst-content [itemprop="articleBody"] ul li > ol {
+    margin: 0.35rem 0 0.4rem;
+}
+
+.rst-content [itemprop="articleBody"] li > p {
+    margin-bottom: 0.3rem;
+}
+
+.rst-content [itemprop="articleBody"] li::marker {
+    color: var(--moss);
+}
+
+/* Definition lists (key: meaning) */
+.rst-content [itemprop="articleBody"] dl.simple:not(.field-list) > dt,
+.rst-content [itemprop="articleBody"] dl:not([class]) > dt {
+    margin-top: 0.6rem;
+    color: var(--forest-deep);
+    font-weight: 700;
+}
+
+.rst-content [itemprop="articleBody"] dl.simple:not(.field-list) > dd,
+.rst-content [itemprop="articleBody"] dl:not([class]) > dd {
+    margin: 0.15rem 0 0.6rem 1.4rem;
+}
+
+/* ...but not the one-argument-per-line lists inside function signatures */
+.rst-content [itemprop="articleBody"] dl.py > dt dl > dd {
+    margin: 0 0 0 2em;
+}
+
+/* Quotes and citations */
+.rst-content [itemprop="articleBody"] blockquote {
+    margin: 0 0 1.2rem;
+    padding: 0.2rem 0 0.2rem 1rem;
+    border-left: 3px solid var(--line);
+    color: var(--ink-soft);
+}
+
+/* Figure captions */
+.rst-content figure figcaption,
+.rst-content .figure .caption {
+    margin-top: 0.6rem;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+}
+
+/* Images keep their spacing from the text around them */
+.rst-content [itemprop="articleBody"] img {
+    margin-bottom: 1rem;
+}
+
+/* Inline code on tinted panels (notes, warnings, release panel) */
+.rst-content .admonition code.literal,
+.rst-content .release-panel code.literal {
+    color: var(--forest-deep);
+}
+
+/* Code in headings takes the heading's color; code in striped table rows is lightened */
+.rst-content h1 code.literal,
+.rst-content h2 code.literal,
+.rst-content h3 code.literal,
+.rst-content h4 code.literal,
+.rst-content h5 code.literal,
+.rst-content h6 code.literal {
+    background: transparent;
+    color: inherit;
+}
+
+.rst-content [itemprop="articleBody"] dl:not([class]) > dt code.literal {
+    background: transparent;
+    color: var(--ochre);
+}
+
+.rst-content table.docutils td code.literal {
+    color: var(--forest-deep);
+}
+
+/* Table captions and code inside table headers */
+.rst-content table.docutils caption,
+.rst-content table.docutils caption .caption-text {
+    color: var(--ink-soft);
+}
+
+.rst-content table.docutils thead code.literal {
+    background: transparent;
+    color: var(--forest-deep);
+}
+
+/* Map frames */
+.rst-content iframe {
+    border: 1px solid var(--line);
+}
+
+/* Homepage: dark text on the ochre primary button */
+.home-actions a,
+.home-actions a:visited {
+    background: var(--control-bg);
+    color: var(--ink);
+}
+
+.home-actions a:first-child,
+.home-actions a:first-child:visited,
+.home-actions a:first-child:focus,
+.home-actions a:first-child * {
+    color: var(--paper) !important;
+}
+
+.home-actions a:hover {
+    background: var(--control-bg-hover);
+    color: var(--ink);
+}
+
+.home-actions a:first-child:hover {
+    background: var(--forest-deep);
+    color: var(--paper);
+}
+
+/* Notebooks */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    color: var(--moss) !important;
+    background: transparent !important;
+}
+
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    background: #262320 !important;
+    border-color: var(--line) !important;
+    color: var(--ink) !important;
+}
+
+div.nboutput.container div.output_area pre,
+div.nboutput.container div.output_area > div.highlight {
+    background: transparent !important;
+    color: var(--ink) !important;
+}
+
+div.nboutput.container div.output_area.stderr {
+    background: #40322b !important;
+}
+
+div.nbsphinx-gallery > a,
+div.nbsphinx-gallery > a:visited {
+    background: var(--paper-light);
+    border-color: var(--line);
+    color: var(--ink);
+}
+
+div.nbsphinx-gallery > a:hover {
+    border-color: var(--ochre);
+    color: var(--forest-deep);
+}

@@ -22,5 +22,7 @@ from .profile_utils import merge_profiles
 from .profile_utils import smooth_profile
 from .calc import sounding_params
 from .calc import vad_params
+from .plot.style import set_watermark
+from .plot.publication import build_publication_sounding
 from .rapruc_grib_parser import parse_rapruc_grib
 from .rapruc_grib_retriever import get_rapruc_data

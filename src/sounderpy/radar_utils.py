@@ -17,8 +17,11 @@ def suppress_stdout_stderr():
         with redirect_stderr(fnull) as err, redirect_stdout(fnull) as out:
             yield (err, out)
 
-with suppress_stdout_stderr():
-    import pyart
+# py-art is slow to import, and is only needed for single-site radar
+def import_pyart():
+    with suppress_stdout_stderr():
+        import pyart
+    return pyart
 
 """
     SOUNDERPY RADAR UTILITY FUNCTIONS 
@@ -184,15 +187,18 @@ def get_radar_data(nexrad_site, clean_data, radar_time):
     # connect to s3
     fs = fsspec.filesystem('s3', anon=True)
 
-    # try current time, then fallback to previous hour if needed
-    time_candidates = [dt_obj + timedelta(minutes=delta) for delta in range(-60,6)]
-
+    # find scans from the previous hour up to 5 minutes after the requested time
+    start, end = dt_obj - timedelta(minutes=60), dt_obj + timedelta(minutes=5)
     files = []
-    for t in time_candidates:
-        prefix = t.strftime(f"s3://unidata-nexrad-level2/%Y/%m/%d/{nexrad_site}/{nexrad_site}%Y%m%d_%H%M")
-        matches = fs.glob(prefix + "*")
-        matches = [f for f in matches if not f.endswith('_MDM')]
-        files.extend(matches)
+    for day in {start.date(), end.date()}:
+        try:
+            listing = fs.ls(day.strftime(f"unidata-nexrad-level2/%Y/%m/%d/{nexrad_site}/"), detail=False)
+        except FileNotFoundError:
+            continue
+        for scan in listing:
+            scan_time = scan.split("/")[-1][4:17]
+            if start.strftime("%Y%m%d_%H%M") <= scan_time <= end.strftime("%Y%m%d_%H%M") and not scan.endswith("_MDM"):
+                files.append(scan)
 
     if files:
         files = sorted(files)
@@ -200,7 +206,9 @@ def get_radar_data(nexrad_site, clean_data, radar_time):
     else:
         raise FileNotFoundError("    > RADAR ERROR: No single-site radar scan found")
 
-    radar = pyart.io.read_nexrad_archive("s3://" + file)
+    # only the lowest scan of reflectivity gets plotted
+    pyart = import_pyart()
+    radar = pyart.io.read_nexrad_archive("s3://" + file, scans=[0], include_fields=["reflectivity"])
 
     # extract timestamp from filename
     scan_time = str(file[51:53] + ':' + file[53:55])
@@ -272,7 +280,7 @@ def get_radar_mosaic(clean_data, map_zoom, radar_time):
         # if data is found, parse it for plotting.
         filename = composite_catalog[find_file(time, composite_catalog)].subset()
         composite_query = filename.query()
-        composite_query.lonlat_box(north=data_lat + (map_zoom + 1),
+        composite_query.lonlat_box(north=data_lat + (map_zoom * 1.6 + 1),
                                    south=data_lat - (map_zoom + 1),
                                    east=data_lon + (map_zoom + 1),
                                    west=data_lon - (map_zoom + 1))

@@ -63,7 +63,7 @@ import sounderpy as spy
 # =============================================================================
 
 DEFAULT_OUTPUT = Path("docs/source/_static/gallery")
-DPI = 150
+DPI = 200
 
 # A deep, severe-weather sounding that works well for theme, parcel, and
 # hodograph demonstrations.

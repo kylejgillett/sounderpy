@@ -284,5 +284,5 @@ retrieval, plotting, JSON, and batch examples.
 
 See also:
 
-* :doc:`Helper Tools </helpertools>`
-* :doc:`Command Line Tool </cli>`
+* :doc:`Helper Tools </reference/helpertools>`
+* :doc:`Command Line Tool </reference/cli>`

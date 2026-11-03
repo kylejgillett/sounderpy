@@ -1,3 +1,5 @@
-ipykernel
+sphinx
 nbsphinx
-pypandoc
+sphinx-reredirects
+sphinx-rtd-theme
+ipython

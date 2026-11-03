@@ -121,7 +121,7 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
                 f"ICAO or WMO identifier '{station}' not found. "
                 "Please make sure you provided the correct RAOB ID. "
                 "If you think this is an error, contact the author: "
-                "https://kylejgillett.github.io/sounderpy/about.html#about-the-author"
+                "https://kylejgillett.github.io/sounderpy/user_guide/about.html#about-the-author"
             )
         station_idx  = row.index[0]
         station_icao = row.loc[station_idx, "ICAO"]

@@ -56,7 +56,7 @@ Set ``map_zoom=0`` to hide the map inset:
        map_zoom=0,
    )
 
-.. image:: ../_static/gallery/map_radar/map_off.png
+.. image:: /_static/gallery/map_radar/map_off.png
    :alt: SounderPy sounding with the map disabled
    :width: 85%
    :align: center
@@ -83,7 +83,7 @@ Set ``radar=None`` while keeping ``map_zoom`` greater than zero:
        map_zoom=2,
    )
 
-.. image:: ../_static/gallery/map_radar/map_only.png
+.. image:: /_static/gallery/map_radar/map_only.png
    :alt: SounderPy sounding with map but no radar
    :width: 85%
    :align: center
@@ -107,7 +107,7 @@ For example:
        map_zoom=4,
    )
 
-.. image:: ../_static/gallery/map_radar/map_zoom_4.png
+.. image:: /_static/gallery/map_radar/map_zoom_4.png
    :alt: SounderPy sounding with a larger map extent
    :width: 85%
    :align: center
@@ -133,7 +133,7 @@ WSR-88D site:
        map_zoom=2,
    )
 
-.. image:: ../_static/gallery/map_radar/radar_single.png
+.. image:: /_static/gallery/map_radar/radar_single.png
    :alt: SounderPy sounding with single-site radar reflectivity
    :width: 85%
    :align: center
@@ -157,7 +157,7 @@ Set ``radar="mosaic"`` to use the supported CONUS reflectivity mosaic:
        map_zoom=2,
    )
 
-.. image:: ../_static/gallery/map_radar/radar_mosaic.png
+.. image:: /_static/gallery/map_radar/radar_mosaic.png
    :alt: SounderPy sounding with radar mosaic
    :width: 85%
    :align: center
@@ -272,5 +272,5 @@ traces displayed on a sounding.
 
 See also:
 
-* :doc:`Plotting Data </plottingdata>`
-* :doc:`Troubleshooting </troubleshooting>`
+* :doc:`Plotting Data </reference/plottingdata>`
+* :doc:`Troubleshooting </user_guide/troubleshooting>`

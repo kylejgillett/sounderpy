@@ -16,8 +16,8 @@ Create publication-ready soundings and hodographs.
 
 **[Documentation](https://kylejgillett.github.io/sounderpy/)** ·
 **[Tutorials](https://kylejgillett.github.io/sounderpy/tutorials/index.html)** ·
-**[Plot Gallery](https://kylejgillett.github.io/sounderpy/examplegallery.html)** ·
-**[Operational Site](https://sounderpysoundings.anvil.app/)** ·
+**[Plot Gallery](https://kylejgillett.github.io/sounderpy/gallery/examplegallery.html)** ·
+**[Operational Site](https://sounderpy.app/)** ·
 **[PyPI](https://pypi.org/project/sounderpy/)**
 
 </div>
@@ -121,7 +121,7 @@ site_info  profile metadata
 ```
 
 Explore more examples in the
-**[SounderPy Plot Gallery](https://kylejgillett.github.io/sounderpy/examplegallery.html)**.
+**[SounderPy Plot Gallery](https://kylejgillett.github.io/sounderpy/gallery/examplegallery.html)**.
 
 <br>
 <br>
@@ -213,11 +213,11 @@ for version-specific details.
 
 - **Documentation:** https://kylejgillett.github.io/sounderpy/
 - **Tutorials:** https://kylejgillett.github.io/sounderpy/tutorials/index.html
-- **Plot Gallery:** https://kylejgillett.github.io/sounderpy/examplegallery.html
+- **Plot Gallery:** https://kylejgillett.github.io/sounderpy/gallery/examplegallery.html
 - **GitHub:** https://github.com/kylejgillett/sounderpy
 - **PyPI:** https://pypi.org/project/sounderpy/
 - **conda-forge:** https://anaconda.org/conda-forge/sounderpy
-- **Operational SounderPy site:** https://sounderpysoundings.anvil.app/
+- **Operational SounderPy site:** https://sounderpy.app/
 
 Questions, bugs, and feature ideas are welcome through
 **[GitHub Issues](https://github.com/kylejgillett/sounderpy/issues)**.
