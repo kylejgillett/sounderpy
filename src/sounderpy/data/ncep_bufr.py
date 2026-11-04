@@ -414,7 +414,7 @@ def to_bufkit_lines(run_time, profiles):
 
 def nomads_rrfs_url(stnm, run_dt):
     return (f'{NOMADS_RRFS}/rrfs.{run_dt:%Y%m%d}/{run_dt:%H}/bufrsnd.t{run_dt:%H}z/'
-            f'bufr.{int(stnm)}.{run_dt:%Y%m%d%H}')
+            f'bufr.{int(stnm):06d}.{run_dt:%Y%m%d%H}')
 
 
 
