@@ -28,7 +28,7 @@ import cartopy.crs as ccrs
 
 # SOUNDERPY MODULES
 from ..calc import sounding_params, vad_params
-from ..radar_utils import *
+from ..data.radar_utils import *
 
 from .style import (FONT_SIZES,
                     COMPOSITE_LAYOUTS,
@@ -118,7 +118,7 @@ from .components import (_clip_skewt_text,
 
 def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels=None, 
                     radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None,
-                    show_theta=False, hodo_boundary=None, dpi=100, max_levels=250, ylim=None, theme_overrides=None):
+                    show_theta=False, hodo_boundary=None, dpi=100, max_levels=250, ylim=None, theme_overrides=None, sr_hodo=False):
     
     # record process time 
     st = time.time()
@@ -246,22 +246,36 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     ### ADD HODOGRAPH ###
     #################################################################
     print("    > BUILDING HODOGRAPH")
+
+    # readouts always list ground-relative motions, while the hodograph can be drawn storm-relative
+    hodo_params = snd_params
+    if sr_hodo:
+        if ma.is_masked(snd_params["kinem"]["sm_u"]) or np.isnan(snd_params["kinem"]["sm_u"]):
+            sr_hodo = False
+            warnings.warn("This profile can not be plotted as storm relative because a storm-motion does not exist for this data.\n"
+                          "This plot will feature a ground relative instead.", Warning)
+        else:
+            hodo_params = _make_storm_relative(snd_params)
     
-    hodo_data = _prepare_hodograph_data(snd_params, max_height=12000,)
+    hodo_data = _prepare_hodograph_data(hodo_params, max_height=12000,)
     hodo_xlim, hodo_ylim = _get_hodograph_bounds(hodo_data)
     hodo = _setup_hodograph(fig.add_axes(layout["hodograph"]), theme, hodo_xlim, hodo_ylim)
 
     _plot_hodograph_velocity_labels(hodo, theme)
-    _plot_hodograph_height_markers(hodo, snd_params, theme)
-    _plot_hodograph_trace(hodo, snd_params, theme)
+    _plot_hodograph_height_markers(hodo, hodo_params, theme)
+    _plot_hodograph_trace(hodo, hodo_params, theme)
 
-    _plot_hodograph_motion_labels(hodo, snd_params, storm_motion, theme)
-    _plot_hodograph_sm_vector(hodo, snd_params, theme)
+    _plot_hodograph_motion_labels(hodo, hodo_params, storm_motion, theme)
+    if sr_hodo:
+        hodo.ax.text(0.98, 0.98, "STORM RELATIVE", transform=hodo.ax.transAxes, ha="right", va="top",
+                     color=theme["text"], weight="bold", fontsize=FONT_SIZES["table"], zorder=8)
+    else:
+        _plot_hodograph_sm_vector(hodo, hodo_params, theme)
     _plot_hodograph_motion_readout(hodo, snd_params, storm_motion, theme)
-    _plot_hodograph_srh(hodo, snd_params, theme, layer="auto")
+    _plot_hodograph_srh(hodo, hodo_params, theme, layer="auto")
     
     if hodo_boundary is not None:
-        _plot_hodograph_boundary(hodo, hodo_boundary,snd_params, theme, show_mw_vector=True)
+        _plot_hodograph_boundary(hodo, hodo_boundary, hodo_params, theme, show_mw_vector=True)
         
     
     
@@ -606,7 +620,8 @@ def __composite_sounding(data_list, shade_between, cmap, colors, linestyles, alp
         all_winds = {"u": np.concatenate([w["u"] for w in winds]), "v": np.concatenate([w["v"] for w in winds])}
         hodo_xlim, hodo_ylim = _get_hodograph_bounds(all_winds)
         hodo = _setup_hodograph(fig.add_axes(layout["hodograph"]), theme, hodo_xlim, hodo_ylim)
-        _plot_hodograph_velocity_labels(hodo, theme)
+        # no 90 kt labels, which are cut off at the axis edge
+        _plot_hodograph_velocity_labels(hodo, theme, speeds=range(10, 90, 20))
         _plot_composite_hodograph_traces(hodo, winds, colors)
         _plot_composite_hodograph_key(hodo, theme)
         # the hodograph-only figure says this in its title
@@ -658,7 +673,8 @@ def __composite_sounding(data_list, shade_between, cmap, colors, linestyles, alp
 def __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo, radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, theme_overrides=None):
 
     print(f'    > PREPARING DATA')
-    kinem, intrp = vad_params(vad_data, storm_motion).calc()
+    vad_result = vad_params(vad_data, storm_motion).calc()
+    kinem, intrp = vad_result["kinem"], vad_result["intrp"]
 
     site = vad_data["site_info"]
     valid = site["valid-time"]

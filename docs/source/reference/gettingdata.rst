@@ -99,7 +99,7 @@ We can use the simple ``spy.get_model_data()`` function:
    :type box_avg_size: float, optional, default is ``0.10``
    :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting data.
    :type hush: bool, optional, default is ``False``
-   :param clean_it: whether to return the raw_data object or a clean_data dict.
+   :param clean_it: whether to return the raw_data object or a clean_data dict. With ``False``, RAP/RUC returns a dict of xarray datasets (``'pressure'``, ``'2m'``, ``'10m'``, ``'surface'``) cut to the box-average domain, ERA5 returns an xarray dataset, and NCEP-FNL and RAP-NOW return a netCDF4 dataset.
    :type clean_it: bool, optional, default is ``True``
    :return: A SounderPy ``clean_data`` dictionary containing the retrieved vertical profile and associated metadata. See :ref:`clean_data schema <clean_data_scheme>`.
    :rtype: dict
@@ -227,7 +227,7 @@ Model Forecast Data | BUFKIT Profiles
 SounderPy provides ``get_bufkit_data()`` for retrieving model forecast
 vertical profiles from BUFKIT sites.
 
-.. py:function:: spy.get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, run_day=None, run_hour=None, hush=False, clean_it=True)
+.. py:function:: spy.get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, run_day=None, run_hour=None, hush=False, clean_it=True, all_fcst_hours=False)
 
    Retrieve a BUFKIT model forecast profile for a requested model, site,
    forecast hour, and optionally a specific model run.
@@ -236,22 +236,24 @@ vertical profiles from BUFKIT sites.
    :type model: str, required
    :param station: a 3-4 digit BUFKIT site identifier
    :type station: str, required
-   :param fcst_hour: valid forecast hour
+   :param fcst_hour: the forecast hour; the profile is valid at the model run time plus this many hours
    :type fcst_hour: int, required
-   :param run_year: valid year
+   :param run_year: model run year. Leave the run date as ``None`` for the latest run.
    :type run_year: str, optional, Default=None
-   :param run_month: valid month
+   :param run_month: model run month
    :type run_month: str, optional, Default=None
-   :param run_day: valid day
+   :param run_day: model run day
    :type run_day: str, optional, Default=None
-   :param run_hour: valid hour
+   :param run_hour: model run hour (the initialization time, not the valid time)
    :type run_hour: str, optional, Default=None
    :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting data.
    :type hush: bool, optional, default is ``False``
    :param clean_it: whether to return the raw_data object or a clean_data dict.
    :type clean_it: bool, optional, default is ``True``
-   :return: :ref:`clean_data<datadescription>`, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, omega, & model information
-   :rtype: dict
+   :param all_fcst_hours: return a list with every forecast hour in the BUFKIT file, from one download. ``fcst_hour`` is then ignored. Not available for ``sref`` and ``hiresw``, whose files hold several ensemble members.
+   :type all_fcst_hours: bool, optional, default is ``False``
+   :return: :ref:`clean_data<datadescription>`, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, omega, & model information, or a list of them, one per forecast hour, with ``all_fcst_hours``
+   :rtype: dict or list of dicts
 
 .. _forecastsites:
 
@@ -293,6 +295,12 @@ Available Models:
 - RAP
 - HRRR
 - RRFS (00, 06, 12, and 18Z runs)
+
+.. note::
+   For the **RRFS**, if the Penn State file is missing or older than the newest run NCEP
+   has posted, or an archived run is missing from Iowa State, SounderPy decodes NCEP's own
+   RRFS BUFR soundings from `NOMADS <https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/v1.0/>`_
+   instead. NOMADS keeps about the last two days of runs.
 
 
 .. _forecastkeys:

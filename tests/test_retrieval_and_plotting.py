@@ -127,7 +127,7 @@ def test_get_bufkit_data_forwards_arguments(monkeypatch):
     expected = {"backend": "bufkit"}
     received = {}
 
-    def fake_fetch_bufkit(model, station, fcst_hour, year, month, day, hour, hush, clean_it):
+    def fake_fetch_bufkit(model, station, fcst_hour, year, month, day, hour, hush, clean_it, all_fcst_hours):
         received["args"] = (
             model,
             station,
@@ -138,6 +138,7 @@ def test_get_bufkit_data_forwards_arguments(monkeypatch):
             hour,
             hush,
             clean_it,
+            all_fcst_hours,
         )
         return expected
 
@@ -153,6 +154,7 @@ def test_get_bufkit_data_forwards_arguments(monkeypatch):
         "00",
         hush=True,
         clean_it=True,
+        all_fcst_hours=True,
     )
 
     assert result is expected
@@ -164,6 +166,7 @@ def test_get_bufkit_data_forwards_arguments(monkeypatch):
         "05",
         "21",
         "00",
+        True,
         True,
         True,
     )
@@ -223,8 +226,8 @@ def test_rap_ruc_models_route_to_grib_retriever(monkeypatch, model):
     expected = {"backend": "rapruc"}
     received = {}
 
-    def fake_get_rapruc_data(latlon, year, month, day, hour, dataset, box_avg_size, hush):
-        received["args"] = (latlon, year, month, day, hour, dataset, box_avg_size, hush)
+    def fake_get_rapruc_data(latlon, year, month, day, hour, dataset, box_avg_size, hush, clean_it):
+        received["args"] = (latlon, year, month, day, hour, dataset, box_avg_size, hush, clean_it)
         return expected
 
     monkeypatch.setattr(public_api, "get_rapruc_data", fake_get_rapruc_data)
@@ -238,6 +241,7 @@ def test_rap_ruc_models_route_to_grib_retriever(monkeypatch, model):
         "18",
         box_avg_size=0.25,
         hush=True,
+        clean_it=False,
     )
 
     assert result is expected
@@ -250,6 +254,7 @@ def test_rap_ruc_models_route_to_grib_retriever(monkeypatch, model):
         None,
         0.25,
         True,
+        False,
     )
 
 

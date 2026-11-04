@@ -31,3 +31,8 @@ make_docs_figures.ipynb
 .venv/
 sounderpy_sounding.png
 sounderpy_data
+
+# experimental, local-only until ready (not pushed or packaged)
+src/sounderpy/timeseries.py
+src/sounderpy/plot/timeseries.py
+src/sounderpy/plot/publication.py

@@ -20,8 +20,8 @@ from typing import Any, Callable
 
 import numpy as np
 
-from .acars_data import acars_data
-from .file_io import to_file
+from .data.acars_data import acars_data
+from .data.file_io import to_file
 from .sounderpy import (
     build_hodograph,
     build_sounding,
@@ -104,7 +104,13 @@ def _run_quietly(
     verbose: bool = False,
     **kwargs: Any,
 ) -> Any:
-    """Run a SounderPy call while hiding library progress output unless requested."""
+    """Run a SounderPy call while hiding library progress output unless requested.
+
+    ``verbose="stderr"`` shows the output on stderr, keeping stdout free for JSON.
+    """
+    if verbose == "stderr":
+        with redirect_stdout(sys.stderr):
+            return func(*args, **kwargs)
     if verbose:
         return func(*args, **kwargs)
     with redirect_stdout(io.StringIO()):
@@ -273,6 +279,7 @@ def _plot_profile(data: dict[str, Any], args: argparse.Namespace) -> None:
             **common,
             "color_blind": args.color_blind,
             "show_theta": args.show_theta,
+            "sr_hodo": args.storm_relative,
         }
         if save:
             kwargs["filename"] = filename
@@ -477,6 +484,9 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def _run_command(args: argparse.Namespace) -> int:
+    if getattr(args, "json", False) and args.verbose:
+        args.verbose = "stderr"
+
     if args.command == "obs":
         year, month, day = args.date
         data = _run_quietly(

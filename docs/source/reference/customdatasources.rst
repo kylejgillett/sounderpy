@@ -13,7 +13,7 @@ Have model data or your own observations? Pipe them into SounderPy with these cu
 
 Ingesting WRF Output Data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. py:function:: spy.make_wrf_profile(ds, latlon, model_name='WRF-ARW', run_name='CONTROL RUN')
+.. py:function:: spy.make_wrf_profile(ds, latlon, model_name='WRF-ARW', run_name='CONTROL RUN', box_avg_size=0.10, time_idx=0)
 
 
    Return a ``dict`` of 'cleaned up' WRF output profile data for a given location
@@ -25,7 +25,11 @@ Ingesting WRF Output Data
    :param model_name: the name of your model for plot titles
    :type model_name: str, recommended, default is "WRF-ARW"
    :param run_name: the name of your run for plot titles
-   :type run_name: str, optional, default is "CONTROL"
+   :type run_name: str, optional, default is "CONTROL RUN"
+   :param box_avg_size: the width, in degrees, of the box of grid points averaged into the profile. A box smaller than one grid cell uses the nearest grid point.
+   :type box_avg_size: float, optional, default is ``0.10``
+   :param time_idx: the index of the output time to use, for ``wrfout`` files with more than one time
+   :type time_idx: int, optional, default is ``0``
    :return: clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information
    :rtype: dict
 
@@ -69,7 +73,8 @@ Ingesting CM1 input_sounding Data
    import sounderpy as spy
 
    # create this simple dict of information for your profile
-   # latitude, longitude, elevation, and top, right & left titles are required
+   # latitude & longitude are required. elevation (m) defaults to 0 m and the
+   # titles default to "CM1 INPUT SOUNDING" and blank left & right titles
    meta_data_dict = {
     'latlon': [45.100, -100.89],
     'elev': 358,
@@ -85,7 +90,7 @@ Ingesting CM1 input_sounding Data
 
 
 .. note::
-   CM1 input_sounding height data *should* be "AGL", or "above ground level". This means you'll need an elevation value to plot your profile correctly. Find the elevation of where this profile is "supposed to be" and add it to the ``meta_data_dict``.
+   CM1 input_sounding height data *should* be "AGL", or "above ground level". This means you'll need an elevation value to plot your profile correctly. Find the elevation of where this profile is "supposed to be" and add it to the ``meta_data_dict``. Without one, SounderPy warns and places the surface at 0 m.
 
 
 ***************************************************************

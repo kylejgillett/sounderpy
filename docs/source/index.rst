@@ -207,9 +207,14 @@ What's New in SounderPy 3.3.0
    * 📚 Refactored and redesigned documentation to match new SounderPy web app: sounderpy.app
 
    .. important::
-      ``sounding_params(...).calc()`` now returns a dictionary instead of a tuple, and
-      ``build_composite()``'s ``colors_to_use``, ``ls_to_use``, ``alphas_to_use``, and
-      ``lw_to_use`` are renamed. See :doc:`/reference/helpertools` and :doc:`/reference/plottingdata`.
+      ``sounding_params(...).calc()`` and ``vad_params(...).calc()`` now return a dictionary
+      instead of a tuple, and ``build_composite()``'s ``colors_to_use``, ``ls_to_use``,
+      ``alphas_to_use``, and ``lw_to_use`` are renamed to ``colors``, ``linestyles``,
+      ``alphas``, and ``linewidths``. The old names still work in 3.3.0 but show a
+      ``FutureWarning``, and will be removed in a later release. The data retrieval and file modules
+      (such as ``sounderpy.bufkit_data``) moved into ``sounderpy.data`` (``sounderpy.data.bufkit_data``);
+      ``spy.*`` functions are unchanged, and the old module paths still work with a ``FutureWarning``.
+      See :doc:`/reference/helpertools` and :doc:`/reference/plottingdata`.
 
    :doc:`See the plotting reference → </reference/plottingdata>`
 

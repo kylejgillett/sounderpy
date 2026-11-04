@@ -6,7 +6,7 @@
     House the look of SounderPy figures in one place: themes, font sizes, units,
     layouts, and watermark settings. Drawing tools are in components.py.
 
-    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2026
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2026
 """
 
 # STANDARD PYTHON
@@ -347,6 +347,77 @@ COMPOSITE_TABLES = {"full": {"parameters": ("MLCAPE", "MUCAPE", "SR-ECAPE", "MLC
                                   "location": 0.145,
                                   "valid": 0.42,
                                   "columns": (0.64, 0.765, 0.885)}}
+
+
+
+#########################################################################
+############################## TIMESERIES ###############################
+#########################################################################
+
+# preset panels: the parameters each one plots, by their timeseries_params() names
+TIMESERIES_PANELS = {"thermodynamics": ("sbcape", "mlcape", "mucape", "ml3cape", "mlcin"),
+                     "kinematics": ("srh_0_to_1000", "srh_0_to_3000", "srh_eil", "shear_0_to_1000", "shear_0_to_3000", "shear_0_to_6000"),
+                     "composites": ("eil_stp", "ehi_0_to_1000", "eil_scp"),
+                     "low_level": ("swv_0_to_500", "srw_0_to_500"),
+                     "surface": ("sfc_ws", "sfc_T", "sfc_Td")}
+TIMESERIES_DEFAULT_PANELS = ("thermodynamics", "kinematics", "composites", "surface")
+
+# timeseries figure layout. the figure grows with the number of panels, so spacing above and below
+# the panels is in inches: titles sit the same distance above the panels as on the hodograph figure,
+# and the logo and watermark sit below the time axis, lined up with the panels' left edge
+TIMESERIES_LAYOUT = {"width": 16,               # figure width (in)
+                     "panel_height": 3.4,       # height of each panel (in)
+                     "panel_x": (0.08, 0.91),   # left and right edges of the panels (figure fraction)
+                     "panel_gap": 0.12,         # space between panels (fraction of a panel)
+                     "top": 1.25,               # space above the panels for the titles and padding (in)
+                     "bottom": 1.45,            # space below the panels for the time axis, watermark, and padding (in)
+                     "title_y": (0.6, 0.2),     # title and subtitle baselines above the panels (in)
+                     "logo": (0.22, 0.6),       # logo bottom and height (in)
+                     "credits_y": (0.56, 0.3),  # watermark title and subtitle baselines (in)
+                     "credits_fontsize": ("table_large", "label")}  # watermark title and subtitle FONT_SIZES
+
+# how each parameter is drawn: label, color (a theme setting or a color), style ("-", "--", ":", or "bar"),
+# and optionally which axis it shares, for parameters with the same unit but very different ranges
+# ("low_cape" puts CIN and 0-3 km CAPE on one axis, apart from total CAPE).
+# other parameters are drawn as lines, labeled by name, in the next color of the default cycle
+TIMESERIES_PARAMS = {"sbcape": ("SBCAPE", "parcel.sb", "-"),
+                     "mlcape": ("MLCAPE", "parcel.ml", "-"),
+                     "mucape": ("MUCAPE", "parcel.mu", "-"),
+                     "sb_ecape": ("SB-ECAPE", "parcel.sb", "--"),
+                     "ml_ecape": ("ML-ECAPE", "parcel.ml", "--"),
+                     "mu_ecape": ("MU-ECAPE", "parcel.mu", "--"),
+                     "sb3cape": ("0-3 km SBCAPE", "parcel.sb", ":", "low_cape"),
+                     "ml3cape": ("0-3 km MLCAPE", "parcel.ml", ":", "low_cape"),
+                     "mu3cape": ("0-3 km MUCAPE", "parcel.mu", ":", "low_cape"),
+                     "sbcin": ("SBCIN", "parcel.sb", "bar", "low_cape"),
+                     "mlcin": ("MLCIN", "parcel.ml", "bar", "low_cape"),
+                     "mucin": ("MUCIN", "parcel.mu", "bar", "low_cape"),
+                     "srh_0_to_500": ("0-500 m SRH", "mediumpurple", "-"),
+                     "srh_0_to_1000": ("0-1 km SRH", "purple", "-"),
+                     "srh_0_to_3000": ("0-3 km SRH", "red", "-"),
+                     "srh_eil": ("Effective SRH", "kinematics_strong", "-"),
+                     "shear_0_to_1000": ("0-1 km BWD", "purple", "--"),
+                     "shear_0_to_3000": ("0-3 km BWD", "red", "--"),
+                     "shear_0_to_6000": ("0-6 km BWD", "darkorange", "--"),
+                     "ebwd": ("Effective BWD", "kinematics", "--"),
+                     "srw_0_to_500": ("0-500 m SR wind", "dodgerblue", "-"),
+                     "swv_0_to_500": ("0-500 m streamwise vorticity", "cool", "-"),
+                     "eil_stp": ("STP", "composite_index", "-"),
+                     "eil_scp": ("SCP", "theta", "-", "scp"),
+                     "ehi_0_to_1000": ("0-1 km EHI", "ehi", "--"),
+                     "ehi_0_to_3000": ("0-3 km EHI", "ehi", ":"),
+                     "lr_03km": ("0-3 km lapse rate", "lapse", "-"),
+                     "lr_36km": ("3-6 km lapse rate", "lapse", "--"),
+                     "pwat": ("PWAT", "moisture", "-"),
+                     "sfc_ws": ("Surface wind speed", "#90ee90", "bar"),
+                     "sfc_T": ("Surface temperature", "temperature", "-"),
+                     "sfc_Td": ("Surface dewpoint", "dewpoint", "-")}
+
+# axis labels for the table's units
+TIMESERIES_UNITS = {"J/kg": UNIT_JKG, "m2/s2": UNIT_M2S2, "kt": UNIT_KT, "1/s": UNIT_PER_S, "g/kg": UNIT_GKG,
+                    "degC": UNIT_DEGC, "degC/km": r"$\mathrm{\mathbf{^{\circ}C\,km^{-1}}}$", "m": UNIT_M,
+                    "hPa": r"$\mathrm{\mathbf{hPa}}$", "in": r"$\mathrm{\mathbf{in}}$", "%": "%", "deg": r"$\mathrm{\mathbf{^{\circ}}}$"}
+
 
 
 

@@ -258,7 +258,8 @@ It can also be piped into another command-line program:
    sounderpy obs DTX 2024-05-21 00 --json | python -m json.tool
 
 When ``--json`` is used, SounderPy suppresses its normal status output so that
-standard output contains valid JSON.
+standard output contains valid JSON. With ``--json --verbose``, the status
+output is written to standard error instead, so standard output stays valid JSON.
 
 .. note::
 

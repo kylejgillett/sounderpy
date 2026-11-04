@@ -398,3 +398,28 @@ def parse_rapruc_grib(pressure_file, latlon, *, native_file=None, box_avg_size=0
     finally:
         for ds in datasets:
             ds.close()
+
+
+def subset_rapruc_grib(pressure_file, latlon, *, native_file=None, box_avg_size=0.25):
+    """
+    Return the raw RAP/RUC GRIB datasets cut to the box-average domain and
+    loaded into memory, so they survive the temporary GRIB files being deleted.
+    """
+    lat = float(latlon[0])
+    lon = float(_normalize_lon(latlon[1]))
+    datasets = open_rapruc_grib(pressure_file, native_file=native_file)
+
+    try:
+        raw_data = {}
+        for key, ds in zip(("pressure", "2m", "10m", "surface"), datasets):
+            iy, ix = np.where(_box_mask(ds, lat, lon, box_avg_size))
+            if ds["latitude"].ndim == 2:
+                y_dim, x_dim = ds["latitude"].dims
+            else:
+                y_dim, x_dim = ds["latitude"].dims[0], ds["longitude"].dims[0]
+            raw_data[key] = ds.isel({y_dim: slice(iy.min(), iy.max() + 1),
+                                     x_dim: slice(ix.min(), ix.max() + 1)}).load()
+        return raw_data
+    finally:
+        for ds in datasets:
+            ds.close()

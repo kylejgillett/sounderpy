@@ -10,8 +10,8 @@ from metpy.units import units
 from siphon.simplewebservice.wyoming import WyomingUpperAir
 from siphon.simplewebservice.igra2 import IGRAUpperAir
 
-from .utils import get_latlon
-from .calc import sounding_params
+from ..utils import get_latlon, find_station
+from ..calc import sounding_params
 
 
 
@@ -109,7 +109,8 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
     #########################################################################################################
     if search_for == 'raob':
         try:
-            row = RAOB_STATIONS.loc[RAOB_STATIONS['ICAO'].str.contains(station, na=False, case=True)]
+            idx = find_station(RAOB_STATIONS['ICAO'], station, k_prefix=True, required=False)
+            row = RAOB_STATIONS.loc[[idx]] if idx is not None else RAOB_STATIONS.iloc[0:0]
             name_idx = 'ICAO'
             if row.empty:
                 row = RAOB_STATIONS.query(f"WMO == {int(station)}")
@@ -209,9 +210,7 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
         # if data is found, parse data and create a dict of clean data
         if got_data:
             if clean_it:
-                station = \
-                IGRA_STATIONS['ID'][np.where(IGRA_STATIONS['ID'].str.contains(station, na=False, case=True))[0]].values[
-                    0].strip()
+                station = IGRA_STATIONS['ID'][find_station(IGRA_STATIONS['ID'], station)].strip()
 
                 # create dict of data
                 head = df[1]

@@ -1,4 +1,5 @@
 import re
+import warnings
 from datetime import datetime
 import csv
 import numpy as np
@@ -96,12 +97,18 @@ def from_sharppy(filepath):
     if not rows:
         raise ValueError("No sounding rows were found in the SHARPpy file.")
 
-    p = np.array([row[0] for row in rows]) * units.hPa
-    z = np.array([row[1] for row in rows]) * units.m
-    T = np.array([row[2] for row in rows]) * units.degC
-    Td = np.array([row[3] for row in rows]) * units.degC
-    wd = np.array([row[4] for row in rows]) * units.degrees
-    ws = np.array([row[5] for row in rows]) * units.kts
+    # SHARPpy marks missing values with -9999; make them NaN, and drop
+    # levels missing a pressure or height since they can't be placed
+    rows = np.array(rows)
+    rows[rows <= -9998] = np.nan
+    rows = rows[~np.isnan(rows[:, 0]) & ~np.isnan(rows[:, 1])]
+
+    p = rows[:, 0] * units.hPa
+    z = rows[:, 1] * units.m
+    T = rows[:, 2] * units.degC
+    Td = rows[:, 3] * units.degC
+    wd = rows[:, 4] * units.degrees
+    ws = rows[:, 5] * units.kts
 
     u, v = mpcalc.wind_components(ws, wd)
 
@@ -137,7 +144,7 @@ def to_file(file_type, clean_data, filename=None, convert_to_AGL=True):
     '''
     Create a file of 'cleaned' SounderPy data
 
-   :param file_type: a `str` representing the file type you'd like to export data to.
+   :param file_type: a `str` representing the file type you'd like to export data to: 'csv', 'sharppy', or 'cm1'.
    :type file_type: str, required
    :param clean_data: 'cleaned' SounderPy data `dict`
    :type clean_data: dict, required
@@ -145,6 +152,10 @@ def to_file(file_type, clean_data, filename=None, convert_to_AGL=True):
    :type filename: str, required
    :return: a file of SounderPy data.
     '''
+
+    file_type = str(file_type).casefold()
+    if file_type not in ('cm1', 'csv', 'sharppy'):
+        raise ValueError(f"'{file_type}' is not a valid file type. Valid file types are 'csv', 'sharppy', and 'cm1'")
 
     # set file name
     if filename is None:
@@ -161,16 +172,30 @@ def to_file(file_type, clean_data, filename=None, convert_to_AGL=True):
         https://github.com/leighorf/LOFS-read/blob/master/bin/sndmod
         '''
 
-        # create file
-        outfile = open(filename, 'w')
-        num_lines = len(list(clean_data.items())[0][1])
+        num_lines = len(clean_data['p'])
         delimiter = ''
 
-        # use metpy to find parameters that CM1 likes
+        # use metpy to find parameters that CM1 likes, in a copy so the caller's data is unchanged
+        clean_data = dict(clean_data)
         clean_data['theta'] = mpcalc.potential_temperature(clean_data['p'], clean_data['T'])
         clean_data['relhm'] = mpcalc.relative_humidity_from_dewpoint(clean_data['T'], clean_data['Td'])
         clean_data['mixrt'] = mpcalc.mixing_ratio_from_relative_humidity(clean_data['p'], clean_data['T'],
                                                                          clean_data['relhm']) * 1000
+
+        # CM1 can't read missing values: the surface line needs all of its values,
+        # and levels above it missing any value are left out
+        values = {key: np.ma.filled(np.ma.asarray(clean_data[key].m, dtype=float), np.nan)
+                  for key in ['p', 'z', 'theta', 'mixrt', 'u', 'v']}
+        if not np.all(np.isfinite([values['p'][0], values['theta'][0], values['mixrt'][0]])):
+            raise ValueError("The lowest level is missing a pressure, temperature, or dewpoint, so a CM1 surface line can't be written")
+        valid = np.all([np.isfinite(values[key]) for key in ['z', 'theta', 'mixrt', 'u', 'v']], axis=0)
+        skipped = [idx for idx in range(1, num_lines) if not valid[idx]]
+        if skipped:
+            skipped_z = [int(round(values['z'][idx] - values['z'][0])) if np.isfinite(values['z'][idx]) else 'unknown' for idx in skipped]
+            warnings.warn(f"Left {len(skipped)} level(s) with missing values out of the CM1 file, at heights (m AGL): {skipped_z}", Warning)
+
+        # create file
+        outfile = open(filename, 'w')
 
         # create the sfc values line
         top_line = (
@@ -184,6 +209,8 @@ def to_file(file_type, clean_data, filename=None, convert_to_AGL=True):
 
         # add data to lines
         for idx in range(1, num_lines):
+            if not valid[idx]:
+                continue
             line_str = ""
             if convert_to_AGL:
                 line_str += "%12s" % str(format(np.around(clean_data["z"][idx].m - clean_data["z"][0].m, 6), "0.6f")) + delimiter + str("\t")
@@ -233,8 +260,15 @@ def to_file(file_type, clean_data, filename=None, convert_to_AGL=True):
 
         outfile_loc = ("****")
 
-        dt = datetime(int(clean_data['site_info']['valid-time'][0]), int(clean_data['site_info']['valid-time'][1]),
-                      int(clean_data['site_info']['valid-time'][2]), int(clean_data['site_info']['valid-time'][3][0:2]))
+        # valid-time parts may be ints or strings, and the hour may be 'HH' or 'HH:MM'
+        try:
+            year, month, day, hour = [str(part) for part in clean_data['site_info']['valid-time'][0:4]]
+            hour, _, minute = hour.partition(':')
+            dt = datetime(int(year), int(month), int(day), int(hour), int(minute or 0))
+        except (KeyError, TypeError, ValueError):
+            # SHARPpy needs a date, so data without one (e.g. CM1) gets a placeholder
+            warnings.warn("No usable valid time in clean_data['site_info']['valid-time']; writing 2000-01-01 00Z as a placeholder", Warning)
+            dt = datetime(2000, 1, 1, 0)
 
         outfile_file.write("%TITLE%\n")
         outfile_file.write("%s   %s\n" % (clean_data['site_info']['site-id'], dt.strftime("%y%m%d/%H%M")))
@@ -245,19 +279,16 @@ def to_file(file_type, clean_data, filename=None, convert_to_AGL=True):
         ws = mpcalc.wind_speed(clean_data['u'], clean_data['v'])
         wd = mpcalc.wind_direction(clean_data['u'], clean_data['v'])
 
-        new_data = {
-            'p': clean_data['p'],
-            'z': clean_data['z'],
-            'T': clean_data['T'],
-            'Td': clean_data['Td'],
-            'wd': wd,
-            'ws': ws,
-        }
+        # SHARPpy marks missing values with -9999, so fill masked and NaN values with it
+        new_data = {}
+        for col, values in zip(['p', 'z', 'T', 'Td', 'wd', 'ws'],
+                               [clean_data['p'], clean_data['z'], clean_data['T'], clean_data['Td'], wd, ws]):
+            new_data[col] = np.ma.masked_invalid(np.ma.asarray(values.m, dtype=float)).filled(-9999.)
 
         for idx in range(new_data['p'].shape[0]):
             string = ""
             for col in ['p', 'z', 'T', 'Td', 'wd', 'ws']:
-                string += "%12.6f,  " % new_data[col][idx].m
+                string += "%12.6f,  " % new_data[col][idx]
 
             outfile_file.write(string[:-3] + "\n")
         outfile_file.write("%END%\n")

@@ -68,7 +68,8 @@ from .style import (FONT_SIZES,
 
 # SOUNDERPY MODULES
 from ..utils import modify_surface, find_nearest, mag, mag_round, wind_to_dir
-from ..radar_utils import *
+from ..calc import storm_motion_type
+from ..data.radar_utils import *
 
 
 #########################################################################
@@ -377,8 +378,9 @@ def _plot_skewt_surface_annotations(skew, data, theme, surface_modified=False, t
     Td = data["Td"]
     # convert surface T/Td to the requested unit
     unit_label = f"°{temperature_unit[-1]}"
-    T_sfc = int(np.round(T[0].to(units(temperature_unit)).m, 1))
-    Td_sfc = int(np.round(Td[0].to(units(temperature_unit)).m, 1))
+    # nearest whole degree, with halves rounded up (72.5 -> 73)
+    T_sfc = int(np.floor(T[0].to(units(temperature_unit)).m + 0.5))
+    Td_sfc = int(np.floor(Td[0].to(units(temperature_unit)).m + 0.5))
     # surface temperature
     skew.ax.annotate(f"{T_sfc}{unit_label}", (T[0], p[0]), textcoords="offset points", xytext=(16, -15),
                       fontsize=FONT_SIZES["annotation_large"], color=theme["temperature"], weight="bold", alpha=0.9, ha="center", zorder=10)
@@ -420,11 +422,17 @@ def _plot_skewt_parcel_level_annotations(skew, data, snd_params, theme, parcel="
     fontsize = FONT_SIZES["table"]
     gap = fontsize * 1.2 * ax.figure.dpi / 72
 
-    # (text, true pressure); a level above the plot is labeled at the top with an up arrow
+    # with no CAPE, SHARPpy puts the LFC at the profile top and the EL/MPL at the LCL, so only the LCL is labeled
+    cape = thermo[f"{parcel}cape"]
+    if ma.is_masked(cape) or not cape > 0:
+        levels = tuple(level for level in levels if level == "lcl")
+
+    # (text, true pressure); a level above the plot is labeled at the top with an up arrow,
+    # and a level below a zoomed plot is left off
     labels = [(parcel.upper(), min(data["p"][0].m, p_bottom))]
     for level in levels:
         pressure = thermo[f"{parcel}_{level}_p"]
-        if ma.is_masked(pressure):
+        if ma.is_masked(pressure) or pressure > p_bottom:
             continue
         if pressure < p_top:
             labels.append((f"↑{level.upper()}", p_top))
@@ -445,9 +453,10 @@ def _plot_skewt_parcel_level_annotations(skew, data, snd_params, theme, parcel="
     # an arrow left of the column at each level's true pressure, since a spread label may sit above it
     for text, pressure in labels[1:]:
         if not text.startswith("↑"):
-            ax.annotate("", xy=(x - half_width - 0.016, pressure), xycoords=transform, xytext=(x - half_width - 0.003, pressure),
-                        textcoords=transform, arrowprops=dict(arrowstyle="-|>", color=color, alpha=0.95, linewidth=1.5,
-                                                              mutation_scale=10, shrinkA=0, shrinkB=0))
+            arrow = ax.annotate("", xy=(x - half_width - 0.016, pressure), xycoords=transform, xytext=(x - half_width - 0.003, pressure),
+                                textcoords=transform, arrowprops=dict(arrowstyle="-|>", color=color, alpha=0.95, linewidth=1.5,
+                                                                      mutation_scale=10, shrinkA=0, shrinkB=0))
+            arrow.arrow_patch.set_clip_path(ax.patch)
 
     # dotted line up the column, broken around each label
     ys = sorted(ax.transData.transform((0, p))[1] for p in label_pressures)
@@ -474,6 +483,12 @@ def _plot_skewt_freezing_annotations(skew, snd_params, theme, xloc=0.745, show_t
         skew.ax.text(xloc, pressure, text, weight="bold", color=theme["cool"], alpha=0.6, va="center",
                      fontsize=FONT_SIZES["label"], transform=skew.ax.get_yaxis_transform(), clip_on=True)
 
+
+
+# whether there is an effective inflow layer with some depth to draw
+def _has_eil(kinem):
+    eil = kinem.get("eil", (ma.masked, ma.masked))
+    return not ma.is_masked(eil[0]) and not ma.is_masked(eil[1]) and eil[0] > eil[1]
 
 
 def _plot_skewt_layer_annotations(skew, data, snd_params, theme, layers=("pbl", "lapse_rate", "eil", "growth_zone")):
@@ -506,7 +521,7 @@ def _plot_skewt_layer_annotations(skew, data, snd_params, theme, layers=("pbl", 
     if "lapse_rate" in layers:
         _plot_labeled_layer(0.16, thermo["lr_max"][1:3], f"{np.round(thermo['lr_max'][0], 1)}°C/km", theme["lapse_max"], 0.8, 0.6)
 
-    if "eil" in layers:
+    if "eil" in layers and _has_eil(kinem):
         _plot_labeled_layer(0.19, kinem["eil"], "EIL", theme["eil"], 1, 1, linewidth=4, ticks=True)
 
     if "growth_zone" in layers:
@@ -824,6 +839,11 @@ def _plot_hodograph_sm_vector(hodo, snd_params, theme):
         hodo.ax.arrow(0, 0, kinem["sm_u"] - 0.3, kinem["sm_v"] - 0.3, linewidth=3, color=theme["text"], alpha=0.2, length_includes_head=True, head_width=0.6)
 
 
+# readout name for a storm motion, matching the names calc() accepts
+def _storm_motion_name(storm_motion):
+    return {"rm": "RIGHT MOVING", "lm": "LEFT MOVING", "mw": "MEAN WIND", "custom": "USER DEFINED"}[storm_motion_type(storm_motion)]
+
+
 # list storm motion values on the hodograph, with the selected motion in bold at the top
 def _plot_hodograph_motion_readout(hodo, snd_params, storm_motion, theme, show_rm=True, show_lm=True, show_mw=True, show_dtm=True,
                                    show_mcs=True, x=0.085, y=0.99, fontsize=FONT_SIZES["annotation_large"]):
@@ -843,7 +863,7 @@ def _plot_hodograph_motion_readout(hodo, snd_params, storm_motion, theme, show_r
     style = dict(transform=hodo.ax.transAxes, ha="left", va="top", color=theme["text"], fontsize=fontsize, linespacing=1.35, alpha=0.7, zorder=8)
 
     if not ma.is_masked(kinem["sm_u"]) and not ma.is_masked(kinem["sm_v"]):
-        name = storm_motion.replace("_", " ").upper() if storm_motion in ("right_moving", "left_moving", "mean_wind") else "USER DEFINED"
+        name = _storm_motion_name(storm_motion)
         selected = _format_motion("SM", kinem["sm_u"], kinem["sm_v"]).replace("SM: ", f"SM: {name} | ")
         hodo.ax.text(x, y, selected, weight="bold", **style)
         motions.insert(0, "")
@@ -889,8 +909,7 @@ def _plot_hodograph_srh(hodo, snd_params, theme, layer="auto", alpha=None,
     sm_u = kinem["sm_u"]
     sm_v = kinem["sm_v"]
 
-    eil_z = kinem.get("eil_z", (ma.masked, ma.masked))
-    eil_available = (not ma.is_masked(eil_z[0]) and not ma.is_masked(eil_z[1]))
+    eil_available = _has_eil(kinem)
     if layer == "auto":
         if eil_available:
             bottom = kinem["eil_z"][0]
@@ -1204,7 +1223,7 @@ def _add_panel_title(ax, title, theme, fontsize=FONT_SIZES["label"]):
 # shade the effective inflow layer, when one exists
 def _shade_eil(ax, snd_params, theme, alpha=0.2):
     eil_z = snd_params["kinem"].get("eil_z", (ma.masked, ma.masked))
-    if not ma.is_masked(eil_z[0]):
+    if _has_eil(snd_params["kinem"]):
         ax.axhspan(eil_z[0], eil_z[1], color=theme["eil"], alpha=alpha)
 
 
@@ -1661,10 +1680,22 @@ def _format_profile_time(time_parts):
     return f"{time_parts[3]}Z | {time_parts[1]}-{time_parts[2]}-{time_parts[0]}"
 
 
+# sort key for a profile's valid time, so int (2024, 4, 26, 9) and zero-padded ('2024', '04', '26', '09') parts match
+def _profile_time_key(time_parts):
+    try:
+        return (0, tuple(int(float(part)) for part in time_parts[:4]))
+    except (TypeError, ValueError):
+        return (1, tuple(str(part) for part in time_parts[:4]))
+
+
 # describe a set of profiles for the figure's subtitles
 def _get_composite_titles(profiles, style="full", sr_hodo=False):
     sites = [profile["site_info"] for profile in profiles]
-    times = sorted({tuple(str(part) for part in site["valid-time"]) for site in sites if _has_profile_time(site.get("valid-time"))})
+    times = {}
+    for site in sites:
+        if _has_profile_time(site.get("valid-time")):
+            times.setdefault(_profile_time_key(site["valid-time"]), site["valid-time"])
+    times = [times[key] for key in sorted(times)]
     locations = sorted({_get_profile_location(site) for site in sites})
 
     subtitle = f"{len(profiles)} PROFILE{'S' if len(profiles) > 1 else ''}"

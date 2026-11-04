@@ -29,7 +29,7 @@ Building Soundings
 
 While this function may appear complicated at first glance, there is actually only *one* required argument for this function. The other arguments are simply optional settings for the plot!
 
-.. py:function:: spy.build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion='right_moving', special_parcels=None, radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None, show_theta=False, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_sounding', max_levels=250, ylim=None, theme=None)
+.. py:function:: spy.build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion='right_moving', special_parcels=None, radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None, show_theta=False, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_sounding', max_levels=250, ylim=None, theme=None, sr_hodo=False)
 
 
    Return a full sounding plot of SounderPy data, ``plt`` 
@@ -68,6 +68,8 @@ While this function may appear complicated at first glance, there is actually on
    :type ylim: tuple of two numbers, optional, Default is ``None``, which shows the full profile.
    :param theme: changes to the figure's colors, such as ``{'border': 'k', 'temperature': 'navy', 'parcel': {'mu': 'black'}}``. See :ref:`plot_themes` for every setting.
    :type theme: dict, optional, Default is ``None``.
+   :param sr_hodo: draw the hodograph storm relative, shifting the winds by the storm motion from ``storm_motion``. If the profile has no storm motion, the hodograph stays ground relative.
+   :type sr_hodo: bool, optional, Default is ``False``.
    :return: plt, a SounderPy sounding figure.
    :rtype: plt
 
@@ -409,9 +411,9 @@ Example
 Surface Modification Logic
 ---------------------------
 
-Users may override the zeroth (surface) value of the ``clean_data`` dict, when creating a plot or returning sounding parameters, using the ``modify_sfc`` kwarg. This argument is a python dictionary.
+Users may override the surface values of the ``clean_data`` dict, when creating a plot or returning sounding parameters, using the ``modify_sfc`` kwarg. This argument is a python dictionary.
 
-Please note that as of release v3.0.5, this is to be considered a "beta" version of the feature. As such, it may not always perform as expected.
+A surface temperature warmer than the profile is mixed upward along its dry adiabat until it meets the original profile, the depth a heated surface mixes to (Holzworth 1964). Through that layer, a new surface dewpoint is held at a constant mixing ratio, as in a well-mixed boundary layer. A cooler surface temperature, a dewpoint-only change, and the wind change only the surface level. Dewpoint is never allowed to exceed temperature.
 
 The ``modify_sfc`` dict
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -453,9 +455,11 @@ Users can define custom storm motions or choose from a number of 'storm motion k
 
 Storm Motion Keys 
 ^^^^^^^^^^^^^^^^^^
-- ``"right_moving"`` — Bunkers right-moving supercell motion (default)
-- ``"left_moving"`` — Bunkers left-moving supercell motion
-- ``"mean_wind"`` — 0-6km mean wind
+- ``"right_moving"`` — Bunkers right-moving supercell motion (default). Also ``"rm"``, ``"right"``, or ``"right_mover"``
+- ``"left_moving"`` — Bunkers left-moving supercell motion. Also ``"lm"``, ``"left"``, or ``"left_mover"``
+- ``"mean_wind"`` — 0-6km mean wind. Also ``"mw"`` or ``"mean"``
+
+Keys are not case sensitive. Any other value raises a ``ValueError``.
 
 Example: 
 

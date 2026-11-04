@@ -12,7 +12,8 @@ from numpy import loadtxt
 import metpy.calc as mpcalc
 from metpy.units import units
 
-from .calc import *
+from ..calc import *
+from ..utils import find_station
 
 
 
@@ -94,7 +95,8 @@ class acars_data:
         # ADD PROFILES TO A LIST
         profiles_list = []
         for link in soup.select('a[href$=".txt"]'):
-            profiles_list.append(link.get("href")[0:8])
+            # the profile ID is the file name without '.txt', e.g. BNA_2320 or MMUN_1810
+            profiles_list.append(link.get("href").split('/')[-1][:-4])
 
         print('> COMPLETE --------')
         elapsed_time = time.time() - st
@@ -138,7 +140,7 @@ class acars_data:
             header = loadtxt(urlopen(profile_url).readlines()[0:3], dtype='str', comments="%", unpack=True)
         except HTTPError as err:
             if err.code == 404:
-                sys.exit('! ERROR ! -- Invalid profile OR profile does not exist. Try again with a valid profile (ex: BNA_2320)')
+                raise ValueError(f'Invalid profile OR profile does not exist: {acars_profile}. Try again with a valid profile from list_profiles() (ex: BNA_2320)') from None
             else:
                 raise
 
@@ -150,20 +152,27 @@ class acars_data:
             hour = f'{header[1][7:9]}:{header[1][9:11]}'
 
             # PARSE PROFILE DATA FROM OU FILE IN DICT
+            # columns end in a comma except the last (wind speed); -9999 marks missing values
+            columns = np.array([[float(ele.rstrip(',')) for ele in col] for col in raw_data[0:6]])
+            columns[columns <= -9998] = np.nan
+            # drop levels missing a pressure or height since they can't be placed
+            columns = columns[:, ~np.isnan(columns[0]) & ~np.isnan(columns[1])]
+
             new_keys = ['p', 'z', 'T', 'Td', 'u', 'v']
             units_list = ['hPa', 'meter', 'degC', 'degC']
             clean_data = {}
             for new_key, idx, unit in zip(new_keys, range(0, 4), units_list):
-                clean_data[new_key] = np.array([float(ele) for ele in [ele[0:-1] for ele in raw_data[idx]]]) * units(unit)
+                clean_data[new_key] = columns[idx] * units(unit)
 
-            clean_data['u'], clean_data['v'] = mpcalc.wind_components(
-                [float(ele) for ele in [ele[0:-1] for ele in raw_data[5]]] * units.kts,
-                [float(ele) for ele in [ele[0:-1] for ele in raw_data[4]]] * units.deg)
+            clean_data['u'], clean_data['v'] = mpcalc.wind_components(columns[5] * units.kts, columns[4] * units.deg)
 
             # GET AIRPORT INFO FROM GITHUB AIRPORTS.CSV
             airports_csv = pd.read_csv(f'https://raw.githubusercontent.com/kylejgillett/sounderpy/main/src/AIRPORTS.csv',
                                        skiprows=7, skipinitialspace=True)
-            where = [np.where(airports_csv['IATA'].str.contains(header[0], na=False, case=True))[0]][0][0]
+            # the site may be an IATA (BNA) or ICAO (MMUN) code
+            where = find_station(airports_csv['IATA'], header[0], required=False)
+            if where is None:
+                where = find_station(airports_csv['ICAO'], header[0])
 
             # ADD AIRPORT DATA INTO DICT
             keys = ['Name', 'City', 'Country', 'Latitude', 'Longitude', 'Altitude']

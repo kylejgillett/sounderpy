@@ -7,6 +7,7 @@ import numpy.ma as ma
 import metpy.calc as mpcalc
 from metpy.units import units
 import copy
+import difflib
 import math
 
 
@@ -39,16 +40,53 @@ def modify_surface(clean_data, modify_sfc):
     where,
     modify_sfc = {'T': 20, 'Td': 12, 'ws': 10, 'wd': 270}
     and units = degC, degC, kts, degrees
+
+    A warmer surface temperature is mixed upward along its dry adiabat until it meets the
+    original profile (Holzworth 1964), the depth a heated surface mixes to. Through that
+    layer, a new surface dewpoint is held at a constant mixing ratio, as in a well-mixed
+    boundary layer (Betts 1973; Carson 1973; Tennekes 1973). A cooler surface temperature,
+    a dewpoint-only change, and the wind change only the surface level, since a stable
+    surface layer and surface-layer wind shear are realistic. Dewpoint is capped at the
+    temperature.
+
+    Holzworth, G. C., 1964: Estimates of mean maximum mixing depths in the contiguous
+        United States. Mon. Wea. Rev., 92, 235-242.
+    Betts, A. K., 1973: Non-precipitating cumulus convection and its parameterization.
+        Quart. J. Roy. Meteor. Soc., 99, 178-196.
+    Carson, D. J., 1973: The development of a dry inversion-capped convectively unstable
+        boundary layer. Quart. J. Roy. Meteor. Soc., 99, 450-467.
+    Tennekes, H., 1973: A model for the dynamics of the inversion above a convective
+        boundary layer. J. Atmos. Sci., 30, 558-567.
     """
 
     sounding_data = copy.deepcopy(clean_data)
+    p = sounding_data['p'].to(units.hPa)
+    T = sounding_data['T'].to(units.degC)
+    Td = sounding_data['Td'].to(units.degC)
 
-    # Modify arrays based on the provided modifications
+    T_sfc = modify_sfc.get('T', T[0].m) * units.degC
+    Td_sfc = min(modify_sfc.get('Td', Td[0].m), T_sfc.m) * units.degC
+
+    # levels the new surface temperature's dry adiabat is warmer than (the mixed layer)
+    top = 0
     if 'T' in modify_sfc:
-        sounding_data['T'][0] = modify_sfc['T']*units.degC
+        theta = mpcalc.potential_temperature(p, T)
+        theta_sfc = mpcalc.potential_temperature(p[0], T_sfc)
+        while top + 1 < len(p) and theta[top + 1] < theta_sfc:
+            top += 1
 
-    if 'Td' in modify_sfc:
-        sounding_data['Td'][0] = modify_sfc['Td']*units.degC
+    T[0] = T_sfc
+    Td[0] = Td_sfc
+    if top > 0:
+        mixed = slice(0, top + 1)
+        T[mixed] = mpcalc.temperature_from_potential_temperature(p[mixed], theta_sfc * np.ones(top + 1)).to(units.degC)
+        if 'Td' in modify_sfc:
+            w_sfc = mpcalc.saturation_mixing_ratio(p[0], Td_sfc)
+            Td[mixed] = mpcalc.dewpoint(mpcalc.vapor_pressure(p[mixed], w_sfc * np.ones(top + 1)))
+        Td[mixed] = np.minimum(Td[mixed].m, T[mixed].m) * units.degC
+
+    sounding_data['T'] = T.to(clean_data['T'].units)
+    sounding_data['Td'] = Td.to(clean_data['Td'].units)
 
     if 'ws' in modify_sfc:
         if 'wd' in modify_sfc:
@@ -58,44 +96,6 @@ def modify_surface(clean_data, modify_sfc):
             sounding_data['v'][0] = new_v
 
     return sounding_data
-
-
-
-
-
-#########################
-# BARNES INTERP VERTICAL ARRAYS FOR SFC MODIFICATION
-#########################################################################
-def barnes_interp(new_val, xarr, yarr, kappa=0.5, num_points=5):
-    """
-    conduct barnes interp on a vertical array of T,Td,u, or v arrays
-
-    - new_val: The new value for the surface point (index 0).
-    - xarr: The original array of data (temperature, dewpoint, u, or v).
-    - yarr: The pressure levels corresponding to the data.
-    - kappa: Smoothing parameter for Barnes interpolation.
-    - num_points: The number of lowest points to apply the interpolation to (default is 5).
-
-    Currently not being used, considered a beta feature.
-    """
-
-    xarr = np.array(xarr)
-    pressure_levels = np.array(yarr)
-
-    # number of points to interp through (lowest 5)
-    num_points = min(num_points, len(xarr))
-
-    # replace first val in xarr with new sfc val
-    xarr[0] = new_val
-
-    # interpolate the xarr with the new val against the yarr
-    interpolated_data = np.copy(xarr)
-    for i in range(1, num_points):
-        influence = np.exp(-((yarr[i] - yarr[0]) ** 2) / (kappa * (yarr[num_points - 1] - yarr[0]) ** 2))
-        interpolated_data[i] = influence * new_val + (1 - influence) * xarr[i]
-
-    # return interp'd xarr
-    return interpolated_data
 
 
 
@@ -274,6 +274,51 @@ def make_sfc_based_3D(arr, sfc_arr):
 
 
 #########################
+# STATION ID LOOKUP
+#########################################################################
+def find_station(ids, station_id, k_prefix=False, required=True, hint=''):
+    '''
+    Return the row label of a station ID in a column of station IDs, matching the whole ID
+    (ignoring case & padding) instead of any ID that contains it
+
+    :param ids: the column of station IDs to search, such as ``BUFKIT_STATIONS['ID']``
+    :type ids: pandas.Series, required
+    :param station_id: the station ID to find
+    :type station_id: str, required
+    :param k_prefix: if a 3-letter ID isn't found, also try it with a 'K' in front ('OAX' -> 'KOAX')
+    :type k_prefix: bool, optional, default is `False`
+    :param required: raise an error if the station isn't found; otherwise return `None`
+    :type required: bool, optional, default is `True`
+    :param hint: extra text added to the error message
+    :type hint: str, optional
+    :return: the row label of the first matching station
+    :rtype: int or None
+    '''
+    # the buoy list marks most IDs with a trailing '*', which isn't part of the ID
+    clean_ids = ids.astype(str).str.strip().str.rstrip('*').str.upper()
+    target = str(station_id).strip().upper()
+
+    candidates = [target]
+    if k_prefix and len(target) == 3 and target.isalpha():
+        candidates.append('K' + target)
+
+    for candidate in candidates:
+        matches = clean_ids.index[clean_ids == candidate]
+        if len(matches):
+            return matches[0]
+
+    if not required:
+        return None
+
+    close = difflib.get_close_matches(target, clean_ids[clean_ids != 'NAN'].unique(), n=3, cutoff=0.6)
+    suggestion = f" Did you mean {', '.join(repr(c) for c in close)}?" if close else ''
+    raise ValueError(f"The station you requested ({station_id}) doesn't seem to exist.{suggestion}" + (f"\n{hint}" if hint else ''))
+
+
+
+
+
+#########################
 # LAT-LON FINDER FUNCTION
 #########################################################################
 
@@ -351,15 +396,9 @@ def get_latlon(station_type, station_id):
             f'https://raw.githubusercontent.com/kylejgillett/sounderpy/main/src/BUFKIT-STATIONS-MASTER.txt',
             skiprows=7, skipinitialspace=True)
 
-        try:
-            station = BUFKIT_STATIONS['ID'][
-                np.where(BUFKIT_STATIONS['ID'].str.contains(station_id, na=False, case=True))[0]].values[0]
-            lat = (BUFKIT_STATIONS[BUFKIT_STATIONS['ID'] == station]['LAT'].values[0])
-            lon = (BUFKIT_STATIONS[BUFKIT_STATIONS['ID'] == station]['LON'].values[0])
-            return [lat, lon]
-        except:
-            raise ValueError(f"The station you requested ({station_id}) doesn't seem to exist\n" +
-                             "TIP: some IDs include a 'K' in front, such as 'KMOP', others are 3 digits, such a 'DTX'")
+        idx = find_station(BUFKIT_STATIONS['ID'], station_id, k_prefix=True,
+                           hint="TIP: some IDs include a 'K' in front, such as 'KMOP', others are 3 digits, such a 'DTX'")
+        return [BUFKIT_STATIONS['LAT'][idx], BUFKIT_STATIONS['LON'][idx]]
 
 
 
@@ -376,15 +415,12 @@ def get_latlon(station_type, station_id):
             skiprows=7, skipinitialspace=True)
 
         # find lat-lon from stations list if it exists
-        try:
-            station = RAOB_STATIONS['ICAO'][
-                np.where(RAOB_STATIONS['ICAO'].str.contains(station_id, na=False, case=True))[0]].values[0]
-            lat = dms2dd(RAOB_STATIONS[RAOB_STATIONS['ICAO'] == station]['LAT'].values[0],
-                         RAOB_STATIONS[RAOB_STATIONS['ICAO'] == station]['A'].values[0])
-            lon = dms2dd(RAOB_STATIONS[RAOB_STATIONS['ICAO'] == station]['LON'].values[0],
-                         RAOB_STATIONS[RAOB_STATIONS['ICAO'] == station]['B'].values[0])
+        idx = find_station(RAOB_STATIONS['ICAO'], station_id, k_prefix=True, required=False)
+        if idx is not None:
+            lat = dms2dd(RAOB_STATIONS['LAT'][idx], RAOB_STATIONS['A'][idx])
+            lon = dms2dd(RAOB_STATIONS['LON'][idx], RAOB_STATIONS['B'][idx])
             return [lat, lon]
-        except:
+        else:
             try:
                 station = RAOB_STATIONS['WMO'][RAOB_STATIONS[RAOB_STATIONS['WMO'] == int(station_id)].index[0]]
                 lat = dms2dd(RAOB_STATIONS[RAOB_STATIONS['WMO'] == station]['LAT'].values[0],
@@ -410,16 +446,8 @@ def get_latlon(station_type, station_id):
             skiprows=7, skipinitialspace=True)
 
         # find lat-lon from stations list if it exists
-        try:
-            station = \
-            IGRA_STATIONS['ID'][np.where(IGRA_STATIONS['ID'].str.contains(station_id, na=False, case=True))[0]].values[
-                0]
-
-            lat = np.round(IGRA_STATIONS[IGRA_STATIONS['ID'] == station]['LAT'].values[0], 2)
-            lon = np.round(IGRA_STATIONS[IGRA_STATIONS['ID'] == station]['LON'].values[0], 2)
-            return [lat, lon]
-        except:
-            raise ValueError(f"The station you requested ({station_id}) doesn't seem to exist")
+        idx = find_station(IGRA_STATIONS['ID'], station_id)
+        return [np.round(IGRA_STATIONS['LAT'][idx], 2), np.round(IGRA_STATIONS['LON'][idx], 2)]
 
 
 
@@ -436,19 +464,9 @@ def get_latlon(station_type, station_id):
             skiprows=7, skipinitialspace=True)
 
         # find lat-lon from stations list if it exists
-        try:
-            station = \
-            BUOY_STATIONS['ID'][np.where(BUOY_STATIONS['ID'].str.contains(station_id, na=False, case=True))[0]].values[
-                0]
-
-            lat = dms2dd(BUOY_STATIONS[BUOY_STATIONS['ID'] == station]['LAT'].values[0],
-                         BUOY_STATIONS[BUOY_STATIONS['ID'] == station]['A'].values[0])
-            lon = dms2dd(BUOY_STATIONS[BUOY_STATIONS['ID'] == station]['LON'].values[0],
-                         BUOY_STATIONS[BUOY_STATIONS['ID'] == station]['B'].values[0])
-            return [lat, lon]
-        except:
-            raise ValueError(f"The station you requested ({station_id}) doesn't seem to exist\n" +
-                             "TIP: buoy IDs typically look like this: '41001'")
+        idx = find_station(BUOY_STATIONS['ID'], station_id, hint="TIP: buoy IDs typically look like this: '41001'")
+        return [dms2dd(BUOY_STATIONS['LAT'][idx], BUOY_STATIONS['A'][idx]),
+                dms2dd(BUOY_STATIONS['LON'][idx], BUOY_STATIONS['B'][idx])]
     else:
         raise ValueError(
             f"Incorrect station_type argument. Valid station_type-s are 'metar', 'raob', 'igra', 'bufkit', 'buoy'")

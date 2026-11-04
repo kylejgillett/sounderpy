@@ -1,89 +1,26 @@
 # To Fix Before Release
 
-- [x] `__full_sounding`: crashes with `NameError`; unrefactored code still used old variable names
-- [x] `plot/operational.py:396`: `__full_hodograph` crashes with `TypeError` because it unpacks `calc()` as a tuple
-- [x] `_plot_hodograph_storm_motion`: custom storm motion crashes with `IndexError`
-- [x] `_plot_hodograph_storm_motion`: masked storm motion crashes with `UnboundLocalError` on `selected_sm_value`
-- [x] `_plot_skewt_rh_annotations`: shallow profiles crash with `IndexError`
-- [x] `_plot_hodograph_storm_motion`: storm motion readout prints `ESE° @ 19 kt`
-- [x] `plot.py`: nested f-string quotes are a `SyntaxError` before Python 3.12, but `pyproject.toml` allows 3.10+
-- [x] `_plot_map_single_site_radar`: uses `resolution="10"` instead of `"10m"`
-- [x] `_plot_map_mosaic_radar`: returns `None` on success when `show_timestamp=False`
-- [x] `_plot_skewt_height_annotations`: `interval` is never used
-- [x] `_plot_skewt_surface_annotations`: `temperature_unit` is accepted, but the label always says `°F`
-- [x] `_plot_map_mosaic_radar`, `_plot_map_single_site_radar`: the broad `except` shows "RADAR UNAVAILABLE" for any error, hiding real bugs
-- [ ] `_setup_map_inset`: `LAKES` and `OCEAN` are no longer drawn; confirm this is intentional
-- [x] `_plot_hodograph_storm_motion`: docstring lists `show_mw` twice; the second should be `show_mcs`
-- [x] `_plot_temperature_advection`: bars are centered on each layer's top instead of spanning the layer (same as old code)
-- [ ] `_plot_sr_wind_panel`, `_plot_vorticity_panel`: fixed x-axis limits cut off values outside 10-50 kt and 0-0.06 /s (same as old code)
-- [ ] `_plot_cape_cin_panel`: the `(J/kg)` title line overlaps the CIN fill (same as old code)
-- [ ] `_plot_hodograph_height_markers`: larger, every-km markers can hide the trace on weak hodographs (old code used smaller markers and skipped some levels)
-- [ ] Dark mode: some text colors are hard to read, including MUNCAPE, lapse rates, PWAT, WB, and skew-t annotations
-- [x] `_scale_fonts`: only text scales; line widths, tick sizes, and skew-t grid lines look too heavy on small publication figures
-- [x] `_plot_hodograph_storm_motion`: does too many jobs behind too many flags; split labels, vector, and readout
-- [x] `__full_hodograph`: calls `plot_boundary`, which no longer exists, when `hodo_boundary` is used
-- [ ] `calc.py:34`: comment still refers to `plot.py`
-- [ ] `_plot_basic_parcels`: the MUECAPE trace is silently left off when `ecape_parcel` returns no parcel, even with MUECAPE > 0 (old code crashed)
-- [x] `_plot_skewt_parcel_level_annotations`: labels overlap when levels are close together, as on low-CAPE soundings (now one column each for ML and MU, with labels spread apart and an arrow at each level's true pressure)
-- [x] Text tables: EIL shows `nan%` and `nans-1` when no effective inflow layer exists (same as old code)
-- [x] `max_levels`: `build_hodograph` doesn't have it yet; add it when that figure is converted
-- [x] `set_watermark`: docs need a section
 - [ ] `set_watermark`: settings are shared across a Python process, so a shared web app worker would affect all users
-- [x] `_plot_skewt_cape_annotations`: 3 and 6 km CAPE labels plot about 30-60 hPa too low because they use `muZ_trace`
-- [x] `_plot_skewt_height_annotations`: the 11 km label was skipped
-- [ ] `_plot_skewt_layer_annotations`: draws "EIL" at the surface when no effective inflow layer exists
-- [ ] `calc.py:324`, `calc.py:345`: `sbZ_trace` and `muZ_trace` use a fixed-atmosphere height from pressure, not the sounding's actual heights
-- [x] `__composite_sounding`: profiles from unrecognized sources (e.g. CM1) get no table row
-- [x] `__composite_sounding`: rows after a dropped row get the wrong letter and color
-- [x] `__composite_sounding`: hodograph limits are hardcoded to ±80
-- [x] `__composite_sounding`: theme and footer are separate from the other figures
-- [x] `calc.py:769`: dict return breaks the public `calc()` API; docs and cookbook still show tuple unpacking (docs, cookbook, and 3.3.0 release panel updated)
-- [ ] `calc.py:1165`: `vad_params.calc()` still returns a tuple
-- [x] `calc.py:777-778`: `print_vals` runs the full `calc()` twice
-- [ ] `plot_old.py`: broken by the `calc()` change; remove before building a release
-- [ ] `_calculate_special_parcel`: MUECAPE trace is slow (~13.5 s at 73 levels, ~27 s at 300), mostly pint unit handling in `ecape_parcel`
-- [x] `_setup_map_inset`: satellite tiles are slow on first draw (~10 s)
-- [x] `_plot_map_single_site_radar`: slow (~18 s to fetch, ~6 s to draw)
-- [x] `get_radar_mosaic`: requested area stopped short of the top of the map
-- [x] `_plot_map_single_site_radar`: echoes now draw at true size instead of Py-ART's enlarged look; confirm this is wanted
-- [ ] `_plot_map_single_site_radar`: weak echo edges far from the radar break into short dashes at 300 dpi
-- [x] `calc.py:410`: `include_all_parcels` lifts a parcel from every level, but the panel only shows 0-3 km (~4.4 s vs ~1.3 s without it on a real 227-level RAOB)
-- [x] `sounding_params.calc`: `parcel_depth` is undocumented; add it to the docs
-- [x] `plot/components.py`, `radar_utils.py`: Py-ART is imported on load (~2.2 s) but only needed for single-site radar
-- [ ] `sounderpy.py:247`: `bbox_inches="tight"` draws the figure twice (~0.85 s); needs a layout that fits inside the figure
-- [x] `__full_sounding`: a failed logo download crashes the plot
-- [x] `__full_hodograph`, `__composite_sounding`, `__vad_hodograph`: a failed logo download still crashes the plot; switch to `_plot_logo`
-- [x] `_plot_logo`: the 3203x2528 logo adds ~1.7 s to each figure; bundle a small image in `plot/`
 - [ ] MetPy's skew-T uses a Matplotlib function deprecated in 3.11 and due for removal in 3.13; confirm a MetPy fix before relaxing or raising version limits
-- [ ] Version: bump `pyproject.toml` to 3.3.0 and reinstall for figures to show it; `sounderpy.py` also hardcodes 3.2.0 (`docs/source/conf.py` is done)
-- [ ] `vad_params.calc`: crashes with `IndexError` on profiles that stop at 2 km (same as old code)
-- [x] `__composite_sounding`: with the default viridis colors, the first profile is nearly invisible in dark mode and the last row of the table is pale in light mode
-- [x] `build_composite`: `show_params`, `storm_motion`, `max_levels`, `dpi`, and `ylim` need docs pages updated (`build_sounding` also has `ylim` and `max_levels`)
-- [ ] `__composite_sounding`: shading between T and Td gets heavy at about six or more profiles
-- [x] `__composite_sounding`: custom data without a time showed `eZ | o-n-n`
-- [x] `_format_value`: `PWAT` could print as `1.340000033378601in`
-- [ ] `calc`: ACARS and other shallow profiles show `---` for kinematics that need deeper data; confirm this is what you want in the composite table
-- [ ] `build_composite`: renamed `colors_to_use`, `ls_to_use`, `lw_to_use`, and `alphas_to_use`; old names still work with a `FutureWarning`; note this in the release notes and remove them in a later release
 - [ ] `__composite_sounding`: `ylim` views have sparse background lines over very thin layers (about 100 hPa)
 - [ ] `build_sounding`: `ylim` labels can overlap in zoomed views, as can the legend over the data; left as is for now
-- [x] `ylim`: temperature axis fits only T and Td, so parcel traces can run off the right side of a zoomed sounding
 - [ ] `plot/components.py`: 103 of 104 functions have no docstring
 - [ ] `plot/components.py`: no repo tests cover the helpers, `parcel_depth`, thinning, `ylim`, `set_watermark`, or missing-value handling
 - [ ] `plot/components.py`: no public API for building custom figures; every drawing function is private
-- [x] `plot/components.py`: `theme` needs docs
+- [ ] Station lists: `BUFKIT-STATIONS-MASTER.txt` has 8,527 rows for 2,093 IDs, and 23 IDs have conflicting entries (typos such as `B44` at lon -100.29 and -110.29, `B48` at -80.51 and -81.51; different stations sharing `CYQX`); all station lists are downloaded from GitHub `main` on every call rather than read from the package
+- [ ] `calc.py:376`: SB/ML CIN is huge when CAPE is near zero, apparently because negative area is summed through the whole profile. On 2026-11-03 06Z F06 KGFK, HRRR reads SBCIN -1870 / MLCIN -1806 J/kg with SBCAPE 2 / MLCAPE 1; RRFS reads MLCIN -1460 J/kg with MLCAPE 4. The table shows these values as-is (OK for now)
+- [ ] `modify_surface` (GitHub issue 29, still open): station elevation/pressure re-basing for coarse-terrain data like ERA5, and observations above the surface
+
+
+### Timeseries, Publication Figures, VAD hodos
 - [ ] `build_publication_sounding`: experimental; hodograph height labels can overlap with several profiles or tight traces, and no tests or docs yet
 - [ ] `build_editorial_sounding`: experimental; choose whether to keep it, and it has no tests or docs yet
-- [ ] Dark mode: the logo's white background stands out
-- [x] `build_sounding`: `style` did nothing; removed it (Colab notebooks that passed it by position were updated)
-- [x] `bufkit_data.py`: NAM forecast limit was 84 hours; set to 48 to match the docs
-- [x] `build_composite`: added `style='full' | 'sounding' | 'hodograph'`; each single-panel style has its own narrower figure, and its table shows only its own parameters
-- [ ] `build_composite`: to fit six parameter columns with four-digit CAPE, the `style='sounding'` table uses a smaller font (13 vs 15) and shows only the site ID in LOCATION (the full name is in the subtitle); confirm this is wanted
-- [x] `build_composite`: `style` needs docs pages updated (`composite_soundings.rst`, `plottingdata.rst`) and a test
-- [ ] `__composite_sounding`: the hodograph's right ring label is cut off at the axis edge (`9` of `90kt`), in all styles
-- [x] `build_composite`: added `sr_hodo` for the `full` and `hodograph` styles; each profile is shifted by its own storm motion, and the figure falls back to ground relative with a warning if any profile has none
-- [x] `calc.py:719,722`: STP and SCP use `shear_eil` (bulk shear across the effective inflow layer only, in kt) instead of effective bulk wind difference (EIL base to half the MU EL height, in m/s). On 2024-04-26 18Z RAP F03 KOMA, STP reads 3.06 vs SHARPpy 1.63 (now `kinem["ebwd"]`, converted to m/s; SCP and EBWD match SHARPpy exactly)
-- [x] `calc.py:719`: STP uses the MU parcel (`mucape`, `mu_lcl_z`, `mucin`) instead of the ML parcel, as Thompson et al. (2012) and SHARPpy do (now 1.55 vs SHARPpy 1.63 at KOMA; the rest of the gap is sounderpy's ML parcel, which differs slightly from SHARPpy's)
-- [x] `_plot_skewt_freezing_annotations`: FRZ and WB0 labels overlap when the two levels are close (e.g. 2024-04-26 18Z RAP F03 KLNK; now spread apart like the parcel labels)
-- [x] `bufkit_data.py`: added the RRFS (`'rrfs'`, out to F84) for recent runs from PSU and archived runs from IEM
-- [ ] `calc.py:376`: SB/ML CIN is huge when CAPE is near zero, apparently because negative area is summed through the whole profile. On 2026-11-03 06Z F06 KGFK, HRRR reads SBCIN -1870 / MLCIN -1806 J/kg with SBCAPE 2 / MLCAPE 1; RRFS reads MLCIN -1460 J/kg with MLCAPE 4. The table shows these values as-is
-- [ ] `utils.py:37` `modify_surface` (GitHub issue 29): only overwrites the lowest level, so +8 °C on 2024-04-26 12Z RAP F00 KOMA makes a 328 °C/km layer over 25 m, raises 0-3 km lapse rate 3.4 -> 6.1, and leaves SB LCL (1122 m) and ML LCL (491 m) disagreeing; a surface-only wind change cuts 0-500 m SRH 401 -> 267. Proposed (prototyped, not built): warming mixes along the dry adiabat to where it meets the profile, with a new Td mixed at constant mixing ratio; cooling, Td-only, and wind changes taper to zero over the mixed depth or 500 m; Td capped at T; heights rebuilt hypsometrically; only mix when `T` is given. Later: station elevation/pressure re-basing and observations aloft. `barnes_interp` is unused
+- [ ] `build_timeseries`: parameters with the same unit share an axis (e.g. 0-3 km MUCAPE flattens next to MU-ECAPE); only the built-in SCP and CIN axes can be split, users can't choose
+- [ ] Timeseries docs: no docs page yet for `timeseries_params()` / `build_timeseries()`
+- [ ] `build_timeseries` kinematics panel: six lines on two axes get busy on long runs (e.g. 84-hour RRFS). Options to revisit: split into `srh` and `shear` panels; note solid = SRH, dashed = BWD on the axis labels; align right-axis ticks to the left gridlines; group the legend by SRH/BWD; drop a line
+- [ ] VAD `calc`: 0-1 km SRH is really 1-3 km and 1-3 km is really 1-4 km (`calc.py:1086-1091`); Corfidi jet search never increments `i`, so it uses the surface wind (waiting until there is a VAD data fetcher)
+- [ ] `plot/timeseries.py`: surface wind barbs are clipped to the shaft; right-axis parameters without a style reuse the left axis's colors
+- [ ] `build_publication_sounding`, `build_editorial_sounding`: Type 42 font settings are lost when the returned figure is saved later
+- [ ] Tests: nothing covers `timeseries_params`, `build_timeseries`, `build_sounding(sr_hodo=True)`, or `all_fcst_hours`
+- [ ] Timeseries (`timeseries.py`, `plot/timeseries.py`) and publication/editorial figures (`plot/publication.py`) are on hold: unhooked from `import sounderpy` and git-ignored (use locally with `from sounderpy.timeseries import timeseries_params, build_timeseries`). `timeseries.py` and `publication.py` are still tracked until `git rm --cached`; setuptools packages any `.py` on disk, so build the pip release from a clean clone. Their open items above wait until they come back
+- [ ] Old module paths (`sounderpy.bufkit_data`, `sounderpy.file_io`, etc.) are stand-ins for `sounderpy.data.*` that show a `FutureWarning`; remove the block at the end of `sounderpy/__init__.py` in a later release

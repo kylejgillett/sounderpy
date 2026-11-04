@@ -9,8 +9,8 @@ import requests
 import time
 import warnings
 
-from .rapruc_grib_parser import parse_rapruc_grib
-from .calc import *
+from .rapruc_grib_parser import parse_rapruc_grib, subset_rapruc_grib
+from ..calc import *
 
 
 """
@@ -328,7 +328,7 @@ def try_ncei(dt,tempdir,dataset=None):
 ###############
 # USER-FACING FUNCTION 
 #########################################################################
-def get_rapruc_data(latlon, year, month, day, hour, dataset, box_avg_size, hush):
+def get_rapruc_data(latlon, year, month, day, hour, dataset, box_avg_size, hush, clean_it=True):
     st = time.time()
     """
     Retrieve RAP/RUC analysis data and return a SounderPy clean_dict.
@@ -341,6 +341,10 @@ def get_rapruc_data(latlon, year, month, day, hour, dataset, box_avg_size, hush)
 
     ``dataset=`` bypasses automatic era selection and tests only that named
     NCEI archive family.
+
+    ``clean_it=False`` returns the raw GRIB data instead of a clean_dict: a
+    dict of xarray datasets ('pressure', '2m', '10m', 'surface') cut to the
+    box-average domain and loaded into memory.
 
     All downloaded GRIB files are stored only inside a TemporaryDirectory
     and are automatically deleted before this function returns.
@@ -394,6 +398,18 @@ def get_rapruc_data(latlon, year, month, day, hour, dataset, box_avg_size, hush)
 
         print(f"    > DATA FOUND AT: {result['source']}")
 
+        if not clean_it:
+            raw_data = subset_rapruc_grib(
+                pressure_file=result["pressure_file"],
+                native_file=result["native_file"],
+                latlon=latlon,
+                box_avg_size=box_avg_size)
+
+            print('    > COMPLETE --------')
+            elapsed_time = time.time() - st
+            print('    > RUNTIME:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
+
+            return raw_data
 
 
         # PARSE GRIB FILES USING PARSER MODULE

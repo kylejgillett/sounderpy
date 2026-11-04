@@ -1,3 +1,4 @@
+import warnings
 import numpy as np
 import metpy.calc as mpcalc
 from metpy.units import units
@@ -27,7 +28,7 @@ def check_sfc_hgt(full_z):
 
 
 def check_latlon(meta_data_dict):
-    if len(meta_data_dict['latlon']) < 2:
+    if len(meta_data_dict.get('latlon') or []) < 2:
         raise ValueError(
             f"Invalid latitude-longitude pair | Check or add a lat-lon pair to `meta_data_dict`. Values should be in a list, ex: [48.57, -100.98]")
 
@@ -50,7 +51,7 @@ def make_cm1_profile(filename, meta_data_dict):
     Rd = 287.05  # specific gas constant, dry air (J/kg/K)
     cp = 1005.7  # specific heat at constant pressure (J/kg/K)
     g = 9.80665  # gravitational accel. (m/s^2)
-    P0 = 100000  # ref pres (hPa)
+    P0 = 100000  # ref pres (Pa)
 
     #############################################
     # READ CM1 INPUT_SOUNDING VALUES
@@ -87,18 +88,17 @@ def make_cm1_profile(filename, meta_data_dict):
     full_v[1:num_vals] = vert_v
 
     # add surface values to index 0 in full arrays
-    # if elev is not provided by the user, assume hydrostatic balance and
-    # compute surface elevation using the hydrostatic equation
-    if meta_data_dict['elev'] is None:
-        elev = 1.70 * full_z[1] - full_z[2] + 0.25 * full_z[
-            3]  # cm1 input has no surface hgt, use quadratic extrapolation to estimate sfc z
-    else:
-        elev = meta_data_dict['elev']
+    # cm1 heights are AGL, so the surface elevation can't be found from the file;
+    # if elev is not provided by the user, assume the surface is at 0 m
+    elev = meta_data_dict.get('elev')
+    if elev is None:
+        warnings.warn("No 'elev' given in meta_data_dict; assuming a surface elevation of 0 m", Warning)
+        elev = 0
 
     full_z[0] = elev
 
     full_th[0] = float(sfc_th)
-    full_qv[0] = float(sfc_qv) / 1000.  # convert to g/kg
+    full_qv[0] = float(sfc_qv) / 1000.  # convert from g/kg to kg/kg
     full_u[0] = 1.75 * full_u[1] - full_u[2] + 0.25 * full_u[
         3]  # cm1 input has no surface wind, use quadratic extrapolation to estimate sfc u & v
     full_v[0] = 1.75 * full_v[1] - full_v[2] + 0.25 * full_v[
@@ -112,11 +112,14 @@ def make_cm1_profile(filename, meta_data_dict):
     # convert hgt values to include elevation
     full_z[1:] = full_z[1:] + elev
     
-    # compute remaining pressure values above the surface assuming hydrostatic balance
-    # where dp = -rho*g*dz
+    # compute remaining pressure values above the surface assuming hydrostatic balance,
+    # integrating the Exner function with virtual potential temperature as CM1 does
+    full_thv = full_th * (1 + full_qv / 0.622) / (1 + full_qv)
+    full_pi = np.zeros(num_vals)
+    full_pi[0] = (full_p[0] / P0) ** (Rd / cp)
     for k in np.arange(1, num_vals):
-        full_p[k] = full_p[k - 1] * np.exp((g * (full_z[k - 1] - full_z[k])) / (
-                    Rd * (((full_th[k] + full_th[k - 1]) / 2.) * (P0 / full_p[k - 1]) ** -(Rd / cp))))
+        full_pi[k] = full_pi[k - 1] - g * (full_z[k] - full_z[k - 1]) / (cp * 0.5 * (full_thv[k] + full_thv[k - 1]))
+    full_p[:] = P0 * full_pi ** (cp / Rd)
 
     for k in np.arange(num_vals):
         # compute temperature from theta
@@ -133,12 +136,12 @@ def make_cm1_profile(filename, meta_data_dict):
     # CONSTRUCT CLEAN_DATA DICTIONARY
     #############################################
     clean_data = {
-        'T': np.array(full_T[0:-2] - 273.15) * units.degC,
-        'Td': np.array(np.nan_to_num(full_Td, nan=-80)[0:-2]) * units.degC,
-        'z': np.array(full_z[0:-2]) * units.m,
-        'p': np.array(full_p[0:-2] / 100) * units.hPa,
-        'u': np.array(full_u[0:-2] * 1.94384) * units.kts,
-        'v': np.array(full_v[0:-2] * 1.94384) * units.kts}
+        'T': np.array(full_T - 273.15) * units.degC,
+        'Td': np.array(np.nan_to_num(full_Td, nan=-80)) * units.degC,
+        'z': np.array(full_z) * units.m,
+        'p': np.array(full_p / 100) * units.hPa,
+        'u': np.array(full_u * 1.94384) * units.kts,
+        'v': np.array(full_v * 1.94384) * units.kts}
 
     # add site & profile info to clean_data dict
     clean_data['site_info'] = {
@@ -146,7 +149,7 @@ def make_cm1_profile(filename, meta_data_dict):
         'site-name': 'no-site-name',
         'site-lctn': 'no-site-location',
         'site-latlon': meta_data_dict['latlon'],
-        'site-elv': meta_data_dict['elev'],
+        'site-elv': elev,
         'source': 'none',
         'model': 'custom',
         'fcst-hour': 'none',
@@ -156,9 +159,9 @@ def make_cm1_profile(filename, meta_data_dict):
 
     # add plot title to clean_data dict
     clean_data['titles'] = {
-        'top_title': meta_data_dict['top_title'],
-        'left_title': meta_data_dict['left_title'],
-        'right_title': f"{meta_data_dict['right_title']}    "
+        'top_title': meta_data_dict.get('top_title', 'CM1 INPUT SOUNDING'),
+        'left_title': meta_data_dict.get('left_title', ''),
+        'right_title': f"{meta_data_dict.get('right_title', '')}    "
     }
 
     return clean_data

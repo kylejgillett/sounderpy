@@ -6,13 +6,13 @@ from typing import List, Tuple, Optional
 
 from .plot import __full_sounding, __full_hodograph, __composite_sounding, __vad_hodograph
 from .calc import sounding_params
-from .model_data import fetch_model
-from .bufkit_data import fetch_bufkit
-from .obs_data import fetch_obs
-from .acars_data import *
-from .wrf_utils import make_wrf_profile
-from .cm1_utils import make_cm1_profile
-from .rapruc_grib_retriever import get_rapruc_data
+from .data.model_data import fetch_model
+from .data.bufkit_data import fetch_bufkit
+from .data.obs_data import fetch_obs
+from .data.acars_data import *
+from .data.wrf_utils import make_wrf_profile
+from .data.cm1_utils import make_cm1_profile
+from .data.rapruc_grib_retriever import get_rapruc_data
 #########################################################################################################
 
 
@@ -30,7 +30,7 @@ from .rapruc_grib_retriever import get_rapruc_data
 
     THIS RELEASE
     -------
-    Version: 3.2.0 | September 2026
+    Version: 3.3.0 | November 2026
 
 
     DOCUMENTATION
@@ -52,7 +52,7 @@ from .rapruc_grib_retriever import get_rapruc_data
 citation_text = f"""
 ## ---------------------------------- SOUNDERPY ----------------------------------- ##
 ##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
-##                   v3.2.0 | September 2026 | (C) Kyle J Gillett                   ##
+##                   v3.3.0 | November 2026 | (C) Kyle J Gillett                    ##
 ##                 Docs: https://kylejgillett.github.io/sounderpy/                  ##
 ## --------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------ ##
 """
@@ -96,7 +96,7 @@ def get_model_data(model: str, latlon: list, year: str, month: str, day: str, ho
        :type box_avg_size: int, optional
        :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting a data.
        :type hush: bool, optional, default is `False`
-       :param clean_it: whether to return the raw_data object or a clean_data dict.
+       :param clean_it: whether to return the raw_data object or a clean_data dict. With ``False``, RAP/RUC returns a dict of xarray datasets ('pressure', '2m', '10m', 'surface') cut to the box-average domain, ERA5 returns an xarray dataset, and NCEP-FNL and RAP-NOW return a netCDF4 dataset.
        :type clean_it: bool, optional, default is `True`
 
 
@@ -105,7 +105,7 @@ def get_model_data(model: str, latlon: list, year: str, month: str, day: str, ho
     """
 
     if model.casefold() in ['rap', 'ruc', 'rap-ruc']:
-        data = get_rapruc_data(latlon, year, month, day, hour, dataset, box_avg_size, hush)
+        data = get_rapruc_data(latlon, year, month, day, hour, dataset, box_avg_size, hush, clean_it)
     else:
         data = fetch_model(model, latlon, year, month, day, hour, dataset, box_avg_size, hush, clean_it)
 
@@ -147,7 +147,7 @@ def get_obs_data(station, year, month, day, hour, hush=False, clean_it=True):
 # BUFKIT DATA
 #########################################################################
 def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, run_day=None, run_hour=None,
-                   hush=False, clean_it=True):
+                   hush=False, clean_it=True, all_fcst_hours=False):
 
     r"""Get BUFKIT forecast model vertical profile data
        Return a ``dict`` of 'cleaned up' model forecast data from a given model, for a given BUFKIT site identifier, forecast hour, & model-run-date
@@ -156,38 +156,32 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
        :type model: str, required
        :param station: a 3-4 digit BUFKIT site identifier
        :type station: str, required
-       :param fcst_hour: valid forecast hour
+       :param fcst_hour: the forecast hour; the profile is valid at the model run time plus this many hours
        :type fcst_hour: int, required
-       :param year: valid year
-       :type year: str, required
-       :param month: valid month
-       :type month: str, required
-       :param day: valid day
-       :type day: str, required
-       :param hour: valid hour
-       :type hour: str, required
+       :param run_year: model run year. Leave the run date as ``None`` for the latest run.
+       :type run_year: str, optional, default is `None`
+       :param run_month: model run month
+       :type run_month: str, optional, default is `None`
+       :param run_day: model run day
+       :type run_day: str, optional, default is `None`
+       :param run_hour: model run hour (the initialization time, not the valid time)
+       :type run_hour: str, optional, default is `None`
        :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting a data.
        :type hush: bool, optional, default is `False`
        :param clean_it: whether to return the raw_data object or a clean_data dict.
        :type clean_it: bool, optional, default is `True`
+       :param all_fcst_hours: return a list with every forecast hour in the BUFKIT file, from one download. ``fcst_hour`` is then ignored. Not available for ``sref`` and ``hiresw``, whose files hold several ensemble members.
+       :type all_fcst_hours: bool, optional, default is `False`
 
 
-       :return: clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information
-       :rtype: dict
+       :return: clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information, or a list of them, one per forecast hour, with ``all_fcst_hours``
+       :rtype: dict or list of dicts
     """
 
     data = fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_hour,
-                   hush, clean_it)
+                   hush, clean_it, all_fcst_hours)
 
     return data
-
-
-
-
-
-
-
-
 
 
 
@@ -202,7 +196,8 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
 #########################################################################
 def build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion='right_moving',
                    special_parcels=None, radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None,
-                   show_theta=False, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_sounding', max_levels=250, ylim=None, theme=None):
+                   show_theta=False, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_sounding', max_levels=250, ylim=None, theme=None,
+                   sr_hodo=False):
     
     '''
     Return a full sounding plot of SounderPy data, ``plt``
@@ -241,13 +236,15 @@ def build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion=
     :type ylim: tuple of two numbers, optional
     :param theme: changes to the figure's colors, such as ``{'border': 'k', 'temperature': 'navy', 'parcel': {'mu': 'black'}}``. An invalid name lists the valid ones. Default is ``None``.
     :type theme: dict, optional
+    :param sr_hodo: draw the hodograph storm relative, shifting the winds by the storm motion from ``storm_motion``. If the profile has no storm motion, the hodograph stays ground relative. Default is ``False``.
+    :type sr_hodo: bool, optional
     :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
     :rtype: plt
     '''
     
     print(f'> SOUNDING PLOTTER FUNCTION\n  ---------------------------------')
 
-    plt = __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, radar, radar_time, map_zoom, modify_sfc, show_theta, hodo_boundary, dpi, max_levels, ylim, theme)
+    plt = __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, radar, radar_time, map_zoom, modify_sfc, show_theta, hodo_boundary, dpi, max_levels, ylim, theme, sr_hodo)
     if save:
         plt.savefig(filename, bbox_inches='tight')
     else:
@@ -265,7 +262,7 @@ def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr
                     radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_hodograph', max_levels=250, theme=None):
 
     '''
-       Return a full sounding plot of SounderPy data, ``plt`` 
+       Return a hodograph plot of SounderPy data, ``plt`` 
 
        :param clean_data: the dictionary of data to be plotted (see :doc:`gettingdata`)
        :type clean_data: dict, required
@@ -289,12 +286,13 @@ def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr
        :type dpi: int, optional
        :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
        :type save: bool, optional
-       :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
+       :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_hodograph`.
        :type filename: str, optional
-       
        :param max_levels: the most vertical levels used to calculate and plot the hodograph. Profiles with more levels are thinned to this many evenly spaced levels. Set to ``None`` to use every level. Default is ``250``.
-    :type max_levels: int or None, optional
-    :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
+       :type max_levels: int or None, optional
+       :param theme: changes to the figure's colors, such as ``{'border': 'k', 'parcel': {'ml': 'black'}}``. An invalid name lists the valid ones. Default is ``None``.
+       :type theme: dict, optional
+       :return: plt, a SounderPy hodograph built with Matplotlib, MetPy, SharpPy, & SounderPy.
        :rtype: plt
     '''
 
@@ -417,18 +415,16 @@ def build_vad_hodograph(vad_data, save=False, dark_mode=False, storm_motion='rig
        :type storm_motion: str or list of floats, optional
        :param sr_hodo: transform the hodograph from ground relative to storm relative
        :type sr_hodo: bool, optional, default is ``False``
-:param radar: the type of radar on the map: ``'mosaic'``, ``'single-site'``, or ``None``. Default is ``'mosaic'``.
-:type radar: str or None, optional
-:param radar_time: the time of radar to show: ``'sounding'`` for the data's valid time, or ``'now'``. Default is ``'sounding'``.
-:type radar_time: str, optional
-:param map_zoom: a zoom level for the map inset. Setting ``map_zoom=0`` hides the map. Default is ``2``.
-:type map_zoom: int, optional
-:param hodo_boundary: plot a boundary on the hodograph, structured as ``{'angle':[], 'color':[]}``. Default is ``None``.
-:type hodo_boundary: dict of lists, optional
-:param dpi: dots per inch resolution of the figure. Default is ``100``.
-:type dpi: int, optional
-       :param theme: changes to the figure's colors, such as ``{'border': 'k', 'temperature': 'navy', 'parcel': {'mu': 'black'}}``. An invalid name lists the valid ones. Default is ``None``.
-       :type theme: dict, optional
+       :param radar: the type of radar on the map: ``'mosaic'``, ``'single-site'``, or ``None``. Default is ``'mosaic'``.
+       :type radar: str or None, optional
+       :param radar_time: the time of radar to show: ``'sounding'`` for the data's valid time, or ``'now'``. Default is ``'sounding'``.
+       :type radar_time: str, optional
+       :param map_zoom: a zoom level for the map inset. Setting ``map_zoom=0`` hides the map. Default is ``2``.
+       :type map_zoom: int, optional
+       :param hodo_boundary: plot a boundary on the hodograph, structured as ``{'angle':[], 'color':[]}``. Default is ``None``.
+       :type hodo_boundary: dict of lists, optional
+       :param dpi: dots per inch resolution of the figure. Default is ``100``.
+       :type dpi: int, optional
        :param theme: changes to the figure's colors, such as ``{'border': 'k', 'temperature': 'navy', 'parcel': {'mu': 'black'}}``. An invalid name lists the valid ones. Default is ``None``.
        :type theme: dict, optional
        :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.

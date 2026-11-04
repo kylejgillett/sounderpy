@@ -31,7 +31,7 @@ from .utils import modify_surface, find_nearest, mag, mag_round
     House tools for computing a number of useful sounding parameters based on data 
     retrieved by the user; store it and return a dict of the data. 
     
-    Tools here are accessed by plotting functions in plot.py, but can be explicitly
+    Tools here are accessed by the plotting functions in the plot module, but can be explicitly
     accessed by calling `spy.sounding_params.calc(clean_data)`
     
     
@@ -39,6 +39,26 @@ from .utils import modify_surface, find_nearest, mag, mag_round
 """
 
 
+
+
+
+
+# STORM MOTION NAMES
+# names accepted for each Bunkers/mean wind storm motion; a custom storm motion is a [direction, speed] list
+STORM_MOTION_NAMES = {'rm': ('rm', 'right', 'right_moving', 'right_mover'),
+                      'lm': ('lm', 'left', 'left_moving', 'left_mover'),
+                      'mw': ('mw', 'mean', 'mean_wind')}
+
+def storm_motion_type(storm_motion):
+    # return 'rm', 'lm', 'mw', or 'custom' for a storm motion, or raise an error for an unknown one
+    if isinstance(storm_motion, list) and len(storm_motion) == 2:
+        return 'custom'
+    if isinstance(storm_motion, str):
+        for sm_type, names in STORM_MOTION_NAMES.items():
+            if storm_motion.casefold() in names:
+                return sm_type
+    raise ValueError(f"Invalid storm motion: {storm_motion!r}. Use one of {[name for names in STORM_MOTION_NAMES.values() for name in names]}, "
+                     f"or a custom storm motion as a [direction, speed] list, ex: [270.0, 25.0]")
 
 
 
@@ -142,6 +162,7 @@ class sounding_params:
     def __init__(self, clean_data, storm_motion='right_moving', modify_sfc=None, include_all_parcels=False, parcel_depth=None):
             self.clean_data = clean_data 
             self.storm_motion = storm_motion
+            self.sm_type = storm_motion_type(storm_motion)
             self.modify_sfc = modify_sfc
             self.include_all_parcels = include_all_parcels
             self.parcel_depth = parcel_depth
@@ -329,7 +350,7 @@ class sounding_params:
         thermo['sb_lfc_z'] = sbpcl.lfchght
         thermo['sb_el_p']  = sbpcl.elpres  
         thermo['sb_el_z']  = sbpcl.elhght
-        thermo['sb_el_T']  = temp(prof, pres(prof, thermo['sb_el_z']))
+        thermo['sb_el_T']  = temp(prof, thermo['sb_el_p'])
         thermo['sb_mpl_p'] = sbpcl.mplpres
         thermo['sbcape']   = sbpcl.bplus
         thermo['sbcin']    = sbpcl.bminus
@@ -350,7 +371,7 @@ class sounding_params:
         thermo['mu_lfc_z'] = mupcl.lfchght
         thermo['mu_el_p']  = mupcl.elpres
         thermo['mu_el_z']  = mupcl.elhght
-        thermo['mu_el_T']  = temp(prof, pres(prof, thermo['mu_el_z']))
+        thermo['mu_el_T']  = temp(prof, thermo['mu_el_p'])
         thermo['mu_mpl_p'] = mupcl.mplpres
         thermo['mucape']   = mupcl.bplus
         thermo['mucin']    = mupcl.bminus
@@ -370,7 +391,7 @@ class sounding_params:
         thermo['ml_lfc_z'] = mlpcl.lfchght
         thermo['ml_el_p']  = mlpcl.elpres
         thermo['ml_el_z']  = mlpcl.elhght
-        thermo['ml_el_T']  = temp(prof, pres(prof, thermo['ml_el_z']))
+        thermo['ml_el_T']  = temp(prof, thermo['ml_el_p'])
         thermo['ml_mpl_p'] = mlpcl.mplpres
         thermo['mlcape']   = mlpcl.bplus
         thermo['mlcin']    = mlpcl.bminus
@@ -500,24 +521,15 @@ class sounding_params:
 
         #--- USER DEFINED SM PT ---#
         # ---------------------------------------------------------------  
-        if str(type(self.storm_motion)) == "<class 'list'>":
+        if self.sm_type == 'custom':
             kinem['sm_u'], kinem['sm_v'] = mpcalc.wind_components(self.storm_motion[1]*units.kts, self.storm_motion[0]*units.deg)
             kinem['sm_u'], kinem['sm_v'] = kinem['sm_u'].m, kinem['sm_v'].m
             
         else:
             
             if ma.is_masked(kinem['sm_rm']) == False:
-                if self.storm_motion.casefold() in ['rm', 'right', 'right_moving', 'right_mover']:
-                    kinem['sm_u'] = kinem['sm_rm'][0]
-                    kinem['sm_v'] = kinem['sm_rm'][1]
-
-                elif self.storm_motion.casefold() in ['lm', 'left', 'left_moving', 'right_mover']:
-                    kinem['sm_u'] = kinem['sm_lm'][0]
-                    kinem['sm_v'] = kinem['sm_lm'][1]
-
-                elif self.storm_motion.casefold() in ['mw', 'mean', 'mean_wind', 'right_mover']:
-                    kinem['sm_u'] = kinem['sm_mw'][0]
-                    kinem['sm_v'] = kinem['sm_mw'][1]
+                kinem['sm_u'] = kinem[f'sm_{self.sm_type}'][0]
+                kinem['sm_v'] = kinem[f'sm_{self.sm_type}'][1]
 
             else:
                 kinem['sm_u'] = ma.masked
@@ -681,7 +693,7 @@ class sounding_params:
             # Total horizontal vorticity
             kinem['vort'] = np.sqrt(uvort**2 + vvort**2)
             # Total streamwise vorticity
-            kinem['swv'] = abs((sm_u_ms*uvort+sm_v_ms*vvort)/(np.sqrt(sm_u_ms**2+sm_v_ms**2)))
+            kinem['swv'] = (sm_u_ms*uvort+sm_v_ms*vvort)/(np.sqrt(sm_u_ms**2+sm_v_ms**2))
             # Streamwiseness fraction
             kinem['swv_perc'] = (kinem['swv']/shear)*100
 
@@ -833,6 +845,7 @@ class vad_params:
     def __init__(self, vad_data, storm_motion='right_moving', modify_sfc=None):
             self.vad_data = vad_data 
             self.storm_motion = storm_motion
+            self.sm_type = storm_motion_type(storm_motion)
             self.modify_sfc = modify_sfc
             
     
@@ -911,6 +924,14 @@ class vad_params:
             except:
                 pass
         intrp['hgt_lvls'] = hgt_lvls
+
+        # parameters for layers above the top of the profile are masked
+        if intrp['zINTRP'][-1] < 9000:
+            warnings.warn(f"This VAD profile only reaches {intrp['zINTRP'][-1]:.0f} m AGL, so parameters for layers above it could not be computed (not enough data)", Warning)
+
+        # whether the profile reaches a given height
+        def has_hgt(hgt):
+            return hgt in intrp['zINTRP']
         
 
         ####################################################################
@@ -929,6 +950,8 @@ class vad_params:
             
         # CALC LAYER SHEAR
         def calc_shear(u_layer, v_layer, bottom, top, z):
+              if not has_hgt(top):
+                  return ma.masked
               layer_top = np.where(z == (top))[0][0]
               layer_bot = np.where(z == (bottom))[0][0]
               u_shr = u_layer[layer_top] - u_layer[layer_bot]
@@ -939,6 +962,8 @@ class vad_params:
         
         # CALC MEAN_WIND COMPONENTS 
         def calc_meanwind(u_layer, v_layer, z, top):
+              if not has_hgt(top):
+                  return ma.masked, ma.masked
               layer_top = np.where(z == (top))[0][0]
               mean_u = np.nanmean(u_layer[:layer_top])
               mean_v = np.nanmean(v_layer[:layer_top])
@@ -947,6 +972,8 @@ class vad_params:
         
         # CALC BUNKERS STORM MOTION
         def calc_bunkers(u_layer, v_layer, z):
+              if not has_hgt(6000):
+                  return ma.masked, ma.masked, ma.masked, ma.masked
               layer_top = np.where(z == (6000))[0][0]
               mean_u = np.nanmean(u_layer[:layer_top])
               mean_v = np.nanmean(v_layer[:layer_top])
@@ -968,6 +995,8 @@ class vad_params:
     
         # CALC CORFIDI UP SHEAR & DOWN SHEAR STORM MOTION
         def calc_corfidi(u_layer, v_layer, z, u_mean, v_mean):
+              if ma.is_masked(u_mean) or not has_hgt(1500):
+                  return ma.masked
               llj_top = np.where(z == (1500))[0][0]
               llj_u = u_layer[:llj_top]
               llj_v = v_layer[:llj_top]
@@ -993,6 +1022,8 @@ class vad_params:
         
         # CALC STORM RELATIVE HELICITY
         def calc_srh(u_comp, v_comp, z, depth, bottom, storm_u, storm_v):
+            if not has_hgt((0 if bottom is None else bottom.m) + depth.m):
+                return ma.masked
             srh = mpcalc.storm_relative_helicity(height=z, u=u_comp, v=v_comp, depth=depth,
                                            bottom=bottom, storm_u=storm_u, storm_v=storm_v)[0]
             return srh.m
@@ -1000,6 +1031,8 @@ class vad_params:
             
         # CALC STORM RELATIVE WIND 
         def calc_srw_layer(u, v, bottom, top, z):
+            if not has_hgt(top):
+                return ma.masked
             layer_top = np.where(z == (top))[0][0]
             layer_bot = np.where(z == (bottom))[0][0]
             
@@ -1018,31 +1051,26 @@ class vad_params:
             
         #--- BUNKERS STORM MOTION ---#
         # --------------------------------------------------------------- 
-        kinem['sm_rm'] = calc_bunkers(intrp['uINTRP'], intrp['vINTRP'], intrp['zINTRP'])[0:2]
-        kinem['sm_lm'] = calc_bunkers(intrp['uINTRP'], intrp['vINTRP'], intrp['zINTRP'])[2:4]
-        kinem['sm_mw'] = calc_meanwind(intrp['uINTRP'], intrp['vINTRP'], intrp['zINTRP'], 6000)
+        if has_hgt(6000):
+            kinem['sm_rm'] = calc_bunkers(intrp['uINTRP'], intrp['vINTRP'], intrp['zINTRP'])[0:2]
+            kinem['sm_lm'] = calc_bunkers(intrp['uINTRP'], intrp['vINTRP'], intrp['zINTRP'])[2:4]
+            kinem['sm_mw'] = calc_meanwind(intrp['uINTRP'], intrp['vINTRP'], intrp['zINTRP'], 6000)
+        else:
+            kinem['sm_rm'], kinem['sm_lm'], kinem['sm_mw'] = ma.masked, ma.masked, ma.masked
+            warnings.warn("Bunkers Storm Motion could not be computed for this sounding (not enough data)", Warning)
        
         
         #--- USER DEFINED SM PT ---#
         # ---------------------------------------------------------------  
-        if str(type(self.storm_motion)) == "<class 'list'>":
+        if self.sm_type == 'custom':
             kinem['sm_u'], kinem['sm_v'] = mpcalc.wind_components(self.storm_motion[1]*units.kts, self.storm_motion[0]*units.deg)
             kinem['sm_u'], kinem['sm_v'] = kinem['sm_u'].m, kinem['sm_v'].m
             
         else:
             
             if ma.is_masked(kinem['sm_rm']) == False:
-                if self.storm_motion.casefold() in ['rm', 'right', 'right_moving', 'right_mover']:
-                    kinem['sm_u'] = kinem['sm_rm'][0]
-                    kinem['sm_v'] = kinem['sm_rm'][1]
-
-                elif self.storm_motion.casefold() in ['lm', 'left', 'left_moving', 'right_mover']:
-                    kinem['sm_u'] = kinem['sm_lm'][0]
-                    kinem['sm_v'] = kinem['sm_lm'][1]
-
-                elif self.storm_motion.casefold() in ['mw', 'mean', 'mean_wind', 'right_mover']:
-                    kinem['sm_u'] = kinem['sm_mw'][0]
-                    kinem['sm_v'] = kinem['sm_mw'][1]
+                kinem['sm_u'] = kinem[f'sm_{self.sm_type}'][0]
+                kinem['sm_v'] = kinem[f'sm_{self.sm_type}'][1]
 
             else:
                 kinem['sm_u'] = ma.masked
@@ -1114,6 +1142,9 @@ class vad_params:
             kinem['srw_1_to_3000'] = calc_srw_layer(intrp['uINTRP'],intrp['vINTRP'], 1000, 3000, intrp['zINTRP'])
             kinem['srw_3_to_6000'] = calc_srw_layer(intrp['uINTRP'],intrp['vINTRP'], 3000, 6000, intrp['zINTRP'])
             kinem['srw_6_to_9000'] = calc_srw_layer(intrp['uINTRP'],intrp['vINTRP'], 6000, 9000, intrp['zINTRP'])
+        else:
+            for key in ['srw_0_to_500', 'srw_0_to_1000', 'srw_1_to_3000', 'srw_3_to_6000', 'srw_6_to_9000']:
+                kinem[key] = ma.masked
 
         
         
@@ -1147,21 +1178,25 @@ class vad_params:
             # Total horizontal vorticity
             kinem['vort'] = np.sqrt(uvort**2 + vvort**2)
             # Total streamwise vorticity
-            kinem['swv'] = abs((sm_u_ms*uvort+sm_v_ms*vvort)/(np.sqrt(sm_u_ms**2+sm_v_ms**2)))
+            kinem['swv'] = (sm_u_ms*uvort+sm_v_ms*vvort)/(np.sqrt(sm_u_ms**2+sm_v_ms**2))
             # Streamwiseness fraction
             kinem['swv_perc'] = (kinem['swv']/shear)*100
 
             # layer average streamwiseness and total streamwise vorticity
-            kinem['swv_perc_0_to_500']  = np.mean(kinem['swv_perc'][0:5])
-            kinem['swv_perc_0_to_1000'] = np.mean(kinem['swv_perc'][0:10])
-            kinem['swv_perc_1_to_3000'] = np.mean(kinem['swv_perc'][10:30])
-            kinem['swv_perc_3_to_6000'] = np.mean(kinem['swv_perc'][30:60])
-            kinem['swv_perc_6_to_9000'] = np.mean(kinem['swv_perc'][60:90])
-            kinem['swv_0_to_500']       = np.mean(kinem['swv'][0:5])
-            kinem['swv_0_to_1000']      = np.mean(kinem['swv'][0:10])
-            kinem['swv_1_to_3000']      = np.mean(kinem['swv'][10:30])
-            kinem['swv_3_to_6000']      = np.mean(kinem['swv'][30:60])
-            kinem['swv_6_to_9000']      = np.mean(kinem['swv'][60:90])
+            # layer means at 100 m resolution; masked when the profile doesn't reach the layer top
+            def layer_mean(values, bottom, top):
+                return np.mean(values[bottom // 100:top // 100]) if has_hgt(top) else ma.masked
+
+            kinem['swv_perc_0_to_500']  = layer_mean(kinem['swv_perc'], 0, 500)
+            kinem['swv_perc_0_to_1000'] = layer_mean(kinem['swv_perc'], 0, 1000)
+            kinem['swv_perc_1_to_3000'] = layer_mean(kinem['swv_perc'], 1000, 3000)
+            kinem['swv_perc_3_to_6000'] = layer_mean(kinem['swv_perc'], 3000, 6000)
+            kinem['swv_perc_6_to_9000'] = layer_mean(kinem['swv_perc'], 6000, 9000)
+            kinem['swv_0_to_500']       = layer_mean(kinem['swv'], 0, 500)
+            kinem['swv_0_to_1000']      = layer_mean(kinem['swv'], 0, 1000)
+            kinem['swv_1_to_3000']      = layer_mean(kinem['swv'], 1000, 3000)
+            kinem['swv_3_to_6000']      = layer_mean(kinem['swv'], 3000, 6000)
+            kinem['swv_6_to_9000']      = layer_mean(kinem['swv'], 6000, 9000)
         else:
             kinem['srw']                = ma.masked
             kinem['swv']                = ma.masked
@@ -1179,4 +1214,4 @@ class vad_params:
             kinem['swv_6_to_9000']      = ma.masked
             warnings.warn("Streamwise Vorticity could not be computed for this sounding (no valid storm motion)", Warning)
         
-        return kinem, intrp 
+        return {'kinem': kinem, 'intrp': intrp} 

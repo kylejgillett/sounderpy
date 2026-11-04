@@ -82,6 +82,13 @@ Storm-relative plotting requires a valid storm-motion vector. If SounderPy
 cannot determine one from the profile, the plot falls back to a ground-relative
 hodograph.
 
+``build_sounding`` takes the same option for the hodograph on the full sounding
+figure:
+
+.. code-block:: python
+
+   spy.build_sounding(data, sr_hodo=True)
+
 
 ***************************************************************
  

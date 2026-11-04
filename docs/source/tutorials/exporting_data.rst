@@ -112,6 +112,9 @@ Export a SHARPpy-compatible sounding file with:
 The file contains pressure, height, temperature, dewpoint, wind direction, and
 wind speed in the SHARPpy/NSHARP-style text format.
 
+SHARPpy files need a date and time. Profiles without a valid time, such as CM1
+profiles, are written with a ``2000-01-01 00Z`` placeholder and a warning.
+
 ***************************************************************
  
 
@@ -149,6 +152,11 @@ A SounderPy profile can be converted into CM1 ``input_sounding`` format:
 
 The exporter derives the thermodynamic quantities used by CM1 and writes the
 profile in CM1 input format.
+
+CM1 can't read missing values, so levels missing a height, temperature,
+dewpoint, or wind are left out of the file with a warning listing their heights.
+If the lowest level is missing its pressure, temperature, or dewpoint, no file
+is written and a ``ValueError`` is raised.
 
 ***************************************************************
  

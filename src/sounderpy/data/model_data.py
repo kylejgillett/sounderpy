@@ -16,7 +16,7 @@ from scipy import interpolate
 import metpy.calc as mpcalc
 from metpy.units import units
 
-from .calc import *
+from ..calc import *
 
 
 
@@ -82,6 +82,7 @@ def fetch_model(model, latlon, year, month, day, hour, dataset, box_avg_size, hu
     if model.casefold() not in ['era', 'era5', 'rap', 'ruc', 'rap-ruc', 'rap-now', 'ncep-fnl', 'ncep']:
         raise ValueError(
             f"The model you requested, '{model}', is not a valid model. Valid models for this function include ['rap-ruc', 'era5', 'ncep']")
+    model = model.casefold()
 
     # create list of lat-lon points for box-average domain
     #                    + lat                   # - lat                   # - lon                   # + lon
@@ -321,7 +322,7 @@ def fetch_model(model, latlon, year, month, day, hour, dataset, box_avg_size, hu
     Get NCEP-FNL reanalysis data from NCEI THREDDS server, return a netcdf4 dataset
     '''
 
-    if model.casefold() in ['ncep-fnl', 'ncep', 'fnl']:
+    if model.casefold() in ['ncep-fnl', 'ncep']:
         # define source
         source = 'NCEP-FNL'
         dtype = 'reanalysis'
@@ -333,7 +334,7 @@ def fetch_model(model, latlon, year, month, day, hour, dataset, box_avg_size, hu
         # access ncss thredds server, if access failed, exit function and return an error
         try:
             data = NCSS(
-                f"https://thredds.rda.ucar.edu/thredds/ncss/grid/files/g/ds083.3/{year}/{year}{month}/gdas1.fnl0p25.{year}{month}{day}{hour}.f00.grib2")
+                f"https://thredds.rda.ucar.edu/thredds/ncss/grid/files/g/d083003/{year}/{year}{month}/gdas1.fnl0p25.{year}{month}{day}{hour}.f00.grib2")
             worked = True
         except:
             worked = False
@@ -475,8 +476,8 @@ def fetch_model(model, latlon, year, month, day, hour, dataset, box_avg_size, hu
                 'sfc_rh': (mpcalc.relative_humidity_from_dewpoint(
                     np.mean(np.array(raw_data['Ts'][0, :]) - 273.15) * units.degC,
                     np.mean(np.array(raw_data['tds'][0, :]) - 273.15) * units.degC) * 100),
-                'sfc_u': (np.array(raw_data['us'][0, :]) * 1.94384),
-                'sfc_v': (np.array(raw_data['vs'][0, :]) * 1.94384),
+                'sfc_u': np.mean(np.array(raw_data['us'][0, :]) * 1.94384),
+                'sfc_v': np.mean(np.array(raw_data['vs'][0, :]) * 1.94384),
                 'sfc_omega': (0)
             }
 
@@ -486,9 +487,9 @@ def fetch_model(model, latlon, year, month, day, hour, dataset, box_avg_size, hu
 
             latlon_data = {
                 'data_lat': (raw_data['latitude'][:]),
-                'data_lon': (raw_data['latitude'][:]),
+                'data_lon': (raw_data['longitude'][:]),
                 'data_latnum': (raw_data['latitude'][:]).shape[0],
-                'data_lonnum': (raw_data['latitude'][:]).shape[0],
+                'data_lonnum': (raw_data['longitude'][:]).shape[0],
                 'data_time': strftime
             }
 
@@ -505,27 +506,14 @@ def fetch_model(model, latlon, year, month, day, hour, dataset, box_avg_size, hu
                 # this is mainly for the NCEP-FNL dataset which annoyingly
                 # comes with varying isobaric level intervals
 
-                try:
-                    pressures = (ma.getdata(raw_data.variables['isobaric'])).data / 100
-                except:
-                    try:
-                        pressures = (ma.getdata(raw_data.variables['isobaric1'])).data / 100
-                    except:
-                        try:
-                            pressures = (ma.getdata(raw_data.variables['isobaric2'])).data / 100
-                        except:
-                            try:
-                                pressures = (ma.getdata(raw_data.variables['isobaric3'])).data / 100
-                            except:
-                                pass
-                            pass
-                        pass
-                    pass
+                # use the pressure axis that temperature is defined on
+                pressure_var = raw_data.variables[raw_data.variables['Temperature_isobaric'].dimensions[1]]
 
-                # RUC pressure comes in units of hPa instead of Pa like RAP data
-                # so check if the values are in hPa or
-                if (pressures[0] / 100) < 1:
-                    pressures = pressures*100
+                # RUC pressure comes in units of hPa instead of Pa like RAP and NCEP-FNL data,
+                # so convert using the axis units (NCEP-FNL levels start at 1 Pa)
+                pressures = np.array(ma.getdata(pressure_var[:]), dtype=float)
+                if getattr(pressure_var, 'units', 'Pa') == 'Pa':
+                    pressures = pressures / 100
 
 
                 # create a dict of vertical data

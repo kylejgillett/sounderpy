@@ -41,12 +41,10 @@ def import_pyart():
 #########################################################################
 def define_radar_time(clean_data, radar_time):
     try:
-        data_dt = datetime(
-            int(clean_data['site_info']['valid-time'][0]),
-            int(clean_data['site_info']['valid-time'][1]),
-            int(clean_data['site_info']['valid-time'][2]),
-            int(clean_data['site_info']['valid-time'][3][0:2]),
-            tzinfo=timezone.utc)
+        # the hour may be an int or a string, as 'HH' or 'HH:MM' (ACARS, WRF)
+        year, month, day, hour = [str(part) for part in clean_data['site_info']['valid-time'][0:4]]
+        hour, _, minute = hour.partition(':')
+        data_dt = datetime(int(year), int(month), int(day), int(hour), int(minute or 0), tzinfo=timezone.utc)
     except:
         warnings.warn("Sounding Date/time invalid for this profile. Defaulting to 'now' unless a specific datetime.datetime() was provided", Warning)
         data_dt = datetime.now(timezone.utc)
@@ -69,10 +67,7 @@ def define_radar_time(clean_data, radar_time):
 
     # if radar time is given as sounding, use the valid-time info from clean_data
     elif radar_time == 'sounding':
-        if len(clean_data['site_info']['valid-time'][3]) == 2:
-            time = f"{clean_data['site_info']['valid-time'][3]}00"
-        else:
-            time = clean_data['site_info']['valid-time'][3]
+        time = data_dt.strftime('%H%M')
         datestr = data_dt.strftime('%Y%m%d')
         dt_obj = data_dt
 
@@ -90,7 +85,7 @@ def define_radar_time(clean_data, radar_time):
 #########################
 # CREATE RADARSCOPE COLORMAP
 #########################################################################
-with resources.open_text("sounderpy", "rs_reflectivity.txt") as f:
+with resources.files("sounderpy").joinpath("rs_reflectivity.txt").open("r") as f:
     rs_data = np.loadtxt(f, skiprows=3, usecols=(1, 2, 3, 4))
 rgb = rs_data[:, 1:] / 255.0
 levels = rs_data[:, 0]
@@ -128,7 +123,7 @@ def parse_dms_string(dms_str, is_lat=True):
 # OPEN AND PARSE NEXRAD LOCS FILE
 #########################################################################
 def parse_nexrad_locs():
-    with resources.open_text("sounderpy", "nexrad_locations.txt") as f:
+    with resources.files("sounderpy").joinpath("nexrad_locations.txt").open("r") as f:
         nexrad_locs = np.genfromtxt(f, dtype='str', delimiter=',', skip_header=1)
     site_ids = nexrad_locs[:, 0]
     latitudes = []
