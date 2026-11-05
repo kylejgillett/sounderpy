@@ -9,6 +9,7 @@
 - [ ] `plot/components.py`: no public API for building custom figures; every drawing function is private
 - [ ] Station lists: `BUFKIT-STATIONS-MASTER.txt` has 8,527 rows for 2,093 IDs, and 23 IDs have conflicting entries (typos such as `B44` at lon -100.29 and -110.29, `B48` at -80.51 and -81.51; different stations sharing `CYQX`); all station lists are downloaded from GitHub `main` on every call rather than read from the package
 - [ ] `calc.py:376`: SB/ML CIN is huge when CAPE is near zero, apparently because negative area is summed through the whole profile. On 2026-11-03 06Z F06 KGFK, HRRR reads SBCIN -1870 / MLCIN -1806 J/kg with SBCAPE 2 / MLCAPE 1; RRFS reads MLCIN -1460 J/kg with MLCAPE 4. The table shows these values as-is (OK for now)
+- [ ] `calc.py` streamwise vorticity (`swv`/`swv_perc`, sounding and VAD): divides by the storm-relative wind speed with no small offset, so a level where the wind exactly equals storm motion gives NaN, and that NaN carries into its layer means. Rare on interpolated data; fix would be the same `+1e-7` offset already used for `shear`
 - [ ] `modify_surface` (GitHub issue 29, still open): station elevation/pressure re-basing for coarse-terrain data like ERA5, and observations above the surface
 
 

@@ -200,7 +200,7 @@ FULL_SOUNDING_LAYOUT = {"skewt": (0.1124, 0.1005, 0.60, 0.85),
                         "thermo_table": (0.124, -0.08, 0.406, 0.18),
                         "moisture_table": (0.53, -0.13, 0.15, 0.23),
                         "kinematics_table": (0.68, -0.13, 0.265, 0.23),
-                        "indices_box": (1.106, 0.10, 0.10, 0.14),
+                        "indices_box": (1.106, 0.10, 0.10, 0.105),
                         "logo": (0.115, -0.135, 0.05, 0.05),
                         "margin": (0.1136, -0.1454, 1.1064, 1.1639)}
 
@@ -266,8 +266,8 @@ MISSING_VALUE = "NA"
 THERMO_TABLE_LAYOUT = {"label_x": 0.015,
                        "columns": [0.113, 0.273, 0.433, 0.591, 0.741, 0.889],
                        "header_columns": [0.113, 0.296, 0.433, 0.588, 0.750, 0.890],
-                       "header_y": 0.833,
-                       "rows_y": [0.667, 0.500, 0.333]}
+                       "header_y": 0.875,
+                       "rows_y": [0.735, 0.595, 0.455]}
 
 MOISTURE_TABLE_LAYOUT = {"label_x": 0.067,
                          "columns": [0.367, 0.600],

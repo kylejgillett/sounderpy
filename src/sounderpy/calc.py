@@ -469,9 +469,38 @@ class sounding_params:
         #--- LAPSE RATES ---#
         # ---------------------------------------------------------------
         thermo['lr_36km'] = lapse_rate(prof, 3000, 6000, pres=False)
-        thermo['lr_03km'] = lapse_rate(prof, 0, 3000, pres=False) 
-        thermo['lr_max']  = max_lapse_rate(prof, lower=0, upper=6000, 
+        thermo['lr_03km'] = lapse_rate(prof, 0, 3000, pres=False)
+        thermo['lr_75']   = lapse_rate(prof, 700, 500, pres=True)
+        thermo['lr_max']  = max_lapse_rate(prof, lower=0, upper=6000,
                                          interval=250, depth=2000)
+
+        #--- K-INDEX & TOTAL TOTALS ---#
+        # ---------------------------------------------------------------
+        # both use 850 hPa, so they are masked where 850 hPa is below ground
+        thermo['k_index']  = k_index(prof)
+        thermo['t_totals'] = t_totals(prof)
+
+        #--- BULK RICHARDSON NUMBER ---#
+        # ---------------------------------------------------------------
+        # SHARPpy's parcelx computes BRN for each parcel: CAPE / (0.5 * (0-6 km mean wind - 0-500 m mean wind)^2)
+        # (infinite when there is no shear between the two mean winds, so treat that as missing)
+        def finite_or_masked(value):
+            return value if not ma.is_masked(value) and np.isfinite(value) else ma.masked
+        thermo['sb_brn'] = finite_or_masked(sbpcl.brn)
+        thermo['mu_brn'] = finite_or_masked(mupcl.brn)
+        # SHARPpy's bulk_rich() returns masked for the ML parcel (an inverted QC check in its non-surface-based
+        # branch). The shear term is the same surface-to-6 km term for every parcel here, so reuse the SB one
+        thermo['ml_brn'] = finite_or_masked(ma.true_divide(mlpcl.bplus, sbpcl.brnshear))
+
+        #--- SIGNIFICANT HAIL PARAMETER ---#
+        # ---------------------------------------------------------------
+        # SHARPpy's ship() uses the freezing level height MSL by default; SPC's 2400 m freezing level
+        # threshold is AGL, so pass the AGL height
+        try:
+            thermo['ship'] = ship(prof, mupcl=mupcl, lr75=thermo['lr_75'],
+                                  frz_lvl=to_agl(prof, hght(prof, temp_lvl(prof, 0))))
+        except Exception:
+            thermo['ship'] = ma.masked
         
         #--- TEMPERATURE ADVECTION ---#
         # ---------------------------------------------------------------
@@ -692,9 +721,13 @@ class sounding_params:
             vvort=dudz
             # Total horizontal vorticity
             kinem['vort'] = np.sqrt(uvort**2 + vvort**2)
-            # Total streamwise vorticity
-            kinem['swv'] = (sm_u_ms*uvort+sm_v_ms*vvort)/(np.sqrt(sm_u_ms**2+sm_v_ms**2))
-            # Streamwiseness fraction
+            # Streamwise vorticity: projection of horizontal vorticity onto the storm-relative wind,
+            # ω·(V-c)/|V-c|. Positive = streamwise, negative = antistreamwise. Only positive
+            # (streamwise) vorticity is kept; antistreamwise levels are set to 0 so they count as
+            # "no streamwise vorticity" instead of cancelling streamwise levels in layer means.
+            kinem['swv'] = np.clip((sm_u_ms*uvort+sm_v_ms*vvort)/(np.sqrt(sm_u_ms**2+sm_v_ms**2)), 0, None)
+            # Streamwiseness fraction: swv/|ω| = cos(angle between ω and the SR wind), as a percent
+            # (|ω| equals the shear magnitude). Because swv is clipped, this ranges 0-100%.
             kinem['swv_perc'] = (kinem['swv']/shear)*100
 
             # layer average streamwiseness and total streamwise vorticity
@@ -1177,9 +1210,13 @@ class vad_params:
             vvort=dudz
             # Total horizontal vorticity
             kinem['vort'] = np.sqrt(uvort**2 + vvort**2)
-            # Total streamwise vorticity
-            kinem['swv'] = (sm_u_ms*uvort+sm_v_ms*vvort)/(np.sqrt(sm_u_ms**2+sm_v_ms**2))
-            # Streamwiseness fraction
+            # Streamwise vorticity: projection of horizontal vorticity onto the storm-relative wind,
+            # ω·(V-c)/|V-c|. Positive = streamwise, negative = antistreamwise. Only positive
+            # (streamwise) vorticity is kept; antistreamwise levels are set to 0 so they count as
+            # "no streamwise vorticity" instead of cancelling streamwise levels in layer means.
+            kinem['swv'] = np.clip((sm_u_ms*uvort+sm_v_ms*vvort)/(np.sqrt(sm_u_ms**2+sm_v_ms**2)), 0, None)
+            # Streamwiseness fraction: swv/|ω| = cos(angle between ω and the SR wind), as a percent
+            # (|ω| equals the shear magnitude). Because swv is clipped, this ranges 0-100%.
             kinem['swv_perc'] = (kinem['swv']/shear)*100
 
             # layer average streamwiseness and total streamwise vorticity

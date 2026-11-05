@@ -507,8 +507,11 @@ def _plot_skewt_layer_annotations(skew, data, snd_params, theme, layers=("pbl", 
                                                  linewidth=linewidth, transform=transform))
 
     def _plot_labeled_layer(x, bounds, label, color, label_alpha, line_alpha, linewidth=3, ticks=False):
-        # sit the label higher when a tick marks the layer top
-        skew.ax.text(x, bounds[1] - (12 if ticks else 8), label, weight="bold", color=color, alpha=label_alpha, ha="center", fontsize=FONT_SIZES["tick"], transform=transform)
+        # sit the label higher when a tick marks the layer top; a multi-line label is anchored at its
+        # bottom so the extra lines stack upward instead of running down into the layer line
+        va = "bottom" if "\n" in label else "baseline"
+        skew.ax.text(x, bounds[1] - (12 if ticks else 8), label, weight="bold", color=color, alpha=label_alpha, ha="center", va=va,
+                     linespacing=1.1, fontsize=FONT_SIZES["tick"], transform=transform)
         _add_skewt_layer_line(skew, x=x, p_bottom=bounds[0], p_top=bounds[1], color=color, alpha=line_alpha, linewidth=linewidth)
         if ticks:
             _plot_layer_ticks(x, bounds, color, line_alpha, linewidth - 1)
@@ -519,7 +522,8 @@ def _plot_skewt_layer_annotations(skew, data, snd_params, theme, layers=("pbl", 
         _plot_layer_ticks(0.78, (p[0], thermo["pbl_top"]), theme["pbl"], 0.95, 1.5)
 
     if "lapse_rate" in layers:
-        _plot_labeled_layer(0.16, thermo["lr_max"][1:3], f"{np.round(thermo['lr_max'][0], 1)}°C/km", theme["lapse_max"], 0.8, 0.6)
+        # value over unit on two lines, right of the DGZ/HGZ bar so the label doesn't run into it
+        _plot_labeled_layer(0.175, thermo["lr_max"][1:3], f"{np.round(thermo['lr_max'][0], 1)}\n°C/km", theme["lapse_max"], 0.8, 0.6)
 
     if "eil" in layers and _has_eil(kinem):
         _plot_labeled_layer(0.19, kinem["eil"], "EIL", theme["eil"], 1, 1, linewidth=4, ticks=True)
@@ -1491,21 +1495,48 @@ def _plot_thermo_table(ax, snd_params, theme):
 
     _setup_text_box(ax, theme)
     _draw_table(ax, _get_parcel_table(snd_params, theme), THERMO_TABLE_LAYOUT, theme)
-    _draw_text(ax, 0.015, 0.456, "100 hPa", text, fontsize=FONT_SIZES["fine"], alpha=0.5)
+    _draw_text(ax, 0.015, THERMO_TABLE_LAYOUT["rows_y"][1] - 0.04, "100 hPa", text, fontsize=FONT_SIZES["fine"], alpha=0.5)
 
-    # downdraft
-    _draw_text(ax, 0.015, 0.189, "DCAPE:", text)
-    _draw_text(ax, 0.126, 0.189, _format_value(thermo['dcape'], f" {UNIT_JKG}"), theme["cool"], alpha=0.7)
-    _draw_text(ax, 0.015, 0.056, "DCIN:", text)
-    _draw_text(ax, 0.126, 0.056, _format_value(thermo['dcin'], f" {UNIT_JKG}"), theme["cool"], alpha=0.7)
+    # single-value thermo parameters, as a 2x4 grid:
+    # downdraft | MUNCAPE & 700-500 hPa lapse rate | low & mid lapse rates | K-index & total totals
+    top, bottom = 0.310, 0.175
+    _draw_text(ax, 0.015, top, "DCAPE:", text)
+    _draw_text(ax, 0.126, top, _format_value(thermo['dcape'], f" {UNIT_JKG}"), theme["cool"], alpha=0.7)
+    _draw_text(ax, 0.015, bottom, "DCIN:", text)
+    _draw_text(ax, 0.126, bottom, _format_value(thermo['dcin'], f" {UNIT_JKG}"), theme["cool"], alpha=0.7)
 
-    # MUNCAPE and lapse rates
-    _draw_text(ax, 0.286, 0.106, "MUNCAPE:", text)
-    _draw_text(ax, 0.421, 0.106, " " + _format_value(thermo['mu_ncape'], decimals=1), theme["ncape"], alpha=0.7)
-    _draw_text(ax, 0.545, 0.106, "Γ₀₋₃:", text, fontsize=FONT_SIZES["table_large"])
-    _draw_text(ax, 0.620, 0.106, _format_value(thermo['lr_03km'], f" {UNIT_LAPSE}", decimals=1), theme["lapse"])
-    _draw_text(ax, 0.715, 0.106, "Γ₃₋₆:", text, fontsize=FONT_SIZES["table_large"])
-    _draw_text(ax, 0.790, 0.106, _format_value(thermo['lr_36km'], f" {UNIT_LAPSE}", decimals=1), theme["lapse"])
+    _draw_text(ax, 0.300, top, "MUNCAPE:", text)
+    _draw_text(ax, 0.450, top, _format_value(thermo['mu_ncape'], decimals=1), theme["ncape"], alpha=0.7)
+    _draw_text(ax, 0.300, bottom, "Γ₇₀₀₋₅₀₀:", text, fontsize=FONT_SIZES["table_large"])
+    _draw_text(ax, 0.435, bottom, _format_value(thermo['lr_75'], f" {UNIT_LAPSE}", decimals=1), theme["lapse"])
+
+    _draw_text(ax, 0.555, top, "Γ₀₋₃:", text, fontsize=FONT_SIZES["table_large"])
+    _draw_text(ax, 0.635, top, _format_value(thermo['lr_03km'], f" {UNIT_LAPSE}", decimals=1), theme["lapse"])
+    _draw_text(ax, 0.555, bottom, "Γ₃₋₆:", text, fontsize=FONT_SIZES["table_large"])
+    _draw_text(ax, 0.635, bottom, _format_value(thermo['lr_36km'], f" {UNIT_LAPSE}", decimals=1), theme["lapse"])
+
+    for y, label, key in ((top, "KI:", 'k_index'), (bottom, "TT:", 't_totals')):
+        value_text = _format_value(thermo[key], decimals=0)
+        _draw_text(ax, 0.800, y, label, text)
+        _draw_text(ax, 0.865, y, value_text.removesuffix(".0"), theme["ncape"], alpha=0.7)
+
+    # composite indices, set off below a divider. all are unitless, so six fit on one row
+    kinem = snd_params["kinem"]
+    ax.axhline(0.125, xmin=0.012, xmax=0.988, color=text, alpha=0.45, linewidth=1.2)
+    composites = (("SCP", kinem['eil_scp'], 1, theme["composite_index"]),
+                  ("STP", kinem['eil_stp'], 1, theme["composite_index"]),
+                  ("EHI₀₋₁", kinem['ehi_0_to_1000'], 1, theme["ehi"]),
+                  ("EHI₀₋₃", kinem['ehi_0_to_3000'], 1, theme["ehi"]),
+                  ("SHIP", thermo['ship'], 1, theme["composite_index"]),
+                  ("MLBRN", thermo['ml_brn'], 0, theme["composite_index"]))
+    # each label/value pair is centered in one of six equal slots
+    slot = 0.97 / len(composites)
+    for i, (label, value, decimals, color) in enumerate(composites):
+        x = 0.015 + (i + 0.5) * slot
+        value_text = _format_value(value, decimals=decimals)
+        _draw_text(ax, x + 0.004, 0.035, label, text, fontsize=FONT_SIZES["tick"], ha="right")
+        _draw_text(ax, x + 0.014, 0.035, value_text.removesuffix(".0") if decimals == 0 else value_text, color,
+                   fontsize=FONT_SIZES["tick"])
 
     return ax
 
@@ -1556,19 +1587,11 @@ def _plot_indices_box(ax, snd_params, theme):
         _draw_text(ax, x, y_label, label, text, fontsize=FONT_SIZES["tick"], alpha=0.9, ha="center")
         _draw_text(ax, x, y_value, value, color, fontsize=FONT_SIZES["tick"], alpha=0.9, ha="center")
 
-    # SRH and bulk shear
-    _draw_stat(0.30, 0.850, 0.686, "  0-3ₖₘ SRH,", _format_value(kinem['srh_0_to_3000'], UNIT_M2S2), theme["kinematics_strong"])
-    _draw_stat(0.77, 0.850, 0.686, "BWD", _format_value(kinem['shear_0_to_3000'], UNIT_KT), theme["kinematics_strong"])
-    _draw_stat(0.30, 0.521, 0.371, "  0-6ₖₘ SRH,", _format_value(kinem['srh_0_to_6000'], UNIT_M2S2), theme["kinematics_strong"])
-    _draw_stat(0.77, 0.521, 0.371, "BWD", _format_value(kinem['shear_0_to_6000'], UNIT_KT), theme["kinematics_strong"])
-
-    # composite indices
-    _draw_stat(0.14, 0.200, 0.061, "SCP", _format_value(kinem['eil_scp']), theme["composite_index"])
-    _draw_stat(0.39, 0.200, 0.061, "STP", _format_value(kinem['eil_stp']), theme["composite_index"])
-    _draw_stat(0.64, 0.207, 0.057, "EHI", _format_value(kinem['ehi_0_to_1000']), theme["ehi"])
-    _draw_stat(0.89, 0.207, 0.057, "EHI", _format_value(kinem['ehi_0_to_3000']), theme["ehi"])
-    _draw_text(ax, 0.64, 0.150, "₀₋₁ₖₘ", text, fontsize=FONT_SIZES["label"], alpha=0.9, ha="center")
-    _draw_text(ax, 0.89, 0.150, "₀₋₃ₖₘ", text, fontsize=FONT_SIZES["label"], alpha=0.9, ha="center")
+    # SRH and bulk shear (composite indices are in the thermo table)
+    _draw_stat(0.30, 0.800, 0.581, "  0-3ₖₘ SRH,", _format_value(kinem['srh_0_to_3000'], UNIT_M2S2), theme["kinematics_strong"])
+    _draw_stat(0.77, 0.800, 0.581, "BWD", _format_value(kinem['shear_0_to_3000'], UNIT_KT), theme["kinematics_strong"])
+    _draw_stat(0.30, 0.361, 0.161, "  0-6ₖₘ SRH,", _format_value(kinem['srh_0_to_6000'], UNIT_M2S2), theme["kinematics_strong"])
+    _draw_stat(0.77, 0.361, 0.161, "BWD", _format_value(kinem['shear_0_to_6000'], UNIT_KT), theme["kinematics_strong"])
 
     return ax
 
