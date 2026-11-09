@@ -158,7 +158,8 @@ FONT_SIZES = {"fine": 7,
               "annotation_large": 14,
               "table": 15,
               "table_large": 16,
-              "watermark": 20,
+              "watermark_sub": 13,
+              "watermark": 17,
               "title_small": 22,
               "subtitle": 23,
               "title": 30}
@@ -435,7 +436,7 @@ except PackageNotFoundError:
 
 # default watermark text for each figure style
 WATERMARK_TEXT = {"full": ("SOUNDERPY VERTICAL PROFILE ANALYSIS TOOL",
-                           " | ".join(part for part in (f"Built with {SOUNDERPY_VERSION}", "Make your own at sounderpy.app", "Kyle J Gillett, 2026") if part)),
+                           " · ".join(part for part in (f"Built with {SOUNDERPY_VERSION}", "Make your own at sounderpy.app", "(Gillett, 2024)") if part)),
                   "compact": ("SOUNDERPY", "sounderpy.app")}
 
 # a title or subtitle of None uses the default text for that figure's style

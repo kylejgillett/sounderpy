@@ -381,12 +381,15 @@ def _plot_skewt_surface_annotations(skew, data, theme, surface_modified=False, t
     # nearest whole degree, with halves rounded up (72.5 -> 73)
     T_sfc = int(np.floor(T[0].to(units(temperature_unit)).m + 0.5))
     Td_sfc = int(np.floor(Td[0].to(units(temperature_unit)).m + 0.5))
+    # a faded background keeps the surface labels readable where they land on the axis labels
     # surface temperature
     skew.ax.annotate(f"{T_sfc}{unit_label}", (T[0], p[0]), textcoords="offset points", xytext=(16, -15),
-                      fontsize=FONT_SIZES["annotation_large"], color=theme["temperature"], weight="bold", alpha=0.9, ha="center", zorder=10)
+                      fontsize=FONT_SIZES["annotation_large"], color=theme["temperature"], weight="bold", alpha=0.9, ha="center", zorder=10,
+                      bbox=dict(facecolor=theme["background"], edgecolor="none", alpha=0.6, pad=1.5))
     # surface dewpoint
     skew.ax.annotate(f"{Td_sfc}{unit_label}", (Td[0], p[0]), textcoords="offset points", xytext=(-16, -15),
-                      fontsize=FONT_SIZES["annotation_large"], color=theme["dewpoint"], weight="bold", alpha=0.9, ha="center", zorder=10)
+                      fontsize=FONT_SIZES["annotation_large"], color=theme["dewpoint"], weight="bold", alpha=0.9, ha="center", zorder=10,
+                      bbox=dict(facecolor=theme["background"], edgecolor="none", alpha=0.6, pad=1.5))
     # user-modified surface flag
     if surface_modified:
         skew.ax.annotate("USER MODIFIED SFC →", (Td[0], p[0]), textcoords="offset points", xytext=(-50, 0),
@@ -1935,7 +1938,7 @@ def _plot_skewt_legend(skew, theme):
 
 
 # add the watermark text to a figure (in figure fractions) or an axis (in axis fractions, behind its data)
-def _plot_credits(target, theme, x=0.168, title_y=-0.105, subtitle_y=-0.125, style="full", title_fontsize=FONT_SIZES["watermark"], subtitle_fontsize=FONT_SIZES["table"], max_x=0.525):
+def _plot_credits(target, theme, x=0.168, title_y=-0.105, subtitle_y=-0.125, style="full", title_fontsize=FONT_SIZES["watermark"], subtitle_fontsize=FONT_SIZES["watermark_sub"], max_x=0.525):
     if not WATERMARK["show"]:
         return
     default_title, default_subtitle = WATERMARK_TEXT[style]

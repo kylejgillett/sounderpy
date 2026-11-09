@@ -1,15 +1,15 @@
 # To Fix Before Release
 
 - [ ] `set_watermark`: settings are shared across a Python process, so a shared web app worker would affect all users
-- [ ] MetPy's skew-T uses a Matplotlib function deprecated in 3.11 and due for removal in 3.13; confirm a MetPy fix before relaxing or raising version limits
+- [ ] MetPy's skew-T uses a Matplotlib function deprecated in 3.11 and due for removal in 3.13; confirm a MetPy fix before relaxing or raising version limits; MetPy 1.7.1's `StationPlot` text already fails to draw under Matplotlib 3.11 (its `TextCollection.draw` unpacks 4 layout values, 3.11 returns 3), so any station plot needs plain text + MetPy's symbol font until MetPy fixes it
 - [ ] `__composite_sounding`: `ylim` views have sparse background lines over very thin layers (about 100 hPa)
 - [ ] `build_sounding`: `ylim` labels can overlap in zoomed views, as can the legend over the data; left as is for now
 - [ ] `plot/components.py`: 103 of 104 functions have no docstring
 - [ ] `plot/components.py`: no repo tests cover the helpers, `parcel_depth`, thinning, `ylim`, `set_watermark`, or missing-value handling
 - [ ] `plot/components.py`: no public API for building custom figures; every drawing function is private
 - [ ] Station lists: `BUFKIT-STATIONS-MASTER.txt` has 8,527 rows for 2,093 IDs, and 23 IDs have conflicting entries (typos such as `B44` at lon -100.29 and -110.29, `B48` at -80.51 and -81.51; different stations sharing `CYQX`); all station lists are downloaded from GitHub `main` on every call rather than read from the package
-- [ ] `calc.py:376`: SB/ML CIN is huge when CAPE is near zero, apparently because negative area is summed through the whole profile. On 2026-11-03 06Z F06 KGFK, HRRR reads SBCIN -1870 / MLCIN -1806 J/kg with SBCAPE 2 / MLCAPE 1; RRFS reads MLCIN -1460 J/kg with MLCAPE 4. The table shows these values as-is (OK for now)
 - [ ] `calc.py` streamwise vorticity (`swv`/`swv_perc`, sounding and VAD): divides by the storm-relative wind speed with no small offset, so a level where the wind exactly equals storm motion gives NaN, and that NaN carries into its layer means. Rare on interpolated data; fix would be the same `+1e-7` offset already used for `shear`
+- [ ] ACARS elevation is in feet: `acars_data.py` sets `site-elv` from AIRPORTS.csv `Altitude`, which is feet (OurAirports; DAL 487, DEN 5431), while every other source uses meters. `calc.py` uses it for the surface pressure and the parcel height traces (`sbZ_trace` etc.), and the skew-t labels it "SFC (487m)". Fix: convert with `* 0.3048` in `acars_data.py`
 - [ ] `modify_surface` (GitHub issue 29, still open): station elevation/pressure re-basing for coarse-terrain data like ERA5, and observations above the surface
 
 

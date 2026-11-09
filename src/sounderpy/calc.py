@@ -4,6 +4,7 @@ from .SHARPPYMAIN.sharppy.sharptab.interp import *
 from .SHARPPYMAIN.sharppy.sharptab.winds import *
 from .SHARPPYMAIN.sharppy.sharptab.utils import comp2vec, KTS2MS
 from .SHARPPYMAIN.sharppy.sharptab.params import *
+from .SHARPPYMAIN.sharppy.sharptab import thermo as sharp_thermo, interp as sharp_interp
 
 
 try:
@@ -148,6 +149,45 @@ def dcape_calc(pressure, temperature, dewpoint):
              ).to(units('J/kg'))
 
     return dcape, dcin, down_pressure, down_parcel_trace
+
+
+
+# CIN as the negative area between a parcel's starting level and its LFC.
+# SHARPpy's parcelx() reports `bminus` as every negative layer below 500 hPa, including the stable air
+# above the EL (it saves the CIN at the LFC as `cinh_old`, but the line that would use it is commented
+# out). When the EL is below 500 hPa, as with a few J/kg of CAPE, that inflates CIN to -1000 J/kg or more.
+# This recomputes it the intended way: dry ascent at constant mixing ratio to the LCL, then moist
+# ascent to the LFC, using virtual temperature for the parcel and the environment
+def cin_below_lfc(prof, pcl, pres, tmpc, dwpc, dp=-2.0):
+    cape = pcl.bplus
+    if ma.is_masked(cape) or np.floor(cape) == 0:
+        return pcl.bminus  # SHARPpy already sets CIN to 0 without CAPE
+    lfc_p = pcl.lfcpres
+    if ma.is_masked(lfc_p) or lfc_p is None or not np.isfinite(lfc_p) or lfc_p > pres:
+        return pcl.bminus
+
+    lcl_p, lcl_t = sharp_thermo.drylift(pres, tmpc, dwpc)
+    mixr = sharp_thermo.mixratio(pres, dwpc)
+    theta_k = sharp_thermo.theta(pres, tmpc, 1000.) + 273.15
+
+    p_levels = np.append(np.arange(pres, lfc_p, dp), lfc_p)
+    if len(p_levels) < 2:
+        return 0.
+    tv_parcel = np.empty(len(p_levels))
+    for i, p in enumerate(p_levels):
+        if p >= lcl_p:
+            t = theta_k * (p / 1000.) ** 0.2857 - 273.15
+            tv_parcel[i] = sharp_thermo.virtemp(p, t, sharp_thermo.temp_at_mixrat(mixr, p))
+        else:
+            t = sharp_thermo.wetlift(lcl_p, lcl_t, p)
+            tv_parcel[i] = sharp_thermo.virtemp(p, t, t)
+    tv_env = np.ma.filled(np.ma.asarray(sharp_interp.vtmp(prof, p_levels), dtype=float), np.nan)
+    hght = np.ma.filled(np.ma.asarray(sharp_interp.hght(prof, p_levels), dtype=float), np.nan)
+
+    buoyancy = (tv_parcel - tv_env) / (tv_env + 273.15)
+    layer_energy = 9.80665 * (buoyancy[:-1] + buoyancy[1:]) / 2 * np.diff(hght)
+    layer_energy = layer_energy[np.isfinite(layer_energy)]
+    return float(layer_energy[layer_energy < 0].sum())
 
 
 
@@ -353,7 +393,7 @@ class sounding_params:
         thermo['sb_el_T']  = temp(prof, thermo['sb_el_p'])
         thermo['sb_mpl_p'] = sbpcl.mplpres
         thermo['sbcape']   = sbpcl.bplus
-        thermo['sbcin']    = sbpcl.bminus
+        thermo['sbcin']    = cin_below_lfc(prof, sbpcl, p[0].m, T[0].m, Td[0].m)
         thermo['sb3cape']  = sbpcl.b3km
         thermo['sb6cape']  = sbpcl.b6km
 
@@ -374,7 +414,7 @@ class sounding_params:
         thermo['mu_el_T']  = temp(prof, thermo['mu_el_p'])
         thermo['mu_mpl_p'] = mupcl.mplpres
         thermo['mucape']   = mupcl.bplus
-        thermo['mucin']    = mupcl.bminus
+        thermo['mucin']    = cin_below_lfc(prof, mupcl, mupcl_p.m, mupcl_T.m, mupcl_Td.m)
         thermo['mu3cape']  = mupcl.b3km
         thermo['mu6cape']  = mupcl.b6km
 
@@ -394,7 +434,7 @@ class sounding_params:
         thermo['ml_el_T']  = temp(prof, thermo['ml_el_p'])
         thermo['ml_mpl_p'] = mlpcl.mplpres
         thermo['mlcape']   = mlpcl.bplus
-        thermo['mlcin']    = mlpcl.bminus
+        thermo['mlcin']    = cin_below_lfc(prof, mlpcl, mlpcl_p.m, mlpcl_T.m, mlpcl_Td.m)
         thermo['ml3cape']  = mlpcl.b3km
         thermo['ml6cape']  = mlpcl.b6km
 
