@@ -4,7 +4,8 @@
     Purpose of module:
 
     House the look of SounderPy figures in one place: themes, font sizes, units,
-    layouts, and watermark settings. Drawing tools are in components.py.
+    layouts, winter settings, and watermark settings. Drawing tools are in components.py
+    (and components_winter.py for the winter sounding).
 
     (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2026
 """
@@ -125,6 +126,12 @@ def _get_plot_theme(dark_mode=False, colorblind=False, overrides=None):
 
     if colorblind:
         theme["dewpoint"] = "cornflowerblue"
+
+    return _apply_theme_overrides(theme, overrides)
+
+
+def _apply_theme_overrides(theme, overrides):
+    # apply the user's changes to a theme, checking each name against it
 
     if overrides is not None:
         if not isinstance(overrides, dict):
@@ -418,6 +425,143 @@ TIMESERIES_PARAMS = {"sbcape": ("SBCAPE", "parcel.sb", "-"),
 TIMESERIES_UNITS = {"J/kg": UNIT_JKG, "m2/s2": UNIT_M2S2, "kt": UNIT_KT, "1/s": UNIT_PER_S, "g/kg": UNIT_GKG,
                     "degC": UNIT_DEGC, "degC/km": r"$\mathrm{\mathbf{^{\circ}C\,km^{-1}}}$", "m": UNIT_M,
                     "hPa": r"$\mathrm{\mathbf{hPa}}$", "in": r"$\mathrm{\mathbf{in}}$", "%": "%", "deg": r"$\mathrm{\mathbf{^{\circ}}}$"}
+
+
+
+
+#########################################################################
+################################ WINTER #################################
+#########################################################################
+
+# the winter sounding (build_sounding(..., mode='winter')). Drawing tools are in components_winter.py
+
+# winter colors, added on top of SounderPy's theme
+WINTER_THEME = {# precipitation type
+                "melt": "#e8564d",
+                "refreeze": "#3d8aff",
+                "source": "#8a2be2",
+                "warm_nose": "#d62728",
+
+                # clouds, icing, and the DGZ
+                "cloud": "#7f7f7f",
+                "icing": "#c2589e",
+                "dgz_fill": "#7fb8e6",
+                "rh_ice": "#3d8aff",
+
+                # 0 °C levels
+                "frz": "#1f4fbf",
+                "wb_frz": "#3d8aff",
+
+                # hodograph mean-wind vectors
+                "mean_wind": "#7a7a7a"}
+
+# dark mode: lighter versions of the colors that are too dark on a black background
+DARK_WINTER_THEME = {**WINTER_THEME,
+                     "cloud": "#b0b0b0",
+                     "icing": "#e07cc0",
+                     "dgz_fill": "#4f86b8",
+                     "frz": "#7fa7ff",
+                     "dgz": "#6fa8ff",
+                     "moisture_strong": "#4cc46a",
+                     "ascent": "#ff6b6b",
+                     "composite_index": "#ff7a7a",
+                     "lapse": "#d9a066"}
+
+
+# SounderPy's theme with the winter colors on top, then any changes from the user (winter colors included)
+def get_winter_theme(dark_mode=False, colorblind=False, overrides=None):
+    theme = dict(_get_plot_theme(dark_mode=dark_mode, colorblind=colorblind))
+    theme.update(DARK_WINTER_THEME if dark_mode else WINTER_THEME)
+    return _apply_theme_overrides(theme, overrides)
+
+
+# precipitation types: display names and colors
+PTYPE_NAMES = {"SN": "SNOW", "PL": "SLEET", "FZRA": "FREEZING RAIN", "FZRA/PL": "FZ RAIN / SLEET",
+               "FZDZ": "FREEZING DRIZZLE", "RA": "RAIN", "RA/SN": "RAIN / SNOW", "RA/PL": "RAIN / SLEET",
+               "DZ": "DRIZZLE", "None": "NONE"}
+
+PTYPE_COLORS = {"SN": "#1f6fd1", "PL": "#9b4fd1", "FZRA": "#d1328a", "FZRA/PL": "#c0409f", "FZDZ": "#e070b0",
+                "RA": "#2e9b47", "RA/SN": "#3aa3a3", "RA/PL": "#6c7fbf", "DZ": "#5cae6c", "None": "#808080"}
+
+# SHARPpy best-guess names -> the precipitation-type codes above
+SHARPPY_TO_CODE = {"Snow": "SN", "Sleet": "PL", "Sleet and Snow": "PL", "Freezing Rain": "FZRA",
+                   "Freezing Rain/Drizzle": "FZRA", "Rain": "RA", "None": "None"}
+
+# hazard checklist levels
+HAZARD_LEVEL_COLORS = {"HIGH": "#d1328a", "MOD": "#e07b39", "LOW": "#8a8a8a", "NONE": "#8a8a8a"}
+
+# METAR sky cover -> MetPy sky_cover() codes
+SKY_COVER_CODES = {"CLR": 0, "SKC": 0, "NCD": 0, "NSC": 0, "FEW": 2, "SCT": 4, "BKN": 6, "OVC": 8, "VV": 9}
+
+
+# the full sounding layout, plus the winds box in the hodograph's lower-right corner
+WINTER_LAYOUT = {**FULL_SOUNDING_LAYOUT,
+                 "winds_box": (1.04, 0.10, 0.166, 0.165)}
+
+# top of the four side panels (m AGL); the DGZ is often 2-5 km up
+PANEL_TOP = 3000
+
+# x positions (fraction of the skew-t) of the annotation columns, left to right
+SKEWT_COLUMNS = {"dgz": 0.13,
+                 "cloud": 0.215,
+                 "icing": 0.227,
+                 "frz": 0.600,
+                 "wb_frz": 0.655,
+                 "pbl": 0.73,
+                 "ml": 0.775,
+                 "sb_levels": 0.83,
+                 "mu_levels": 0.90}
+
+# the station model box in the hodograph's upper-right corner: right edge (figure fraction), top
+# (hodograph fraction), padding around the title and smallest width (pixels), and height / width, taller
+# than square so a barb pointing up or down stays clear of the title
+STATION_BOX = {"right": 1.203, "top": 0.985, "pad_px": 10, "min_px": 165, "aspect": 1.3}
+
+
+# text positions inside each table, as fractions of the table
+
+# precipitation-type band across the top of the thermo box: four centered columns, two lines each
+PTYPE_HEADER_LAYOUT = {"band_bottom": 0.735,
+                       "top_y": 0.860,
+                       "bottom_y": 0.770,
+                       "columns": [0.105, 0.355, 0.605, 0.855],
+                       "dividers": [0.23, 0.48, 0.73]}
+
+# melting / refreezing layers under the band
+LAYER_TABLE_LAYOUT = {"columns": [0.015, 0.205, 0.345, 0.485, 0.630, 0.800],
+                      "header_y": 0.665,
+                      "rows_y": [0.580, 0.495, 0.410]}
+
+# SB / MU parcels under the layers
+PARCEL_TABLE_LAYOUT = {"label_x": 0.015,
+                       "columns": [0.120, 0.300, 0.470, 0.630, 0.800],
+                       "divider_y": 0.375,
+                       "header_y": 0.285,
+                       "rows_y": [0.170, 0.050]}
+
+# snow growth (DGZ) box, then its 0 °C levels
+SNOW_GROWTH_LAYOUT = {"label_x": 0.05,
+                      "value_x": 0.96,
+                      "title_y": 0.915,
+                      "rows_top": 0.805,
+                      "rows_bottom": 0.255,
+                      "divider_y": 0.19,
+                      "levels_y": [0.105, 0.030],
+                      "levels_width": 0.66}
+
+# hazards box: two columns spread evenly from top to bottom
+HAZARDS_LAYOUT = {"left": (0.03, 0.475),
+                  "right": (0.53, 0.975),
+                  "divider_x": 0.505,
+                  "top": 0.93,
+                  "bottom": 0.04}
+
+# winds box in the hodograph's corner
+WINDS_BOX_LAYOUT = {"label_x": 0.04,
+                    "value_x": 0.97,
+                    "title_y": 0.89,
+                    "rows_top": 0.765,
+                    "rows_bottom": 0.045}
 
 
 

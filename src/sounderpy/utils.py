@@ -38,9 +38,10 @@ import math
 def modify_surface(clean_data, modify_sfc):
     """
     where,
-    modify_sfc = {'T': 20, 'Td': 12, 'ws': 10, 'wd': 270}
+    modify_sfc = {'T': 20, 'Td': 12, 'ws': 10, 'wd': 270, 'method': 'mix'}
     and units = degC, degC, kts, degrees
 
+    method 'mix' (the default):
     A warmer surface temperature is mixed upward along its dry adiabat until it meets the
     original profile (Holzworth 1964), the depth a heated surface mixes to. Through that
     layer, a new surface dewpoint is held at a constant mixing ratio, as in a well-mixed
@@ -48,6 +49,15 @@ def modify_surface(clean_data, modify_sfc):
     a dewpoint-only change, and the wind change only the surface level, since a stable
     surface layer and surface-layer wind shear are realistic. Dewpoint is capped at the
     temperature.
+
+    method 'replace':
+    Only the surface level changes, whatever the new values, so a superadiabatic surface
+    layer is kept (useful when the lowest few hundred meters matter, e.g. blowing snow).
+
+    method 'blend' (with 'depth', m AGL, default 500):
+    The surface temperature and dewpoint changes taper linearly to zero at 'depth', so a
+    warmer surface gives a superadiabatic layer of that depth and the profile above it is
+    unchanged. Dewpoint is capped at the temperature.
 
     Holzworth, G. C., 1964: Estimates of mean maximum mixing depths in the contiguous
         United States. Mon. Wea. Rev., 92, 235-242.
@@ -59,6 +69,13 @@ def modify_surface(clean_data, modify_sfc):
         boundary layer. J. Atmos. Sci., 30, 558-567.
     """
 
+    method = modify_sfc.get('method', 'mix')
+    if method not in ('mix', 'replace', 'blend'):
+        raise ValueError(f"modify_sfc 'method' must be 'mix', 'replace' or 'blend'. Got: {method!r}")
+    depth = modify_sfc.get('depth', 500)
+    if method == 'blend' and not depth > 0:
+        raise ValueError(f"modify_sfc 'depth' must be a height in m above 0. Got: {depth!r}")
+
     sounding_data = copy.deepcopy(clean_data)
     p = sounding_data['p'].to(units.hPa)
     T = sounding_data['T'].to(units.degC)
@@ -69,11 +86,18 @@ def modify_surface(clean_data, modify_sfc):
 
     # levels the new surface temperature's dry adiabat is warmer than (the mixed layer)
     top = 0
-    if 'T' in modify_sfc:
+    if 'T' in modify_sfc and method == 'mix':
         theta = mpcalc.potential_temperature(p, T)
         theta_sfc = mpcalc.potential_temperature(p[0], T_sfc)
         while top + 1 < len(p) and theta[top + 1] < theta_sfc:
             top += 1
+
+    # blend: the surface changes taper linearly to zero at `depth` m AGL
+    if method == 'blend':
+        z = sounding_data['z'].to(units.m).m
+        weight = np.clip(1 - (z - z[0]) / depth, 0, None)
+        T = T + (T_sfc - T[0]) * weight
+        Td = np.minimum((Td + (Td_sfc - Td[0]) * weight).m, T.m) * units.degC
 
     T[0] = T_sfc
     Td[0] = Td_sfc

@@ -203,6 +203,10 @@ What's New in SounderPy 3.3.0
    * 🔍 Full sounding and composite figures now include a ``ylim`` kwarg, allowing you to adjust the Skew-T's y-axis (pressure) limits.
    * 🧩 Composite soundings have been completely rebuilt. Composites include a table of various parameters, normalized kwarg names, and support for custom data sources.
    * 🗺️ VAD hodographs now include the map, radar, hodograph boundary, and DPI options of the other figures.
+   * ❄️ New winter sounding: ``build_sounding(mode='winter')`` draws a sounding built around precipitation type, snow growth, and winter hazards. ``mode='auto'`` picks the winter sounding when the surface wet-bulb is below 35 degrees F, and ``show_obs=True`` adds the latest surface observation. See :doc:`/tutorials/winter_soundings`.
+   * 🧮 ``spy.winter_params(clean_data).calc()`` returns every ``sounding_params`` value plus the winter values behind the winter sounding.
+   * 💻 The command line tool adds ``--mode {severe,winter,auto}`` and ``--obs`` for sounding plots.
+   * ✈️ ACARS profiles now use the airport elevation in meters (it was read in feet), which corrects the surface label and surface pressure.
    * 🌦️ The NAM and NAMNEST (NAM3km) BUFKIT forecasts are archive only after their NCEP decommissioning on Nov. 2nd, 2026.
    * 📚 Refactored and redesigned documentation to match new SounderPy web app: sounderpy.app
 
@@ -264,7 +268,6 @@ Directory
 
    tutorials/beginners_sounderpy_cookbook
    gallery/examplegallery
-   gallery/examplescripts
    tutorials/index
    case_studies/mound_city_20240828
 

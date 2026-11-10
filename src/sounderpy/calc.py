@@ -213,14 +213,6 @@ class sounding_params:
     ######################################################################################################        
     def calc(self):
         
-        def calculate_height(pressure, pressure_at_sea_level=1013.25):
-            # constants
-            R = 287.05  # specific gas constant for dry air in J/(kg K)
-            T0 = 288.15  # standard temperature at sea level in K
-            g = 9.8  # acceleration due to gravity in m/s^2
-            # calculate height using the hypsometric equation
-            height = (R * T0 / g) * np.log(pressure_at_sea_level / pressure)
-            return height
 
     
 
@@ -382,7 +374,7 @@ class sounding_params:
         sbpcl = parcelx(prof, flag=1, pres=p[0].m, tmpc=T[0].m, dwpc=Td[0].m)
         thermo['sbT_trace'] = sbpcl.ttrace
         thermo['sbP_trace'] = sbpcl.ptrace
-        thermo['sbZ_trace'] = general['elevation'] + calculate_height(thermo['sbP_trace'])
+        thermo['sbZ_trace'] = to_agl(prof, hght(prof, thermo['sbP_trace']))  # m AGL, from the profile's own heights
         # compute heights
         thermo['sb_lcl_p'] = sbpcl.lclpres
         thermo['sb_lcl_z'] = sbpcl.lclhght 
@@ -403,7 +395,7 @@ class sounding_params:
         mupcl = parcelx(prof, flag=3, pres=mupcl_p.m, tmpc=mupcl_T.m, dwpc=mupcl_Td.m)
         thermo['muT_trace'] = mupcl.ttrace
         thermo['muP_trace'] = mupcl.ptrace
-        thermo['muZ_trace'] = general['elevation'] + calculate_height(thermo['muP_trace'])
+        thermo['muZ_trace'] = to_agl(prof, hght(prof, thermo['muP_trace']))  # m AGL, from the profile's own heights
         # compute heights
         thermo['mu_lcl_p'] = mupcl.lclpres 
         thermo['mu_lcl_z'] = mupcl.lclhght 
@@ -765,7 +757,7 @@ class sounding_params:
             # ω·(V-c)/|V-c|. Positive = streamwise, negative = antistreamwise. Only positive
             # (streamwise) vorticity is kept; antistreamwise levels are set to 0 so they count as
             # "no streamwise vorticity" instead of cancelling streamwise levels in layer means.
-            kinem['swv'] = np.clip((sm_u_ms*uvort+sm_v_ms*vvort)/(np.sqrt(sm_u_ms**2+sm_v_ms**2)), 0, None)
+            kinem['swv'] = np.clip((sm_u_ms*uvort+sm_v_ms*vvort)/(np.sqrt(sm_u_ms**2+sm_v_ms**2)+0.0000001), 0, None)
             # Streamwiseness fraction: swv/|ω| = cos(angle between ω and the SR wind), as a percent
             # (|ω| equals the shear magnitude). Because swv is clipped, this ranges 0-100%.
             kinem['swv_perc'] = (kinem['swv']/shear)*100
@@ -1254,7 +1246,7 @@ class vad_params:
             # ω·(V-c)/|V-c|. Positive = streamwise, negative = antistreamwise. Only positive
             # (streamwise) vorticity is kept; antistreamwise levels are set to 0 so they count as
             # "no streamwise vorticity" instead of cancelling streamwise levels in layer means.
-            kinem['swv'] = np.clip((sm_u_ms*uvort+sm_v_ms*vvort)/(np.sqrt(sm_u_ms**2+sm_v_ms**2)), 0, None)
+            kinem['swv'] = np.clip((sm_u_ms*uvort+sm_v_ms*vvort)/(np.sqrt(sm_u_ms**2+sm_v_ms**2)+0.0000001), 0, None)
             # Streamwiseness fraction: swv/|ω| = cos(angle between ω and the SR wind), as a percent
             # (|ω| equals the shear magnitude). Because swv is clipped, this ranges 0-100%.
             kinem['swv_perc'] = (kinem['swv']/shear)*100

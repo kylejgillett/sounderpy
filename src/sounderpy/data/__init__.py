@@ -9,6 +9,7 @@
     rapruc_grib_retriever.py : RAP/RUC GRIB downloads from AWS and NCEI
     rapruc_grib_parser.py    : RAP/RUC GRIB parsing
     radar_utils.py           : radar mosaic and single-site radar data for the map inset
+    sfc_obs.py               : the surface observation nearest a sounding, from the IEM ASOS archive
     wrf_utils.py             : WRF output profiles
     cm1_utils.py             : CM1 input_sounding profiles
     file_io.py               : reading and writing SHARPpy, CSV, and CM1 files

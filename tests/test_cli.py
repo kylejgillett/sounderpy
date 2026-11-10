@@ -553,6 +553,53 @@ def test_sounding_plot_routes_options(
     assert kwargs["dark_mode"] is True
     assert kwargs["color_blind"] is True
     assert kwargs["show_theta"] is True
+    assert kwargs["mode"] == "severe"
+    assert kwargs["show_obs"] is False
+
+
+def test_sounding_plot_routes_winter_options(
+    monkeypatch,
+    clean_profile,
+    tmp_path,
+):
+    calls = []
+
+    monkeypatch.setattr(
+        cli,
+        "get_bufkit_data",
+        lambda *args, **kwargs: clean_profile,
+    )
+    monkeypatch.setattr(
+        cli,
+        "build_sounding",
+        lambda data, **kwargs: calls.append(kwargs),
+    )
+
+    result = cli.main(
+        [
+            "bufkit",
+            "hrrr",
+            "KGFK",
+            "1",
+            "--plot",
+            "sounding",
+            "--plot-file",
+            str(tmp_path / "winter.png"),
+            "--mode",
+            "winter",
+            "--obs",
+        ]
+    )
+
+    assert result == 0
+    assert calls[0]["mode"] == "winter"
+    assert calls[0]["show_obs"] is True
+
+
+def test_parser_rejects_unknown_mode(capsys):
+    with pytest.raises(SystemExit):
+        cli.main(["obs", "DTX", "2024-05-21", "00", "--plot", "sounding", "--mode", "snow"])
+    assert "invalid choice: 'snow'" in capsys.readouterr().err
 
 
 def test_hodograph_plot_routes_storm_relative(

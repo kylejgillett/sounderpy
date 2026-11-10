@@ -253,8 +253,11 @@ def _setup_skewt(fig, temperature, theme, rect=None, subplot=None, rotation=47,
 
 
 
-def _plot_skewt_accessories(skew, theme, shade_isotherms=True, highlight_isotherms=(0, -20), 
-                            dry_adiabats=True, moist_adiabats=True, mixing_lines=True):
+def _plot_skewt_accessories(skew, theme, shade_isotherms=True, highlight_isotherms=(0, -20),
+                            dry_adiabats=True, moist_adiabats=True, mixing_lines=True, fit_to_view=False):
+
+    # zoomed views space the background lines to the box, so a thin layer still shows several
+    lines = _get_zoomed_background_lines(skew) if fit_to_view else {}
 
     if shade_isotherms:
         x1 = np.linspace(-100, 40, 8)
@@ -266,11 +269,11 @@ def _plot_skewt_accessories(skew, theme, shade_isotherms=True, highlight_isother
     for temp in highlight_isotherms:
         skew.ax.axvline(temp * units.degC, linestyle="--", color=theme["isotherm"], alpha=0.3)
     if dry_adiabats:
-        skew.plot_dry_adiabats(color=theme["adiabat"], linewidth=0.3, alpha=0.8)
+        skew.plot_dry_adiabats(**lines.get("dry", {}), color=theme["adiabat"], linewidth=0.3, alpha=0.8)
     if moist_adiabats:
-        skew.plot_moist_adiabats(color=theme["adiabat"], linewidth=0.3, alpha=0.8)
+        skew.plot_moist_adiabats(**lines.get("moist", {}), color=theme["adiabat"], linewidth=0.3, alpha=0.8)
     if mixing_lines:
-        skew.plot_mixing_lines(color=theme["skew_line"], linewidth=0.3, alpha=0.8)
+        skew.plot_mixing_lines(**lines.get("mixing", {}), color=theme["skew_line"], linewidth=0.3, alpha=0.8)
 
 
 
@@ -372,7 +375,25 @@ def _plot_skewt_height_annotations(skew, data, snd_params, theme, heights=range(
 
 
 
-def _plot_skewt_surface_annotations(skew, data, theme, surface_modified=False, temperature_unit="degF"):
+# a modify_sfc dict in words, e.g. "T -8°C, Td -11°C · mixed to 1.5 km"
+def _describe_surface_modification(clean_data, modify_sfc):
+    parts = [f"{key} {modify_sfc[key]:g}°C" for key in ("T", "Td") if key in modify_sfc]
+    if "ws" in modify_sfc and "wd" in modify_sfc:
+        parts.append(f"{modify_sfc['ws']:g} kt @ {modify_sfc['wd']:g}°")
+    method = modify_sfc.get("method", "mix")
+    if method == "blend":
+        how = f"blended to {modify_sfc.get('depth', 500):g} m"
+    else:
+        # how high the temperature change reaches: up the dry adiabat for a warmer 'mix', else the surface only
+        T0, T1 = clean_data["T"].to("degC").m, modify_surface(clean_data, modify_sfc)["T"].to("degC").m
+        changed = np.flatnonzero(np.ma.filled(np.abs(T1 - T0) > 0.05, False))
+        z = clean_data["z"].to("m").m
+        depth = z[changed.max()] - z[0] if changed.size else 0
+        how = f"mixed to {depth / 1000:.1f} km" if depth >= 1000 else f"mixed to {depth:.0f} m" if depth > 0 else "surface only"
+    return " · ".join([", ".join(parts), how]) if parts else how
+
+
+def _plot_skewt_surface_annotations(skew, data, theme, modify_sfc=None, original=None, temperature_unit="degF"):
     p = data["p"]
     T = data["T"]
     Td = data["Td"]
@@ -381,19 +402,24 @@ def _plot_skewt_surface_annotations(skew, data, theme, surface_modified=False, t
     # nearest whole degree, with halves rounded up (72.5 -> 73)
     T_sfc = int(np.floor(T[0].to(units(temperature_unit)).m + 0.5))
     Td_sfc = int(np.floor(Td[0].to(units(temperature_unit)).m + 0.5))
+    # a * marks a surface value the user set
+    modify_sfc = modify_sfc or {}
+    T_mark, Td_mark = ("*" if key in modify_sfc else "" for key in ("T", "Td"))
     # a faded background keeps the surface labels readable where they land on the axis labels
     # surface temperature
-    skew.ax.annotate(f"{T_sfc}{unit_label}", (T[0], p[0]), textcoords="offset points", xytext=(16, -15),
+    skew.ax.annotate(f"{T_sfc}{unit_label}{T_mark}", (T[0], p[0]), textcoords="offset points", xytext=(16, -15),
                       fontsize=FONT_SIZES["annotation_large"], color=theme["temperature"], weight="bold", alpha=0.9, ha="center", zorder=10,
                       bbox=dict(facecolor=theme["background"], edgecolor="none", alpha=0.6, pad=1.5))
     # surface dewpoint
-    skew.ax.annotate(f"{Td_sfc}{unit_label}", (Td[0], p[0]), textcoords="offset points", xytext=(-16, -15),
+    skew.ax.annotate(f"{Td_sfc}{unit_label}{Td_mark}", (Td[0], p[0]), textcoords="offset points", xytext=(-16, -15),
                       fontsize=FONT_SIZES["annotation_large"], color=theme["dewpoint"], weight="bold", alpha=0.9, ha="center", zorder=10,
                       bbox=dict(facecolor=theme["background"], edgecolor="none", alpha=0.6, pad=1.5))
-    # user-modified surface flag
-    if surface_modified:
-        skew.ax.annotate("USER MODIFIED SFC →", (Td[0], p[0]), textcoords="offset points", xytext=(-50, 0),
-                          fontsize=FONT_SIZES["small"], color=theme["text"], weight="bold", alpha=0.5, ha="right", zorder=10)
+    # what the user changed, in a box at the top middle of the skew-t
+    if modify_sfc:
+        skew.ax.text(0.5, 0.985, f"* MODIFIED SURFACE\n{_describe_surface_modification(original, modify_sfc)}",
+                     transform=skew.ax.transAxes, ha="center", va="top", fontsize=FONT_SIZES["note"], color=theme["text"],
+                     weight="bold", linespacing=1.3, zorder=12,
+                     bbox=dict(facecolor=theme["background"], edgecolor=theme["text"], linewidth=0.8, alpha=0.85, boxstyle="round,pad=0.4"))
 
 
 
@@ -1057,10 +1083,12 @@ def _add_map_label(map_ax, text, theme):
 
 
 def _plot_map_mosaic_radar(map_ax, sounding_data, map_zoom, radar_time, theme, reflectivity_min=10,
-                           alpha=1, lon_offset=0.05, lat_offset=0.05, show_timestamp=True):
+                           alpha=1, lon_offset=0.05, lat_offset=0.05, show_timestamp=True, reflectivity_max=None):
     try:
         radar_data = get_radar_mosaic(sounding_data, map_zoom, radar_time)
         reflectivity = np.ma.masked_less(np.asarray(radar_data["Reflectivity"])[0], reflectivity_min)
+        if reflectivity_max is not None:
+            reflectivity = np.ma.masked_greater(reflectivity, reflectivity_max)
 
         map_ax.pcolormesh(radar_data["lon"] + lon_offset, radar_data["lat"] + lat_offset, reflectivity, vmin=-32, vmax=95,
                           cmap=rs_expertreflect_cmap, alpha=alpha, zorder=4)
@@ -1078,7 +1106,8 @@ def _plot_map_mosaic_radar(map_ax, sounding_data, map_zoom, radar_time, theme, r
 
 
 
-def _plot_map_single_site_radar(map_ax, sounding_data, radar_time, theme, reflectivity_min=10, show_timestamp=True):
+def _plot_map_single_site_radar(map_ax, sounding_data, radar_time, theme, reflectivity_min=10, show_timestamp=True,
+                                reflectivity_max=None):
     try:
         lat, lon = sounding_data["site_info"]["site-latlon"]
         site_ids, lat_radar, lon_radar = parse_nexrad_locs()
@@ -1090,6 +1119,8 @@ def _plot_map_single_site_radar(map_ax, sounding_data, radar_time, theme, reflec
         gate_lat, gate_lon, _ = radar_obj.get_gate_lat_lon_alt(0)
         reflectivity = radar_obj.get_field(0, "reflectivity")
         reflectivity = np.ma.masked_where((reflectivity < reflectivity_min) | (reflectivity == 1) | (reflectivity == 2), reflectivity)
+        if reflectivity_max is not None:
+            reflectivity = np.ma.masked_greater(reflectivity, reflectivity_max)
 
         # drop gates beyond the map, and group those too close together to see on it, keeping the strongest return
         west, east, south, north = map_ax.get_extent(ccrs.PlateCarree())
@@ -1756,7 +1787,44 @@ def _validate_pressure_limits(ylim):
     return tuple(ylim)
 
 
-# pressure ticks that suit a skew-t's pressure range
+# ZOOMED SKEW-T (ylim)
+# on a zoomed skew-t an isotherm leans ZOOM_LEAN of the axis width from the bottom of the view to the top, so a
+# point sits at T / span + lean(p) across the axis. The x-axis is the narrowest span that fits T and Td in view
+# (up to ZOOM_MAX_SPAN degC), centered on the lowest ~3 km in view; what doesn't fit then runs off the edges
+ZOOM_LEAN, ZOOM_MAX_SPAN = 0.933, 80
+
+
+def _zoom_lean(p, ylim):
+    return ZOOM_LEAN * np.log(ylim[0] / p) / np.log(ylim[0] / ylim[1])
+
+
+def _get_zoomed_temperature_limits(profiles, ylim, margin=0.04, right_margin=0.04, low_layer=3000):
+    bottom, top = ylim
+    p_view, t_view = [], []
+    for profile in profiles:
+        for key in ("T", "Td"):
+            p, t = profile["p"].to("hPa").m, profile[key].to("degC").m
+            ok = np.isfinite(p) & np.isfinite(t)
+            p, t = p[ok], t[ok]
+            # the levels in view, plus where the line crosses the top and bottom of the view
+            levels = np.append(p[(p <= bottom) & (p >= top)], [lim for lim in ylim if p.size and p.min() <= lim <= p.max()])
+            order = np.argsort(p)
+            p_view.append(levels)
+            t_view.append(np.interp(np.log(levels), np.log(p[order]), t[order]) if levels.size else levels)
+    p, t = np.concatenate(p_view), np.concatenate(t_view)
+    if p.size == 0:
+        return (-32, 52)
+
+    for span in range(12, ZOOM_MAX_SPAN + 1, 2):
+        position = t / span + _zoom_lean(p, ylim)
+        if np.ptp(position) <= 1 - margin - right_margin:
+            break
+    low = p >= p.max() * np.exp(-low_layer / 8000)
+    left = ((position[low].min() + position[low].max()) / 2 - (1 + margin - right_margin) / 2) * span
+    return (left, left + span)
+
+
+# pressure and temperature ticks that suit a zoomed skew-t
 def _get_pressure_ticks(ylim):
     bottom, top = ylim
     span = bottom - top
@@ -1764,57 +1832,51 @@ def _get_pressure_ticks(ylim):
     return [tick for tick in range(step * int(top // step + 1), int(bottom) + 1, step)]
 
 
-# find the temperature range that fits every profile between two pressures on a skew-t.
-# isotherms lean to the right with height, so the range is measured along the lean
-def _get_zoomed_temperature_limits(profiles, ylim, skew_per_axis=0.933, margin=0.04, right_margin=0.04, extra_traces=(), min_span=12):
-    # extra_traces are (pressure in hPa, temperature in degC) arrays to keep in view, such as parcel traces
-    bottom, top = ylim
-    traces = [(profile["p"].to("hPa").m, profile[key].to("degC").m) for profile in profiles for key in ("T", "Td")]
-    traces += [(np.ma.filled(np.asarray(p, dtype=float), np.nan), np.ma.filled(np.asarray(t, dtype=float), np.nan)) for p, t in extra_traces]
-
-    temperatures, lean = [], []
-    for p, values in traces:
-        in_view = np.isfinite(p) & np.isfinite(values) & (p <= bottom) & (p >= top)
-        temperatures.append(values[in_view])
-        lean.append(skew_per_axis * np.log(bottom / p[in_view]) / np.log(bottom / top))
-    temperatures, lean = np.concatenate(temperatures), np.concatenate(lean)
-
-    # no data in view
-    if temperatures.size == 0:
-        return (-32, 52)
-
-    for span in np.arange(min_span, 300, 2):
-        position = temperatures / span + lean
-        if position.max() - position.min() <= 1 - margin - right_margin:
-            break
-    center = (position.max() + position.min()) / 2
-    left = (center - (1 + margin - right_margin) / 2) * span
-    return (left, left + span)
-
-
-# keep a skew-t's temperature range when it shows only part of the atmosphere
-# temperature ticks that suit a skew-t's temperature range
 def _get_temperature_ticks(temperature_limits, target=6):
     span = temperature_limits[1] - temperature_limits[0]
-    step = next(step for step in (2, 5, 10, 20) if span / step <= target + 2)
+    step = next((step for step in (2, 5, 10, 20) if span / step <= target + 2), 50)
     ticks = np.arange(step * np.ceil(temperature_limits[0] / step), temperature_limits[1] + 0.01, step)
     # leave the left edge to the pressure labels
     return ticks[(ticks - temperature_limits[0]) / span > 0.07]
 
 
-def _fit_skewt_aspect(skew, temperature_limits, ylim, box_aspect=0.87):
-    span = temperature_limits[1] - temperature_limits[0]
-    skew.ax.set_aspect(box_aspect * span / np.log10(ylim[0] / ylim[1]), adjustable="datalim")
+# background lines spaced to a zoomed skew-t's box, about `target` of each: dry and moist adiabats (named by their
+# 1000 hPa temperature) and mixing lines (below 600 hPa only, as on the full skew-t)
+def _get_zoomed_background_lines(skew, target=12):
+    (left, right), ylim = skew.ax.get_xlim(), tuple(sorted(skew.ax.get_ylim(), reverse=True))
+
+    def corners(p_top):
+        p = np.array([ylim[0], ylim[0], p_top, p_top])
+        return p * units.hPa, (np.array([left, right, left, right]) - _zoom_lean(p, ylim) * (right - left)) * units.degC
+
+    def spaced(values, steps=(1, 2, 5, 10)):
+        step = next((step for step in steps if np.ptp(values) / step <= target), steps[-1])
+        return np.arange(step * np.floor(values.min() / step), values.max() + step, step) * units.degC
+
+    p, t = corners(ylim[1])
+    pressure = np.linspace(*ylim, 50) * units.hPa
+    lines = {"dry": {"t0": spaced(mpcalc.potential_temperature(p, t).to("degC").m), "pressure": pressure},
+             "moist": {"t0": spaced(mpcalc.wet_bulb_potential_temperature(p, t, t).to("degC").m), "pressure": pressure},
+             "mixing": {"mixing_ratio": np.array([]), "pressure": pressure}}
+    if ylim[0] > 600:
+        p, t = corners(max(ylim[1], 600))
+        w = mpcalc.saturation_mixing_ratio(p, t).to("g/kg").m
+        choices = np.array([0.1, 0.2, 0.3, 0.4, 0.6, 0.8, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 24, 28, 32])
+        choices = choices[(choices >= w.min()) & (choices <= w.max())]
+        lines["mixing"] = {"mixing_ratio": choices[::max(1, int(np.ceil(choices.size / target)))] / 1000,
+                           "pressure": np.linspace(ylim[0], max(ylim[1], 600), 50) * units.hPa}
+    return lines
 
 
 # create a skew-t for a pressure range, fitting its temperature axis and pressure ticks to the data in it
-def _setup_zoomed_skewt(fig, profiles, theme, ylim, rect, right_margin=0.04, extra_traces=()):
-    temperature_limits = _get_zoomed_temperature_limits(profiles, ylim, right_margin=right_margin, extra_traces=extra_traces)
+def _setup_zoomed_skewt(fig, profiles, theme, ylim, rect, right_margin=0.04, box_aspect=0.87):
+    temperature_limits = _get_zoomed_temperature_limits(profiles, ylim, right_margin=right_margin)
     skew = _setup_skewt(fig, profiles[0]["T"], theme, rect=rect, pressure_limits=ylim,
                         temperature_limits=temperature_limits, pressure_ticks=_get_pressure_ticks(ylim))
     skew.ax.set_xticks(_get_temperature_ticks(temperature_limits))
     skew.ax.set_xlim(*temperature_limits)
-    _fit_skewt_aspect(skew, temperature_limits, ylim)
+    span = temperature_limits[1] - temperature_limits[0]
+    skew.ax.set_aspect(box_aspect * span / np.log10(ylim[0] / ylim[1]), adjustable="datalim")
     return skew
 
 

@@ -429,6 +429,24 @@ The output resolution can be changed with ``--dpi``:
        --dpi 200 \
        --plot-file dtx_sounding.png
 
+**Winter Sounding**
+
+``--mode`` chooses the sounding plot: ``severe`` (the default), ``winter``, or
+``auto``, which draws the winter sounding when the surface wet-bulb temperature
+is below 35 degrees F. ``--obs`` adds the latest surface observation near the
+profile to a winter sounding (from the Iowa Environmental Mesonet):
+
+.. code-block:: bash
+
+   sounderpy bufkit hrrr KGFK 1 \
+       --run 2024-01-24 12 \
+       --plot sounding \
+       --mode winter \
+       --obs \
+       --plot-file kgfk_winter.png
+
+See :doc:`/tutorials/winter_soundings` for a guide to the winter sounding.
+
 **********************************************************************
 
 

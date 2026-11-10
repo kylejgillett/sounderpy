@@ -280,6 +280,8 @@ def _plot_profile(data: dict[str, Any], args: argparse.Namespace) -> None:
             "color_blind": args.color_blind,
             "show_theta": args.show_theta,
             "sr_hodo": args.storm_relative,
+            "mode": args.mode,
+            "show_obs": args.obs,
         }
         if save:
             kwargs["filename"] = filename
@@ -368,6 +370,20 @@ def _add_profile_output_options(parser: argparse.ArgumentParser) -> None:
         action="store_true",
         help="Use a storm-relative hodograph.",
     )
+    plot.add_argument(
+        "--mode",
+        choices=("severe", "winter", "auto"),
+        default="severe",
+        help=(
+            "Sounding plot type: severe, winter, or auto (winter when the surface "
+            "wet-bulb is below 35 F). Default: severe."
+        ),
+    )
+    plot.add_argument(
+        "--obs",
+        action="store_true",
+        help="Winter sounding plots: add the nearest surface observation (IEM archive).",
+    )
 
     parser.add_argument(
         "-v",
@@ -388,6 +404,7 @@ def _build_parser() -> argparse.ArgumentParser:
             "  sounderpy bufkit gfs KMOP 6 --run 2023-08-05 12\n"
             "  sounderpy acars list 2024-05-21 18\n"
             "  sounderpy obs DTX 2024-05-21 00 --plot sounding --plot-file dtx.png\n"
+            "  sounderpy bufkit hrrr KGFK 1 --run 2024-01-24 12 --plot sounding --mode winter --obs\n"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )

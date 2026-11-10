@@ -18,6 +18,7 @@ rather than differences in the atmospheric profile.
 :ref:`Parcels <gallery-parcels>` |
 :ref:`Hodograph Options <gallery-options>` |
 :ref:`Data Sources <gallery-data-sources>` |
+:ref:`Winter Soundings <gallery-winter>` |
 :ref:`Composite Soundings <gallery-composites>`
 
 
@@ -473,6 +474,90 @@ profiles.
 
 See :doc:`Getting Data </reference/gettingdata>` and
 :doc:`Custom Data Sources </reference/customdatasources>` for additional information.
+
+
+.. _gallery-winter:
+
+Winter Soundings
+================
+
+``mode='winter'`` draws a sounding built around precipitation type, snow
+growth, and winter hazards. These examples add the latest surface observation
+(``show_obs=True``) and single-site radar. See
+:doc:`/tutorials/winter_soundings` for a tour of the figure.
+
+.. list-table::
+   :widths: 50 50
+   :class: gallery-table
+
+   * - .. image:: /_static/gallery/winter/winter_bufkit_fzdz.png
+          :alt: Winter sounding of a BUFKIT HRRR forecast during freezing drizzle at Grand Forks, ND
+          :width: 100%
+
+       **BUFKIT Forecast: Freezing Drizzle**
+
+       HRRR at Grand Forks, ND, 24 Jan 2024 12Z F01.
+
+       .. code-block:: python
+
+          data = spy.get_bufkit_data('hrrr', 'kgfk', 1,
+                                     '2024', '01', '24', '12')
+          spy.build_sounding(data, mode='winter',
+                             show_obs=True,
+                             radar='single-site')
+
+     - .. image:: /_static/gallery/winter/winter_raob_ice.png
+          :alt: Winter sounding of the Detroit, MI RAOB during an ice storm
+          :width: 100%
+
+       **Observed Sounding: Ice Storm**
+
+       Detroit, MI RAOB, 23 Feb 2023 00Z.
+
+       .. code-block:: python
+
+          data = spy.get_obs_data('DTX', '2023', '02',
+                                  '23', '00')
+          spy.build_sounding(data, mode='winter',
+                             show_obs=True,
+                             radar='single-site')
+
+.. list-table::
+   :widths: 50 50
+   :class: gallery-table
+
+   * - .. image:: /_static/gallery/winter/winter_raob_dark.png
+          :alt: Dark-mode winter sounding of the Omaha, NE RAOB during a blizzard
+          :width: 100%
+
+       **Dark Mode: Blizzard**
+
+       Omaha, NE RAOB, 12 Jan 2024 12Z.
+
+       .. code-block:: python
+
+          data = spy.get_obs_data('OAX', '2024', '01',
+                                  '12', '12')
+          spy.build_sounding(data, mode='winter',
+                             dark_mode=True,
+                             show_obs=True,
+                             radar='single-site')
+
+     - .. image:: /_static/gallery/winter/winter_acars.png
+          :alt: Winter sounding of an ACARS aircraft profile at Denver, CO
+          :width: 100%
+
+       **ACARS Profile: Arctic Air**
+
+       Denver, CO aircraft profile, 15 Jan 2024 14:20Z.
+
+       .. code-block:: python
+
+          data = spy.acars_data('2024', '01', '15',
+                                '14').get_profile('DEN_1420')
+          spy.build_sounding(data, mode='winter',
+                             show_obs=True,
+                             radar='single-site')
 
 
 .. _gallery-composites:

@@ -41,7 +41,8 @@ redirects = {
     "helpertools": "reference/helpertools.html",
     "cli": "reference/cli.html",
     "examplegallery": "gallery/examplegallery.html",
-    "examplescripts": "gallery/examplescripts.html",
+    "examplescripts": "tutorials/index.html#example-notebooks",
+    "gallery/examplescripts": "../tutorials/index.html#example-notebooks",
     "beginners_sounderpy_cookbook": "tutorials/beginners_sounderpy_cookbook.html",
     "acars_data_example": "notebooks/acars_data_example.html",
     "bufkit_data_example": "notebooks/bufkit_data_example.html",
@@ -52,7 +53,7 @@ redirects = {
     "reanalysis_data_example": "notebooks/reanalysis_data_example.html",
     "sounding_example": "notebooks/sounding_example.html",
     "hodograph-example": "notebooks/hodograph_example.html",
-    "notebook_gallery": "gallery/examplescripts.html",
+    "notebook_gallery": "tutorials/index.html#example-notebooks",
     "index_old": "index.html",
 }
 

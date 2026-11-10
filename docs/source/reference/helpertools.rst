@@ -63,6 +63,57 @@ Example:
 ****************************************************************
 
 
+Returning a dictionary of winter parameters
+-------------------------------------------
+
+Calculate everything ``sounding_params`` does, plus a fifth dictionary, ``winter``, with the values behind the winter sounding (``build_sounding(mode='winter')``):
+
+- precipitation type: Bourgouin's method (``ptype``) and SHARPpy's best guess (``sharppy_ptype``), the precipitation source level, and the phase of falling precipitation from the source to the surface (``phase_trace``);
+- melting and refreezing layers and their energies (``layers``), freezing levels, and the warm nose;
+- cloud and icing layers;
+- snow growth: the dendritic growth zone in cloud (``dgz_z``, ``dgz_p``, ``dgz_depth``), its RH and omega, OPRH, and the snow-to-liquid ratio (``slr``);
+- the mixed layer: depth, lapse rate, and mean wind (``ml_depth``, ``ml_lapse_rate``, ``mean_wind_ml``);
+- surface and hazard values: wind chill, PBL max gust, the snow squall parameter, surface inversion, and freezing fog and freezing drizzle potential (``fzfg``, ``fzdz``);
+- winds: 10 m, ML and DGZ mean winds, the 0-2 km max wind, and the winds at 850, 700, and 500 hPa.
+
+.. class:: winter_params(clean_data, storm_motion='right_moving', modify_sfc=None, include_all_parcels=False, parcel_depth=None)
+
+   :param clean_data: the dictionary of profile data to calculate profile parameters for (see :doc:`/reference/gettingdata`)
+   :type clean_data: dict, required
+   :param storm_motion: the storm motion used for calculations, as in ``sounding_params``.
+   :type storm_motion: str or list of floats, optional
+   :param modify_sfc: a ``dict`` in the format ``{'T': -2, 'Td': -3, 'ws': 20, 'wd': 20}`` to modify the surface values of the ``clean_data`` dict. The modified surface is used for both the standard and the winter values.
+   :type modify_sfc: None or dict, optional, default is None
+   :param include_all_parcels: as in ``sounding_params``.
+   :type include_all_parcels: bool, optional, default is ``False``
+   :param parcel_depth: as in ``sounding_params``.
+   :type parcel_depth: int or float, optional, default is ``None``
+
+
+   .. py:function:: .calc()
+
+      :return: A dictionary with the keys ``general``, ``thermo``, ``kinem``, ``intrp``, and ``winter``, each holding a dictionary of profile data.
+      :rtype: dict
+
+Example:
+
+.. code-block:: python
+
+   params = spy.winter_params(clean_data).calc()
+
+   params['winter']['ptype']        # e.g. 'FZRA'
+   params['winter']['dgz_depth']    # m
+   params['thermo']['mlcape']       # every sounding_params value is here too
+
+.. versionadded:: 3.3.0
+
+.. note::
+   These are the values drawn on the winter sounding. Values that can't be calculated for a profile, such as omega values for data without omega (RAOBs), are masked.
+
+
+****************************************************************
+
+
 
 
 Saving data to a file

@@ -186,7 +186,8 @@ class acars_data:
                 'site-name': airport_info[0],
                 'site-lctn': airport_info[2],
                 'site-latlon': [np.round(airport_info[3], 2), np.round(airport_info[4], 2)],
-                'site-elv': str(int(airport_info[5])),
+                # AIRPORTS.csv (OurAirports) gives the altitude in feet; every other source uses meters
+                'site-elv': str(int(round(airport_info[5] * 0.3048))),
                 'source': 'ACARS OBSERVED AIRCRAFT PROFILE',
                 'model': 'no-model',
                 'fcst-hour': 'no-fcst-hour',

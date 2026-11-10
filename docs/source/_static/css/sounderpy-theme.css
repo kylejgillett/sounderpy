@@ -659,3 +659,28 @@ div.nbsphinx-gallery > a:hover {
     border-color: var(--ochre);
     color: var(--forest-deep);
 }
+
+
+/* two figures side by side, each with its code below (stacks on narrow screens) */
+.rst-content .spy-compare {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.rst-content .spy-compare-col img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 0.75rem;
+}
+
+.rst-content .spy-compare-col div[class^="highlight"] {
+    margin-bottom: 0;
+}
+
+@media (max-width: 900px) {
+    .rst-content .spy-compare {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

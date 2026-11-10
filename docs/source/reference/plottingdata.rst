@@ -6,15 +6,13 @@
    :align: right
 
 
-Initially, SounderPy was a tool meant for getting and parsing data with not as much focus on plotting said data. However, recent releases have put more emphasis on plotting capabilities. Version 3.0.0+ features a number of significant & exciting upgrades to SounderPy's plotting abilities. 
-
 SounderPy can create general :ref:`sounding<soundings>` and :ref:`hodograph<hodographs>` plots as well as :ref:`composite sounding<compsoundings>` plots! 
 
-The ``full`` sounding plot that SounderPy creates is a complex figure with unique design geared towards severe convective storm environment analysis.
+The ``full`` sounding plot that SounderPy creates is a complex figure with unique design geared towards severe convective storm environment analysis. As of v3.3.0, a long-overdue winter version of the full sounding figure is available.
 
 These sounding plots are 'my baby' and I hope you find them useful! :)
 
-Check out SounderPy's :doc:`/gallery/examplegallery` & :doc:`/gallery/examplescripts`
+Check out SounderPy's :doc:`/gallery/examplegallery` & :ref:`example notebooks <example-notebooks>`
 
 ********************************************************************
 
@@ -27,9 +25,9 @@ Check out SounderPy's :doc:`/gallery/examplegallery` & :doc:`/gallery/examplescr
 Building Soundings
 ----------------------------------
 
-While this function may appear complicated at first glance, there is actually only *one* required argument for this function. The other arguments are simply optional settings for the plot!
+While this function may appear complicated at first glance, there is actually only *one* required argument for this function (your sounding data: `clean_data`). The other arguments are simply optional settings for the plot!
 
-.. py:function:: spy.build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion='right_moving', special_parcels=None, radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None, show_theta=False, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_sounding', max_levels=250, ylim=None, theme=None, sr_hodo=False)
+.. py:function:: spy.build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion='right_moving', special_parcels=None, radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None, show_theta=False, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_sounding', max_levels=250, ylim=None, theme=None, sr_hodo=False, mode='severe', show_obs=False)
 
 
    Return a full sounding plot of SounderPy data, ``plt`` 
@@ -70,24 +68,51 @@ While this function may appear complicated at first glance, there is actually on
    :type theme: dict, optional, Default is ``None``.
    :param sr_hodo: draw the hodograph storm relative, shifting the winds by the storm motion from ``storm_motion``. If the profile has no storm motion, the hodograph stays ground relative.
    :type sr_hodo: bool, optional, Default is ``False``.
+   :param mode: which sounding to draw. ``"severe"`` is the standard severe-weather sounding. ``"winter"`` draws the winter sounding, built around precipitation type, snow growth, and winter hazards (see :doc:`/tutorials/winter_soundings`). ``"auto"`` draws the winter sounding when the surface wet-bulb temperature is below 35 degrees F, and the severe sounding otherwise. The winter sounding doesn't use ``special_parcels``, ``show_theta``, ``sr_hodo``, or ``hodo_boundary``; if any are set, it warns and ignores them.
+   :type mode: str, ``"severe"``, ``"winter"``, or ``"auto"``, optional, Default is ``"severe"``.
+   :param show_obs: winter sounding only: draw a station model of the latest surface observation (METAR) near the profile, valid within an hour of the profile's time, from the Iowa Environmental Mesonet. Needs internet access. Values missing from the report read "NA".
+   :type show_obs: bool, optional, Default is ``False``.
    :return: plt, a SounderPy sounding figure.
    :rtype: plt
 
-Example
+Examples
 ^^^^^^^^^^
 
-.. code-block:: python
+.. container:: spy-compare
 
-   import sounderpy as spy
-     
-   # get data | Note: any sounderpy data will work!
-   clean_data = spy.get_obs_data('OAX', '2014', '06', '16', '18')
+   .. container:: spy-compare-col
 
-   # build the sounding! 
-   spy.build_sounding(clean_data)
+      **Severe sounding**
 
-.. image:: /_static/images/example-sounding_light.png
-   :width: 800 px
+      .. image:: /_static/images/example-sounding_light.png
+
+      .. code-block:: python
+
+         import sounderpy as spy
+
+         # get data | Note: any sounderpy data will work!
+         clean_data = spy.get_obs_data('OAX', '2014', '06', '16', '18')
+
+         # build the sounding!
+         spy.build_sounding(clean_data)
+
+   .. container:: spy-compare-col
+
+      **Winter sounding**
+
+      .. image:: /_static/images/example-winter-sounding_light.png
+
+      .. code-block:: python
+
+         import sounderpy as spy
+
+         # get data | Note: any sounderpy data will work!
+         clean_data = spy.get_bufkit_data('hrrr', 'kgfk', 1,'2024', '01', '24', '12')
+
+         # build the winter sounding, with station plot and radar
+         spy.build_sounding(clean_data, mode='winter', show_obs=True, radar='single-site')
+
+See :doc:`/tutorials/winter_soundings` for a guide to the winter sounding.
 
 **************************************************
 
@@ -413,7 +438,11 @@ Surface Modification Logic
 
 Users may override the surface values of the ``clean_data`` dict, when creating a plot or returning sounding parameters, using the ``modify_sfc`` kwarg. This argument is a python dictionary.
 
-A surface temperature warmer than the profile is mixed upward along its dry adiabat until it meets the original profile, the depth a heated surface mixes to (Holzworth 1964). Through that layer, a new surface dewpoint is held at a constant mixing ratio, as in a well-mixed boundary layer. A cooler surface temperature, a dewpoint-only change, and the wind change only the surface level. Dewpoint is never allowed to exceed temperature.
+With the default ``'method': 'mix'``, a surface temperature warmer than the profile is mixed upward along its dry adiabat until it meets the original profile, the depth a heated surface mixes to (Holzworth 1964). Through that layer, a new surface dewpoint is held at a constant mixing ratio, as in a well-mixed boundary layer. A cooler surface temperature, a dewpoint-only change, and the wind change only the surface level. Dewpoint is never allowed to exceed temperature.
+
+With ``'method': 'replace'``, only the surface level changes, so a superadiabatic surface layer is kept. This suits cases where the lowest few hundred meters matter most, such as blowing snow, where mixing a warmer surface temperature upward would overwrite the profile well above the ground.
+
+With ``'method': 'blend'``, the temperature and dewpoint changes taper linearly from the surface to zero at ``depth`` meters above ground (500 m by default), so a warmer surface gives a superadiabatic layer of that depth and the profile above it is unchanged. For example, a surface 4 °C warmer blended over 250 m adds 16 °C/km to that layer's lapse rate.
 
 The ``modify_sfc`` dict
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -421,6 +450,8 @@ The ``modify_sfc`` dict
 - ``Td``: Dewpoint, degrees Celsius
 - ``ws``: Wind speed, knots
 - ``wd``: Wind direction, meteorological degrees (north=0)
+- ``method``: ``'mix'`` (default), ``'replace'``, or ``'blend'``
+- ``depth``: Depth of the blend, meters above ground (``'blend'`` only, default 500)
 
 Examples:
 
@@ -431,6 +462,10 @@ Examples:
    spy.build_sounding(clean_data, modify_sfc={'T':21, 'Td':19})
 
    spy.build_sounding(clean_data, modify_sfc={'ws': 30, 'wd':270})
+
+   spy.build_sounding(clean_data, modify_sfc={'T':-8, 'Td':-11, 'method':'replace'})
+
+   spy.build_sounding(clean_data, modify_sfc={'T':-8, 'Td':-11, 'method':'blend', 'depth':250})
 
 .. caution::
    Surface modification should be used carefully. Replacing the surface

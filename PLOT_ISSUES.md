@@ -1,16 +1,24 @@
-# To Fix Before Release
+# FIXES NEEDED BEFORE RELEASE
 
+- [x] remove temp branches and worktrees
+- [x] check modify sfc logic. Perhaps add flag for a simple replace or mixing algo? Doesn't work well for winter scenarios when BLSN is in question, in which often the lowest 500m matters most. Current modify_sfc interp logic overwrites values to high AGL. I.e., sometimes the mixed-layer lapse rate should actually be 20-40C/km 
+- [x] find a better way to handle x-axis limits when setting short ylim, i.e., the x-axis should maybe be squeezed in a little. The idea is too keep the lowest ~1km centered on the x-axis.
+    - [x] `__composite_sounding`: `ylim` views have sparse background lines over very thin layers (about 100 hPa)
+    - [x] `build_sounding`: `ylim` raises `StopIteration` when no temperature span fits the view (e.g. (1000, 600) on a cold profile with a warm elevated MU parcel): `_get_zoomed_temperature_limits` gives up at a ~300 deg span and `_get_temperature_ticks` finds no tick step; severe and winter both
+- [ ] `plot/components.py`: 103 of 104 functions have no docstring; add
+- [ ] `plot/components.py`: no repo tests cover the helpers, `parcel_depth`, thinning, `ylim`, `set_watermark`, or missing-value handling; add something simple.
+- [ ] `plot/components.py`: no public API for building custom figures; every drawing function is private; will need to determine the best option for this, what users should have and shouldn't have
+- [x] `calc.py` streamwise vorticity (`swv`/`swv_perc`, sounding and VAD): divides by the storm-relative wind speed with no small offset, so a level where the wind exactly equals storm motion gives NaN, and that NaN carries into its layer means. Rare on interpolated data; fix would be the same `+1e-7` offset already used for `shear`; fix
+- [x] `calc.py` `sbZ_trace` / `muZ_trace`: `general['elevation']` + `calculate_height(p)` counts the elevation twice, since `calculate_height` is already a standard-atmosphere MSL height (DEN ACARS 2024-01-15 1420Z: surface point at 3296 m, the airport is 1655 m); neither AGL nor MSL. Not drawn on any figure today; fix
+- [x] Winter Bourgouin: the code applies the 5.6/13.2 J/kg thresholds to every melting layer; in Bourgouin (2000) they are for the surface-based warm layer, an elevated melting layer counts only at >= 2 J/kg, and a surface warm layer >= 13.2 J/kg remelts ice pellets; the energy comment should read g * integral((T - T0)/T0) dz. Is there a good fix for this? Check other references if available.
+- [x] Dont do anything special for ice fog, leave as "Freezing Fog" regardless of temperature
+- [ ] Check the CLI. Test for bugs, errors, and missing features.
+
+# FUTURE FIXES
 - [ ] `set_watermark`: settings are shared across a Python process, so a shared web app worker would affect all users
 - [ ] MetPy's skew-T uses a Matplotlib function deprecated in 3.11 and due for removal in 3.13; confirm a MetPy fix before relaxing or raising version limits; MetPy 1.7.1's `StationPlot` text already fails to draw under Matplotlib 3.11 (its `TextCollection.draw` unpacks 4 layout values, 3.11 returns 3), so any station plot needs plain text + MetPy's symbol font until MetPy fixes it
-- [ ] `__composite_sounding`: `ylim` views have sparse background lines over very thin layers (about 100 hPa)
-- [ ] `build_sounding`: `ylim` labels can overlap in zoomed views, as can the legend over the data; left as is for now
-- [ ] `plot/components.py`: 103 of 104 functions have no docstring
-- [ ] `plot/components.py`: no repo tests cover the helpers, `parcel_depth`, thinning, `ylim`, `set_watermark`, or missing-value handling
-- [ ] `plot/components.py`: no public API for building custom figures; every drawing function is private
 - [ ] Station lists: `BUFKIT-STATIONS-MASTER.txt` has 8,527 rows for 2,093 IDs, and 23 IDs have conflicting entries (typos such as `B44` at lon -100.29 and -110.29, `B48` at -80.51 and -81.51; different stations sharing `CYQX`); all station lists are downloaded from GitHub `main` on every call rather than read from the package
-- [ ] `calc.py` streamwise vorticity (`swv`/`swv_perc`, sounding and VAD): divides by the storm-relative wind speed with no small offset, so a level where the wind exactly equals storm motion gives NaN, and that NaN carries into its layer means. Rare on interpolated data; fix would be the same `+1e-7` offset already used for `shear`
-- [ ] ACARS elevation is in feet: `acars_data.py` sets `site-elv` from AIRPORTS.csv `Altitude`, which is feet (OurAirports; DAL 487, DEN 5431), while every other source uses meters. `calc.py` uses it for the surface pressure and the parcel height traces (`sbZ_trace` etc.), and the skew-t labels it "SFC (487m)". Fix: convert with `* 0.3048` in `acars_data.py`
-- [ ] `modify_surface` (GitHub issue 29, still open): station elevation/pressure re-basing for coarse-terrain data like ERA5, and observations above the surface
+
 
 
 ### Timeseries, Publication Figures, VAD hodos

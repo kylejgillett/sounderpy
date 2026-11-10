@@ -11,6 +11,7 @@
 """
 
 # METPY OPERATIONS
+import metpy.calc as mpcalc
 
 # MATPLOTLIB OPERATIONS
 import matplotlib.pyplot as plt
@@ -28,13 +29,18 @@ import cartopy.crs as ccrs
 
 # SOUNDERPY MODULES
 from ..calc import sounding_params, vad_params
+from ..calc_winter import winter_params
 from ..data.radar_utils import *
+from ..data.sfc_obs import sounding_obs
 
 from .style import (FONT_SIZES,
                     COMPOSITE_LAYOUTS,
                     FULL_HODOGRAPH_LAYOUT,
                     FULL_SOUNDING_LAYOUT,
-                    _get_plot_theme)
+                    SKEWT_COLUMNS,
+                    WINTER_LAYOUT,
+                    _get_plot_theme,
+                    get_winter_theme)
 from .components import (_clip_skewt_text,
                          _get_height_markers,
                          _setup_zoomed_skewt,
@@ -104,6 +110,27 @@ from .components import (_clip_skewt_text,
                          _setup_hodograph,
                          _setup_map_inset,
                          _setup_skewt)
+from .components_winter import (_plot_clouds,
+                                _plot_dgz_bar,
+                                _plot_freezing_levels,
+                                _plot_hazards_table,
+                                _plot_icing_layers,
+                                _plot_mean_wind_vectors,
+                                _plot_melt_refreeze,
+                                _plot_ml_bar,
+                                _plot_pbl,
+                                _plot_phase_annotations,
+                                _plot_precip_table,
+                                _plot_rh_ice_annotations,
+                                _plot_rh_panel,
+                                _plot_snow_growth_table,
+                                _plot_station_obs,
+                                _plot_temperature_panel,
+                                _plot_thetae_panel,
+                                _plot_warm_nose,
+                                _plot_wind_panel,
+                                _plot_winds_box,
+                                _plot_winter_parcels)
 
 
 #########################################################################
@@ -135,7 +162,6 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     #################################################################
     print(f'    > PREPARING DATA')
     sounding_data = _prepare_sounding_data(clean_data, modify_sfc, max_levels)
-    surface_modified = modify_sfc is not None
     
     # calculate other sounding parameters using SounderPy Calc
     snd_params = sounding_params(sounding_data, storm_motion, include_all_parcels=not show_theta, parcel_depth=STABILITY_PANEL_DEPTH).calc()
@@ -160,12 +186,9 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
         skew = _setup_skewt(fig, sounding_data["T"], theme, rect=layout["skewt"])
     else:
         # leave room on the right for the level labels and wind barbs
-        # keep the parcel traces in view too
-        thermo = snd_params["thermo"]
-        parcel_traces = [(thermo[f"{key}P_trace"], thermo[f"{key}T_trace"]) for key in ("sb", "ml", "mu") if not ma.is_masked(thermo[f"{key}cape"]) and thermo[f"{key}cape"] > 0]
-        skew = _setup_zoomed_skewt(fig, [sounding_data], theme, ylim, layout["skewt"], right_margin=0.125, extra_traces=parcel_traces)
+        skew = _setup_zoomed_skewt(fig, [sounding_data], theme, ylim, layout["skewt"], right_margin=0.125)
     # add skew-t extras (adiabats, mixing ratio, highlighted isotherms, shading)
-    _plot_skewt_accessories(skew, theme)
+    _plot_skewt_accessories(skew, theme, fit_to_view=ylim is not None)
 
 
     #################################################################
@@ -213,7 +236,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
         _plot_skewt_height_annotations(skew, sounding_data, snd_params, theme, heights=_get_height_markers(snd_params, ylim))
 
     # surface T/Td and modified-surface flag
-    _plot_skewt_surface_annotations(skew, sounding_data, theme, surface_modified=surface_modified,)
+    _plot_skewt_surface_annotations(skew, sounding_data, theme, modify_sfc=modify_sfc, original=clean_data)
 
     # LCL, LFC, EL, MPL
     _plot_skewt_parcel_level_annotations(skew, sounding_data, snd_params, theme, parcel="ml", x=0.83)
@@ -367,18 +390,218 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
 
 
 
+#########################################################################
+############################ SOUNDING MODE ##############################
+
+# surface wet-bulb below which mode="auto" draws the winter sounding
+AUTO_WINTER_SFC_TW_F = 35
+
+# the winter radar inset keeps light returns (snow is often weak on radar) and drops the strongest (bright
+# band, clutter): -30 to 65 dBZ
+WINTER_REFLECTIVITY_MIN, WINTER_REFLECTIVITY_MAX = -30, 65
+
+
+def _resolve_sounding_mode(mode, clean_data, modify_sfc=None, max_levels=250):
+    # "severe" or "winter" as given; "auto" picks winter when the surface wet-bulb is below 35 °F
+    if mode not in ("severe", "winter", "auto"):
+        raise ValueError(f"'mode' must be 'severe', 'winter', or 'auto'. Got: {mode!r}")
+    if mode != "auto":
+        return mode
+
+    data = _prepare_sounding_data(clean_data, modify_sfc, max_levels)
+    sfc_tw = mpcalc.wet_bulb_temperature(data["p"][0], data["T"][0], data["Td"][0]).to("degF").m
+    mode = "winter" if sfc_tw < AUTO_WINTER_SFC_TW_F else "severe"
+    print(f"    > AUTO MODE: surface wet-bulb {sfc_tw:.1f}°F -> {mode.upper()}")
+    return mode
+#########################################################################
 
 
 
 
+#########################################################################
+########################### WINTER SOUNDING #############################
+
+def __winter_sounding(clean_data, color_blind, dark_mode, storm_motion='right_moving', radar='mosaic', radar_time='sounding',
+                      map_zoom=2, modify_sfc=None, dpi=100, max_levels=250, ylim=None, theme_overrides=None, show_obs=False):
+
+    # record process time
+    st = time.time()
+
+    #################################################################
+    ### SET UP PLOT THEME ###
+    #################################################################
+    theme = get_winter_theme(dark_mode=dark_mode, colorblind=color_blind, overrides=theme_overrides)
+    layout = WINTER_LAYOUT
 
 
+    #################################################################
+    ### SET UP THE DATA ###
+    #################################################################
+    print('    > PREPARING DATA')
+    sounding_data = _prepare_sounding_data(clean_data, modify_sfc, max_levels)
+    snd_params = winter_params(sounding_data, storm_motion).calc()
+    winter = snd_params["winter"]
 
 
+    #################################################################
+    ### BUILD FIGURE AND SKEW-T ###
+    #################################################################
+    print('    > BUILDING SKEW-T LOG-P DIAGRAM')
+    fig = plt.figure(figsize=(22, 13), linewidth=10, edgecolor=theme["border"], facecolor=theme["background"], dpi=dpi)
+    ylim = _validate_pressure_limits(ylim)
+    if ylim is None:
+        skew = _setup_skewt(fig, sounding_data["T"], theme, rect=layout["skewt"])
+    else:
+        # leave room on the right for the level labels and wind barbs
+        skew = _setup_zoomed_skewt(fig, [sounding_data], theme, ylim, layout["skewt"], right_margin=0.125)
+    _plot_skewt_accessories(skew, theme, fit_to_view=ylim is not None)
+    # bold 0 °C isotherm and the DGZ as a light band across the skew-t
+    skew.ax.axvline(0, color=theme["frz"], linewidth=2.5, alpha=0.55, zorder=1)
+    if not ma.is_masked(winter["dgz_depth"]):
+        skew.ax.axhspan(*winter["dgz_p"], color=theme["dgz_fill"], alpha=0.22, linewidth=0, zorder=0.6)
 
 
+    #################################################################
+    ### PLOT SKEW-T DATA ###
+    #################################################################
+    _plot_melt_refreeze(skew, sounding_data, winter, theme)
+    _plot_skewt_profiles(skew, sounding_data, snd_params, theme, show_virtual=False)
 
 
+    #################################################################
+    ### PLOT SKEW-T ANNOTATIONS ###
+    #################################################################
+    if ylim is None:
+        _plot_skewt_height_annotations(skew, sounding_data, snd_params, theme)
+    else:
+        _plot_skewt_height_annotations(skew, sounding_data, snd_params, theme, heights=_get_height_markers(snd_params, ylim))
+    _plot_skewt_surface_annotations(skew, sounding_data, theme, modify_sfc=modify_sfc, original=clean_data)
+
+    # SB and MU parcels, their LCL/LFC/EL columns and MUCAPE labels, as in the severe figure
+    _plot_winter_parcels(skew, snd_params, theme)
+    _plot_skewt_parcel_level_annotations(skew, sounding_data, snd_params, theme, parcel="sb", x=SKEWT_COLUMNS["sb_levels"])
+    _plot_skewt_parcel_level_annotations(skew, sounding_data, snd_params, theme, parcel="mu",
+                                         levels=("lcl", "lfc", "el", "mpl"), x=SKEWT_COLUMNS["mu_levels"])
+    _plot_skewt_cape_annotations(skew, snd_params, theme)
+
+    # 0 °C levels, warm nose, DGZ, PBL, clouds, icing
+    _plot_freezing_levels(skew, sounding_data, winter, theme)
+    _plot_warm_nose(skew, winter, theme)
+    _plot_dgz_bar(skew, winter, snd_params, theme)
+    _plot_pbl(skew, sounding_data, snd_params, theme)
+    _plot_ml_bar(skew, sounding_data, snd_params["winter"], theme)
+    _plot_clouds(skew, winter, theme)
+    _plot_icing_layers(skew, winter, theme)
+
+    # precipitation phase changes and RHᵢ labels
+    _plot_phase_annotations(skew, sounding_data, winter, theme)
+    _plot_rh_ice_annotations(skew, snd_params, winter, theme)
+
+
+    #################################################################
+    ### PLOT SKEW-T WIND BARBS ###
+    #################################################################
+    _plot_skewt_wind_barbs(skew, sounding_data, snd_params, theme, add_sr_barbs=False, ylim=ylim)
+    if ylim is not None:
+        _clip_skewt_text(skew)
+
+
+    #################################################################
+    ### ADD HODOGRAPH ###
+    #################################################################
+    print('    > BUILDING HODOGRAPH')
+    hodo_data = _prepare_hodograph_data(snd_params, max_height=12000)
+    hodo_xlim, hodo_ylim = _get_hodograph_bounds(hodo_data)
+    hodo = _setup_hodograph(fig.add_axes(layout["hodograph"]), theme, hodo_xlim, hodo_ylim)
+    _plot_hodograph_velocity_labels(hodo, theme)
+    _plot_hodograph_height_markers(hodo, snd_params, theme)
+    _plot_hodograph_trace(hodo, snd_params, theme)
+    _plot_mean_wind_vectors(hodo, winter, theme)
+
+
+    #################################################################
+    ### LATEST SURFACE OBSERVATION ###
+    #################################################################
+    if show_obs:
+        obs = sounding_obs(clean_data)
+        if obs is None:
+            print('    > SFC OB: none found (no nearby station, a future time, or the archive refused)')
+        else:
+            t0 = time.perf_counter()
+            _plot_station_obs(hodo, obs, theme)
+            timing = obs["timing"]
+            print(f'    > SFC OB {obs["station"]} {obs["time"]:%H%MZ} ({obs["distance_km"]:.0f} km): find station '
+                  f'{timing["find_station"]:.2f}s, fetch {timing["fetch"]:.2f}s, draw {time.perf_counter() - t0:.2f}s')
+
+    # winds box in the lower-right corner, where the severe figure keeps its SRH/BWD box
+    _plot_winds_box(fig.add_axes(layout["winds_box"], zorder=3), winter, theme)
+
+
+    #################################################################
+    ### SOUNDING MAP INSET ###
+    #################################################################
+    # the same map and radar options as the severe figure
+    if map_zoom > 0:
+        print('    > BUILDING MAP INSET')
+        latlon = clean_data["site_info"]["site-latlon"]
+        map_ax = fig.add_axes(layout["map"], projection=ccrs.PlateCarree(), zorder=12)
+        _setup_map_inset(map_ax, latlon, theme, map_zoom=map_zoom)
+
+        if radar == "mosaic":
+            _plot_map_mosaic_radar(map_ax, sounding_data, map_zoom, radar_time, theme,
+                                   reflectivity_min=WINTER_REFLECTIVITY_MIN, reflectivity_max=WINTER_REFLECTIVITY_MAX)
+
+        elif radar in ("single-site", "single"):
+            _plot_map_single_site_radar(map_ax, clean_data, radar_time, theme,
+                                        reflectivity_min=WINTER_REFLECTIVITY_MIN,
+                                        reflectivity_max=WINTER_REFLECTIVITY_MAX)
+
+        _plot_map_profile_location(map_ax, latlon, theme)
+
+
+    #################################################################
+    ### TEMPERATURE ADVECTION & OMEGA ###
+    #################################################################
+    print('    > BUILDING ACCESSORY PLOTS')
+    pressure_limits = ylim if ylim is not None else (1050, 100)
+    _plot_temperature_advection(fig.add_axes(layout["temp_adv"]), snd_params, theme, pressure_limits=pressure_limits)
+    if 'omega' in sounding_data:
+        _plot_omega(fig.add_axes(layout["omega"], zorder=10), sounding_data, theme, pressure_limits=pressure_limits)
+
+
+    #################################################################
+    ### LOW-LEVEL PANELS ###
+    #################################################################
+    _plot_temperature_panel(fig.add_axes(layout["streamwiseness"]), winter, theme)
+    _plot_rh_panel(fig.add_axes(layout["vorticity"]), winter, theme)
+    _plot_wind_panel(fig.add_axes(layout["sr_wind"]), winter, theme)
+    _plot_thetae_panel(fig.add_axes(layout["stability"]), winter, theme)
+
+
+    #################################################################
+    ### TEXT PLOTS ###
+    #################################################################
+    print('    > PLOTTING SOUNDING PARAMETERS')
+    _plot_precip_table(fig.add_axes(layout["thermo_table"], zorder=3), winter, snd_params, theme)
+    _plot_snow_growth_table(fig.add_axes(layout["moisture_table"], zorder=3), winter, snd_params, theme)
+    _plot_hazards_table(fig.add_axes(layout["kinematics_table"], zorder=3), winter, theme)
+
+
+    #################################################################
+    ### PLOT EXTRAS ###
+    #################################################################
+    print('    > FIGURE LOADING...')
+    _plot_figure_titles(fig, clean_data["titles"], theme)
+    _plot_skewt_legend(skew, theme)
+    _plot_credits(fig, theme)
+    _plot_logo(fig.add_axes(layout["logo"], anchor="SE", zorder=3))
+    _add_figure_margin(fig, layout["margin"])
+
+    print('    > COMPLETE --------')
+    print('    > RUNTIME:', time.strftime("%H:%M:%S", time.gmtime(time.time() - st)))
+
+    return plt
+#########################################################################
 
 
 
@@ -608,7 +831,7 @@ def __composite_sounding(data_list, shade_between, cmap, colors, linestyles, alp
         else:
             # a zoomed view fits its temperature range and pressure ticks to that part of the atmosphere
             skew = _setup_zoomed_skewt(fig, profiles, theme, ylim, layout["skewt"])
-        _plot_skewt_accessories(skew, theme)
+        _plot_skewt_accessories(skew, theme, fit_to_view=ylim is not None)
         _plot_composite_skewt_profiles(skew, profiles, colors, styles, widths, alphas, shade_between)
 
 

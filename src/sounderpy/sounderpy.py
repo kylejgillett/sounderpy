@@ -4,7 +4,7 @@
 import warnings
 from typing import List, Tuple, Optional
 
-from .plot import __full_sounding, __full_hodograph, __composite_sounding, __vad_hodograph
+from .plot import __full_sounding, __winter_sounding, _resolve_sounding_mode, __full_hodograph, __composite_sounding, __vad_hodograph
 from .calc import sounding_params
 from .data.model_data import fetch_model
 from .data.bufkit_data import fetch_bufkit
@@ -197,7 +197,7 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
 def build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion='right_moving',
                    special_parcels=None, radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None,
                    show_theta=False, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_sounding', max_levels=250, ylim=None, theme=None,
-                   sr_hodo=False):
+                   sr_hodo=False, mode='severe', show_obs=False):
     
     '''
     Return a full sounding plot of SounderPy data, ``plt``
@@ -238,13 +238,29 @@ def build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion=
     :type theme: dict, optional
     :param sr_hodo: draw the hodograph storm relative, shifting the winds by the storm motion from ``storm_motion``. If the profile has no storm motion, the hodograph stays ground relative. Default is ``False``.
     :type sr_hodo: bool, optional
+    :param mode: the kind of sounding to draw: ``'severe'``, ``'winter'`` (precipitation type, snow growth, and winter hazards), or ``'auto'``, which draws the winter sounding when the surface wet-bulb temperature is below 35 degrees F and the severe sounding otherwise. The winter sounding ignores ``special_parcels``, ``show_theta``, ``sr_hodo`` and ``hodo_boundary``, with a warning. Default is ``'severe'``.
+    :type mode: str, optional
+    :param show_obs: winter sounding only: draw the surface observation (METAR) nearest the sounding in space and time as a station model in the hodograph's corner, from the Iowa Environmental Mesonet archive. Needs an internet connection; nothing is drawn when no station within 75 km has a report within an hour of the valid time. Default is ``False``.
+    :type show_obs: bool, optional
     :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
     :rtype: plt
     '''
     
     print(f'> SOUNDING PLOTTER FUNCTION\n  ---------------------------------')
 
-    plt = __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, radar, radar_time, map_zoom, modify_sfc, show_theta, hodo_boundary, dpi, max_levels, ylim, theme, sr_hodo)
+    mode = _resolve_sounding_mode(mode, clean_data, modify_sfc, max_levels)
+    if mode == 'winter':
+        # severe-only settings changed from their defaults are ignored, with a warning
+        ignored = [name for name, value, default in (('special_parcels', special_parcels, None), ('show_theta', show_theta, False),
+                                                     ('sr_hodo', sr_hodo, False), ('hodo_boundary', hodo_boundary, None))
+                   if value != default]
+        if ignored:
+            warnings.warn(f"The winter sounding doesn't use {', '.join(ignored)}; ignoring {'it' if len(ignored) == 1 else 'them'}.", Warning)
+        plt = __winter_sounding(clean_data, color_blind, dark_mode, storm_motion, radar, radar_time, map_zoom, modify_sfc, dpi, max_levels, ylim, theme, show_obs)
+    else:
+        if show_obs:
+            warnings.warn("show_obs is only used by the winter sounding (mode='winter'); ignoring it.", Warning)
+        plt = __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, radar, radar_time, map_zoom, modify_sfc, show_theta, hodo_boundary, dpi, max_levels, ylim, theme, sr_hodo)
     if save:
         plt.savefig(filename, bbox_inches='tight')
     else:

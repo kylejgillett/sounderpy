@@ -194,6 +194,27 @@ Higher DPI:
        --dpi 200 \
        --plot-file oax_200dpi.png
 
+Winter sounding, with the latest surface observation:
+
+.. code-block:: bash
+
+   sounderpy bufkit hrrr KGFK 1 \
+       --run 2024-01-24 12 \
+       --plot sounding \
+       --mode winter \
+       --obs \
+       --plot-file kgfk_winter.png
+
+Let SounderPy choose (winter when the surface wet-bulb is below 35 degrees F):
+
+.. code-block:: bash
+
+   sounderpy bufkit hrrr KGFK 1 \
+       --run 2024-01-24 12 \
+       --plot sounding \
+       --mode auto \
+       --plot-file kgfk_auto.png
+
 
 ***************************************************************
  
