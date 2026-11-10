@@ -1,18 +1,10 @@
 # FIXES NEEDED BEFORE RELEASE
 
-- [x] remove temp branches and worktrees
-- [x] check modify sfc logic. Perhaps add flag for a simple replace or mixing algo? Doesn't work well for winter scenarios when BLSN is in question, in which often the lowest 500m matters most. Current modify_sfc interp logic overwrites values to high AGL. I.e., sometimes the mixed-layer lapse rate should actually be 20-40C/km 
-- [x] find a better way to handle x-axis limits when setting short ylim, i.e., the x-axis should maybe be squeezed in a little. The idea is too keep the lowest ~1km centered on the x-axis.
-    - [x] `__composite_sounding`: `ylim` views have sparse background lines over very thin layers (about 100 hPa)
-    - [x] `build_sounding`: `ylim` raises `StopIteration` when no temperature span fits the view (e.g. (1000, 600) on a cold profile with a warm elevated MU parcel): `_get_zoomed_temperature_limits` gives up at a ~300 deg span and `_get_temperature_ticks` finds no tick step; severe and winter both
-- [ ] `plot/components.py`: 103 of 104 functions have no docstring; add
-- [ ] `plot/components.py`: no repo tests cover the helpers, `parcel_depth`, thinning, `ylim`, `set_watermark`, or missing-value handling; add something simple.
+- [ ] `_get_zoomed_background_lines`: on a thin or inverted zoomed view (e.g. fzra at `ylim=(1000, 900)`, sleet at (1000, 700)) the x-axis hits `ZOOM_MAX_SPAN`, the hot top-right corner gives MetPy `wet_bulb_potential_temperature` values in the thousands of °C, and up to ~1200 moist adiabats are drawn instead of ~12 (strict xfail in `tests/test_plot_components.py`)
+- [ ] `utils.mag()` truncates instead of rounding (`int()`), so readouts drop toward zero (999.9 J/kg shows 999, -0.6 shows 0)
 - [ ] `plot/components.py`: no public API for building custom figures; every drawing function is private; will need to determine the best option for this, what users should have and shouldn't have
-- [x] `calc.py` streamwise vorticity (`swv`/`swv_perc`, sounding and VAD): divides by the storm-relative wind speed with no small offset, so a level where the wind exactly equals storm motion gives NaN, and that NaN carries into its layer means. Rare on interpolated data; fix would be the same `+1e-7` offset already used for `shear`; fix
-- [x] `calc.py` `sbZ_trace` / `muZ_trace`: `general['elevation']` + `calculate_height(p)` counts the elevation twice, since `calculate_height` is already a standard-atmosphere MSL height (DEN ACARS 2024-01-15 1420Z: surface point at 3296 m, the airport is 1655 m); neither AGL nor MSL. Not drawn on any figure today; fix
-- [x] Winter Bourgouin: the code applies the 5.6/13.2 J/kg thresholds to every melting layer; in Bourgouin (2000) they are for the surface-based warm layer, an elevated melting layer counts only at >= 2 J/kg, and a surface warm layer >= 13.2 J/kg remelts ice pellets; the energy comment should read g * integral((T - T0)/T0) dz. Is there a good fix for this? Check other references if available.
-- [x] Dont do anything special for ice fog, leave as "Freezing Fog" regardless of temperature
 - [ ] Check the CLI. Test for bugs, errors, and missing features.
+
 
 # FUTURE FIXES
 - [ ] `set_watermark`: settings are shared across a Python process, so a shared web app worker would affect all users

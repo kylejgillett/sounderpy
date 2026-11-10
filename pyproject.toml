@@ -101,6 +101,11 @@ exclude = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = [
-    "network: tests that contact live external data services",
-    "slow: computationally heavier plotting/rendering tests",
+    "network: contacts a live data service; skipped unless pytest is run with --network",
+    "slow: renders a full figure; skip with -m \"not slow\"",
+]
+filterwarnings = [
+    # MetPy 1.7's skew-t on Matplotlib 3.11, and ecape_parcel on MetPy; see PLOT_ISSUES.md (FUTURE FIXES)
+    "ignore:The interval_contains function was deprecated",
+    "ignore:Temperature argument is unused",
 ]

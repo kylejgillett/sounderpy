@@ -383,7 +383,7 @@ Theme settings
 Watermark
 ----------------------------------
 
-SounderPy figures carry a small watermark with the SounderPy logo and credit text. ``spy.set_watermark()`` changes it for every figure made afterwards in the same Python session.
+SounderPy figures by default show the SounderPy logo and credit text. In a new addition, ``spy.set_watermark()`` allows you to change it for every figure made afterwards in the same Python session. This is especially useful for field campaign projects or university observations.
 
 .. py:function:: spy.set_watermark(**settings)
 
@@ -419,7 +419,7 @@ Example
    spy.set_watermark()
 
 .. note::
-   Watermark settings are shared by everything running in the same Python process. In a web app or server that makes figures for many users from one process, a change made for one user affects the others.
+   Watermark settings are shared by everything running in the same Python process.
 
 
 **************************************************
@@ -436,13 +436,14 @@ Example
 Surface Modification Logic
 ---------------------------
 
-Users may override the surface values of the ``clean_data`` dict, when creating a plot or returning sounding parameters, using the ``modify_sfc`` kwarg. This argument is a python dictionary.
+Users may override the surface values of the ``clean_data`` dict, when creating a plot or returning sounding parameters, using the ``modify_sfc`` kwarg. This argument is a python dictionary. New to v3.3.0, the surface modification logic now includes three different "methods" of modification: `"mix"`, `"blend"`, and `"replace"`.
 
-With the default ``'method': 'mix'``, a surface temperature warmer than the profile is mixed upward along its dry adiabat until it meets the original profile, the depth a heated surface mixes to (Holzworth 1964). Through that layer, a new surface dewpoint is held at a constant mixing ratio, as in a well-mixed boundary layer. A cooler surface temperature, a dewpoint-only change, and the wind change only the surface level. Dewpoint is never allowed to exceed temperature.
+With the default ``'method': 'mix'``, a surface temperature warmer than the profile is mixed upward along its dry adiabat until it meets the original profile, the depth a heated surface mixes to (Holzworth 1964). Through that layer, a new surface dewpoint is held at a constant mixing ratio, as in a well-mixed boundary layer. A cooler surface temperature, a dewpoint-only change, and wind changes will change only the surface level (i.e., no mixing). Dewpoint is never allowed to exceed temperature.
 
-With ``'method': 'replace'``, only the surface level changes, so a superadiabatic surface layer is kept. This suits cases where the lowest few hundred meters matter most, such as blowing snow, where mixing a warmer surface temperature upward would overwrite the profile well above the ground.
+With ``'method': 'blend'``, the temperature and dewpoint changes taper linearly from the surface to zero at ``depth`` meters above ground (500 m by default), so a warmer surface may give a superadiabatic layer of that depth while the profile above it is unchanged. For example, a surface 4°C warmer blended over 250 m adds 16 °C/km to that layer's lapse rate. This option is usually unrealistic in the warm season, but may be useful in the cool season (e.g., blowing snow, lake effect, etc)
 
-With ``'method': 'blend'``, the temperature and dewpoint changes taper linearly from the surface to zero at ``depth`` meters above ground (500 m by default), so a warmer surface gives a superadiabatic layer of that depth and the profile above it is unchanged. For example, a surface 4 °C warmer blended over 250 m adds 16 °C/km to that layer's lapse rate.
+With ``'method': 'replace'``, only the surface level changes, so a superadiabatic surface layer is kept. This suits cases where the lowest few hundred meters matter most.
+
 
 The ``modify_sfc`` dict
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -451,7 +452,7 @@ The ``modify_sfc`` dict
 - ``ws``: Wind speed, knots
 - ``wd``: Wind direction, meteorological degrees (north=0)
 - ``method``: ``'mix'`` (default), ``'replace'``, or ``'blend'``
-- ``depth``: Depth of the blend, meters above ground (``'blend'`` only, default 500)
+- ``depth``: Depth of the blend, meters above ground (``'blend'`` only, default 500 (meters))
 
 Examples:
 
@@ -617,7 +618,7 @@ The map inset is controlled with ``map_zoom``.
 
 Using Radar
 ^^^^^^^^^^^^^^^^^
-SounderPy offers two sources of radar data to the user. First is a CONUS reflectivity mosaic, and the other is single-site NEXRAD WSR-88D reflectivity. The CONUS mosaic is default because its fastest and easiest to plot, but data availablity is only up to 30 days before the current date. Single-site radar goes back much further but data availability varies by site and date.
+SounderPy offers two sources of radar data to the user. First is a CONUS reflectivity mosaic, and the other is single-site NEXRAD WSR-88D reflectivity. The CONUS mosaic is default because its fastest and easiest to plot, but data availability is only up to 30 days before the current date. Single-site radar goes back much further but data availability varies by site and date.
 
 To plot radar on a sounding or hodograph, there are two kwargs to understand:
 

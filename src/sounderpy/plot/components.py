@@ -117,7 +117,7 @@ VALID_PARCEL_CODES = ("mu_ps_cape", "mu_ia_cape", "mu_ps_ecape", "mu_ia_ecape",
 #########################################################################
 
 def _thin_sounding(data, max_levels):
-    # keep at most max_levels evenly spaced levels, always including the surface and top
+    """Keep at most max_levels evenly spaced levels, always including the surface and top."""
     n_levels = len(data["p"])
     if max_levels is None or n_levels <= max_levels:
         return data
@@ -127,6 +127,7 @@ def _thin_sounding(data, max_levels):
 
 
 def _prepare_sounding_data(clean_data, modify_sfc=None, max_levels=None):
+    """Copy clean_data for plotting, thinned to max_levels and with any surface modification applied."""
     plot_data = _thin_sounding(copy.deepcopy(clean_data), max_levels)
 
     if modify_sfc is not None:
@@ -139,6 +140,7 @@ def _prepare_sounding_data(clean_data, modify_sfc=None, max_levels=None):
 ###### PARCEL LOGIC UTILS ######
 ################################
 def _validate_special_parcels(special_parcels):
+    """Flatten the (primary, secondary) special parcel lists, raising a ValueError for unknown parcel codes."""
     all_parcels = sum(special_parcels, [])
     invalid_parcels = [parcel for parcel in all_parcels if parcel not in VALID_PARCEL_CODES]
     if invalid_parcels:
@@ -147,7 +149,7 @@ def _validate_special_parcels(special_parcels):
     return all_parcels
 
 def _calculate_special_parcel(parcel, data, snd_params):
-    # calc special ecape parcels with ecape_parcel library 
+    """Calculate a special (E)CAPE parcel trace with the ecape_parcel library, adding its density temperature."""
     kinem = snd_params["kinem"]
     parcel_type, adiabatic_type, cape_type = parcel.split("_")
     trace = calc_ecape_parcel(data["p"], data["z"], data["T"], data["Td"], data["u"], data["v"], False,
@@ -162,7 +164,7 @@ def _calculate_special_parcel(parcel, data, snd_params):
     return trace + (trace_Trho,)
 
 def _calculate_special_parcels(special_parcels, data, snd_params):
-    # validate and compute special parcels
+    """Validate and calculate each special parcel, keyed by parcel code."""
     all_parcels = _validate_special_parcels(special_parcels)
     parcel_data = {}
     for parcel in all_parcels:
@@ -170,7 +172,7 @@ def _calculate_special_parcels(special_parcels, data, snd_params):
     return parcel_data
 
 def _format_special_parcel_name(parcel):
-    # combine term components into a name for a special parcel
+    """Combine a special parcel code's terms into a legend name."""
     parcel_type, adiabatic_type, cape_type = parcel.split("_")
     adiabatic_name = PARCEL_DETAILS["term2"][adiabatic_type][1]
     return (f"{parcel_type} {adiabatic_name} {cape_type}").upper()
@@ -183,15 +185,15 @@ def _format_special_parcel_name(parcel):
 
 
 
-# apply theme background and border colors to an axis
 def _style_axis(ax, theme):
+    """Apply the theme's background and border colors to an axis."""
     ax.set_facecolor(theme["background"])
     for spine in ax.spines.values():
         spine.set_color(theme["border"])
 
 
-# resize every font and line on a finished figure
 def _scale_figure(fig, font_scale=1, line_scale=1):
+    """Resize every font and line on a finished figure."""
 
     if font_scale <= 0 or line_scale <= 0:
         raise ValueError(f"'font_scale' and 'line_scale' must be above 0. Got: {font_scale}, {line_scale}")
@@ -211,8 +213,8 @@ def _scale_figure(fig, font_scale=1, line_scale=1):
             artist.set_linewidth(np.asarray(artist.get_linewidth()) * line_scale)
 
 
-# determine skew-t x-axis bounds based on sfc t
 def _get_skewt_temperature_bounds(surface_temperature):
+    """Skew-t x-axis bounds (degC) based on the surface temperature."""
     sfc_temp = surface_temperature.to("degC").m
     if sfc_temp <= -20:
         return (-52, 32)
@@ -223,9 +225,9 @@ def _get_skewt_temperature_bounds(surface_temperature):
     return (-32, 52)
 
 
-# create skewt fig
 def _setup_skewt(fig, temperature, theme, rect=None, subplot=None, rotation=47, 
                  pressure_limits=(1050, 100), temperature_limits="auto", box_aspect=0.87, show_pressure_ticks=True, pressure_ticks=(1000, 900, 800, 700, 600, 500, 400, 300, 200)):
+    """Create a skew-t on a figure, with its pressure and temperature limits, ticks, and theme."""
 
     skew = SkewT(fig, rotation=rotation, subplot=subplot, rect=rect)
     skew.ax.set_box_aspect(box_aspect)
@@ -255,6 +257,7 @@ def _setup_skewt(fig, temperature, theme, rect=None, subplot=None, rotation=47,
 
 def _plot_skewt_accessories(skew, theme, shade_isotherms=True, highlight_isotherms=(0, -20),
                             dry_adiabats=True, moist_adiabats=True, mixing_lines=True, fit_to_view=False):
+    """Draw shaded and highlighted isotherms, dry and moist adiabats, and mixing lines on a skew-t."""
 
     # zoomed views space the background lines to the box, so a thin layer still shows several
     lines = _get_zoomed_background_lines(skew) if fit_to_view else {}
@@ -280,6 +283,7 @@ def _plot_skewt_accessories(skew, theme, shade_isotherms=True, highlight_isother
 
 def _plot_skewt_profiles(skew, data, snd_params, theme, show_temperature=True, 
                          show_dewpoint=True, show_wetbulb=True, show_virtual=True, linewidth=5):
+    """Plot the temperature, dewpoint, wet-bulb, and virtual temperature traces on a skew-t."""
 
     p = data["p"]
 
@@ -295,13 +299,14 @@ def _plot_skewt_profiles(skew, data, snd_params, theme, show_temperature=True,
 
 
 def _plot_parcel_trace(skew, pressure, temperature, color, label=None, linewidth=2, linestyle="--", alpha=1):
+    """Plot one parcel trace on a skew-t."""
     return skew.plot(pressure, temperature, color=color, label=label, linewidth=linewidth, linestyle=linestyle, alpha=alpha)
 
 
 
 
 def _plot_special_parcels(skew, special_parcels, parcel_data, theme):
-    # plot user requested special parcel traces
+    """Plot the user-requested special parcel traces, with secondary parcels faded."""
     primary_parcels = special_parcels[0]
     secondary_parcels = special_parcels[1]
 
@@ -320,7 +325,7 @@ def _plot_special_parcels(skew, special_parcels, parcel_data, theme):
 
 
 def _plot_basic_parcels(skew, snd_params, theme, muecape_trace=None):
-    # plot standard MU/SB/ML parcel traces. muecape_trace comes from _calculate_special_parcel
+    """Plot the standard MU/SB/ML parcel traces, plus the MUECAPE trace from _calculate_special_parcel."""
     thermo = snd_params["thermo"]
 
     # MUECAPE parcel
@@ -335,19 +340,20 @@ def _plot_basic_parcels(skew, snd_params, theme, muecape_trace=None):
 
 
 def _plot_downdraft_parcel(skew, snd_params, theme):
-    # plot downdraft parcel trace
+    """Plot the downdraft parcel trace."""
     skew.plot(snd_params["thermo"]["dparcel_p"], snd_params["thermo"]["dparcel_T"], 
               linestyle="--", linewidth=0.75, color=theme["downdraft"], alpha=0.8, label="DWNDRFT PARCEL")
 
 
 def _add_skewt_layer_line(skew, x, p_bottom, p_top, color, alpha=0.7, linewidth=1, linestyle=":"):
+    """Draw a vertical line between two pressures at an axis-fraction x on a skew-t."""
     line = mlines.Line2D([x, x], [p_bottom, p_top], color=color,
         linestyle=linestyle, linewidth=linewidth, alpha=alpha, transform=skew.ax.get_yaxis_transform(),)
     skew.ax.add_artist(line)
 
 
-# km marker heights (m AGL) that suit a skew-t's pressure range
 def _get_height_markers(snd_params, ylim):
+    """Km marker heights (m AGL) that suit a skew-t's pressure range."""
     intrp = snd_params["intrp"]
     in_view = intrp["zINTRP"][(intrp["pINTRP"] <= ylim[0]) & (intrp["pINTRP"] >= ylim[1])]
     if in_view.size == 0:
@@ -358,7 +364,7 @@ def _get_height_markers(snd_params, ylim):
 
 
 def _plot_skewt_height_annotations(skew, data, snd_params, theme, heights=range(1000, 14000, 2000), xloc=0.048, show_surface=True):
-    # plots height markers (km AGL) to left of skew-t
+    """Label heights (km AGL) and the surface elevation along the left of a skew-t."""
     p = data["p"]
     intrp = snd_params["intrp"]
     trans, _, _ = skew.ax.get_yaxis_text1_transform(0)
@@ -375,8 +381,8 @@ def _plot_skewt_height_annotations(skew, data, snd_params, theme, heights=range(
 
 
 
-# a modify_sfc dict in words, e.g. "T -8°C, Td -11°C · mixed to 1.5 km"
 def _describe_surface_modification(clean_data, modify_sfc):
+    """Describe a modify_sfc dict in words, e.g. "T -8°C, Td -11°C · mixed to 1.5 km"."""
     parts = [f"{key} {modify_sfc[key]:g}°C" for key in ("T", "Td") if key in modify_sfc]
     if "ws" in modify_sfc and "wd" in modify_sfc:
         parts.append(f"{modify_sfc['ws']:g} kt @ {modify_sfc['wd']:g}°")
@@ -394,6 +400,7 @@ def _describe_surface_modification(clean_data, modify_sfc):
 
 
 def _plot_skewt_surface_annotations(skew, data, theme, modify_sfc=None, original=None, temperature_unit="degF"):
+    """Label the surface temperature and dewpoint, and describe any surface modification."""
     p = data["p"]
     T = data["T"]
     Td = data["Td"]
@@ -423,8 +430,8 @@ def _plot_skewt_surface_annotations(skew, data, theme, modify_sfc=None, original
 
 
 
-# space labels at least `gap` pixels apart, keeping each as close to its own pressure as it can
 def _spread_label_pressures(ax, pressures, gap):
+    """Space labels at least `gap` pixels apart, keeping each as close to its own pressure as it can."""
     to_display, to_data = ax.transData, ax.transData.inverted()
     ys = [to_display.transform((0, p))[1] for p in pressures]
     top = ax.bbox.y1 - gap / 2
@@ -441,8 +448,7 @@ def _spread_label_pressures(ax, pressures, gap):
 
 
 def _plot_skewt_parcel_level_annotations(skew, data, snd_params, theme, parcel="mu", levels=("lcl", "lfc", "el"), x=0.85):
-    # a column for one parcel: its name at the surface, then its levels up a dotted line. Labels
-    # that are too close are spread apart, and an arrow marks each level's true pressure
+    """Label one parcel's LCL, LFC, and EL up a column, spreading close labels apart and marking true pressures with arrows."""
     thermo = snd_params["thermo"]
     color = theme["parcel"][parcel]
     ax = skew.ax
@@ -498,7 +504,7 @@ def _plot_skewt_parcel_level_annotations(skew, data, snd_params, theme, parcel="
 
 
 def _plot_skewt_freezing_annotations(skew, snd_params, theme, xloc=0.745, show_temperature=True, show_wetbulb=True):
-    # label the freezing and wet-bulb-zero levels, spreading the labels apart when they're close
+    """Label the freezing and wet-bulb-zero levels, spreading the labels apart when they're close."""
     general = snd_params["general"]
     labels = []
     for show, key, text in ((show_temperature, "frz_pt", "←FRZ"), (show_wetbulb, "wb_frz_pt", "←WB0")):
@@ -514,28 +520,29 @@ def _plot_skewt_freezing_annotations(skew, snd_params, theme, xloc=0.745, show_t
 
 
 
-# whether there is an effective inflow layer with some depth to draw
 def _has_eil(kinem):
+    """Whether there is an effective inflow layer with some depth to draw."""
     eil = kinem.get("eil", (ma.masked, ma.masked))
     return not ma.is_masked(eil[0]) and not ma.is_masked(eil[1]) and eil[0] > eil[1]
 
 
 def _plot_skewt_layer_annotations(skew, data, snd_params, theme, layers=("pbl", "lapse_rate", "eil", "growth_zone")):
-    # plot PBL, max lapse rate, EIL, and DGZ/HGZ annotations on skew-t
+    """Mark the PBL, max lapse rate layer, EIL, and DGZ/HGZ on a skew-t."""
     thermo = snd_params["thermo"]
     kinem = snd_params["kinem"]
     T = data["T"]
     p = data["p"]
     transform = skew.ax.get_yaxis_transform()
 
-    # short horizontal ticks at a layer's bottom and top
     def _plot_layer_ticks(x, bounds, color, alpha, linewidth):
+        """Draw short horizontal ticks at a layer's bottom and top."""
         for bound in bounds:
             if not ma.is_masked(bound):
                 skew.ax.add_artist(mlines.Line2D([x - 0.01, x + 0.01], [bound, bound], color=color, alpha=alpha,
                                                  linewidth=linewidth, transform=transform))
 
     def _plot_labeled_layer(x, bounds, label, color, label_alpha, line_alpha, linewidth=3, ticks=False):
+        """Draw a layer's vertical line with a label above it, and optional ticks."""
         # sit the label higher when a tick marks the layer top; a multi-line label is anchored at its
         # bottom so the extra lines stack upward instead of running down into the layer line
         va = "bottom" if "\n" in label else "baseline"
@@ -567,18 +574,19 @@ def _plot_skewt_layer_annotations(skew, data, snd_params, theme, layers=("pbl", 
 
 
 def _plot_skewt_cape_annotations(skew, snd_params, theme):
-    # plot MUCAPE value annotations at 3km, 6km, and the EL along the parcel trace
+    """Label 0-3 km, 0-6 km, and total MUCAPE along the MU parcel trace."""
     thermo = snd_params["thermo"]
     intrp = snd_params["intrp"]
     color = theme["parcel"]["mu"]
 
     def _plot_cape_label(value, temperature, pressure):
+        """Label a CAPE value at a point on the parcel trace."""
         label = f"← {mag(value)} " + r"$\mathrm{Jkg^{-1}}$"
         skew.ax.annotate(label, xy=(temperature, pressure), xytext=(8, 0), textcoords="offset points",
                          color=color, alpha=0.7, fontsize=FONT_SIZES["annotation"], ha="left", va="center")
 
-    # parcel temperature where the trace reaches a height (m AGL) in the sounding
     def _plot_cape_label_at_height(value, height):
+        """Label a CAPE value at the parcel temperature where the trace reaches a height (m AGL)."""
         if height > np.nanmax(intrp["zINTRP"]):
             return
         pressure = intrp["pINTRP"][find_nearest(intrp["zINTRP"], height)]
@@ -606,7 +614,7 @@ def _plot_skewt_cape_annotations(skew, snd_params, theme):
 
 
 def _plot_skewt_rh_annotations(skew, snd_params, theme):
-    # plot RH annotations every 3km along the dewpoint trace
+    """Label RH at a few heights along the dewpoint trace."""
     height_indices = [10, 30, 60, 90, 120]
     for idx in height_indices:
         # shallow profiles may not reach every height
@@ -625,6 +633,7 @@ def _plot_skewt_rh_annotations(skew, snd_params, theme):
 
 def _plot_skewt_wind_barbs(skew, data, snd_params, theme, add_sr_barbs=True, 
                            ground_xloc=0.955, storm_xloc=None, n_barbs=30, barb_length=8, sr_alpha=0.4, show_labels=True, ylim=None):
+    """Plot ground- and storm-relative wind barbs in a column along the right of a skew-t."""
 
     p = data["p"]
     u = data["u"]
@@ -703,7 +712,7 @@ def _plot_skewt_wind_barbs(skew, data, snd_params, theme, add_sr_barbs=True,
 
 
 def _prepare_hodograph_data(snd_params, max_height=12000):
-    # use interp u, v, & z for easy hodo plotting
+    """Interpolated z, u, and v up to max_height, without missing values, for hodograph plotting."""
     z = np.asarray(snd_params["intrp"]["zINTRP"])
     u = np.asarray(snd_params["intrp"]["uINTRP"])
     v = np.asarray(snd_params["intrp"]["vINTRP"])
@@ -711,8 +720,8 @@ def _prepare_hodograph_data(snd_params, max_height=12000):
     return {"z": z[valid], "u": u[valid], "v": v[valid]}
 
 
-# determine hodograph bounds based on u/v wind data
 def _get_hodograph_bounds(hodo_data, lower_padding=45, upper_padding=30, fallback=(-100, 100), dynamic=True):
+    """Hodograph axis limits that fit the u/v winds and the origin, with padding."""
 
     if dynamic:
         u = hodo_data["u"]
@@ -733,9 +742,9 @@ def _get_hodograph_bounds(hodo_data, lower_padding=45, upper_padding=30, fallbac
         return fallback, fallback
 
 
-# create hodograph axis
 def _setup_hodograph(ax, theme, xlim, ylim, 
                      component_range=160, box_aspect=1, major_grid=20, minor_grid=10):
+    """Create a hodograph axis with its limits, grids, and theme."""
 
     # create hodograph object
     hodo = Hodograph(ax, component_range=component_range)
@@ -767,8 +776,8 @@ def _setup_hodograph(ax, theme, xlim, ylim,
     return hodo
 
 
-# add velocity labels to hodograph axes
 def _plot_hodograph_velocity_labels(hodo, theme, speeds=range(10, 130, 20), fontsize=FONT_SIZES["label"], alpha=0.5):
+    """Label wind speeds along the hodograph's axes."""
 
     for speed in speeds:
         locations = (( speed, 0), (-speed, 0), (0,  speed), (0, -speed))
@@ -777,9 +786,9 @@ def _plot_hodograph_velocity_labels(hodo, theme, speeds=range(10, 130, 20), font
                 fontsize=fontsize, weight="bold", alpha=alpha, zorder=0, color=theme["text"])
 
 
-# add height markers to hodograph trace
 def _plot_hodograph_height_markers(hodo, snd_params, theme,
         heights=(500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000), marker_size=40, fontsize=FONT_SIZES["tick"]):
+    """Mark heights (km AGL) along the hodograph trace."""
 
     z = np.asarray(snd_params["intrp"]["zINTRP"])
     u = np.asarray(snd_params["intrp"]["uINTRP"])
@@ -804,8 +813,8 @@ def _plot_hodograph_height_markers(hodo, snd_params, theme,
 
 
 
-# plot hodograph
 def _plot_hodograph_trace(hodo, snd_params, theme, layers=None, linewidth=7, zorder=4):
+    """Plot the hodograph trace, colored by height layer."""
 
     z = np.asarray(snd_params["intrp"]["zINTRP"])
     u = np.asarray(snd_params["intrp"]["uINTRP"])
@@ -828,17 +837,17 @@ def _plot_hodograph_trace(hodo, snd_params, theme, layers=None, linewidth=7, zor
 
 
 
-# format a storm motion's direction and speed for a readout
 def _format_motion(label, u, v):
+    """Format a storm motion's direction and speed for a readout."""
     if not np.isfinite([u, v]).all():
         return f"{label}: ---"
     speed = mpcalc.wind_speed(u * units.kts, v * units.kts).m
     return f"{label}: {wind_to_dir(u, v)} @ {mag(speed)} kt"
 
 
-# label storm motions at their locations on the hodograph
 def _plot_hodograph_motion_labels(hodo, snd_params, storm_motion, theme, show_rm=True, show_lm=True, show_mw=True,
                                   show_dtm=True, show_mcs=True, show_selected_sm=True):
+    """Label storm motions at their locations on the hodograph."""
     kinem = snd_params["kinem"]
     text_color = theme["text"]
 
@@ -865,21 +874,21 @@ def _plot_hodograph_motion_labels(hodo, snd_params, storm_motion, theme, show_rm
         hodo.ax.text(kinem["sm_u"] + 0.5, kinem["sm_v"] - 0.5, "SM", weight="bold", ha="left", fontsize=FONT_SIZES["annotation_large"], alpha=0.9, zorder=7, color=text_color)
 
 
-# draw the selected storm motion's vector from the origin
 def _plot_hodograph_sm_vector(hodo, snd_params, theme):
+    """Draw the selected storm motion's vector from the origin."""
     kinem = snd_params["kinem"]
     if not ma.is_masked(kinem["sm_u"]) and not ma.is_masked(kinem["sm_v"]):
         hodo.ax.arrow(0, 0, kinem["sm_u"] - 0.3, kinem["sm_v"] - 0.3, linewidth=3, color=theme["text"], alpha=0.2, length_includes_head=True, head_width=0.6)
 
 
-# readout name for a storm motion, matching the names calc() accepts
 def _storm_motion_name(storm_motion):
+    """Readout name for a storm motion, matching the names calc() accepts."""
     return {"rm": "RIGHT MOVING", "lm": "LEFT MOVING", "mw": "MEAN WIND", "custom": "USER DEFINED"}[storm_motion_type(storm_motion)]
 
 
-# list storm motion values on the hodograph, with the selected motion in bold at the top
 def _plot_hodograph_motion_readout(hodo, snd_params, storm_motion, theme, show_rm=True, show_lm=True, show_mw=True, show_dtm=True,
                                    show_mcs=True, x=0.085, y=0.99, fontsize=FONT_SIZES["annotation_large"]):
+    """List storm motion values on the hodograph, with the selected motion in bold at the top."""
     kinem = snd_params["kinem"]
     motions = []
 
@@ -904,8 +913,8 @@ def _plot_hodograph_motion_readout(hodo, snd_params, storm_motion, theme, show_r
         hodo.ax.text(x, y, "\n".join(motions), **style)
 
 
-# shift a sounding's winds and storm motions to be relative to the selected storm motion
 def _make_storm_relative(snd_params):
+    """Shift a sounding's winds and storm motions to be relative to the selected storm motion."""
     kinem = dict(snd_params["kinem"])
     intrp = dict(snd_params["intrp"])
     sm_u, sm_v = kinem["sm_u"], kinem["sm_v"]
@@ -922,9 +931,9 @@ def _make_storm_relative(snd_params):
     return {**snd_params, "kinem": kinem, "intrp": intrp}
 
 
-# add a SRH fill, based on SM or over a layer
 def _plot_hodograph_srh(hodo, snd_params, theme, layer="auto", alpha=None, 
                         show_connectors=True, connector_width=2.3, connector_alpha=0.5):
+    """Fill the SRH area between the storm motion and the hodograph over the EIL, 0-3 km, or a given layer."""
 
     color = theme["eil"]
     kinem = snd_params["kinem"]
@@ -989,6 +998,7 @@ def _plot_hodograph_srh(hodo, snd_params, theme, layer="auto", alpha=None,
 
 def _plot_hodograph_boundary(hodo, hodo_boundary, snd_params, theme, 
                              length=200, show_mw_vector=True, show_lm_vector=False, linestyle="--", linewidth=2, alpha=0.3):
+    """Draw boundary axes and mean wind/left mover vectors on the hodograph."""
 
     if hodo_boundary is None:
         return
@@ -1025,28 +1035,29 @@ def _plot_hodograph_boundary(hodo, hodo_boundary, snd_params, theme,
 ############################## MAP INSET UTILS ##################################
 ################################################################################# 
 
-# read map shapes once per process
 @lru_cache(maxsize=None)
 def _load_map_shapes(name):
+    """Read a map's shapes and CRS once per process."""
     feature = {"states": cfeature.STATES.with_scale("10m"), "counties": USCOUNTIES}[name]
     return tuple(feature.geometries()), feature.crs
 
 
-# get the map shapes within a (west, south, east, north) box
 def _get_map_shapes(name, bounds):
+    """Get the map shapes within a (west, south, east, north) box."""
     shapes, crs = _load_map_shapes(name)
     box = sgeom.box(*bounds)
     return [shape for shape in shapes if shape.intersects(box)], crs
 
 
-# find the coarsest tile zoom that still gives the map axis a sharp image
 def _get_satellite_zoom(map_ax, map_zoom, oversample=2, tile_size=256):
+    """Find the coarsest tile zoom that still gives the map axis a sharp image."""
     pixels = min(map_ax.bbox.width, map_ax.bbox.height) * oversample
     lon_span = 2 * map_zoom
     return int(np.clip(np.ceil(np.log2(pixels * 360 / (tile_size * lon_span))), 1, 18))
 
 
 def _setup_map_inset(map_ax, latlon, theme, map_zoom=2, show_satellite=True, satellite_zoom="auto", show_states=True, show_counties=True):
+    """Set up a map inset centered on a lat/lon, with states, counties, and satellite imagery."""
     # map_ax needs a cartopy projection (e.g., fig.add_axes(rect, projection=ccrs.PlateCarree()))
     lat, lon = latlon
     west, east, south, north = lon - map_zoom, lon + map_zoom, lat - map_zoom / 1.6, lat + map_zoom * 1.6
@@ -1075,8 +1086,8 @@ def _setup_map_inset(map_ax, latlon, theme, map_zoom=2, show_satellite=True, sat
     return map_ax
 
 
-# add a boxed label to the bottom of the map
 def _add_map_label(map_ax, text, theme):
+    """Add a boxed label to the bottom of the map."""
     label = map_ax.text(0.50, 0.03, text, transform=map_ax.transAxes, ha="center", va="bottom", alpha=0.9, weight="bold",
                         fontsize=FONT_SIZES["small"], zorder=13, color=theme["text"], bbox=dict(facecolor=theme["background"], alpha=0.8, edgecolor=theme["border"], pad=3))
     _fit_text(label, map_ax, 0.92)
@@ -1084,6 +1095,7 @@ def _add_map_label(map_ax, text, theme):
 
 def _plot_map_mosaic_radar(map_ax, sounding_data, map_zoom, radar_time, theme, reflectivity_min=10,
                            alpha=1, lon_offset=0.05, lat_offset=0.05, show_timestamp=True, reflectivity_max=None):
+    """Plot mosaic radar reflectivity on the map, returning whether it worked."""
     try:
         radar_data = get_radar_mosaic(sounding_data, map_zoom, radar_time)
         reflectivity = np.ma.masked_less(np.asarray(radar_data["Reflectivity"])[0], reflectivity_min)
@@ -1108,6 +1120,7 @@ def _plot_map_mosaic_radar(map_ax, sounding_data, map_zoom, radar_time, theme, r
 
 def _plot_map_single_site_radar(map_ax, sounding_data, radar_time, theme, reflectivity_min=10, show_timestamp=True,
                                 reflectivity_max=None):
+    """Plot the nearest NEXRAD's reflectivity on the map, returning whether it worked."""
     try:
         lat, lon = sounding_data["site_info"]["site-latlon"]
         site_ids, lat_radar, lon_radar = parse_nexrad_locs()
@@ -1148,6 +1161,7 @@ def _plot_map_single_site_radar(map_ax, sounding_data, radar_time, theme, reflec
 
 
 def _plot_map_profile_location(map_ax, latlon, theme, marker_size=90, center_size=16):
+    """Mark the profile's location on the map."""
 
     lat, lon = latlon
     transform = ccrs.PlateCarree()
@@ -1163,8 +1177,8 @@ def _plot_map_profile_location(map_ax, latlon, theme, marker_size=90, center_siz
 ########################### ACCESSORY PANEL UTILS ###############################
 #################################################################################
 
-# set up a log-pressure axis with no ticks, to sit alongside a skew-t
 def _setup_pressure_axis(ax, theme, pressure_limits=(1050, 100)):
+    """Set up a log-pressure axis with no ticks, to sit alongside a skew-t."""
 
     ax.set_yscale("log")
     ax.set_ylim(*pressure_limits)
@@ -1179,6 +1193,7 @@ def _setup_pressure_axis(ax, theme, pressure_limits=(1050, 100)):
 
 def _plot_temperature_advection(ax, snd_params, theme, pressure_levels=range(200, 1100, 100), pressure_limits=(1050, 100),
                                 x_padding=4, show_values=True):
+    """Plot temperature advection as horizontal bars by pressure layer."""
 
     advection, bounds = snd_params["thermo"]["temp_adv"]
     advection = np.ma.filled(advection, np.nan)
@@ -1207,9 +1222,9 @@ def _plot_temperature_advection(ax, snd_params, theme, pressure_levels=range(200
 
 
 
-# overlay omega on a skew-t. omega (Pa/s) is scaled for plotting simplicity
 def _plot_omega(ax, data, theme, x_limits=(40, -300), scale=10, 
                 reference_value=10, pressure_limits=(1050, 100)):
+    """Overlay omega on a skew-t, scaled for plotting simplicity."""
 
     p = data["p"].m
     omega = np.asarray(getattr(data["omega"], "m", data["omega"])) * scale
@@ -1232,8 +1247,8 @@ def _plot_omega(ax, data, theme, x_limits=(40, -300), scale=10,
 
 
 
-# configure the x-axis of a low-level panel
 def _set_panel_x_axis(ax, theme, limits, ticks, tick_labels, tick_pad=-12, rotation=0):
+    """Configure the x-axis of a low-level panel."""
 
     ax.set_xticks(ticks)
     ax.set_xticklabels(tick_labels, weight="bold", alpha=0.5, fontstyle="italic", color=theme["text"], rotation=rotation)
@@ -1241,8 +1256,8 @@ def _set_panel_x_axis(ax, theme, limits, ticks, tick_labels, tick_pad=-12, rotat
     ax.tick_params(axis="x", direction="in", pad=tick_pad)
 
 
-# set up a height axis for a low-level panel
 def _setup_height_panel(ax, theme, x_limits, x_ticks, x_tick_labels, z_limits=(0, 3000), z_interval=500, tick_pad=-12, rotation=0):
+    """Set up a height axis for a low-level panel."""
 
     ax.set_yticks(np.arange(0, z_limits[1] + 1, z_interval))
     ax.set_ylim(*z_limits)
@@ -1255,18 +1270,19 @@ def _setup_height_panel(ax, theme, x_limits, x_ticks, x_tick_labels, z_limits=(0
 
 
 def _add_panel_title(ax, title, theme, fontsize=FONT_SIZES["label"]):
+    """Add a title at the top of a panel."""
     ax.text(0.5, 0.98, title, transform=ax.transAxes, ha="center", va="top", weight="bold", color=theme["text"], fontsize=fontsize, alpha=0.9)
 
 
-# shade the effective inflow layer, when one exists
 def _shade_eil(ax, snd_params, theme, alpha=0.2):
+    """Shade the effective inflow layer, when one exists."""
     eil_z = snd_params["kinem"].get("eil_z", (ma.masked, ma.masked))
     if _has_eil(snd_params["kinem"]):
         ax.axhspan(eil_z[0], eil_z[1], color=theme["eil"], alpha=alpha)
 
 
-# plot a profile using the 0-1 km and 1-3 km hodograph colors, with a fill beneath it
 def _plot_low_level_trace(ax, values, z, theme, linewidth=3, alpha=1, fill_alpha=0.2):
+    """Plot a profile using the 0-1 km and 1-3 km hodograph colors, with a fill beneath it."""
 
     idx_1km = find_nearest(z, 1000)
     idx_3km = find_nearest(z, 3000)
@@ -1279,6 +1295,7 @@ def _plot_low_level_trace(ax, values, z, theme, linewidth=3, alpha=1, fill_alpha
 
 def _plot_streamwiseness_panel(ax, snd_params, theme,
                                height_labels=(500, 1000, 1500, 2000), label_x=47):
+    """Plot the 0-3 km streamwiseness of vorticity (%) panel."""
 
     kinem = snd_params["kinem"]
     _setup_height_panel(ax, theme, (40, 102), [50, 70, 90], [50, 70, 90])
@@ -1299,6 +1316,7 @@ def _plot_streamwiseness_panel(ax, snd_params, theme,
 
 
 def _plot_vorticity_panel(ax, snd_params, theme):
+    """Plot the 0-3 km total and streamwise vorticity panel."""
 
     streamwise_color = theme["streamwise"]
     kinem = snd_params["kinem"]
@@ -1326,6 +1344,7 @@ def _plot_vorticity_panel(ax, snd_params, theme):
 
 
 def _plot_sr_wind_panel(ax, snd_params, theme, label_x=35):
+    """Plot the 0-3 km storm-relative wind panel, with LCL and LFC labels."""
 
     kinem = snd_params["kinem"]
     _setup_height_panel(ax, theme, (10, 50), [20, 30, 40], [20, 30, 40])
@@ -1350,6 +1369,7 @@ def _plot_sr_wind_panel(ax, snd_params, theme, label_x=35):
 
 
 def _plot_theta_panel(ax, snd_params, theme):
+    """Plot the 0-3 km theta and theta-e panel."""
 
     intrp = snd_params["intrp"]
     idx_3km = find_nearest(intrp["zINTRP"], 3000) + 1
@@ -1372,6 +1392,7 @@ def _plot_theta_panel(ax, snd_params, theme):
 
 
 def _plot_wind_component_panel(ax, snd_params, theme):
+    """Plot the 0-3 km u and v wind component panel."""
 
     intrp = snd_params["intrp"]
     z = intrp["zINTRP"]
@@ -1389,8 +1410,8 @@ def _plot_wind_component_panel(ax, snd_params, theme):
 
 
 
-# CIN and CAPE share a height axis, but have separate x-axes
 def _plot_cape_cin_panel(ax, snd_params, theme):
+    """Plot the stepwise CIN and CAPE panel, which share a height axis but have separate x-axes."""
 
     intrp = snd_params["intrp"]
     z = intrp["zINTRP"]
@@ -1418,8 +1439,8 @@ def _plot_cape_cin_panel(ax, snd_params, theme):
 ############################### TEXT TABLE UTILS ################################
 #################################################################################
 
-# set up a bordered box for text. positions inside it run from 0 to 1, so its contents move with it
 def _setup_text_box(ax, theme):
+    """Set up a bordered box for text, with positions inside it running from 0 to 1."""
 
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
@@ -1433,11 +1454,12 @@ def _setup_text_box(ax, theme):
 
 
 def _draw_text(ax, x, y, text, color, fontsize=FONT_SIZES["table"], alpha=1, ha="left"):
+    """Draw bold text at a position in a text box."""
     ax.text(x, y, text, color=color, fontsize=fontsize, alpha=alpha, ha=ha, weight="bold")
 
 
-# shrink text that is wider than a fraction of an axis or figure, keeping it readable in its space
 def _fit_text(text, target, max_width):
+    """Shrink text that is wider than a fraction of an axis or figure, keeping it readable in its space."""
     if hasattr(target, "apply_aspect"):
         target.apply_aspect()
     width = text.get_window_extent(target.get_figure().canvas.get_renderer()).width / target.bbox.width
@@ -1445,16 +1467,16 @@ def _fit_text(text, target, max_width):
         text.set_fontsize(text.get_fontsize() * max_width / width)
 
 
-# format a value and its unit for a readout, showing MISSING_VALUE for missing values
 def _format_value(value, unit="", decimals=None):
+    """Format a value and its unit for a readout, showing MISSING_VALUE for missing values."""
     if ma.is_masked(value) or np.isnan(getattr(value, "m", value)):
         return MISSING_VALUE
     text = mag(value) if decimals is None else round(float(getattr(value, "m", value)), decimals)
     return f"{text}{unit}"
 
 
-# draw a table of header, row labels, and row values. each row sets its own color and alpha
 def _draw_table(ax, table, layout, theme, fontsize=FONT_SIZES["table"]):
+    """Draw a table of header, row labels, and row values; each row sets its own color and alpha."""
 
     for x, header in zip(layout["header_columns"], table["headers"]):
         _draw_text(ax, x, layout["header_y"], header, theme["text"], fontsize, layout.get("header_alpha", 1))
@@ -1467,6 +1489,7 @@ def _draw_table(ax, table, layout, theme, fontsize=FONT_SIZES["table"]):
 
 
 def _get_parcel_table(snd_params, theme):
+    """The SB/ML/MU parcel table: ECAPE, CAPE, 6CAPE, 3CAPE, CIN, and LCL."""
 
     thermo = snd_params["thermo"]
     parcels = (("SB:", "sb"), ("ML:", "ml"), ("MU:", "mu"))
@@ -1485,6 +1508,7 @@ def _get_parcel_table(snd_params, theme):
 
 
 def _get_moisture_table(snd_params, theme):
+    """The layer RH and mixing ratio table."""
 
     general = snd_params["general"]
     layers = (("0-.5ₖₘ:", "0_500", 1), ("0-1ₖₘ:", "0_1000", 0.9), ("1-3ₖₘ:", "1_3000", 0.8),
@@ -1500,6 +1524,7 @@ def _get_moisture_table(snd_params, theme):
 
 
 def _get_kinematics_table(snd_params, theme, include_eil=True, layer_colors=False):
+    """The layer bulk shear, SRH, SR wind, and streamwise vorticity table."""
 
     kinem = snd_params["kinem"]
     layers = (("0-.5ₖₘ:", "0_to_500"), ("0-1ₖₘ:", "0_to_1000"), ("1-3ₖₘ:", "1_to_3000"),
@@ -1523,6 +1548,7 @@ def _get_kinematics_table(snd_params, theme, include_eil=True, layer_colors=Fals
 
 
 def _plot_thermo_table(ax, snd_params, theme):
+    """Draw the thermodynamics box: the parcel table, single-value parameters, and composite indices."""
 
     thermo = snd_params["thermo"]
     text = theme["text"]
@@ -1577,6 +1603,7 @@ def _plot_thermo_table(ax, snd_params, theme):
 
 
 def _plot_moisture_table(ax, snd_params, theme):
+    """Draw the moisture box: the layer table, PWAT, surface wet bulb, and freezing levels."""
 
     general = snd_params["general"]
     text = theme["text"]
@@ -1604,6 +1631,7 @@ def _plot_moisture_table(ax, snd_params, theme):
 
 
 def _plot_kinematics_table(ax, snd_params, theme):
+    """Draw the kinematics table box."""
     _setup_text_box(ax, theme)
     _draw_table(ax, _get_kinematics_table(snd_params, theme), KINEMATICS_TABLE_LAYOUT, theme)
 
@@ -1612,12 +1640,14 @@ def _plot_kinematics_table(ax, snd_params, theme):
 
 
 def _plot_indices_box(ax, snd_params, theme):
+    """Draw the 0-3 and 0-6 km SRH and bulk shear box."""
 
     kinem = snd_params["kinem"]
     text = theme["text"]
     _setup_text_box(ax, theme)
 
     def _draw_stat(x, y_label, y_value, label, value, color):
+        """Draw a centered label with its value below it."""
         _draw_text(ax, x, y_label, label, text, fontsize=FONT_SIZES["tick"], alpha=0.9, ha="center")
         _draw_text(ax, x, y_value, value, color, fontsize=FONT_SIZES["tick"], alpha=0.9, ha="center")
 
@@ -1632,8 +1662,8 @@ def _plot_indices_box(ax, snd_params, theme):
 
 
 
-# the kinematics table on its own, for wind-only data
 def _plot_wind_parameter_box(ax, snd_params, theme):
+    """Draw the kinematics table on its own, for wind-only data."""
 
     _setup_text_box(ax, theme)
     _draw_table(ax, _get_kinematics_table(snd_params, theme, include_eil=False, layer_colors=True), HODOGRAPH_KINEMATICS_LAYOUT, theme)
@@ -1641,8 +1671,8 @@ def _plot_wind_parameter_box(ax, snd_params, theme):
     return ax
 
 
-# the kinematics and parcel tables and key values, all in one box
 def _plot_hodograph_parameter_box(ax, snd_params, theme):
+    """Draw the kinematics and parcel tables and key values, all in one box."""
 
     thermo = snd_params["thermo"]
     text = theme["text"]
@@ -1669,8 +1699,8 @@ def _plot_hodograph_parameter_box(ax, snd_params, theme):
 ############################### COMPOSITE UTILS #################################
 #################################################################################
 
-# the letter that labels a profile: A-Z, then AA, AB, ...
 def _get_profile_letter(index):
+    """The letter that labels a profile: A-Z, then AA, AB, ..."""
     letter = ""
     index += 1
     while index > 0:
@@ -1679,15 +1709,15 @@ def _get_profile_letter(index):
     return letter
 
 
-# a user's list of styles for each profile, or the default for every profile
 def _get_profile_styles(styles, default, n_profiles):
+    """A user's list of styles for each profile, or the default for every profile."""
     if styles is None or (isinstance(styles, str) and styles == "none"):
         return [default] * n_profiles
     return list(styles)
 
 
-# a user's list of colors, or colors evenly spaced along a colormap
 def _get_profile_colors(colors, cmap, n_profiles, dark_mode=False):
+    """A user's list of colors, or colors evenly spaced along a colormap."""
     if colors is not None and not (isinstance(colors, str) and colors == "none"):
         return list(colors)
     start, end = (0, 1)
@@ -1697,13 +1727,13 @@ def _get_profile_colors(colors, cmap, n_profiles, dark_mode=False):
     return [colormap(value) for value in np.linspace(start, end, n_profiles)]
 
 
-# data sources fill in unknown site info with placeholders
 def _is_known(value):
+    """Whether a site info value is real, since data sources fill in unknown values with placeholders."""
     return value not in (None, "", "none") and not str(value).startswith("no-")
 
 
-# describe what a profile is, from any data source
 def _get_profile_type(site):
+    """Describe what a profile is, from any data source."""
     source = str(site.get("source", ""))
     if "RAOB" in source:
         return "RAOB"
@@ -1715,8 +1745,8 @@ def _get_profile_type(site):
     return source if _is_known(source) else "PROFILE"
 
 
-# describe where a profile is, from any data source
 def _get_profile_location(site, short=False):
+    """Describe where a profile is, from any data source."""
     if short and _is_known(site.get("site-id")):
         return str(site["site-id"])
     names = [str(site[key]) for key in ("site-id", "site-name") if _is_known(site.get(key))]
@@ -1726,27 +1756,28 @@ def _get_profile_location(site, short=False):
     return f"{latlon[0]}, {latlon[1]}" if latlon is not None else MISSING_VALUE
 
 
-# custom data may not have a time
 def _has_profile_time(time_parts):
+    """Whether a profile has a time, since custom data may not."""
     return isinstance(time_parts, (list, tuple)) and len(time_parts) >= 4
 
 
 def _format_profile_time(time_parts):
+    """Format a profile's time parts as 'HHZ | MM-DD-YYYY'."""
     if not _has_profile_time(time_parts):
         return MISSING_VALUE
     return f"{time_parts[3]}Z | {time_parts[1]}-{time_parts[2]}-{time_parts[0]}"
 
 
-# sort key for a profile's valid time, so int (2024, 4, 26, 9) and zero-padded ('2024', '04', '26', '09') parts match
 def _profile_time_key(time_parts):
+    """Sort key for a profile's valid time, so int (2024, 4, 26, 9) and zero-padded ('2024', '04', '26', '09') parts match."""
     try:
         return (0, tuple(int(float(part)) for part in time_parts[:4]))
     except (TypeError, ValueError):
         return (1, tuple(str(part) for part in time_parts[:4]))
 
 
-# describe a set of profiles for the figure's subtitles
 def _get_composite_titles(profiles, style="full", sr_hodo=False):
+    """Describe a set of profiles for the figure's titles."""
     sites = [profile["site_info"] for profile in profiles]
     times = {}
     for site in sites:
@@ -1768,8 +1799,8 @@ def _get_composite_titles(profiles, style="full", sr_hodo=False):
             "right_title": locations[0] if len(locations) == 1 else f"{len(locations)} LOCATIONS"}
 
 
-# a skew-t's pressure range from its top pressure (hPa). the bottom is always the same
 def _get_pressure_limits(ptop):
+    """A skew-t's (bottom, top) pressure range from its top pressure (hPa); the bottom is always the same."""
     if ptop is None:
         return None
     if isinstance(ptop, bool) or not isinstance(ptop, (int, float, np.integer, np.floating)) or not 0 < ptop < SKEWT_BOTTOM_PRESSURE:
@@ -1777,8 +1808,8 @@ def _get_pressure_limits(ptop):
     return (SKEWT_BOTTOM_PRESSURE, ptop)
 
 
-# check a skew-t's pressure range, as (bottom, top) in hPa
 def _validate_pressure_limits(ylim):
+    """Check a skew-t's pressure range, as (bottom, top) in hPa, raising a ValueError if it isn't one."""
     if ylim is None:
         return None
     if not isinstance(ylim, (list, tuple)) or len(ylim) != 2 or not all(isinstance(value, (int, float, np.integer, np.floating)) and not isinstance(value, bool) for value in ylim) \
@@ -1795,10 +1826,12 @@ ZOOM_LEAN, ZOOM_MAX_SPAN = 0.933, 80
 
 
 def _zoom_lean(p, ylim):
+    """How far (in axis widths) an isotherm has leaned at pressure p on a zoomed skew-t."""
     return ZOOM_LEAN * np.log(ylim[0] / p) / np.log(ylim[0] / ylim[1])
 
 
 def _get_zoomed_temperature_limits(profiles, ylim, margin=0.04, right_margin=0.04, low_layer=3000):
+    """The narrowest x-axis range that fits T and Td in a zoomed view, centered on the lowest ~3 km."""
     bottom, top = ylim
     p_view, t_view = [], []
     for profile in profiles:
@@ -1824,8 +1857,8 @@ def _get_zoomed_temperature_limits(profiles, ylim, margin=0.04, right_margin=0.0
     return (left, left + span)
 
 
-# pressure and temperature ticks that suit a zoomed skew-t
 def _get_pressure_ticks(ylim):
+    """Pressure ticks that suit a zoomed skew-t."""
     bottom, top = ylim
     span = bottom - top
     step = 100 if span > 400 else 50 if span > 150 else 25 if span > 75 else 10
@@ -1833,6 +1866,7 @@ def _get_pressure_ticks(ylim):
 
 
 def _get_temperature_ticks(temperature_limits, target=6):
+    """Temperature ticks that suit a zoomed skew-t, leaving the left edge to the pressure labels."""
     span = temperature_limits[1] - temperature_limits[0]
     step = next((step for step in (2, 5, 10, 20) if span / step <= target + 2), 50)
     ticks = np.arange(step * np.ceil(temperature_limits[0] / step), temperature_limits[1] + 0.01, step)
@@ -1840,16 +1874,17 @@ def _get_temperature_ticks(temperature_limits, target=6):
     return ticks[(ticks - temperature_limits[0]) / span > 0.07]
 
 
-# background lines spaced to a zoomed skew-t's box, about `target` of each: dry and moist adiabats (named by their
-# 1000 hPa temperature) and mixing lines (below 600 hPa only, as on the full skew-t)
 def _get_zoomed_background_lines(skew, target=12):
+    """Dry adiabats, moist adiabats, and mixing lines (below 600 hPa) spaced to a zoomed skew-t's box, about `target` of each."""
     (left, right), ylim = skew.ax.get_xlim(), tuple(sorted(skew.ax.get_ylim(), reverse=True))
 
     def corners(p_top):
+        """Pressure and temperature at the box corners from the view bottom to p_top."""
         p = np.array([ylim[0], ylim[0], p_top, p_top])
         return p * units.hPa, (np.array([left, right, left, right]) - _zoom_lean(p, ylim) * (right - left)) * units.degC
 
     def spaced(values, steps=(1, 2, 5, 10)):
+        """About `target` evenly spaced round values covering a range, in degC."""
         step = next((step for step in steps if np.ptp(values) / step <= target), steps[-1])
         return np.arange(step * np.floor(values.min() / step), values.max() + step, step) * units.degC
 
@@ -1868,8 +1903,8 @@ def _get_zoomed_background_lines(skew, target=12):
     return lines
 
 
-# create a skew-t for a pressure range, fitting its temperature axis and pressure ticks to the data in it
 def _setup_zoomed_skewt(fig, profiles, theme, ylim, rect, right_margin=0.04, box_aspect=0.87):
+    """Create a skew-t for a pressure range, fitting its temperature axis and pressure ticks to the data in it."""
     temperature_limits = _get_zoomed_temperature_limits(profiles, ylim, right_margin=right_margin)
     skew = _setup_skewt(fig, profiles[0]["T"], theme, rect=rect, pressure_limits=ylim,
                         temperature_limits=temperature_limits, pressure_ticks=_get_pressure_ticks(ylim))
@@ -1880,13 +1915,14 @@ def _setup_zoomed_skewt(fig, profiles, theme, ylim, rect, right_margin=0.04, box
     return skew
 
 
-# hide text outside a skew-t's axis, which would otherwise stretch a saved figure
 def _clip_skewt_text(skew):
+    """Hide text outside a skew-t's axis, which would otherwise stretch a saved figure."""
     for text in skew.ax.texts:
         text.set_clip_on(True)
 
 
 def _plot_composite_skewt_profiles(skew, profiles, colors, styles, widths, alphas, shade_between=True):
+    """Plot each profile's temperature and dewpoint on a composite skew-t, optionally shaded between."""
     for i, profile in enumerate(profiles):
         line = dict(color=colors[i], linestyle=styles[i], linewidth=widths[i], alpha=alphas[i])
         skew.plot(profile["p"], profile["Td"], **line)
@@ -1895,8 +1931,8 @@ def _plot_composite_skewt_profiles(skew, profiles, colors, styles, widths, alpha
             skew.shade_area(profile["p"], x1=profile["Td"], x2=profile["T"], color=colors[i], alpha=0.05, zorder=1)
 
 
-# interpolate a profile's winds to regular heights (m AGL)
 def _get_profile_winds(profile, step=100, max_height=9000):
+    """Interpolate a profile's winds to regular heights (m AGL)."""
     z, u, v = profile["z"].m, profile["u"].m, profile["v"].m
     valid = np.isfinite(z) & np.isfinite(u) & np.isfinite(v)
     z, u, v = z[valid] - z[valid][0], u[valid], v[valid]
@@ -1904,20 +1940,20 @@ def _get_profile_winds(profile, step=100, max_height=9000):
     return {"z": levels, "u": np.interp(levels, z, u), "v": np.interp(levels, z, v)}
 
 
-# the letters of profiles without a storm motion
 def _get_missing_storm_motions(snd_params):
+    """The letters of profiles without a storm motion."""
     return [_get_profile_letter(i) for i, params in enumerate(snd_params)
             if params is None or ma.is_masked(params["kinem"]["sm_u"]) or np.isnan(params["kinem"]["sm_u"])]
 
 
-# shift each profile's winds by its own storm motion
 def _make_winds_storm_relative(winds, snd_params):
+    """Shift each profile's winds by its own storm motion."""
     return [dict(profile_winds, u=profile_winds["u"] - params["kinem"]["sm_u"], v=profile_winds["v"] - params["kinem"]["sm_v"])
             for profile_winds, params in zip(winds, snd_params)]
 
 
-# draw each profile's hodograph trace, fading with height
 def _plot_composite_hodograph_traces(hodo, winds, colors, linewidth=5):
+    """Draw each profile's hodograph trace, fading with height."""
     for profile_winds, color in zip(winds, colors):
         z, u, v = profile_winds["z"], profile_winds["u"], profile_winds["v"]
         for bottom, top, alpha in COMPOSITE_HODOGRAPH_LAYERS:
@@ -1925,22 +1961,23 @@ def _plot_composite_hodograph_traces(hodo, winds, colors, linewidth=5):
             hodo.ax.plot(u[layer], v[layer], color=color, alpha=alpha, linewidth=linewidth, clip_on=True)
 
 
-# label what each hodograph alpha means
 def _plot_composite_hodograph_key(hodo, theme, x=0.02, y=0.02, spacing=0.085, fontsize=FONT_SIZES["table"]):
+    """Label what each composite hodograph alpha means."""
     for i, (bottom, top, alpha) in enumerate(COMPOSITE_HODOGRAPH_LAYERS):
         hodo.ax.text(x + i * spacing, y, f"{bottom // 1000}-{top // 1000}km", transform=hodo.ax.transAxes,
                      color=theme["text"], weight="bold", fontsize=fontsize, alpha=alpha, zorder=8)
 
 
 def _get_composite_parameter(snd_params, group, key, unit, decimals):
+    """Format one parameter for a composite table row, or MISSING_VALUE without parameters."""
     if snd_params is None:
         return MISSING_VALUE
     unit = unit.format(jkg=UNIT_JKG, m=UNIT_M, m2s2=UNIT_M2S2, kt=UNIT_KT)
     return _format_value(snd_params[group][key], unit, decimals=decimals)
 
 
-# one row per profile, in that profile's color. snd_params is None without parameter columns
 def _plot_composite_table(ax, profiles, snd_params, colors, theme, style="full", fontsize=FONT_SIZES["table"]):
+    """Draw the composite table, one row per profile in that profile's color; snd_params is None without parameter columns."""
     _setup_text_box(ax, theme)
     columns = COMPOSITE_TABLES[style]
     fontsize = columns.get("fontsize", fontsize)
@@ -1957,8 +1994,8 @@ def _plot_composite_table(ax, profiles, snd_params, colors, theme, style="full",
         for x, parameter in zip(columns["columns"], parameters):
             _draw_text(ax, x, header_y, parameter[0], theme["text"], fontsize)
 
-    # keep text within its column
     def _draw_fitted(x, y, text, color, right):
+        """Draw text shrunk to stay within its column."""
         label = ax.text(x, y, text, color=color, fontsize=fontsize, weight="bold")
         _fit_text(label, ax, right - x - 0.006)
 
@@ -1982,25 +2019,27 @@ def _plot_composite_table(ax, profiles, snd_params, colors, theme, style="full",
 ############################### FIGURE EXTRAS UTILS #############################
 #################################################################################
 
-# add an empty area that a tight save has to include, setting the whitespace around the figure
 def _add_figure_margin(fig, bounds):
+    """Add an empty area that a tight save has to include, setting the whitespace around the figure."""
     fig.add_artist(Rectangle(bounds[:2], bounds[2], bounds[3], transform=fig.transFigure, fill=False, linewidth=0, clip_on=False))
 
 
 def _plot_figure_titles(fig, titles, theme, left_x=0.1237, right_x=1.206, top_y=0.985, sub_y=0.959, top_fontsize=FONT_SIZES["title"], sub_fontsize=FONT_SIZES["subtitle"]):
+    """Draw the figure's top title and left and right subtitles."""
     fig.text(left_x, top_y, titles["top_title"], weight="bold", ha="left", fontsize=top_fontsize, color=theme["text"])
     fig.text(left_x, sub_y, titles["left_title"], ha="left", fontsize=sub_fontsize, color=theme["text"])
     fig.text(right_x, sub_y, titles["right_title"].strip(), ha="right", fontsize=sub_fontsize, color=theme["text"])
 
 
 def _plot_skewt_legend(skew, theme):
+    """Add the skew-t legend."""
     return skew.ax.legend(loc="upper left", framealpha=0.5, labelcolor=theme["text"], facecolor=theme["background"])
 
 
 
 
-# add the watermark text to a figure (in figure fractions) or an axis (in axis fractions, behind its data)
 def _plot_credits(target, theme, x=0.168, title_y=-0.105, subtitle_y=-0.125, style="full", title_fontsize=FONT_SIZES["watermark"], subtitle_fontsize=FONT_SIZES["watermark_sub"], max_x=0.525):
+    """Add the watermark text to a figure (in figure fractions) or an axis (in axis fractions, behind its data)."""
     if not WATERMARK["show"]:
         return
     default_title, default_subtitle = WATERMARK_TEXT[style]
@@ -2018,8 +2057,8 @@ def _plot_credits(target, theme, x=0.168, title_y=-0.105, subtitle_y=-0.125, sty
         _fit_text(text, target, max_x - x)
 
 
-# add the sounderpy logo
 def _plot_logo(ax):
+    """Add the SounderPy logo, unless the watermark settings hide it."""
     ax.axis("off")
     if WATERMARK["show"] and WATERMARK["logo"] is not None:
         ax.imshow(Image.open(WATERMARK["logo"]))

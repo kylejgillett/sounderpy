@@ -37,56 +37,57 @@ from .components import _add_skewt_layer_line, _draw_text, _format_value, _setup
 ############################## HELPERS ##################################
 #########################################################################
 
-# pressure at a height (m AGL) on the data levels
 def _p_at(z, p, height):
+    """Pressure at a height (m AGL) on the data levels."""
     return float(np.interp(height, z, p))
 
 
-# a value with its unit, dropping a trailing ".0" when no decimals are asked for
 def _fmt(value, unit="", decimals=0):
+    """A value with its unit, dropping a trailing ".0" when no decimals are asked for."""
     text = _format_value(value, unit, decimals=decimals)
     return text.replace(".0" + unit, unit) if decimals == 0 else text
 
 
-# a change, always with its sign: +6.0°C, -2.3°C
 def _fmt_signed(value, unit="", decimals=1):
+    """A change, always with its sign: +6.0°C, -2.3°C."""
     if ma.is_masked(value) or not np.isfinite(float(value)):
         return "NA"
     return f"{float(value):+.{decimals}f}{unit}"
 
 
-# a wind as "NNW @ 21 kt", with SounderPy's wind_to_dir() like the severe figure. wind_to_dir() names the
-# direction a vector points toward (right for storm motions); winds are named for where they blow from
 def _wind_text(u, v):
+    """A wind as "NNW @ 21 kt", named for the direction it blows from."""
+    # uses SounderPy's wind_to_dir() like the severe figure; it names the direction a vector points toward
+    # (right for storm motions), so the wind is negated
     if ma.is_masked(u) or ma.is_masked(v):
         return "NA"
     return f"{wind_to_dir(-float(u), -float(v))} @ {np.hypot(u, v):.0f} kt"
 
 
-# Kuchera snow ratio, e.g. "12:1"
 def _slr_text(winter):
+    """Kuchera snow ratio, e.g. "12:1"."""
     if ma.is_masked(winter["slr"]):
         return "NA"
     return f"{winter['slr']:.0f}:1"
 
 
-# shrink a text to fit a width (fraction of its axis); returns the text
 def _fit_width(text, ax, max_width):
+    """Shrink a text to fit a width (fraction of its axis); returns the text."""
     width = text.get_window_extent(ax.figure.canvas.get_renderer()).transformed(ax.transAxes.inverted()).width
     if width > max_width:
         text.set_fontsize(text.get_fontsize() * max_width / width)
     return text
 
 
-# shade the DGZ on a height panel, and mark the mixed-layer top
 def _shade_dgz(ax, winter, theme):
+    """Shade the DGZ on a height panel, and mark the mixed-layer top."""
     if not ma.is_masked(winter["dgz_depth"]):
         ax.axhspan(*winter["dgz_z"], color=theme["dgz_fill"], alpha=0.3, linewidth=0)
     _mark_ml_top(ax, winter, theme)
 
 
-# mixed-layer top on a height panel: a dashed line labeled "ML" at the right edge, in the ML bar's color
 def _mark_ml_top(ax, winter, theme):
+    """Mark the mixed-layer top on a height panel: a dashed line labeled "ML" at the right edge."""
     depth = winter.get("ml_depth", ma.masked)
     if ma.is_masked(depth) or not 0 < depth < PANEL_TOP:
         return
@@ -98,8 +99,8 @@ def _mark_ml_top(ax, winter, theme):
             alpha=0.9, zorder=6)
 
 
-# a faded section title in a table
 def _section_title(ax, text, theme, x, y):
+    """A faded section title in a table."""
     _draw_text(ax, x, y, text, theme["text"], fontsize=FONT_SIZES["small"], alpha=0.55)
 
 
@@ -109,9 +110,9 @@ def _section_title(ax, text, theme, x, y):
 ############################## SKEW-T ###################################
 #########################################################################
 
-# shade melting (Tw > 0 °C) and refreezing layers between the wet-bulb trace and 0 °C, and label each
-# layer's energy just right of the temperature trace, level with the middle of the layer
 def _plot_melt_refreeze(skew, data, winter, theme):
+    """Shade melting (Tw > 0 °C) and refreezing layers on the skew-t, labeling each layer's energy."""
+    # each layer's energy is labeled just right of the temperature trace, level with the middle of the layer
     layers = winter["layers"]
     if not layers:
         return
@@ -147,8 +148,8 @@ def _plot_melt_refreeze(skew, data, winter, theme):
                          va="center", ha="left", fontsize=FONT_SIZES["annotation"], zorder=8, clip_on=True)
 
 
-# label every 0 °C crossing of T (FRZ) and of Tw (WB0), in their own columns
 def _plot_freezing_levels(skew, data, winter, theme):
+    """Label every 0 °C crossing of T (FRZ) and of Tw (WB0), in their own columns."""
     p = data["p"].m
     z = data["z"].m - data["z"].m[0]
     transform = skew.ax.get_yaxis_transform()
@@ -159,8 +160,8 @@ def _plot_freezing_levels(skew, data, winter, theme):
                          fontsize=FONT_SIZES["annotation"], transform=transform, clip_on=True)
 
 
-# a labeled bar with end ticks between two pressures, in SounderPy's layer-bar style
 def _plot_labeled_bar(skew, x, p_bottom, p_top, label, color, alpha, label_alpha, linewidth, label_offset, label_va, fontsize):
+    """A labeled bar with end ticks between two pressures, in SounderPy's layer-bar style."""
     transform = skew.ax.get_yaxis_transform()
     skew.ax.text(x, p_top - label_offset, label, weight="bold", color=color, alpha=label_alpha, ha="center",
                  va=label_va, fontsize=fontsize, transform=transform, clip_on=True)
@@ -170,31 +171,32 @@ def _plot_labeled_bar(skew, x, p_bottom, p_top, label, color, alpha, label_alpha
                      transform=transform, clip_on=True)
 
 
-# DGZ bar. Always the DGZ: SounderPy's growth-zone helper shows the hail growth zone when the surface is >= 5 °C
 def _plot_dgz_bar(skew, winter, snd, theme):
+    """Draw the DGZ bar on the skew-t."""
+    # always the DGZ: SounderPy's growth-zone helper shows the hail growth zone when the surface is >= 5 °C
     if not ma.is_masked(winter["dgz_depth"]):
         p_bottom, p_top = winter["dgz_p"]
         _plot_labeled_bar(skew, SKEWT_COLUMNS["dgz"], p_bottom, p_top, "DGZ", theme["dgz"], alpha=0.4, label_alpha=0.6,
                           linewidth=3, label_offset=12, label_va="baseline", fontsize=FONT_SIZES["tick"])
 
 
-# PBL bar, labeled above its top tick, in its own column
 def _plot_pbl(skew, data, snd, theme):
+    """Draw the PBL bar, labeled above its top tick, in its own column."""
     pbl_top = snd["thermo"]["pbl_top"]
     if not ma.is_masked(pbl_top):
         _plot_labeled_bar(skew, SKEWT_COLUMNS["pbl"], data["p"][0].m, pbl_top, "PBL", theme["pbl"], alpha=0.95,
                           label_alpha=0.95, linewidth=1, label_offset=6, label_va="bottom", fontsize=FONT_SIZES["small"])
 
 
-# mixed-layer bar, labeled like the PBL bar, in its own column beside it
 def _plot_ml_bar(skew, data, winter, theme):
+    """Draw the mixed-layer bar, labeled like the PBL bar, in its own column beside it."""
     if not ma.is_masked(winter["ml_top_p"]):
         _plot_labeled_bar(skew, SKEWT_COLUMNS["ml"], data["p"][0].m, winter["ml_top_p"], "ML", theme["lapse"], alpha=0.95,
                           label_alpha=0.95, linewidth=1, label_offset=6, label_va="bottom", fontsize=FONT_SIZES["small"])
 
 
-# SB and MU parcel traces, when they have CAPE
 def _plot_winter_parcels(skew, snd, theme):
+    """Plot the SB and MU parcel traces, when they have CAPE."""
     thermo = snd["thermo"]
     for key in ("sb", "mu"):
         cape = thermo[f"{key}cape"]
@@ -203,16 +205,17 @@ def _plot_winter_parcels(skew, snd, theme):
                       color=theme["parcel"][key], label=f"{key.upper()}CAPE PARCEL")
 
 
-# warm-nose marker on the temperature trace
 def _plot_warm_nose(skew, winter, theme):
+    """Mark the warm nose on the temperature trace."""
     if not ma.is_masked(winter["warm_nose_T"]):
         skew.ax.plot(winter["warm_nose_T"], winter["warm_nose_p"], marker="o", markersize=9, color=theme["warm_nose"],
                      markeredgecolor=theme["background"], zorder=9)
 
 
-# label the precipitation phase on the temperature trace wherever it changes on the way down: at the source,
-# under each layer that changes it, and at the surface when it freezes on contact. Snow carries its ratio
 def _plot_phase_annotations(skew, data, winter, theme):
+    """Label the precipitation phase on the temperature trace wherever it changes on the way down."""
+    # at the source, under each layer that changes it, and at the surface when it freezes on contact.
+    # snow carries its ratio
     p = data["p"].m
     T = data["T"].to("degC").m
     for step in winter["phase_trace"]:
@@ -228,8 +231,8 @@ def _plot_phase_annotations(skew, data, winter, theme):
                          clip_on=True)
 
 
-# RH with respect to ice (RH over water at or above 0 °C) at fixed heights, left of the dewpoint trace
 def _plot_rh_ice_annotations(skew, snd, winter, theme, heights=(1000, 3000, 6000, 9000, 12000)):
+    """Label RH with respect to ice (RH over water at or above 0 °C) at fixed heights, left of the dewpoint trace."""
     for height in heights:
         i = int(height // 100)
         if i >= len(winter["z"]) or not np.isfinite(winter["rh"][i]):
@@ -245,8 +248,8 @@ def _plot_rh_ice_annotations(skew, snd, winter, theme, heights=(1000, 3000, 6000
                          fontsize=FONT_SIZES["annotation"], ha="right", va="center", clip_on=True)
 
 
-# a bar for each layer, each labeled along its side and centered on its depth
 def _plot_layer_bars(skew, layers, x, color, alpha, label, side):
+    """Draw a bar for each layer, each labeled along its side and centered on its depth."""
     for layer in layers:
         _add_skewt_layer_line(skew, x=x, p_bottom=layer["bottom_p"], p_top=layer["top_p"], color=color,
                               alpha=alpha, linewidth=5, linestyle="-")
@@ -256,8 +259,8 @@ def _plot_layer_bars(skew, layers, x, color, alpha, label, side):
                          alpha=0.85, fontsize=FONT_SIZES["fine"] + 1, annotation_clip=True, zorder=9)
 
 
-# cloud bars, each labeled on its left (the icing bars sit to the right), with the top temperature of the highest
 def _plot_clouds(skew, winter, theme):
+    """Draw cloud bars labeled on their left, with the top temperature of the highest cloud."""
     x = SKEWT_COLUMNS["cloud"]
     _plot_layer_bars(skew, winter["clouds"], x, theme["cloud"], 0.7, "CLOUD", side="left")
     if winter["clouds"]:
@@ -267,8 +270,8 @@ def _plot_clouds(skew, winter, theme):
                      transform=skew.ax.get_yaxis_transform(), clip_on=True, zorder=9)
 
 
-# icing-layer bars beside the cloud bars, each labeled on its right, with one legend entry
 def _plot_icing_layers(skew, winter, theme):
+    """Draw icing-layer bars beside the cloud bars, each labeled on its right, with one legend entry."""
     if winter["icing_layers"]:
         _plot_layer_bars(skew, winter["icing_layers"], SKEWT_COLUMNS["icing"], theme["icing"], 0.45, "ICING", side="right")
         skew.ax.plot([], [], color=theme["icing"], alpha=0.45, linewidth=5, label="ICING LAYER")
@@ -280,8 +283,8 @@ def _plot_icing_layers(skew, winter, theme):
 ############################## HODOGRAPH ################################
 #########################################################################
 
-# ML and DGZ mean-wind vectors from the origin, like the storm-motion vector on the severe figure
 def _plot_mean_wind_vectors(hodo, winter, theme):
+    """Draw the ML and DGZ mean-wind vectors from the hodograph origin."""
     for key, label in (("mean_wind_ml", "ML"), ("mean_wind_dgz", "DGZ")):
         u, v = winter[key]
         if ma.is_masked(u) or ma.is_masked(v):
@@ -293,8 +296,8 @@ def _plot_mean_wind_vectors(hodo, winter, theme):
                          weight="bold", fontsize=FONT_SIZES["annotation"], zorder=7, clip_on=True)
 
 
-# winds box in the hodograph's lower-right corner, where the severe figure keeps its SRH/BWD box
 def _plot_winds_box(ax, winter, theme):
+    """Draw the winds box in the hodograph's lower-right corner."""
     layout = WINDS_BOX_LAYOUT
     _setup_text_box(ax, theme)
     _section_title(ax, "WINDS", theme, layout["label_x"], layout["title_y"])
@@ -311,10 +314,10 @@ def _plot_winds_box(ax, winter, theme):
     return ax
 
 
-# a compact station model for the latest surface observation, in the hodograph's upper-right corner:
-# T and Td (left), coded SLP and gust (right), present weather and visibility, sky cover and wind barb.
-# Plain Matplotlib text plus MetPy's symbol font: MetPy 1.7.1's StationPlot text fails under Matplotlib 3.11
 def _plot_station_obs(hodo, obs, theme):
+    """Draw a compact station model for the latest surface observation in the hodograph's upper-right corner."""
+    # T and Td (left), coded SLP and gust (right), present weather and visibility, sky cover and wind barb.
+    # Plain Matplotlib text plus MetPy's symbol font: MetPy 1.7.1's StationPlot text fails under Matplotlib 3.11
     from metpy.plots import current_weather, sky_cover, wx_code_to_numeric
     from metpy.plots.wx_symbols import wx_symbol_font
     title = f"Latest Observation\n{obs['station']} ({obs['time']:%H%MZ}) · {obs['distance_km']:.0f} km"
@@ -386,8 +389,8 @@ def _plot_station_obs(hodo, obs, theme):
 ############################ SIDE PANELS ################################
 #########################################################################
 
-# a 0-3 km height panel with its title and km labels every 500 m, like the severe figure's panels
 def _setup_winter_panel(ax, theme, x_limits, ticks, title, tick_labels=None):
+    """Set up a 0-3 km height panel with its title and km labels every 500 m."""
     tick_labels = tick_labels or [f"{v:.0f}" for v in ticks]
     _setup_height_panel(ax, theme, x_limits, ticks, tick_labels, z_limits=(0, PANEL_TOP), z_interval=500)
     ax.text(0.5, 0.98, title, transform=ax.transAxes, ha="center", va="top", weight="bold", color=theme["text"],
@@ -397,8 +400,8 @@ def _setup_winter_panel(ax, theme, x_limits, ticks, title, tick_labels=None):
                 fontsize=FONT_SIZES["small"], weight="bold", color=theme["text"], alpha=0.8)
 
 
-# T and Tw, with melting shaded; the axis fits the data so a cold 6 km or a warm surface isn't clipped
 def _plot_temperature_panel(ax, winter, theme):
+    """Plot the T and Tw panel, with melting shaded and an axis that fits the data."""
     sel = winter["z"] <= PANEL_TOP
     z, T, Tw = winter["z"][sel], winter["T"][sel], winter["Tw"][sel]
     low = min(-25.0, np.floor(np.nanmin(np.r_[T, Tw]) / 5) * 5 - 2)
@@ -411,8 +414,8 @@ def _plot_temperature_panel(ax, winter, theme):
     _shade_dgz(ax, winter, theme)
 
 
-# RHᵢ (solid, on top) and RH (dashed); RHᵢ passes 100 % where air below 0 °C is saturated over water
 def _plot_rh_panel(ax, winter, theme):
+    """Plot the RHᵢ (solid) and RH (dashed) panel, with clouds shaded."""
     sel = winter["z"] <= PANEL_TOP
     _setup_winter_panel(ax, theme, (0, 125), [25, 50, 75, 100], "RHᵢ & RH\n(%)")
     ax.axvline(100, color=theme["text"], linewidth=1, alpha=0.4)
@@ -424,8 +427,8 @@ def _plot_rh_panel(ax, winter, theme):
     _shade_dgz(ax, winter, theme)
 
 
-# wind speed (line, kt) with barbs every 500 m along the right edge for direction, stopping below the title
 def _plot_wind_panel(ax, winter, theme):
+    """Plot the wind speed panel (kt), with barbs every 500 m along the right edge."""
     sel = winter["z"] <= PANEL_TOP
     z, u, v = winter["z"][sel], winter["u"][sel], winter["v"][sel]
     speed = np.hypot(u, v)
@@ -443,8 +446,8 @@ def _plot_wind_panel(ax, winter, theme):
     _shade_dgz(ax, winter, theme)
 
 
-# theta-e
 def _plot_thetae_panel(ax, winter, theme):
+    """Plot the theta-e panel."""
     sel = winter["z"] <= PANEL_TOP
     thetae = winter["thetae"][sel]
     low, high = np.floor(np.nanmin(thetae) - 2), np.ceil(np.nanmax(thetae) + 2)
@@ -459,9 +462,9 @@ def _plot_thetae_panel(ax, winter, theme):
 ############################### TABLES ##################################
 #########################################################################
 
-# precipitation-type band across the top of the thermo box, tinted in the precip-type color, in four centered
-# columns of two lines:  Estimated SFC PTYPE | type (Bourgouin/Birk) | type (SPC) | SOURCE hPa · km · °C
 def _plot_ptype_header(ax, winter, theme):
+    """Draw the precipitation-type band across the top of the thermo box, tinted in the precip-type color."""
+    # four centered columns of two lines:  Estimated SFC PTYPE | type (Bourgouin/Birk) | type (SPC) | SOURCE hPa · km · °C
     layout = PTYPE_HEADER_LAYOUT
     color = PTYPE_COLORS.get(winter["ptype"], theme["text"])
     ax.add_patch(Rectangle((0, layout["band_bottom"]), 1, 1 - layout["band_bottom"], transform=ax.transAxes,
@@ -495,8 +498,8 @@ def _plot_ptype_header(ax, winter, theme):
         ax.plot([x, x], [layout["band_bottom"] + 0.03, 0.97], color=theme["text"], alpha=0.2, linewidth=1, transform=ax.transAxes)
 
 
-# melting / refreezing layers below the source (wet-bulb based), top first
 def _plot_layer_table(ax, winter, theme):
+    """Draw the melting and refreezing layers below the source (wet-bulb based), top first."""
     layout = LAYER_TABLE_LAYOUT
     text, small = theme["text"], FONT_SIZES["tick"]
     for x, header in zip(layout["columns"], ["LAYER", "BASE", "TOP", "DEPTH", "MAX/MIN Tw", "ENERGY (Tw)"]):
@@ -524,8 +527,8 @@ def _plot_layer_table(ax, winter, theme):
             _draw_text(ax, x, y, value, color, fontsize=small)
 
 
-# SB and MU parcels: CAPE, CIN, LCL, LFC, EL, as in the severe figure
 def _plot_parcel_table(ax, snd, theme):
+    """Draw the SB and MU parcel table: CAPE, CIN, LCL, LFC, and EL."""
     layout = PARCEL_TABLE_LAYOUT
     thermo = snd["thermo"]
     ax.axhline(layout["divider_y"], xmin=0.012, xmax=0.988, color=theme["text"], alpha=0.45, linewidth=1.2)
@@ -543,8 +546,8 @@ def _plot_parcel_table(ax, snd, theme):
             _draw_text(ax, x, y, value, theme["parcel"][key])
 
 
-# the thermo box: precipitation-type band, melting / refreezing layers, then SB / MU parcels
 def _plot_precip_table(ax, winter, snd, theme):
+    """Draw the thermo box: precipitation-type band, melting and refreezing layers, then SB and MU parcels."""
     _setup_text_box(ax, theme)
     _plot_ptype_header(ax, winter, theme)
     _plot_layer_table(ax, winter, theme)
@@ -552,8 +555,8 @@ def _plot_precip_table(ax, winter, snd, theme):
     return ax
 
 
-# the snow growth (DGZ) box, then every 0 °C crossing of T and Tw
 def _plot_snow_growth_table(ax, winter, snd, theme):
+    """Draw the snow growth (DGZ) box, then every 0 °C crossing of T and Tw."""
     layout = SNOW_GROWTH_LAYOUT
     _setup_text_box(ax, theme)
     _section_title(ax, "SNOW GROWTH (DGZ)", theme, layout["label_x"], layout["title_y"])
@@ -578,13 +581,14 @@ def _plot_snow_growth_table(ax, winter, snd, theme):
     return ax
 
 
-# draw a column of lines spread evenly from top to bottom. Each line is one of
-#   ("title", text, level)          section title, with an optional HIGH / MOD / LOW / NONE level on the right
-#   ("row", label, value, color)    label on the left, value on the right
-#   ("check", met, label, value)    label, value, then ✓ / ✗ on the right
-#   ("note", text, n_lines)         faded citation taking n_lines line slots
-#   ("gap",)                        an empty line slot between sections
 def _draw_even_column(ax, lines, theme, x_left, x_right):
+    """Draw a column of title, row, check, note, and gap lines spread evenly from top to bottom."""
+    # each line is one of
+    #   ("title", text, level)          section title, with an optional HIGH / MOD / LOW / NONE level on the right
+    #   ("row", label, value, color)    label on the left, value on the right
+    #   ("check", met, label, value)    label, value, then ✓ / ✗ on the right
+    #   ("note", text, n_lines)         faded citation taking n_lines line slots
+    #   ("gap",)                        an empty line slot between sections
     top, bottom = HAZARDS_LAYOUT["top"], HAZARDS_LAYOUT["bottom"]
     slots = sum(line[2] if line[0] == "note" else 1 for line in lines)
     step = (top - bottom) / max(slots - 1, 1)
@@ -613,8 +617,8 @@ def _draw_even_column(ax, lines, theme, x_left, x_right):
         y -= step
 
 
-# freezing fog: its level, four checks and the sources of its criteria
 def _fzfg_lines(winter):
+    """Freezing fog hazard lines: its level, four checks, and the source of its criteria."""
     fzfg = winter["fzfg"]
     ok, values = fzfg["ok"], fzfg["values"]
     return [("title", "FREEZING FOG", fzfg["level"]),
@@ -626,8 +630,8 @@ def _fzfg_lines(winter):
             ("note", "Based on Gultepe et al. 2007", 1)]
 
 
-# freezing drizzle: its level, four checks (five with omega) and the sources of its criteria
 def _fzdz_lines(winter):
+    """Freezing drizzle hazard lines: its level, four checks (five with omega), and the sources of its criteria."""
     fzdz = winter["fzdz"]
     ok, cloud = fzdz["ok"], fzdz["cloud"]
     missing = "none" if cloud is None else "NA"
@@ -642,9 +646,8 @@ def _fzdz_lines(winter):
     return lines
 
 
-# the hazards box, grouped by hazard. Left: cold, blowing snow, other. Right: freezing fog and
-# freezing drizzle checklists
 def _plot_hazards_table(ax, winter, theme):
+    """Draw the hazards box: cold, blowing snow, and other on the left; freezing fog and drizzle checklists on the right."""
     layout = HAZARDS_LAYOUT
     _setup_text_box(ax, theme)
 
