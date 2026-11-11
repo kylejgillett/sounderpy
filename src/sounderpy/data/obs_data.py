@@ -1,3 +1,4 @@
+import re
 import time
 import warnings
 from datetime import datetime
@@ -128,18 +129,30 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
         station_icao = row.loc[station_idx, "ICAO"]
         station_wmo  = str(row.loc[station_idx, "WMO"])
 
-        # try this process 10 times, sometimes requests fail due to temporary 404 errors
-        for i in range(1, 11):
-            try:
-                # try UW data request
-                df = WyomingUpperAir.request_data(datetime(int(year), int(month), int(day), int(hour)), station_wmo)
-                got_data = True
-                if got_data:
-                    print(f'    > PROFILE FOUND: {station} on {month}/{day}/{year} at {hour}z | From UW')
+        # UW sometimes files a station under its ICAO ID only (e.g. 42410 / VEGT), so a WMO
+        # request can be rejected even when the data exists. Try the WMO ID first, then the ICAO ID.
+        request_ids = [station_wmo]
+        if isinstance(station_icao, str) and station_icao.strip().strip('-'):
+            request_ids.append(station_icao.strip())
+
+        request_time = datetime(int(year), int(month), int(day), int(hour))
+        for request_id in request_ids:
+            # try up to 10 times, UW often returns temporary 'server busy' errors
+            for i in range(1, 11):
+                try:
+                    df = WyomingUpperAir.request_data(request_time, request_id)
+                    got_data = True
                     break
-            except:
-                got_data = False
-                pass
+                except Exception as e:
+                    got_data = False
+                    # a 400/404 means UW has no data under this ID -- retrying won't help.
+                    # siphon only puts the status code in the message: 'Server Error ( 400: ...)'
+                    status = re.search(r'Server Error \(\s*(\d{3})', str(e.__cause__ or e))
+                    if status and status.group(1) in ('400', '404'):
+                        break
+            if got_data:
+                print(f'    > PROFILE FOUND: {station} on {month}/{day}/{year} at {hour}z | From UW (ID: {request_id})')
+                break
 
         # search through RAOB sites list with provided RAOB ID, first try ICAO ID, then WMO ID
         if got_data:
