@@ -182,3 +182,66 @@ def test_most_unstable_level_without_moisture_is_masked():
                           dwpc=data["Td"].m, u=data["u"].m, v=data["v"].m, missing=-9999, strictQC=False)
     assert np.ma.is_masked(most_unstable_level(prof))
     assert np.ma.is_masked(DefineParcel(prof, 3).pres)
+
+
+def test_temp_lvl_returns_the_lowest_occurrence():
+    # SHARPpy returned any exact data-point match before the first crossing, so the -30.0 C stratospheric
+    # level of a sounding that warms back up beat the tropospheric crossing
+    from helpers import make_stratospheric_profile
+    from sounderpy.SHARPPYMAIN.sharppy.sharptab.params import temp_lvl
+    from sounderpy.SHARPPYMAIN.sharppy.sharptab.profile import create_profile
+    data = make_stratospheric_profile()
+    prof = create_profile(profile="default", pres=data["p"].m, hght=data["z"].m, tmpc=data["T"].m,
+                          dwpc=data["Td"].m, u=data["u"].m, v=data["v"].m, missing=-9999, strictQC=False)
+    p_trop = 970.0 * np.exp(-(59.0 / 6.2) * 1000.0 / 7600.0)  # the -30 C crossing at z = 59 / 6.2 km
+    assert temp_lvl(prof, -30) == pytest.approx(p_trop, rel=0.01)
+    # bounded searches: only at or above pbot, only at or below ptop
+    assert temp_lvl(prof, -30, ptop=100) == pytest.approx(p_trop, rel=0.01)
+    assert temp_lvl(prof, -30, pbot=50) < 20
+    assert np.ma.is_masked(temp_lvl(prof, -30, pbot=50, ptop=20))
+
+
+def test_growth_zones_stay_in_the_troposphere():
+    # the HGZ top was the stratospheric -30 C level (7.87 hPa for IGRAv2 Fairbanks 2024-06-01 00Z), which put
+    # the skew-t's HGZ label at a negative pressure
+    from helpers import make_stratospheric_profile
+    thermo = sounding_params(make_stratospheric_profile()).calc()["thermo"]
+    for zone in ("hgz", "dgz"):
+        pbot, ptop = thermo[zone]
+        assert 100 < ptop < pbot, (zone, pbot, ptop)
+    assert thermo["hgz"][1] == pytest.approx(970.0 * np.exp(-(59.0 / 6.2) * 1000.0 / 7600.0), rel=0.01)
+
+
+def test_pbl_values_in_sounding_params(clean_profile):
+    # a well-mixed lowest 1500 m (constant theta and mixing ratio on the profile's pressures), stable above
+    data = copy.deepcopy(clean_profile)
+    z_km, p = data["z"].m / 1000, data["p"]
+    theta = np.where(z_km <= 1.5, 305.0, 305.0 + 5.0 * (z_km - 1.5))
+    t = mpcalc.temperature_from_potential_temperature(p, theta * units.K).to("degC")
+    w = np.where(z_km <= 1.5, 0.010, 0.010 * np.exp(-(z_km - 1.5) / 1.5)) * units("kg/kg")
+    data["T"], data["Td"] = t, np.minimum(mpcalc.dewpoint(mpcalc.vapor_pressure(p, w)).to("degC").m, t.m - 1) * units.degC
+    snd = sounding_params(data).calc()
+    thermo, kinem = snd["thermo"], snd["kinem"]
+    # the depth is SHARPpy's pbl_top (a data level) in m AGL
+    assert thermo["pbl_depth"] == pytest.approx(float(np.interp(-thermo["pbl_top"], -p.m, data["z"].m)))
+    assert thermo["pbl_depth"] == pytest.approx(1500, abs=300)
+    assert thermo["pbl_lapse_rate"] == pytest.approx(9.8, abs=1.0)
+    # the mean wind is the layer mean of u and v (kt)
+    z_pbl = np.linspace(0, thermo["pbl_depth"], 50)
+    expected = [np.mean(np.interp(z_pbl, data["z"].m, data[c].to("kt").m)) for c in ("u", "v")]
+    np.testing.assert_allclose(kinem["mean_wind_pbl"], expected)
+
+
+def test_pbl_mean_wind_skips_missing_winds(clean_profile):
+    # radiosonde GPS winds can start after launch: the PBL mean wind uses the levels that have one
+    data = copy.deepcopy(clean_profile)
+    u, v = data["u"].m.copy(), data["v"].m.copy()
+    u[0], v[0] = np.nan, np.nan
+    data["u"], data["v"] = u * units.kts, v * units.kts
+    mean_u, mean_v = sounding_params(data).calc()["kinem"]["mean_wind_pbl"]
+    assert np.isfinite([mean_u, mean_v]).all()
+
+    # with no wind anywhere in the PBL, it's masked rather than NaN
+    u[:3], v[:3] = np.nan, np.nan
+    data["u"], data["v"] = u * units.kts, v * units.kts
+    assert all(np.ma.is_masked(c) for c in sounding_params(data).calc()["kinem"]["mean_wind_pbl"])

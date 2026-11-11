@@ -8,6 +8,8 @@ from .sounderpy import build_hodograph
 from .sounderpy import build_vad_hodograph
 from .sounderpy import build_composite
 from .sounderpy import print_variables
+from .sounderpy import from_cm1
+from .sounderpy import from_wrf
 from .sounderpy import make_cm1_profile
 from .sounderpy import make_wrf_profile
 from .utils import interp_data
@@ -18,6 +20,9 @@ from .utils import make_sfc_based_3D
 from .utils import get_latlon
 from .data.file_io import to_file
 from .data.file_io import from_sharppy
+from .data.file_io import from_graw
+from .data.file_io import from_imet
+from .data.file_io import from_windsond
 from .profile_utils import merge_profiles
 from .profile_utils import smooth_profile
 from .calc import sounding_params

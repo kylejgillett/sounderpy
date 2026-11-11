@@ -139,7 +139,7 @@ The skew-T shows the temperature, dewpoint, and wet-bulb temperature, plus:
 * **Bars on the left**: the dendritic growth zone (DGZ, also shaded across the
   skew-T), cloud layers (with the temperature at the top of the highest one),
   and icing layers.
-* **Bars on the right**: the PBL and the mixed layer (ML), and the surface-based
+* **Bars on the right**: the PBL (SHARPpy's), and the surface-based
   (SB) and most-unstable (MU) parcels' LCL, LFC, and EL.
 
 Between the skew-T and the hodograph are temperature advection and, for data
@@ -209,9 +209,9 @@ Winter Hazards
 The left column gives:
 
 * **Cold**: surface temperature, wind chill, and the 10 m wind;
-* **Blowing snow**: the PBL max gust (the strongest wind between the surface and
-  the PBL top, which mixing could bring down), and the mixed layer's mean wind,
-  depth, and lapse rate;
+* **Blowing snow**: the PBL gust (the strongest wind between the surface and
+  the PBL top, which mixing could bring down), and the PBL mean wind, depth, and
+  lapse rate;
 * **Other**: the snow squall parameter.
 
 The right column checks the ingredients for freezing fog and for freezing drizzle. Each ingredient shows its value and whether
@@ -227,9 +227,9 @@ Hodograph, Winds, and Surface Observation
    :width: 100%
 
 The hodograph shows the winds from the surface to 12 km, with arrows for the
-mixed-layer (ML) and DGZ mean winds: the flow that blowing snow and
+PBL and DGZ mean winds: the flow that blowing snow and
 lake-effect bands follow, and the flow where snow grows. The winds box in the
-lower-right corner lists the 10 m wind, the ML and DGZ mean winds, the 0-2 km
+lower-right corner lists the 10 m wind, the PBL and DGZ mean winds, the 0-2 km
 max wind, and the wind and temperature at 850, 700, and 500 hPa.
 
 With ``show_obs=True``, the station model of the latest surface observation is
@@ -253,7 +253,7 @@ Four panels show the lowest 3 km:
 * **θe**: equivalent potential temperature.
 
 The DGZ is shaded on each panel when it is in the lowest 3 km, and a dashed
-line marks the top of the mixed layer (ML).
+line marks the top of the PBL.
 
 
 ***************************************************************
@@ -312,7 +312,7 @@ A few thresholds are SounderPy's own choices: RHᵢ of at least 90 % for cloud,
 * Holzworth, G. C., 1964: Estimates of mean maximum mixing depths in the
   contiguous United States. *Mon. Wea. Rev.*, **92**, 235-242,
   `https://doi.org/10.1175/1520-0493(1964)092\<0235:EOMMMD\>2.3.CO;2 <https://doi.org/10.1175/1520-0493(1964)092%3C0235:EOMMMD%3E2.3.CO;2>`__.
-  *(mixed-layer depth)*
+  *(PBL depth)*
 * Huffman, G. J., and G. A. Norman Jr., 1988: The supercooled warm rain process
   and the specification of freezing precipitation. *Mon. Wea. Rev.*, **116**,
   2172-2182, `https://doi.org/10.1175/1520-0493(1988)116\<2172:TSWRPA\>2.0.CO;2 <https://doi.org/10.1175/1520-0493(1988)116%3C2172:TSWRPA%3E2.0.CO;2>`__.

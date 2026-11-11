@@ -530,8 +530,9 @@ def _has_eil(kinem):
     return not ma.is_masked(eil[0]) and not ma.is_masked(eil[1]) and eil[0] > eil[1]
 
 
-def _plot_skewt_layer_annotations(skew, data, snd_params, theme, layers=("pbl", "lapse_rate", "eil", "growth_zone")):
-    """Mark the PBL, max lapse rate layer, EIL, and DGZ/HGZ on a skew-t."""
+def _plot_skewt_layer_annotations(skew, data, snd_params, theme, layers=("lapse_rate", "eil", "growth_zone")):
+    """Mark the max lapse rate layer, EIL, and DGZ/HGZ on a skew-t (the PBL bar is drawn by
+    components_winter._plot_pbl, shared with the winter figure)."""
     thermo = snd_params["thermo"]
     kinem = snd_params["kinem"]
     T = data["T"]
@@ -547,19 +548,20 @@ def _plot_skewt_layer_annotations(skew, data, snd_params, theme, layers=("pbl", 
 
     def _plot_labeled_layer(x, bounds, label, color, label_alpha, line_alpha, linewidth=3, ticks=False):
         """Draw a layer's vertical line with a label above it, and optional ticks."""
+        # skip a layer with no usable top, or one whose top is above the plot (a bad level there once put
+        # the label a million pixels off the axes and blew up the tight-bbox savefig)
+        p_top = bounds[1]
+        if ma.is_masked(p_top) or not np.isfinite(p_top) or p_top < skew.ax.get_ylim()[1]:
+            return
         # sit the label higher when a tick marks the layer top; a multi-line label is anchored at its
-        # bottom so the extra lines stack upward instead of running down into the layer line
+        # bottom so the extra lines stack upward instead of running down into the layer line. The offset
+        # is a ratio so the label stays at a positive pressure on the log axis
         va = "bottom" if "\n" in label else "baseline"
-        skew.ax.text(x, bounds[1] - (12 if ticks else 8), label, weight="bold", color=color, alpha=label_alpha, ha="center", va=va,
-                     linespacing=1.1, fontsize=FONT_SIZES["tick"], transform=transform)
+        skew.ax.text(x, p_top * (0.97 if ticks else 0.98), label, weight="bold", color=color, alpha=label_alpha, ha="center", va=va,
+                     linespacing=1.1, fontsize=FONT_SIZES["tick"], transform=transform, clip_on=True)
         _add_skewt_layer_line(skew, x=x, p_bottom=bounds[0], p_top=bounds[1], color=color, alpha=line_alpha, linewidth=linewidth)
         if ticks:
             _plot_layer_ticks(x, bounds, color, line_alpha, linewidth - 1)
-
-    if "pbl" in layers:
-        skew.ax.text(0.76, thermo["pbl_top"] - 4, "←PBL", weight="bold", color=theme["pbl"], alpha=0.95, fontsize=FONT_SIZES["small"], transform=transform, clip_on=True)
-        _add_skewt_layer_line(skew, x=0.78, p_bottom=p[0], p_top=thermo["pbl_top"], color=theme["pbl"], alpha=0.95)
-        _plot_layer_ticks(0.78, (p[0], thermo["pbl_top"]), theme["pbl"], 0.95, 1.5)
 
     if "lapse_rate" in layers:
         # value over unit on two lines, right of the DGZ/HGZ bar so the label doesn't run into it
@@ -1663,9 +1665,10 @@ def _plot_kinematics_table(ax, snd_params, theme):
 
 
 def _plot_indices_box(ax, snd_params, theme):
-    """Draw the 0-3 and 0-6 km SRH and bulk shear box."""
+    """Draw the 0-3 and 0-6 km SRH and bulk shear box, and the PBL depth and mean wind."""
 
     kinem = snd_params["kinem"]
+    thermo = snd_params["thermo"]
     text = theme["text"]
     _setup_text_box(ax, theme)
 
@@ -1675,10 +1678,17 @@ def _plot_indices_box(ax, snd_params, theme):
         _draw_text(ax, x, y_value, value, color, fontsize=FONT_SIZES["tick"], alpha=0.9, ha="center")
 
     # SRH and bulk shear (composite indices are in the thermo table)
-    _draw_stat(0.30, 0.800, 0.581, "  0-3ₖₘ SRH,", _format_value(kinem['srh_0_to_3000'], UNIT_M2S2), theme["kinematics_strong"])
-    _draw_stat(0.77, 0.800, 0.581, "BWD", _format_value(kinem['shear_0_to_3000'], UNIT_KT), theme["kinematics_strong"])
-    _draw_stat(0.30, 0.361, 0.161, "  0-6ₖₘ SRH,", _format_value(kinem['srh_0_to_6000'], UNIT_M2S2), theme["kinematics_strong"])
-    _draw_stat(0.77, 0.361, 0.161, "BWD", _format_value(kinem['shear_0_to_6000'], UNIT_KT), theme["kinematics_strong"])
+    _draw_stat(0.30, 0.861, 0.709, "  0-3ₖₘ SRH,", _format_value(kinem['srh_0_to_3000'], UNIT_M2S2), theme["kinematics_strong"])
+    _draw_stat(0.73, 0.861, 0.709, "BWD", _format_value(kinem['shear_0_to_3000'], UNIT_KT), theme["kinematics_strong"])
+    _draw_stat(0.30, 0.556, 0.404, "  0-6ₖₘ SRH,", _format_value(kinem['srh_0_to_6000'], UNIT_M2S2), theme["kinematics_strong"])
+    _draw_stat(0.73, 0.556, 0.404, "BWD", _format_value(kinem['shear_0_to_6000'], UNIT_KT), theme["kinematics_strong"])
+
+    # the PBL depth and mean (transport) wind, named for the direction it blows from
+    pbl_u, pbl_v = kinem['mean_wind_pbl']
+    pbl_wind = (MISSING_VALUE if ma.is_masked(pbl_u) or ma.is_masked(pbl_v) or not np.isfinite([pbl_u, pbl_v]).all()
+                else f"{wind_to_dir(-pbl_u, -pbl_v)} {mag(np.hypot(pbl_u, pbl_v))}kt")
+    _draw_stat(0.30, 0.251, 0.112, "  PBL depth,", _format_value(thermo['pbl_depth'], "m"), theme["lapse"])
+    _draw_stat(0.73, 0.251, 0.112, "wind", pbl_wind, theme["kinematics_strong"])
 
     return ax
 

@@ -124,12 +124,11 @@ def test_layer_bars_and_markers(winter_params_for):
     n_lines = len(skew.ax.lines)
     w._plot_dgz_bar(skew, winter, snd, THEME)
     w._plot_pbl(skew, data, snd, THEME)
-    w._plot_ml_bar(skew, data, winter, THEME)
     w._plot_clouds(skew, winter, THEME)
     w._plot_icing_layers(skew, winter, THEME)
     w._plot_warm_nose(skew, winter, THEME)
     labels = texts_on(skew.ax)
-    assert {"DGZ", "PBL", "ML"} <= set(labels)
+    assert {"DGZ", "PBL"} <= set(labels) and "ML" not in labels
     assert any(label.startswith("CLD TOP\n") for label in labels)
     assert len(skew.ax.lines) > n_lines
     assert "ICING LAYER" in [line.get_label() for line in skew.ax.lines]
@@ -165,7 +164,7 @@ def hodograph():
 def test_mean_wind_vectors(winter_params_for):
     hodo = hodograph()
     w._plot_mean_wind_vectors(hodo, winter_params_for("fzra")["winter"], THEME)
-    assert [text.get_text() for text in hodo.ax.texts if text.get_text()] == ["ML", "DGZ"]
+    assert [text.get_text() for text in hodo.ax.texts if text.get_text()] == ["PBL", "DGZ"]
 
 
 def test_winds_box_lists_each_level(winter_params_for):
@@ -173,7 +172,7 @@ def test_winds_box_lists_each_level(winter_params_for):
     winter = winter_params_for("fzra")["winter"]
     w._plot_winds_box(ax, winter, THEME)
     labels = texts_on(ax)
-    assert {"WINDS", "10 m:", "ML mean:", "DGZ mean:", "Max 0-2 km:"} <= set(labels)
+    assert {"WINDS", "10 m:", "PBL mean:", "DGZ mean:", "Max 0-2 km:"} <= set(labels)
     assert [f"{level} hPa:" for level in winter["level_winds"]] == [label for label in labels if label.endswith("hPa:")]
 
 
@@ -220,10 +219,10 @@ def test_side_panels_draw(draw, case, winter_params_for):
 
 
 @pytest.mark.parametrize(("depth", "drawn"), [(ma.masked, False), (0.0, False), (500.0, True), (150.0, True), (PANEL_TOP + 1.0, False)])
-def test_mixed_layer_top_mark(depth, drawn):
+def test_pbl_top_mark(depth, drawn):
     ax = new_ax()
-    w._mark_ml_top(ax, {"ml_depth": depth}, THEME)
-    assert (texts_on(ax) == ["ML"]) is drawn
+    w._mark_pbl_top(ax, {"pbl_depth": depth}, THEME)
+    assert (texts_on(ax) == ["PBL"]) is drawn
 
 
 # -----------------------------------------------------------------------------

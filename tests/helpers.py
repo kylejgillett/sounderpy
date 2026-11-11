@@ -55,6 +55,39 @@ def make_clean_profile():
     }
 
 
+def make_stratospheric_profile():
+    """The clean profile run up to ~9 hPa, with a stratosphere that warms back to exactly -30.0 C near 30 km.
+
+    Like IGRAv2 USM00070261 2024-06-01 00Z (Fairbanks), whose -30.0 C at 7.87 hPa became the HGZ top. The
+    tropospheric -30 C crossing (~9.5 km) falls between levels, so only an interpolated search finds it.
+    """
+    data = make_clean_profile()
+    z_m = np.arange(0.0, 36000.0 + 250.0, 250.0)
+    z_km = z_m / 1000.0
+    p_hpa = 970.0 * np.exp(-z_m / 7600.0)
+    # lapse to a 12 km tropopause, isothermal to 20 km, then warm 1.5 C/km
+    t_c = np.where(z_km <= 12, 29.0 - 6.2 * z_km, 29.0 - 6.2 * 12)
+    t_c = np.where(z_km > 20, t_c + 1.5 * (z_km - 20), t_c)
+    t_c[np.argmin(np.abs(z_m - 30000.0))] = -30.0
+    td_c = t_c - (4.0 + 0.55 * z_km)
+    data.update({
+        "p": p_hpa * units.hPa,
+        "z": z_m * units.m,
+        "T": t_c * units.degC,
+        "Td": td_c * units.degC,
+        "u": (5.0 + 2.25 * np.minimum(z_km, 18)) * units.kts,
+        "v": (2.0 + 1.10 * np.minimum(z_km, 18) + 3.0 * np.sin(z_km / 3.0)) * units.kts,
+    })
+    return data
+
+
+def png_size(path: Path):
+    """A PNG's (width, height) in pixels, read from its header."""
+    with path.open("rb") as f:
+        header = f.read(24)
+    return int.from_bytes(header[16:20], "big"), int.from_bytes(header[20:24], "big")
+
+
 def make_sparse_old_profile(moisture="none", winds=True):
     """
     A sparse pre-1970 style RAOB: mandatory levels only (IGRAv2 USM00072520, Pittsburgh, 1965-05-01 00Z).

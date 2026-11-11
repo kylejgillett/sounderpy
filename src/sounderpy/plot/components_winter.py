@@ -5,7 +5,7 @@
 
     Drawing tools for the winter sounding: SounderPy's full sounding layout with winter content in each slot.
     The skew-t shows melting and refreezing layers, precipitation phase changes, 0 °C levels, clouds,
-    icing and the DGZ; the hodograph shows ML and DGZ mean winds, a winds box and the latest surface
+    icing and the DGZ; the hodograph shows PBL and DGZ mean winds, a winds box and the latest surface
     observation; the side panels show T & Tw, RHᵢ & RH, wind and theta-e (0-3 km); the tables show precipitation
     type, snow growth and winter hazards. SounderPy's own plot components are reused wherever they fit.
 
@@ -59,7 +59,7 @@ def _wind_text(u, v):
     """A wind as "NNW @ 21 kt", named for the direction it blows from."""
     # uses SounderPy's wind_to_dir() like the severe figure; it names the direction a vector points toward
     # (right for storm motions), so the wind is negated
-    if ma.is_masked(u) or ma.is_masked(v):
+    if ma.is_masked(u) or ma.is_masked(v) or not np.isfinite([float(u), float(v)]).all():
         return "NA"
     return f"{wind_to_dir(-float(u), -float(v))} @ {np.hypot(u, v):.0f} kt"
 
@@ -80,21 +80,21 @@ def _fit_width(text, ax, max_width):
 
 
 def _shade_dgz(ax, winter, theme):
-    """Shade the DGZ on a height panel, and mark the mixed-layer top."""
+    """Shade the DGZ on a height panel, and mark the PBL top."""
     if not ma.is_masked(winter["dgz_depth"]):
         ax.axhspan(*winter["dgz_z"], color=theme["dgz_fill"], alpha=0.3, linewidth=0)
-    _mark_ml_top(ax, winter, theme)
+    _mark_pbl_top(ax, winter, theme)
 
 
-def _mark_ml_top(ax, winter, theme):
-    """Mark the mixed-layer top on a height panel: a dashed line labeled "ML" at the right edge."""
-    depth = winter.get("ml_depth", ma.masked)
+def _mark_pbl_top(ax, winter, theme):
+    """Mark the PBL top on a height panel: a dashed line labeled "PBL" at the right edge."""
+    depth = winter.get("pbl_depth", ma.masked)
     if ma.is_masked(depth) or not 0 < depth < PANEL_TOP:
         return
     ax.axhline(depth, color=theme["lapse"], linewidth=1.5, linestyle="--", alpha=0.85, zorder=5)
     # under the line, clear of the km labels above it (above the line when the layer is too shallow)
     below = depth > 200
-    ax.text(0.97, depth - 25 if below else depth + 25, "ML", transform=ax.get_yaxis_transform(), ha="right",
+    ax.text(0.97, depth - 25 if below else depth + 25, "PBL", transform=ax.get_yaxis_transform(), ha="right",
             va="top" if below else "bottom", color=theme["lapse"], weight="bold", fontsize=FONT_SIZES["small"],
             alpha=0.9, zorder=6)
 
@@ -188,13 +188,6 @@ def _plot_pbl(skew, data, snd, theme):
                           label_alpha=0.95, linewidth=1, label_offset=6, label_va="bottom", fontsize=FONT_SIZES["small"])
 
 
-def _plot_ml_bar(skew, data, winter, theme):
-    """Draw the mixed-layer bar, labeled like the PBL bar, in its own column beside it."""
-    if not ma.is_masked(winter["ml_top_p"]):
-        _plot_labeled_bar(skew, SKEWT_COLUMNS["ml"], data["p"][0].m, winter["ml_top_p"], "ML", theme["lapse"], alpha=0.95,
-                          label_alpha=0.95, linewidth=1, label_offset=6, label_va="bottom", fontsize=FONT_SIZES["small"])
-
-
 def _plot_winter_parcels(skew, snd, theme):
     """Plot the SB and MU parcel traces, when they have CAPE."""
     thermo = snd["thermo"]
@@ -284,8 +277,8 @@ def _plot_icing_layers(skew, winter, theme):
 #########################################################################
 
 def _plot_mean_wind_vectors(hodo, winter, theme):
-    """Draw the ML and DGZ mean-wind vectors from the hodograph origin."""
-    for key, label in (("mean_wind_ml", "ML"), ("mean_wind_dgz", "DGZ")):
+    """Draw the PBL and DGZ mean-wind vectors from the hodograph origin."""
+    for key, label in (("mean_wind_pbl", "PBL"), ("mean_wind_dgz", "DGZ")):
         u, v = winter[key]
         if ma.is_masked(u) or ma.is_masked(v):
             continue
@@ -302,7 +295,7 @@ def _plot_winds_box(ax, winter, theme):
     _setup_text_box(ax, theme)
     _section_title(ax, "WINDS", theme, layout["label_x"], layout["title_y"])
     rows = [("10 m:", _wind_text(*winter["sfc_wind_uv"])),
-            ("ML mean:", _wind_text(*winter["mean_wind_ml"])),
+            ("PBL mean:", _wind_text(*winter["mean_wind_pbl"])),
             ("DGZ mean:", _wind_text(*winter["mean_wind_dgz"])),
             ("Max 0-2 km:", f"{_fmt(winter['max_wind_0_to_2000'])} kt")]
     # round(...) + 0 keeps a -0.4 °C from printing as "-0"
@@ -623,8 +616,8 @@ def _fzfg_lines(winter):
     ok, values = fzfg["ok"], fzfg["values"]
     return [("title", "FREEZING FOG", fzfg["level"]),
             ("check", ok["cold"], "Sfc T < 0°C", f"{values['cold']:+.1f}°C"),
-            ("check", ok["sat"], "Sfc RH ≥ 95%", f"{values['sat']:.0f}%"),
-            ("check", ok["calm"], "10 m wind ≤ 6 kt", f"{values['calm']:.0f} kt"),
+            ("check", ok["sat"], "Sfc RH ≥ 95%", _fmt(values['sat'], "%")),
+            ("check", ok["calm"], "10 m wind ≤ 6 kt", _fmt(values['calm'], " kt")),
             ("check", ok["inv"], "Sfc inversion",
              f"{_fmt_signed(values['inv'], '°C', 0)} / {winter['sfc_inv_depth'] / 1000:.1f} km" if values["inv"] > 0 else "none"),
             ("note", "Based on Gultepe et al. 2007", 1)]
@@ -656,10 +649,10 @@ def _plot_hazards_table(ax, winter, theme):
             ("row", "Wind chill:", _fmt(winter["wind_chill"], "°F"), theme["cool"]),
             ("row", "10 m wind:", _wind_text(*winter["sfc_wind_uv"]), theme["kinematics_strong"]),
             ("title", "BLOWING SNOW", None),
-            ("row", "PBL Max Gust:", f"{_fmt(winter['gust_potential'])} kt", theme["kinematics_strong"]),
-            ("row", "ML mean:", _wind_text(*winter["mean_wind_ml"]), theme["kinematics_strong"]),
-            ("row", "ML depth:", _fmt(winter["ml_depth"], " m"), theme["lapse"]),
-            ("row", "ML LR:", _fmt(winter["ml_lapse_rate"], "°C/km", 1), theme["lapse"]),
+            ("row", "PBL gust:", f"{_fmt(winter['gust_potential'])} kt", theme["kinematics_strong"]),
+            ("row", "PBL mean:", _wind_text(*winter["mean_wind_pbl"]), theme["kinematics_strong"]),
+            ("row", "PBL depth:", _fmt(winter["pbl_depth"], " m"), theme["lapse"]),
+            ("row", "PBL LR:", _fmt(winter["pbl_lapse_rate"], "°C/km", 1), theme["lapse"]),
             ("note", "Based on Sczepanski et al. 2026", 1),
             ("title", "OTHER", None),
             ("row", "Snow squall:", _fmt(winter["snsq"], decimals=1), theme["composite_index"])]

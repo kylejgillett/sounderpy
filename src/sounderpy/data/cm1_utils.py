@@ -38,7 +38,7 @@ def check_latlon(meta_data_dict):
 #########################
 # MAKE CM1 PROFILE
 #########################################################################
-def make_cm1_profile(filename, meta_data_dict):
+def from_cm1(filename, meta_data_dict):
 
     '''
         process a cm1 input_sounding file for sounderpy
@@ -165,3 +165,15 @@ def make_cm1_profile(filename, meta_data_dict):
     }
 
     return clean_data
+
+
+
+
+# OLD NAME
+# make_cm1_profile() was renamed from_cm1() to match SounderPy's other readers (from_sharppy, from_graw, ...). The old
+# name still works, with a FutureWarning; remove it in a later release.
+def make_cm1_profile(*args, **kwargs):
+    """Deprecated: use from_cm1(), which takes the same arguments (filename, meta_data_dict)."""
+    warnings.warn("make_cm1_profile() is now from_cm1(); the old name will be removed in a later SounderPy release",
+                  FutureWarning, stacklevel=2)
+    return from_cm1(*args, **kwargs)

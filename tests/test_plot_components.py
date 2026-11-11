@@ -469,3 +469,21 @@ def test_composite_table_without_parameters(clean_profile, second_clean_profile)
     texts = texts_on(ax)
     assert {"PROFILE", "LOCATION", "VALID", "A", "B"} <= set(texts)
     assert "MLCAPE" not in texts
+
+
+
+def test_indices_box_shows_the_pbl(severe_params):
+    snd = copy.deepcopy(severe_params)
+    snd["thermo"]["pbl_depth"], snd["kinem"]["mean_wind_pbl"] = 1078.0, (7.53, 5.74)  # blowing toward the NE
+    ax = plt.figure().add_subplot()
+    c._plot_indices_box(ax, snd, THEME)
+    texts = texts_on(ax)
+    assert "  PBL depth," in texts and "1078m" in texts and "SW 9kt" in texts
+
+
+def test_indices_box_without_a_pbl(severe_params):
+    snd = copy.deepcopy(severe_params)
+    snd["thermo"]["pbl_depth"], snd["kinem"]["mean_wind_pbl"] = np.ma.masked, (np.ma.masked, np.ma.masked)
+    ax = plt.figure().add_subplot()
+    c._plot_indices_box(ax, snd, THEME)
+    assert texts_on(ax).count(MISSING_VALUE) == 2

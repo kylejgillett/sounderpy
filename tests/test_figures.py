@@ -234,3 +234,19 @@ def test_build_sounding_sparse_old_profile(moisture, winds, tmp_path):
         warnings.simplefilter("ignore")
         build(spy.build_sounding, make_sparse_old_profile(moisture, winds), tmp_path / f"old_{moisture}.png")
         build(spy.build_hodograph, make_sparse_old_profile(moisture, winds), tmp_path / f"old_{moisture}_hodo.png")
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize("bad_hgz", [False, True])
+def test_build_sounding_keeps_its_size_with_a_stratospheric_profile(bad_hgz, monkeypatch, tmp_path):
+    # IGRAv2 Fairbanks 2024-06-01 00Z warms back to -30 C near 8 hPa; that level became the HGZ top, the label
+    # landed at a negative pressure, and the tight-bbox savefig grew to ~1,085,000 px tall (MemoryError).
+    # With bad_hgz the calc fix is bypassed, so the skew-t's own layer-label guard is what's tested
+    from helpers import make_stratospheric_profile, png_size
+    if bad_hgz:
+        monkeypatch.setattr("sounderpy.calc.hgz", lambda prof: (669.37, 7.87))
+    path = tmp_path / "stratospheric.png"
+    build(spy.build_sounding, make_stratospheric_profile(), path)
+    width, height = png_size(path)
+    # 22 x 13 in at the test's 50 dpi; the tight bbox normally saves ~1227 x 766 px
+    assert width <= 22 * 50 * 1.25 and height <= 13 * 50 * 1.25, (width, height)

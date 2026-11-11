@@ -10,15 +10,18 @@ Built-in Custom Data Ingestion Tools
 -------------------------------------
 Have model data or your own observations? Pipe them into SounderPy with these custom data tools and methods!
 
+.. note::
+   ``from_wrf()`` and ``from_cm1()`` were called ``make_wrf_profile()`` and ``make_cm1_profile()`` before SounderPy 3.3.0. The old names still work, with a ``FutureWarning``, and will be removed in a later release.
+
 
 Ingesting WRF Output Data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. py:function:: spy.make_wrf_profile(ds, latlon, model_name='WRF-ARW', run_name='CONTROL RUN', box_avg_size=0.10, time_idx=0)
+.. py:function:: spy.from_wrf(ds, latlon, model_name='WRF-ARW', run_name='CONTROL RUN', box_avg_size=0.10, time_idx=0)
 
 
    Return a ``dict`` of 'cleaned up' WRF output profile data for a given location
 
-   :param ds: a netcdf4 dataset object of your wrfout*.nc file
+   :param ds: a netcdf4 dataset object of your wrfout*.nc file (an opened dataset, not a file path)
    :type ds: netCDF4.Dataset(), required
    :param latlon: the latitude & longitude pair for sounding (ex: [44.92, -84.72])
    :type latlon: list, required
@@ -43,8 +46,8 @@ Ingesting WRF Output Data
    # open your `wrfout*.nc` file as a netCDF4 dataset
    wrf_ds = netCDF4.Dataset(filename_of_wrf_data)
 
-   # use `make_wrf_profile()` to create a `clean_data` dictionary of sounding data
-   clean_data = spy.make_wrf_profile(wrf_ds, [48.978, -100.861])
+   # use `from_wrf()` to create a `clean_data` dictionary of sounding data
+   clean_data = spy.from_wrf(wrf_ds, [48.978, -100.861])
 
    # Now, pass the 'clean_data' dictionary into the SounderPy `build_sounding` function
    spy.build_sounding(clean_data)
@@ -55,7 +58,7 @@ Ingesting WRF Output Data
 
 Ingesting CM1 input_sounding Data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. py:function:: spy.make_cm1_profile(filename, meta_data_dict)
+.. py:function:: spy.from_cm1(filename, meta_data_dict)
 
    Return a ``dict`` of CM1 ``input_sounding`` data
 
@@ -82,8 +85,8 @@ Ingesting CM1 input_sounding Data
     'left_title': f"Near-storm inflow RUC sounding for the El-Reno EF3 tornado",
     'right_title': f"May 24, 2011"}
 
-   # use `make_cm1_profile()` to create a `clean_data` dictionary of sounding data
-   clean_data = spy.make_cm1_profile(input_sounding_filename, meta_data_dict)
+   # use `from_cm1()` to create a `clean_data` dictionary of sounding data
+   clean_data = spy.from_cm1(input_sounding_filename, meta_data_dict)
 
    # Now, pass the 'clean_data' dictionary into the SounderPy `build_sounding` function
    spy.build_sounding(clean_data)
@@ -143,6 +146,77 @@ Ingesting SHARPPY Files
 
    # Now, pass the 'clean_data' dictionary into the SounderPy `build_sounding` function
    spy.build_sounding(clean_data)
+
+
+***************************************************************
+
+
+
+Ingesting GRAW, iMet, and Windsond Radiosonde Files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+SounderPy can read the files saved by three common research radiosonde systems. These readers are based on conversion scripts contributed by Alec Sczepanski (University of North Dakota). Each returns the same ``clean_data`` dict as ``from_sharppy``, keeps only the balloon's ascent (from launch to burst), and fills in whatever site meta-data the file holds.
+
+.. py:function:: spy.from_graw(filepath, date=None)
+
+
+   Return a ``dict`` of 'cleaned up' profile data from a GRAW radiosonde file
+
+   :param filepath: filepath to the tab-separated table saved by GRAW's software
+   :type filepath: str, required
+   :param date: the launch date, as ``'YYYY-MM-DD'``, ``'YYYYMMDD'``, or a ``datetime.date``. GRAW files hold the time of day but not the date; without ``date``, it is read from a file name that starts with ``YYYYMMDD`` (e.g. ``20260125_2100.txt``)
+   :type date: str or datetime.date, optional
+   :return: clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind
+   :rtype: dict
+
+.. py:function:: spy.from_imet(filepath)
+
+
+   Return a ``dict`` of 'cleaned up' profile data from an iMet radiosonde file (InterMet's SkySonde software)
+
+   :param filepath: filepath to the SkySonde flight data .csv
+   :type filepath: str, required
+   :return: clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind
+   :rtype: dict
+
+.. py:function:: spy.from_windsond(filepath, elevation=None)
+
+
+   Return a ``dict`` of 'cleaned up' profile data from a Windsond radiosonde file
+
+   :param filepath: filepath to the Windsond .sounding.csv
+   :type filepath: str, required
+   :param elevation: the launch site's elevation (m). Windsond heights are above ground level; with ``elevation``, they are put above sea level like other SounderPy data
+   :type elevation: int or float, optional
+   :return: clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind
+   :rtype: dict
+
+
+.. note::
+   - Rows are kept from launch to burst: iMet rows before launch (ascent rate under 1 m/s) and after the burst are dropped, and so is any level whose pressure doesn't fall below the levels under it.
+   - GRAW's first row is the ground station's surface observation. iMet and Windsond dewpoints are calculated from temperature and relative humidity.
+   - Missing values (e.g. iMet winds before the GPS locks on) are kept as NaN.
+   - As with SHARPpy files, add the site meta-data the file doesn't hold (each reader prints what's still needed) and plot titles before plotting.
+
+
+.. code-block:: python
+
+   import sounderpy as spy
+
+   # open your data (the date comes from the file name)
+   clean_data = spy.from_graw("Downloads/20260125_2100.txt")
+
+   # add the site meta-data the file doesn't have, and plot titles
+   clean_data['site_info'].update({'site-id': 'UND',
+                                   'site-name': 'UND GRAND FORKS',
+                                   'site-lctn': 'ND'})
+
+   clean_data['titles'] = {'top_title': 'GRAW RADIOSONDE OBSERVED VERTICAL PROFILE',
+                           'left_title': 'LAUNCH: 01/25/2026 20:26Z',
+                           'right_title': 'UND - UND GRAND FORKS, ND | 47.92, -97.09    '}
+
+   spy.build_sounding(clean_data, mode='winter')
+
 
 
 ---------------------------------------------------------------------

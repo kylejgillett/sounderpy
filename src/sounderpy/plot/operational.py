@@ -119,7 +119,6 @@ from .components_winter import (_plot_clouds,
                                 _plot_icing_layers,
                                 _plot_mean_wind_vectors,
                                 _plot_melt_refreeze,
-                                _plot_ml_bar,
                                 _plot_pbl,
                                 _plot_phase_annotations,
                                 _plot_precip_table,
@@ -250,7 +249,8 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     # CAPE labels
     _plot_skewt_cape_annotations(skew, snd_params, theme)
 
-    # PBL, lapse rate, EIL, DGZ/HGZ
+    # PBL bar (in the winter figure's column), lapse rate, EIL, DGZ/HGZ
+    _plot_pbl(skew, sounding_data, snd_params, theme)
     _plot_skewt_layer_annotations(skew, sounding_data, snd_params, theme)
 
     # RH labels
@@ -492,7 +492,6 @@ def __winter_sounding(clean_data, color_blind, dark_mode, storm_motion='right_mo
     _plot_warm_nose(skew, winter, theme)
     _plot_dgz_bar(skew, winter, snd_params, theme)
     _plot_pbl(skew, sounding_data, snd_params, theme)
-    _plot_ml_bar(skew, sounding_data, snd_params["winter"], theme)
     _plot_clouds(skew, winter, theme)
     _plot_icing_layers(skew, winter, theme)
 

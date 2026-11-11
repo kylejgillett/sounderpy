@@ -72,9 +72,9 @@ Calculate everything ``sounding_params`` does, plus a fifth dictionary, ``winter
 - melting and refreezing layers and their energies (``layers``), freezing levels, and the warm nose;
 - cloud and icing layers;
 - snow growth: the dendritic growth zone in cloud (``dgz_z``, ``dgz_p``, ``dgz_depth``), its RH and omega, OPRH, and the snow-to-liquid ratio (``slr``);
-- the mixed layer: depth, lapse rate, and mean wind (``ml_depth``, ``ml_lapse_rate``, ``mean_wind_ml``);
+- the PBL (SHARPpy's ``pbl_top``): depth, lapse rate, and mean wind (``pbl_depth``, ``pbl_lapse_rate``, ``mean_wind_pbl``; also in ``thermo`` and ``kinem``);
 - surface and hazard values: wind chill, PBL max gust, the snow squall parameter, surface inversion, and freezing fog and freezing drizzle potential (``fzfg``, ``fzdz``);
-- winds: 10 m, ML and DGZ mean winds, the 0-2 km max wind, and the winds at 850, 700, and 500 hPa.
+- winds: 10 m, PBL and DGZ mean winds, the 0-2 km max wind, and the winds at 850, 700, and 500 hPa.
 
 .. class:: winter_params(clean_data, storm_motion='right_moving', modify_sfc=None, include_all_parcels=False, parcel_depth=None)
 

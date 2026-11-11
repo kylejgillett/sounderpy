@@ -358,6 +358,10 @@ class Parcel(object):
         self.bminpres = ma.masked # Buoyancy minimum pressure (mb)
         for kw in kwargs: setattr(self, kw, kwargs.get(kw))
 
+# SounderPy: highest pressure (hPa) searched for the DGZ/HGZ temperatures; above this is stratosphere
+GROWTH_ZONE_PTOP = 100.
+
+
 def hgz(prof):
     '''
         Hail Growth Zone Levels
@@ -379,8 +383,10 @@ def hgz(prof):
             Pressure of the top level (mb)
     '''
 
-    pbot = temp_lvl(prof, -10)
-    ptop = temp_lvl(prof, -30)
+    # SounderPy: look for the top above the bottom and below 100 hPa, so a sounding that warms back
+    # through -30 C in the stratosphere can't put the zone top there
+    pbot = temp_lvl(prof, -10, ptop=GROWTH_ZONE_PTOP)
+    ptop = temp_lvl(prof, -30, pbot=pbot, ptop=GROWTH_ZONE_PTOP)
 
     if not utils.QC(pbot):
         pbot = prof.pres[prof.sfc]
@@ -411,8 +417,9 @@ def dgz(prof):
             Pressure of the top level (mb)
     '''
 
-    pbot = temp_lvl(prof, -12)
-    ptop = temp_lvl(prof, -17)
+    # SounderPy: same tropospheric bounds as hgz()
+    pbot = temp_lvl(prof, -12, ptop=GROWTH_ZONE_PTOP)
+    ptop = temp_lvl(prof, -17, pbot=pbot, ptop=GROWTH_ZONE_PTOP)
 
     if not utils.QC(pbot):
         pbot = prof.pres[prof.sfc]
@@ -949,7 +956,7 @@ def inferred_temp_adv(prof, dp=-100, lat=35):
     return temp_adv, pressure_bounds
 
 
-def temp_lvl(prof, temp, wetbulb=False):
+def temp_lvl(prof, temp, wetbulb=False, pbot=None, ptop=None):
     '''
         Calculates the level (hPa) of the first occurrence of the specified
         temperature.
@@ -962,6 +969,10 @@ def temp_lvl(prof, temp, wetbulb=False):
             Temperature being searched (C)
         wetbulb : boolean
             Flag to indicate whether or not the wetbulb profile should be used instead
+        pbot : number (optional; default None)
+            Only search at or above this pressure (hPa)
+        ptop : number (optional; default None)
+            Only search at or below this pressure (hPa)
 
         Returns
         -------
@@ -973,28 +984,36 @@ def temp_lvl(prof, temp, wetbulb=False):
     else:
         profile = prof.wetbulb
 
-    difft = profile - temp
+    # SounderPy: return the lowest occurrence of the temperature, optionally only between pbot and ptop.
+    # The original returned any exact data-point match before searching for the first crossing, so a
+    # stratospheric level that happened to equal the temperature (e.g. -30.0 C at 7.87 hPa in an IGRAv2
+    # sounding) beat the real tropospheric crossing.
+    pres = ma.getdata(prof.pres).astype(float)
+    logp = ma.getdata(prof.logp).astype(float)
+    profile = ma.getdata(profile).astype(float)
+    mask = ma.getmaskarray(prof.tmpc if wetbulb is False else prof.wetbulb) | ma.getmaskarray(prof.logp) | \
+        ~np.isfinite(profile) | ~np.isfinite(logp)
+    if pbot is not None and utils.QC(pbot):
+        mask |= pres > pbot
+    if ptop is not None and utils.QC(ptop):
+        mask |= pres < ptop
 
-    if not np.any(difft <= 0) or not np.any(difft >= 0):
+    difft = profile[~mask] - temp
+    profile = profile[~mask]
+    logp = logp[~mask]
+    pres = pres[~mask]
+
+    # an exact data-point match, and the first pair of levels whose differences change sign
+    exact = np.where(difft == 0)[0]
+    cross = np.where((difft[:-1] * difft[1:]) < 0)[0]
+    if exact.size == 0 and cross.size == 0:
         # Temp doesn't occur anywhere; return masked
         return ma.masked
-    elif np.any(difft == 0):
+    if exact.size and (cross.size == 0 or exact[0] < cross[0]):
         # Temp is one of the data points; don't bother interpolating
-        return prof.pres[difft == 0][0]
+        return pres[exact[0]]
 
-    mask = difft.mask | prof.logp.mask
-
-    difft = difft[~mask]
-    profile = profile[~mask]
-    logp = prof.logp[~mask]
-
-    # Find where subsequent values of difft are of opposite sign (i.e. when multiplied together, the result is negative)
-    ind = np.where((difft[:-1] * difft[1:]) < 0)[0]
-    try:
-        ind = ind.min()
-    except:
-        ind = ind1[-1]
-
+    ind = cross[0]
     return np.power(10, np.interp(temp, [profile[ind+1], profile[ind]],
                             [logp[ind+1], logp[ind]]))
 

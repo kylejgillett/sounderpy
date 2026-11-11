@@ -311,12 +311,12 @@ CM1 input sounding:
        "right_title": "CM1",
    }
 
-   cm1_data = spy.make_cm1_profile(
+   cm1_data = spy.from_cm1(
        "input_sounding",
        metadata,
    )
 
-WRF output can similarly be converted with ``spy.make_wrf_profile(...)``.
+WRF output can similarly be converted with ``spy.from_wrf(...)``.
 
 Once converted, these profiles use the same SounderPy analysis and plotting
 functions as retrieved profiles.

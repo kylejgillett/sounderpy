@@ -38,7 +38,6 @@ G = 9.81                # gravity, m/s2
 T0 = 273.15             # 0 °C in K
 KT_TO_MS = 0.514444
 PA_S_TO_UB_S = 10.0     # 1 Pa/s = 10 µb/s, SHARPpy's omega unit
-ML_THETAV_EXCESS = 0.5  # K of theta-v above the layer-mean that marks the mixed-layer top (as in SHARPpy's PBL top)
 
 
 
@@ -74,33 +73,6 @@ def value_at(values, z, height):
 
 
 # every height (lowest first) where a profile crosses 0 °C, interpolated between levels
-def mixed_layer(p, z, thetav):
-    """Mixed-layer top (m AGL), from data levels ordered surface first.
-
-    The layer grows up from the surface, level by level, while each new level's theta-v stays within
-    ML_THETAV_EXCESS of the pressure-weighted mean theta-v of the layer below it (the theta-v a parcel mixed
-    through that layer would have). The top is where theta-v first rises past that mean + ML_THETAV_EXCESS,
-    interpolated between levels. A parcel method like Holzworth (1964) and SHARPpy's PBL top, but against the
-    mixed layer's own mean rather than the surface value. Masked when the profile never warms past it.
-    """
-    ok = np.isfinite(p) & np.isfinite(z) & np.isfinite(thetav)
-    p, z, thetav = p[ok], z[ok], thetav[ok]
-    if p.size < 2:
-        return ma.masked
-    # pressure-weighted mean theta-v from the surface to each level (the first is the surface value)
-    weights = -np.diff(p)
-    sums = np.concatenate([[0.0], np.cumsum(weights * (thetav[:-1] + thetav[1:]) / 2)])
-    totals = np.concatenate([[0.0], np.cumsum(weights)])
-    layer_mean_thv = np.where(totals > 0, sums / np.where(totals > 0, totals, 1), thetav[0])
-    # level i is tested against the mean of the layer below it (surface to level i-1)
-    threshold = layer_mean_thv[:-1] + ML_THETAV_EXCESS
-    above = np.where(thetav[1:] > threshold)[0]
-    if above.size == 0:
-        return ma.masked
-    i = int(above[0]) + 1
-    return float(z[i - 1] + (z[i] - z[i - 1]) * (threshold[i - 1] - thetav[i - 1]) / (thetav[i] - thetav[i - 1]))
-
-
 def zero_crossings(z, T):
     i = np.where(np.isfinite(T[:-1]) & np.isfinite(T[1:]) & (T[:-1] * T[1:] < 0))[0]
     return list(z[i] + (z[i + 1] - z[i]) * T[i] / (T[i] - T[i + 1]))
@@ -264,7 +236,8 @@ def hazard_level(ok, required, needed_for_mod=None):
 # freezing drizzle POTENTIAL, checked on the lowest cloud (base below 2 km); an ingredients check, not a forecast
 #   sfc   surface Tw <= 0 °C: drizzle freezes on contact
 #   top   cloud top > -10 °C: little ice, drizzle forms by the warm-rain process (Huffman & Norman 1988; Rauber et al. 2000)
-#   dry   mean RHi <= 75 % in the 1 km above the top: no ice falls in from above (McDonough et al. 2004, NCAR FIP)
+#   dry   mean RHi <= 75 % in the 1 km above the top: no ice falls in from above (McDonough et al. 2004, NCAR FIP);
+#         needed for MOD
 #   deep  cloud >= 500 m deep: deep enough for drizzle drops to grow
 #   lift  mean omega < 0 in the cloud: shown when omega is available, not counted in the level
 # [prototype] the 2 km, 75 % and 500 m thresholds
@@ -285,8 +258,9 @@ def freezing_drizzle_potential(clouds, z, rh_ice, omega, has_omega, sfc_Tw):
     cloud_omega = float(np.nanmean(omega[inside])) if has_omega and inside.sum() > 1 else np.nan
     lift = bool(cloud_omega < 0) if has_omega else None
 
-    # a cold cloud top makes ice, so it caps the level at LOW
-    level = hazard_level(ok, "sfc") if ok["top"] else ("LOW" if ok["sfc"] else "NONE")
+    # a cold cloud top makes ice, so it caps the level at LOW; so does moist air above the cloud, where ice from a
+    # cloud above can fall in (e.g. KDTX 2023-02-23 00Z: snow from a -33 °C top melts and falls as freezing rain)
+    level = hazard_level(ok, "sfc", "dry") if ok["top"] else ("LOW" if ok["sfc"] else "NONE")
     return {"level": level, "ok": ok, "cloud": cloud, "rh_above": rh_above, "depth": depth, "omega": cloud_omega, "lift": lift}
 
 
@@ -298,8 +272,9 @@ def freezing_drizzle_potential(clouds, z, rh_ice, omega, has_omega, sfc_Tw):
 # Gultepe et al. (2007, Pure Appl. Geophys.) [peer-reviewed]. Called freezing fog at any temperature (no separate ice fog)
 # [prototype] the 95 % and 6 kt thresholds. Checks use the same rounded values the figure shows
 def freezing_fog_potential(sfc_T, sfc_rh, sfc_wind_kt, inv_strength):
-    ok = {"cold": bool(sfc_T < 0), "sat": bool(round(sfc_rh) >= 95), "calm": bool(round(sfc_wind_kt) <= 6),
-          "inv": bool(inv_strength > 0)}
+    # a missing value (e.g. no surface wind before the radiosonde's GPS locks on) isn't met
+    ok = {"cold": bool(sfc_T < 0), "sat": bool(np.isfinite(sfc_rh) and round(sfc_rh) >= 95),
+          "calm": bool(np.isfinite(sfc_wind_kt) and round(sfc_wind_kt) <= 6), "inv": bool(inv_strength > 0)}
     return {"level": hazard_level(ok, "cold", "sat"), "ok": ok,
             "values": {"cold": sfc_T, "sat": sfc_rh, "calm": sfc_wind_kt, "inv": inv_strength}}
 
@@ -514,21 +489,11 @@ class winter_params:
         else:
             winter['wind_chill'] = ma.masked
 
-        #--- MIXED LAYER ---#
+        #--- PBL ---#
         # ---------------------------------------------------------------
-        # the mixed layer's depth from theta-v (see mixed_layer()) and its lapse rate (positive when temperature
-        # falls with height), from the data levels. Its mean wind is under WINDS [prototype]
-        thetav = mpcalc.virtual_potential_temperature(self.clean_data['p'], self.clean_data['T'],
-                                                      mpcalc.mixing_ratio_from_relative_humidity(
-                                                          self.clean_data['p'], self.clean_data['T'],
-                                                          mpcalc.relative_humidity_from_dewpoint(self.clean_data['T'],
-                                                                                                 self.clean_data['Td']))).to('K').m
-        winter['ml_depth'] = mixed_layer(p, z, np.asarray(thetav, dtype=float))
-        if not ma.is_masked(winter['ml_depth']) and winter['ml_depth'] > 0:
-            winter['ml_lapse_rate'] = (T[0] - float(np.interp(winter['ml_depth'], z, T))) / (winter['ml_depth'] / 1000)
-            winter['ml_top_p'] = float(np.interp(winter['ml_depth'], z, p))
-        else:
-            winter['ml_lapse_rate'], winter['ml_top_p'] = ma.masked, ma.masked
+        # SHARPpy's PBL depth and lapse rate, from the standard calc; its mean wind is under WINDS
+        for key in ('pbl_depth', 'pbl_lapse_rate'):
+            winter[key] = thermo[key]
 
         # gust potential: the strongest wind between the surface and the PBL top, what mixing could bring
         # down. BUFKIT momentum-transfer practice [operational]
@@ -573,14 +538,9 @@ class winter_params:
         ####################################################################
         #--- MEAN WINDS ---#
         # ---------------------------------------------------------------
-        # [prototype] ML: surface to the mixed-layer top (on a 50-point height grid, as the layer can be shallower
-        # than the 100 m interpolated grid), the flow blowing snow and lake-effect bands follow. DGZ: the flow where
-        # snow grows, a guide to how bands generated aloft drift
-        if not ma.is_masked(winter['ml_depth']) and winter['ml_depth'] > 0:
-            z_ml = np.linspace(0, winter['ml_depth'], 50)
-            winter['mean_wind_ml'] = (float(np.mean(np.interp(z_ml, z, u))), float(np.mean(np.interp(z_ml, z, v))))
-        else:
-            winter['mean_wind_ml'] = (ma.masked, ma.masked)
+        # PBL (from the standard calc): surface to the PBL top, the flow blowing snow and lake-effect bands follow.
+        # DGZ [prototype]: the flow where snow grows, a guide to how bands generated aloft drift
+        winter['mean_wind_pbl'] = snd['kinem']['mean_wind_pbl']
         winter['mean_wind_dgz'] = ((layer_mean(ui, zi, *winter['dgz_z']), layer_mean(vi, zi, *winter['dgz_z']))
                                    if has_dgz else (ma.masked, ma.masked))
 

@@ -10,8 +10,8 @@ from .data.model_data import fetch_model
 from .data.bufkit_data import fetch_bufkit
 from .data.obs_data import fetch_obs
 from .data.acars_data import *
-from .data.wrf_utils import make_wrf_profile
-from .data.cm1_utils import make_cm1_profile
+from .data.wrf_utils import from_wrf, make_wrf_profile
+from .data.cm1_utils import from_cm1, make_cm1_profile
 from .data.rapruc_grib_retriever import get_rapruc_data
 #########################################################################################################
 

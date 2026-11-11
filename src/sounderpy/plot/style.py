@@ -55,6 +55,7 @@ BASE_THEME = {# skew-t profiles
               "height_marker_edge": "black",
               "mcs": "orange",
               "dtm": "brown",
+              "mean_wind": "#7a7a7a",
 
               # skew-t annotations
               "pbl": "gray",
@@ -208,7 +209,7 @@ FULL_SOUNDING_LAYOUT = {"skewt": (0.1124, 0.1005, 0.60, 0.85),
                         "thermo_table": (0.124, -0.08, 0.406, 0.18),
                         "moisture_table": (0.53, -0.13, 0.15, 0.23),
                         "kinematics_table": (0.68, -0.13, 0.265, 0.23),
-                        "indices_box": (1.106, 0.10, 0.10, 0.105),
+                        "indices_box": (1.094, 0.10, 0.112, 0.151),
                         "logo": (0.115, -0.135, 0.05, 0.05),
                         "margin": (0.1136, -0.1454, 1.1064, 1.1639)}
 
@@ -450,10 +451,7 @@ WINTER_THEME = {# precipitation type
 
                 # 0 °C levels
                 "frz": "#1f4fbf",
-                "wb_frz": "#3d8aff",
-
-                # hodograph mean-wind vectors
-                "mean_wind": "#7a7a7a"}
+                "wb_frz": "#3d8aff"}
 
 # dark mode: lighter versions of the colors that are too dark on a black background
 DARK_WINTER_THEME = {**WINTER_THEME,
@@ -508,7 +506,6 @@ SKEWT_COLUMNS = {"dgz": 0.13,
                  "frz": 0.600,
                  "wb_frz": 0.655,
                  "pbl": 0.73,
-                 "ml": 0.775,
                  "sb_levels": 0.83,
                  "mu_levels": 0.90}
 

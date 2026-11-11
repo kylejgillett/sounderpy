@@ -514,6 +514,18 @@ class sounding_params:
         # ---------------------------------------------------------------
         thermo['pbl_top'] = pbl_top(prof) 
 
+        # depth (m AGL) and lapse rate (positive when temperature falls with height) of SHARPpy's PBL, from the
+        # data levels. Its mean wind is under STORM MOTION
+        pbl_z = z.m - z.m[0]
+        if not ma.is_masked(thermo['pbl_top']) and np.isfinite(thermo['pbl_top']):
+            thermo['pbl_depth'] = float(np.interp(-float(thermo['pbl_top']), -p.m, pbl_z))
+        else:
+            thermo['pbl_depth'] = ma.masked
+        if not ma.is_masked(thermo['pbl_depth']) and thermo['pbl_depth'] > 0:
+            thermo['pbl_lapse_rate'] = (T.m[0] - float(np.interp(thermo['pbl_depth'], pbl_z, T.m))) / (thermo['pbl_depth'] / 1000)
+        else:
+            thermo['pbl_lapse_rate'] = ma.masked
+
         #--- DGZ ---#
         # ---------------------------------------------------------------
         thermo['dgz'] = dgz(prof)
@@ -599,6 +611,23 @@ class sounding_params:
             warnings.warn("Bunkers Storm Motion could not be computed for this sounding (not enough data)", Warning)
         else:
             kinem['sm_rm'], kinem['sm_lm'], kinem['sm_mw'] = sm_rm, sm_lm, sm_mw
+
+        #--- PBL MEAN WIND ---#
+        # ---------------------------------------------------------------
+        # surface to the PBL top (kt), on a 50-point height grid as the PBL can be shallower than the 100 m
+        # interpolated grid: the transport wind that boundary-layer moisture, smoke, and blowing snow follow.
+        # Only levels with a wind are used (a radiosonde's GPS winds can start after launch); masked when the
+        # PBL has none
+        kinem['mean_wind_pbl'] = (ma.masked, ma.masked)
+        if not ma.is_masked(thermo['pbl_depth']) and thermo['pbl_depth'] > 0:
+            u_kt, v_kt = np.asarray(u.to('kt').m, dtype=float), np.asarray(v.to('kt').m, dtype=float)
+            has_wind = np.isfinite(u_kt) & np.isfinite(v_kt) & np.isfinite(pbl_z)
+            z_pbl = np.linspace(0, thermo['pbl_depth'], 50)
+            if has_wind.sum() > 1:
+                z_pbl = z_pbl[(z_pbl >= pbl_z[has_wind].min()) & (z_pbl <= pbl_z[has_wind].max())]
+            if has_wind.sum() > 1 and z_pbl.size:
+                kinem['mean_wind_pbl'] = (float(np.mean(np.interp(z_pbl, pbl_z[has_wind], u_kt[has_wind]))),
+                                          float(np.mean(np.interp(z_pbl, pbl_z[has_wind], v_kt[has_wind]))))
             
 
 

@@ -166,10 +166,12 @@ def profile_location(lat_pt, lon_pt, lat_array, lon_array, box_avg_size=0.10):
 #############################################
 # BUILD AND RETURN 'clean_data' DICTIONARY
 #############################################
-def make_wrf_profile(ds, latlon, model_name='WRF-ARW', run_name='CONTROL RUN', box_avg_size=0.10, time_idx=0):
+def from_wrf(ds, latlon, model_name='WRF-ARW', run_name='CONTROL RUN', box_avg_size=0.10, time_idx=0):
     '''
+        make a SounderPy clean_data profile from WRF output at a location (box-averaged)
+
         params
-            > ds: netcdf file of WRF output
+            > ds: an opened wrfout file, e.g. netCDF4.Dataset('wrfout_d01_...'); a dataset, not a file path
             > latlon: list of latitude and longitude `[45.56, -100.89]`
             > run_name: str, name of the run for title plotting 'CONTROL'
             > box_avg_size: float, width of the box-average domain in degrees
@@ -295,3 +297,15 @@ def make_wrf_profile(ds, latlon, model_name='WRF-ARW', run_name='CONTROL RUN', b
     }
 
     return clean_data
+
+
+
+
+# OLD NAME
+# make_wrf_profile() was renamed from_wrf() to match SounderPy's other readers (from_sharppy, from_graw, ...). The old
+# name still works, with a FutureWarning; remove it in a later release.
+def make_wrf_profile(*args, **kwargs):
+    """Deprecated: use from_wrf(), which takes the same arguments (ds, latlon, model_name='WRF-ARW', run_name='CONTROL RUN', box_avg_size=0.10, time_idx=0)."""
+    warnings.warn("make_wrf_profile() is now from_wrf(); the old name will be removed in a later SounderPy release",
+                  FutureWarning, stacklevel=2)
+    return from_wrf(*args, **kwargs)

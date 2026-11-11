@@ -10,7 +10,7 @@ import pytest
 
 import sounderpy as spy
 from sounderpy.calc_winter import (MELT_ALOFT, REFREEZE_MIX, REFREEZE_PL, REFREEZE_SLOPE, dendritic_growth_zone,
-                                   mixed_layer, precip_phase_trace, winter_params)
+                                   freezing_drizzle_potential, precip_phase_trace, winter_params)
 
 from helpers import make_winter_profile
 
@@ -87,27 +87,16 @@ def test_precip_phase_trace_thresholds():
     assert surface_type(("warm", 50.0), ("cold", -250)) == "PL"
 
 
-def test_mixed_layer_top_from_theta_v():
-    # constant theta-v to 1000 m, stable (+5 K/km) above: the top is just above 1000 m, where theta-v passes the
-    # layer mean + 0.5 K
-    z = np.arange(0, 3001, 50.0)
-    p = 1000 * np.exp(-z / 8000)
-    thetav = np.where(z <= 1000, 270.0, 270.0 + 5 * (z - 1000) / 1000)
-    assert mixed_layer(p, z, thetav) == pytest.approx(1100, abs=10)
-
-    # a surface inversion (+10 K/km from the ground) leaves only a shallow layer
-    assert mixed_layer(p, z, 265 + 10 * z / 1000) < 100
-
-    # never warms past the mean: no top
-    assert np.ma.is_masked(mixed_layer(p, z, np.full_like(z, 270.0)))
-
-
-def test_mixed_layer_values_on_the_winter_dict(winter_params_for):
-    winter = winter_params_for("rasn")["winter"]
-    assert winter["ml_depth"] > 0
-    assert np.isfinite(winter["ml_lapse_rate"])
-    assert not any(np.ma.is_masked(c) for c in winter["mean_wind_ml"])
-    assert not {"blsn_ratio", "dT_0_to_1000", "mean_wind_pbl"} & set(winter)
+def test_pbl_values_on_the_winter_dict(winter_params_for):
+    snd = winter_params_for("rasn")
+    winter = snd["winter"]
+    assert winter["pbl_depth"] > 0
+    assert np.isfinite(winter["pbl_lapse_rate"])
+    assert not any(np.ma.is_masked(c) for c in winter["mean_wind_pbl"])
+    assert not {"blsn_ratio", "dT_0_to_1000", "ml_depth", "mean_wind_ml"} & set(winter)
+    # the winter values are the standard calc's (SHARPpy's PBL)
+    assert [winter["pbl_depth"], winter["pbl_lapse_rate"]] == [snd["thermo"]["pbl_depth"], snd["thermo"]["pbl_lapse_rate"]]
+    assert winter["mean_wind_pbl"] == snd["kinem"]["mean_wind_pbl"]
 
 
 def test_dgz_is_the_layer_in_cloud():
@@ -140,3 +129,18 @@ def test_snow_ratio_only_when_snow_reaches_the_surface():
     Tmax = float(np.max(data["T"].m[data["p"].m >= 500])) + 273.15
     expected = 12 + 2 * (271.16 - Tmax) if Tmax > 271.16 else 12 + (271.16 - Tmax)
     assert slr == pytest.approx(max(expected, 0.0))
+
+
+@pytest.mark.parametrize("rh_above, depth, level", [
+    (50.0, 1900, "HIGH"),  # all four ingredients
+    (50.0, 300, "MOD"),    # dry above, only too shallow
+    (97.0, 1900, "LOW"),   # moist above: ice can seed the cloud, so one short is still LOW
+])
+def test_freezing_drizzle_needs_dry_air_above_for_mod(rh_above, depth, level):
+    # KDTX 2023-02-23 00Z: a 0-1900 m warm-topped cloud 300 m under a deep -33 °C-topped one (RHi 97 % above) was MOD,
+    # though the precipitation was snow melting into freezing rain
+    z = np.arange(0.0, 4000.0, 100.0)
+    rh_ice = np.where(z > depth, rh_above, 100.0)
+    cloud = {"bottom": 0.0, "top": float(depth), "top_T": 2.4}
+    fzdz = freezing_drizzle_potential([cloud], z, rh_ice, np.full_like(z, np.nan), False, -1.2)
+    assert fzdz["level"] == level
