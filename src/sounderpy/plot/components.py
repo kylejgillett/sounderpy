@@ -67,7 +67,7 @@ from .style import (FONT_SIZES,
                     WATERMARK_TEXT)
 
 # SOUNDERPY MODULES
-from ..utils import modify_surface, find_nearest, mag, mag_round, wind_to_dir
+from ..utils import SounderPyWarning, modify_surface, find_nearest, mag, mag_round, wind_to_dir
 from ..calc import storm_motion_type
 from ..data.radar_utils import *
 
@@ -808,8 +808,12 @@ def _plot_hodograph_height_markers(hodo, snd_params, theme,
 
         hodo.ax.plot(u[idx], v[idx], marker=".", color=theme["height_marker"], markeredgecolor=theme["height_marker_edge"], 
                      alpha=1, markersize=marker_size, zorder=5, clip_on=True)
-        hodo.ax.annotate(label, (u[idx], v[idx]), weight="bold", fontsize=fontsize, color=theme["height_marker_edge"], 
-                         xytext=(0.02, -4), textcoords="offset pixels", horizontalalignment="center", clip_on=True, zorder=6)
+        # center the label on the marker; "center_baseline" centers digits better than "center", whose box
+        # includes room for descenders, and a zero offset keeps it centered at any dpi
+        # two-digit labels are shrunk a little to stay inside the marker
+        label_size = fontsize * 0.85 if height >= 10000 else fontsize
+        hodo.ax.annotate(label, (u[idx], v[idx]), weight="bold", fontsize=label_size, color=theme["height_marker_edge"],
+                         ha="center", va="center_baseline", annotation_clip=True, zorder=6)
 
 
 
@@ -1111,7 +1115,7 @@ def _plot_map_mosaic_radar(map_ax, sounding_data, map_zoom, radar_time, theme, r
         return True
 
     except Exception as exc:
-        warnings.warn(f"Radar mosaic could not be plotted: {exc}", Warning)
+        warnings.warn(f"Radar mosaic could not be plotted: {exc}", SounderPyWarning)
         if show_timestamp:
             _add_map_label(map_ax, "RADAR UNAVAILABLE", theme)
         return False
@@ -1153,7 +1157,7 @@ def _plot_map_single_site_radar(map_ax, sounding_data, radar_time, theme, reflec
         return True
 
     except Exception as exc:
-        warnings.warn(f"Single-site radar could not be plotted: {exc}", Warning)
+        warnings.warn(f"Single-site radar could not be plotted: {exc}", SounderPyWarning)
         if show_timestamp:
             _add_map_label(map_ax, "RADAR UNAVAILABLE", theme)
         return False
@@ -1488,17 +1492,21 @@ def _draw_table(ax, table, layout, theme, fontsize=FONT_SIZES["table"]):
 
 
 
-def _get_parcel_table(snd_params, theme):
-    """The SB/ML/MU parcel table: ECAPE, CAPE, 6CAPE, 3CAPE, CIN, and LCL."""
+def _get_parcel_table(snd_params, theme, energy_units=True):
+    """The SB/ML/MU parcel table: ECAPE, CAPE, 6CAPE, 3CAPE, CIN, and LCL.
+
+    Set energy_units=False to leave the J/kg unit off the energy values, where the unit is shown once instead.
+    """
 
     thermo = snd_params["thermo"]
     parcels = (("SB:", "sb"), ("ML:", "ml"), ("MU:", "mu"))
+    jkg = f" {UNIT_JKG}" if energy_units else ""
 
     rows = [{"label": label, "color": theme["parcel"][key], "values": [
-                _format_value(thermo[f'{key}_ecape'], f" {UNIT_JKG}"),
-                _format_value(thermo[f'{key}cape'], f" {UNIT_JKG}"),
-                _format_value(thermo[f'{key}6cape'], f" {UNIT_JKG}"),
-                _format_value(thermo[f'{key}3cape'], f" {UNIT_JKG}"),
+                _format_value(thermo[f'{key}_ecape'], jkg),
+                _format_value(thermo[f'{key}cape'], jkg),
+                _format_value(thermo[f'{key}6cape'], jkg),
+                _format_value(thermo[f'{key}3cape'], jkg),
                 _format_value(thermo[f'{key}cin'], f" {UNIT_JKG}"),
                 _format_value(thermo[f'{key}_lcl_z'], f" {UNIT_M}")]}
             for label, key in parcels]
@@ -1557,8 +1565,9 @@ def _plot_thermo_table(ax, snd_params, theme):
     _draw_table(ax, _get_parcel_table(snd_params, theme), THERMO_TABLE_LAYOUT, theme)
     _draw_text(ax, 0.015, THERMO_TABLE_LAYOUT["rows_y"][1] - 0.04, "100 hPa", text, fontsize=FONT_SIZES["fine"], alpha=0.5)
 
-    # single-value thermo parameters, as a 2x4 grid:
-    # downdraft | MUNCAPE & 700-500 hPa lapse rate | low & mid lapse rates | K-index & total totals
+    # single-value thermo parameters, in two rows:
+    # top:    DCAPE | MUNCAPE | K-index & total totals
+    # bottom: DCIN  | 0-3 km, 3-6 km, & 700-500 hPa lapse rates
     top, bottom = 0.310, 0.175
     _draw_text(ax, 0.015, top, "DCAPE:", text)
     _draw_text(ax, 0.126, top, _format_value(thermo['dcape'], f" {UNIT_JKG}"), theme["cool"], alpha=0.7)
@@ -1567,22 +1576,33 @@ def _plot_thermo_table(ax, snd_params, theme):
 
     _draw_text(ax, 0.300, top, "MUNCAPE:", text)
     _draw_text(ax, 0.450, top, _format_value(thermo['mu_ncape'], decimals=1), theme["ncape"], alpha=0.7)
-    _draw_text(ax, 0.300, bottom, "Γ₇₀₀₋₅₀₀:", text, fontsize=FONT_SIZES["table_large"])
-    _draw_text(ax, 0.435, bottom, _format_value(thermo['lr_75'], f" {UNIT_LAPSE}", decimals=1), theme["lapse"])
-
-    _draw_text(ax, 0.555, top, "Γ₀₋₃:", text, fontsize=FONT_SIZES["table_large"])
-    _draw_text(ax, 0.635, top, _format_value(thermo['lr_03km'], f" {UNIT_LAPSE}", decimals=1), theme["lapse"])
-    _draw_text(ax, 0.555, bottom, "Γ₃₋₆:", text, fontsize=FONT_SIZES["table_large"])
-    _draw_text(ax, 0.635, bottom, _format_value(thermo['lr_36km'], f" {UNIT_LAPSE}", decimals=1), theme["lapse"])
-
-    for y, label, key in ((top, "KI:", 'k_index'), (bottom, "TT:", 't_totals')):
+    for x, label, key in ((0.720, "KI:", 'k_index'), (0.855, "TT:", 't_totals')):
         value_text = _format_value(thermo[key], decimals=0)
-        _draw_text(ax, 0.800, y, label, text)
-        _draw_text(ax, 0.865, y, value_text.removesuffix(".0"), theme["ncape"], alpha=0.7)
+        _draw_text(ax, x, top, label, text)
+        _draw_text(ax, x + 0.060, top, value_text.removesuffix(".0"), theme["ncape"], alpha=0.7)
 
-    # composite indices, set off below a divider. all are unitless, so six fit on one row
-    kinem = snd_params["kinem"]
+    for x, value_x, label, key in ((0.300, 0.380, "Γ₀₋₃:", 'lr_03km'),
+                                   (0.510, 0.590, "Γ₃₋₆:", 'lr_36km'),
+                                   (0.720, 0.855, "Γ₇₀₀₋₅₀₀:", 'lr_75')):
+        _draw_text(ax, x, bottom, label, text, fontsize=FONT_SIZES["table_large"])
+        _draw_text(ax, value_x, bottom, _format_value(thermo[key], f" {UNIT_LAPSE}", decimals=1), theme["lapse"])
+
+    # composite indices, set off below a divider
     ax.axhline(0.125, xmin=0.012, xmax=0.988, color=text, alpha=0.45, linewidth=1.2)
+    _draw_composite_row(ax, snd_params, theme, y=0.035, x0=0.015, width=0.97)
+
+    return ax
+
+
+
+def _draw_composite_row(ax, snd_params, theme, y, x0, width, columns=6, row_gap=0.06,
+                        label_gap=0.004, value_gap=0.014, fontsize=FONT_SIZES["tick"]):
+    """Draw SCP, STP, EHI, SHIP, and MLBRN, all unitless, in a grid of `columns` slots per row.
+
+    Six fit on one row in a wide box; narrower boxes can use two rows of three, spaced `row_gap` apart.
+    """
+
+    thermo, kinem = snd_params["thermo"], snd_params["kinem"]
     composites = (("SCP", kinem['eil_scp'], 1, theme["composite_index"]),
                   ("STP", kinem['eil_stp'], 1, theme["composite_index"]),
                   ("EHI₀₋₁", kinem['ehi_0_to_1000'], 1, theme["ehi"]),
@@ -1590,15 +1610,14 @@ def _plot_thermo_table(ax, snd_params, theme):
                   ("SHIP", thermo['ship'], 1, theme["composite_index"]),
                   ("MLBRN", thermo['ml_brn'], 0, theme["composite_index"]))
     # each label/value pair is centered in one of six equal slots
-    slot = 0.97 / len(composites)
+    slot = width / columns
     for i, (label, value, decimals, color) in enumerate(composites):
-        x = 0.015 + (i + 0.5) * slot
+        row, col = divmod(i, columns)
+        x, row_y = x0 + (col + 0.5) * slot, y - row * row_gap
         value_text = _format_value(value, decimals=decimals)
-        _draw_text(ax, x + 0.004, 0.035, label, text, fontsize=FONT_SIZES["tick"], ha="right")
-        _draw_text(ax, x + 0.014, 0.035, value_text.removesuffix(".0") if decimals == 0 else value_text, color,
-                   fontsize=FONT_SIZES["tick"])
-
-    return ax
+        _draw_text(ax, x + label_gap, row_y, label, theme["text"], fontsize=fontsize, ha="right")
+        _draw_text(ax, x + value_gap, row_y, value_text.removesuffix(".0") if decimals == 0 else value_text, color,
+                   fontsize=fontsize)
 
 
 
@@ -1672,23 +1691,30 @@ def _plot_wind_parameter_box(ax, snd_params, theme):
 
 
 def _plot_hodograph_parameter_box(ax, snd_params, theme):
-    """Draw the kinematics and parcel tables and key values, all in one box."""
+    """Draw the kinematics and parcel tables, lapse rates, and composite indices, all in one box."""
 
     thermo = snd_params["thermo"]
     text = theme["text"]
 
     _setup_text_box(ax, theme)
     _draw_table(ax, _get_kinematics_table(snd_params, theme, layer_colors=True), HODOGRAPH_KINEMATICS_LAYOUT, theme)
-    _draw_table(ax, _get_parcel_table(snd_params, theme), HODOGRAPH_PARCEL_LAYOUT, theme)
+    ax.axhline(0.485, xmin=0.020, xmax=0.980, color=text, alpha=0.45, linewidth=1.2)
+    # the energy unit is shown once, under the row labels, so four values fit across the box
+    _draw_table(ax, _get_parcel_table(snd_params, theme, energy_units=False), HODOGRAPH_PARCEL_LAYOUT, theme)
+    _draw_text(ax, HODOGRAPH_PARCEL_LAYOUT["label_x"], HODOGRAPH_PARCEL_LAYOUT["header_y"], UNIT_JKG,
+               text, fontsize=FONT_SIZES["note"], alpha=0.45)
 
-    _draw_text(ax, 0.155, 0.133, "MUNCAPE:", text)
-    _draw_text(ax, 0.374, 0.133, " " + _format_value(thermo["mu_ncape"], decimals=1), theme["ncape"], alpha=0.7)
-    _draw_text(ax, 0.549, 0.133, "DCAPE:", text)
-    _draw_text(ax, 0.733, 0.133, _format_value(thermo["dcape"], f" {UNIT_JKG}"), theme["cool"], alpha=0.7)
-    _draw_text(ax, 0.155, 0.067, "Γ₀₋₃:", text, fontsize=FONT_SIZES["table_large"])
-    _draw_text(ax, 0.374, 0.067, _format_value(thermo["lr_03km"], f" {UNIT_LAPSE}", decimals=1), theme["lapse"])
-    _draw_text(ax, 0.549, 0.067, "Γ₃₋₆:", text, fontsize=FONT_SIZES["table_large"])
-    _draw_text(ax, 0.733, 0.067, _format_value(thermo["lr_36km"], f" {UNIT_LAPSE}", decimals=1), theme["lapse"])
+    # 0-3 km, 3-6 km, and 700-500 hPa lapse rates
+    for x, value_x, label, key in ((0.036, 0.142, "Γ₀₋₃:", 'lr_03km'),
+                                   (0.345, 0.451, "Γ₃₋₆:", 'lr_36km'),
+                                   (0.640, 0.830, "Γ₇₀₀₋₅₀₀:", 'lr_75')):
+        _draw_text(ax, x, 0.180, label, text, fontsize=FONT_SIZES["table_large"])
+        _draw_text(ax, value_x, 0.180, _format_value(thermo[key], f" {UNIT_LAPSE}", decimals=1), theme["lapse"])
+
+    # composite indices, set off below a divider, in two rows of three
+    ax.axhline(0.150, xmin=0.020, xmax=0.980, color=text, alpha=0.45, linewidth=1.2)
+    _draw_composite_row(ax, snd_params, theme, y=0.090, x0=0.020, width=0.96, columns=3, row_gap=0.065,
+                        fontsize=FONT_SIZES["table"])
 
     return ax
 
@@ -2055,6 +2081,24 @@ def _plot_credits(target, theme, x=0.168, title_y=-0.105, subtitle_y=-0.125, sty
     # shrink long custom text to stay within its space
     for text in texts:
         _fit_text(text, target, max_x - x)
+
+
+def _plot_data_source(fig, site_info, theme, x=0.168, y=-0.141, max_x=0.525):
+    """Add a faded line under the watermark naming where the data came from, when the getter recorded it."""
+    data_source = site_info.get("data-source")
+    if not data_source:
+        return
+
+    # model profiles add the model and its initialization time, e.g. 'HRRR INIT 16Z 11-22-2025'
+    model = site_info.get("model", "no-model")
+    run_time = site_info.get("run-time")
+    if model != "no-model" and run_time and "none" not in run_time:
+        year, month, day, hour = run_time[:4]
+        data_source += f" · {str(model).upper()} INIT {hour}Z {month}-{day}-{year}"
+
+    text = fig.text(x, y, f"DATA: {data_source}", ha="left", fontsize=FONT_SIZES["fine"] + 2,
+                    color=theme["text"], alpha=0.45)
+    _fit_text(text, fig, max_x - x)
 
 
 def _plot_logo(ax):

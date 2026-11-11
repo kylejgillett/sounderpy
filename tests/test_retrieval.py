@@ -1,4 +1,5 @@
-"""Data retrieval: offline routing of the public get_* functions, surface observations, and live data tests.
+"""Data retrieval: offline routing of the public get_* functions, the RAOB/IGRA station list, surface observations,
+and live data tests.
 
 The routing tests mock each backend and check SounderPy calls it with the right arguments. Tests marked
 ``network`` contact the real archives and only run with ``pytest --network``.
@@ -6,6 +7,7 @@ The routing tests mock each backend and check SounderPy calls it with the right 
 
 from __future__ import annotations
 
+import re
 from datetime import datetime, timezone
 
 import numpy as np
@@ -13,6 +15,7 @@ import pytest
 
 import sounderpy as spy
 from sounderpy import sounderpy as public_api
+from sounderpy import utils
 from sounderpy.data import sfc_obs
 
 from helpers import make_winter_profile
@@ -80,6 +83,20 @@ def test_rap_ruc_models_route_to_grib_retriever(monkeypatch, model):
     assert calls == [([44.58, -100.82], "2024", "08", "28", "18", None, 0.25, True, False)]
 
 
+@pytest.mark.parametrize(("model", "run", "message"), [
+    ("nam", None, "NAM has been discontinued, so there is no latest run. Archived NAM runs are still available"),
+    ("NAMNEST", None, "NAMNEST has been discontinued, so there is no latest run"),
+    ("sref", None, "SREF has been discontinued and isn't in the BUFKIT archive"),
+    ("hiresw", ("2024", "01", "24", "12"), "HIRESW has been discontinued and isn't in the BUFKIT archive"),
+])
+def test_discontinued_bufkit_models_are_rejected_without_network(model, run, message):
+    from sounderpy.data.bufkit_data import fetch_bufkit
+
+    run = run or (None, None, None, None)
+    with pytest.raises(ValueError, match=re.escape(message)):
+        fetch_bufkit(model, "KGFK", 1, *run, hush=True, clean_it=True)
+
+
 def test_invalid_model_name_is_rejected_without_network():
     with pytest.raises(ValueError, match="not a valid model"):
         spy.get_model_data("definitely-not-a-model", [44.58, -100.82], "2024", "08", "28", "18", hush=True)
@@ -88,6 +105,171 @@ def test_invalid_model_name_is_rejected_without_network():
 def test_acars_connection_object_stores_requested_time():
     conn = spy.acars_data("2024", "05", "21", "00")
     assert (conn.year, conn.month, conn.day, conn.hour) == ("2024", "05", "21", "00")
+
+
+# -----------------------------------------------------------------------------
+# RAOB / IGRA STATION LIST (packaged RAOB-STATIONS-MASTER.csv)
+# -----------------------------------------------------------------------------
+
+def test_station_list_ships_with_unique_ids():
+    df = utils.load_raob_stations()
+    assert len(df) > 3000
+    for col in ("WMO", "ICAO", "IGRA_ID"):
+        ids = df.loc[df[col] != "", col]
+        assert not ids.duplicated().any(), f"duplicate {col} values"
+    assert (df.loc[df["WMO"] != "", "WMO"].str.len() == 5).all()   # zero-padded text
+
+
+def test_station_list_copies_match():
+    """The packaged list must match the latest build in tools/station_list/ (when that folder exists)."""
+    from pathlib import Path
+    built = Path(__file__).resolve().parents[1] / "tools" / "station_list" / "RAOB-STATIONS-MASTER.csv"
+    if not built.exists():
+        pytest.skip("no local station list build (tools/station_list/)")
+    packaged = Path(utils.__file__).with_name("RAOB-STATIONS-MASTER.csv")
+    assert built.read_bytes() == packaged.read_bytes(), \
+        "tools/station_list/ and src/sounderpy/ RAOB-STATIONS-MASTER.csv differ -- rebuild with --install"
+
+
+@pytest.mark.parametrize("station_id, wmo", [
+    ("KOUN", "72357"), ("OUN", "72357"), ("oun", "72357"),        # ICAO, 3-letter U.S. form, any case
+    ("72357", "72357"), ("USM00072357", "72357"),                    # WMO number, IGRAv2 ID
+    ("1001", "01001"), ("01001", "01001"), ("ENJA", "01001"),        # leading-zero WMO numbers
+    ("VEGT", "42410"), ("OTX", "72786"),                             # alternate ICAO code -> Spokane
+])
+def test_find_raob_station_accepts_any_id(station_id, wmo):
+    assert utils.find_raob_station(station_id)["WMO"] == wmo
+
+
+def test_find_raob_station_unknown_id():
+    with pytest.raises(ValueError, match="isn't in SounderPy's RAOB/IGRA station list"):
+        utils.find_raob_station("ZZZZ9")
+
+
+def test_get_latlon_reads_the_packaged_list():
+    lat, lon = utils.get_latlon("raob", "OUN")
+    assert abs(lat - 35.18) < 0.1 and abs(lon + 97.44) < 0.1
+    assert utils.get_latlon("igra", "USM00072357") == [np.round(lat, 2), np.round(lon, 2)]
+
+
+def test_split_display_name():
+    assert utils.split_display_name("Norman, OK") == ("Norman", "OK")
+    assert utils.split_display_name("Guam") == ("Guam", "")
+
+
+def fake_wyoming(monkeypatch, served_ids):
+    """Replace the UW request: IDs in `served_ids` return a small profile, others a 400 like UW."""
+    import pandas as pd
+    import requests
+    from sounderpy.data import obs_data
+
+    requested = []
+
+    def request_data(time, site_id):
+        requested.append(site_id)
+        if site_id not in served_ids:
+            try:
+                raise requests.HTTPError(f"Error accessing ...&id={site_id}\nServer Error ( 400: Bad Request)")
+            except requests.HTTPError as e:
+                raise ValueError from e
+        p = np.linspace(1000, 100, 40)
+        return pd.DataFrame({"pressure": p, "height": np.linspace(100, 16000, 40),
+                             "temperature": np.linspace(25, -70, 40), "dewpoint": np.linspace(20, -80, 40),
+                             "u_wind": np.full(40, 5.0), "v_wind": np.full(40, 5.0)})
+
+    monkeypatch.setattr(obs_data.WyomingUpperAir, "request_data", staticmethod(request_data))
+    return requested
+
+
+def test_fetch_obs_falls_back_to_icao(monkeypatch):
+    from sounderpy.data.obs_data import fetch_obs
+    requested = fake_wyoming(monkeypatch, {"VEGT"})   # UW serves Guwahati only by ICAO
+    data = fetch_obs("42410", "2026", "11", "09", "00", hush=True, clean_it=True)
+    assert requested == ["42410", "VEGT"]             # one try per ID: a 400 isn't retried
+    assert data["site_info"]["site-id"] == "42410"
+    assert (data["site_info"]["site-name"], data["site_info"]["site-lctn"]) == ("Guwahati", "India")
+    assert data["titles"]["right_title"].startswith("42410 - Guwahati, India | 26.1, 91.58")
+
+
+def test_fetch_obs_keeps_leading_zeros(monkeypatch):
+    from sounderpy.data.obs_data import fetch_obs
+    requested = fake_wyoming(monkeypatch, {"01001"})
+    data = fetch_obs("ENJA", "2026", "11", "09", "00", hush=True, clean_it=True)
+    assert requested == ["01001"]
+    assert data["site_info"]["site-id"] == "ENJA"
+    assert data["titles"]["right_title"].startswith("ENJA - Jan Mayen | ")   # no empty region
+
+
+def failing_wyoming(monkeypatch, responses):
+    """Replace the UW request: each ID fails with its HTTP status, or 'down' for no response at all."""
+    import requests
+    from sounderpy.data import obs_data
+
+    requested = []
+
+    def request_data(time, site_id):
+        requested.append(site_id)
+        status = responses[site_id]
+        if status == "down":
+            raise requests.ConnectionError("Max retries exceeded")
+        try:
+            raise requests.HTTPError(f"Error accessing ...&id={site_id}\nServer Error ( {status}: Unable to retrieve)")
+        except requests.HTTPError as e:
+            raise ValueError from e
+
+    monkeypatch.setattr(obs_data.WyomingUpperAir, "request_data", staticmethod(request_data))
+    monkeypatch.setattr(obs_data.time, "sleep", lambda seconds: None)
+    return requested
+
+
+@pytest.mark.parametrize(("responses", "message"), [
+    ({"72632": 400, "KDTX": 404}, "The Wyoming Upper Air Archive has no data for station DTX on 05/21/2024 at 03z"),
+    ({"72632": 503, "KDTX": 503}, "The Wyoming Upper Air Archive is unavailable right now (HTTP 503), so station DTX"),
+    ({"72632": 404, "KDTX": 503}, "is unavailable right now (HTTP 503)"),  # one ID couldn't be checked
+    ({"72632": "down", "KDTX": "down"}, "is unavailable right now (no response)"),
+    ({"72632": 502, "KDTX": "down"}, "is unavailable right now (HTTP 502, no response)"),
+])
+def test_wyoming_failures_say_whether_the_data_or_the_archive_is_missing(monkeypatch, responses, message):
+    from sounderpy.data.obs_data import fetch_obs
+
+    requested = failing_wyoming(monkeypatch, responses)
+    with pytest.raises(ValueError, match=re.escape(message)):
+        fetch_obs("DTX", "2024", "05", "21", "03", hush=True, clean_it=True)
+    # a 400/404 is final; a server problem is retried ten times
+    assert requested.count("72632") == (1 if responses["72632"] in (400, 404) else 10)
+
+
+# -----------------------------------------------------------------------------
+# RADAR MOSAIC
+# -----------------------------------------------------------------------------
+
+@pytest.mark.parametrize(("valid_time", "message"), [
+    (["2023", "08", "05", "18"], "no radar mosaic for 08/05/2023 18:00Z: the mosaic archive only keeps about the last month"),
+    (None, "the radar server may be unavailable, try again later"),
+])
+def test_missing_radar_mosaic_says_why(monkeypatch, valid_time, message):
+    from sounderpy.data import radar_utils
+
+    def no_catalog(url):
+        raise OSError("404 catalog not found")
+
+    monkeypatch.setattr(radar_utils, "TDSCatalog", no_catalog)
+    data = make_winter_profile("fzra")
+    now = datetime.now(timezone.utc)
+    data["site_info"]["valid-time"] = valid_time or [f"{now:%Y}", f"{now:%m}", f"{now:%d}", f"{now:%H}"]
+    with pytest.raises(ValueError, match=re.escape(message)):
+        radar_utils.get_radar_mosaic(data, 2, "sounding")
+
+
+def test_missing_radar_mosaic_is_a_sounderpy_warning(monkeypatch):
+    import matplotlib.pyplot as plt
+    from sounderpy.plot import components
+    from sounderpy.plot.style import _get_plot_theme
+
+    monkeypatch.setattr(components, "get_radar_mosaic", lambda *args: (_ for _ in ()).throw(ValueError("no radar mosaic for X")))
+    with pytest.warns(utils.SounderPyWarning, match="Radar mosaic could not be plotted: no radar mosaic for X"):
+        assert components._plot_map_mosaic_radar(plt.figure().add_subplot(), {}, 2, "sounding", _get_plot_theme(),
+                                                 show_timestamp=False) is False
 
 
 # -----------------------------------------------------------------------------
@@ -223,6 +405,15 @@ def test_rapruc_grib_subsetting_is_thread_safe(rapruc_grib_cases):
 # -----------------------------------------------------------------------------
 # LIVE DATA (pytest --network)
 # -----------------------------------------------------------------------------
+
+@pytest.mark.network
+def test_live_ncep_profile_stops_at_100_hpa():
+    # NCEP-FNL goes up to 0.01 hPa, with 0 % RH (no dewpoint) above about 100 hPa
+    data = spy.get_model_data("ncep", [44.58, -100.82], "2024", "08", "28", "18", hush=True)
+    assert_clean_profile(data, min_levels=30)
+    assert np.nanmin(data["p"].to("hPa").m) >= 100
+    assert np.isfinite(data["Td"].m).all()
+
 
 @pytest.mark.network
 def test_live_rap_reanalysis_retrieval():

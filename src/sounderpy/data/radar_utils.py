@@ -264,26 +264,31 @@ def get_radar_mosaic(clean_data, map_zoom, radar_time):
     try:
         # try accessing the NCEI TDS database
         composite_catalog = TDSCatalog(composite_url).datasets
-        data_found = True
-    except:
-        # no data is available, return no data
-        print('- no radar data available -')
-        data_found = False
-        pass
+        closest = find_file(time, composite_catalog)
+    except Exception:
+        composite_catalog, closest = None, None
 
-    if data_found == True:
-        # if data is found, parse it for plotting.
-        filename = composite_catalog[find_file(time, composite_catalog)].subset()
-        composite_query = filename.query()
-        composite_query.lonlat_box(north=data_lat + (map_zoom * 1.6 + 1),
-                                   south=data_lat - (map_zoom + 1),
-                                   east=data_lon + (map_zoom + 1),
-                                   west=data_lon - (map_zoom + 1))
-        composite_query.add_lonlat(value=True)
-        composite_query.accept('netcdf4')
-        composite_query.variables('Reflectivity')
-        radar_data = filename.get_data(composite_query)
-        radar_data = xr.open_dataset(xr.backends.NetCDF4DataStore(radar_data))
+    if closest is None:
+        # the mosaic archive only keeps about the last month; a newer date means the server didn't answer
+        when = f"{dt_obj:%m/%d/%Y %H:%M}Z"
+        age = datetime.now(timezone.utc) - (dt_obj if dt_obj.tzinfo else dt_obj.replace(tzinfo=timezone.utc))
+        if age > timedelta(days=30):
+            raise ValueError(f"no radar mosaic for {when}: the mosaic archive only keeps about the last month. "
+                             f"Use the nearest NEXRAD site for older dates (radar='single', or --radar single in the CLI)")
+        raise ValueError(f"no radar mosaic found for {when}: the radar server may be unavailable, try again later")
 
-        return radar_data
+    # if data is found, parse it for plotting.
+    filename = composite_catalog[closest].subset()
+    composite_query = filename.query()
+    composite_query.lonlat_box(north=data_lat + (map_zoom * 1.6 + 1),
+                               south=data_lat - (map_zoom + 1),
+                               east=data_lon + (map_zoom + 1),
+                               west=data_lon - (map_zoom + 1))
+    composite_query.add_lonlat(value=True)
+    composite_query.accept('netcdf4')
+    composite_query.variables('Reflectivity')
+    radar_data = filename.get_data(composite_query)
+    radar_data = xr.open_dataset(xr.backends.NetCDF4DataStore(radar_data))
+
+    return radar_data
 #########################################################################

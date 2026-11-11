@@ -287,7 +287,7 @@ A few thresholds are SounderPy's own choices: RHᵢ of at least 90 % for cloud,
 
 * Alduchov, O. A., and R. E. Eskridge, 1996: Improved Magnus form approximation
   of saturation vapor pressure. *J. Appl. Meteor.*, **35**, 601-609,
-  https://doi.org/10.1175/1520-0450(1996)035<0601:IMFAOS>2.0.CO;2.
+  `https://doi.org/10.1175/1520-0450(1996)035\<0601:IMFAOS\>2.0.CO;2 <https://doi.org/10.1175/1520-0450(1996)035%3C0601:IMFAOS%3E2.0.CO;2>`__.
   *(RH over ice)*
 * Banacos, P. C., A. N. Loconto, and G. A. DeVoir, 2014: Snow squalls:
   Forecasting and hazard mitigation. *J. Operational Meteor.*, **2** (12),
@@ -304,18 +304,18 @@ A few thresholds are SounderPy's own choices: RHᵢ of at least 90 % for cloud,
   https://doi.org/10.1175/BAMS-D-15-00309.1. *(SPC precipitation type, OPRH)*
 * Bourgouin, P., 2000: A method to determine precipitation types.
   *Wea. Forecasting*, **15**, 583-592,
-  https://doi.org/10.1175/1520-0434(2000)015<0583:AMTDPT>2.0.CO;2.
+  `https://doi.org/10.1175/1520-0434(2000)015\<0583:AMTDPT\>2.0.CO;2 <https://doi.org/10.1175/1520-0434(2000)015%3C0583:AMTDPT%3E2.0.CO;2>`__.
   *(precipitation type: warm surface layer)*
 * Gultepe, I., and Coauthors, 2007: Fog research: A review of past achievements
   and future perspectives. *Pure Appl. Geophys.*, **164**, 1121-1159,
   https://doi.org/10.1007/s00024-007-0211-x. *(freezing fog)*
 * Holzworth, G. C., 1964: Estimates of mean maximum mixing depths in the
   contiguous United States. *Mon. Wea. Rev.*, **92**, 235-242,
-  https://doi.org/10.1175/1520-0493(1964)092<0235:EOMMMD>2.3.CO;2.
+  `https://doi.org/10.1175/1520-0493(1964)092\<0235:EOMMMD\>2.3.CO;2 <https://doi.org/10.1175/1520-0493(1964)092%3C0235:EOMMMD%3E2.3.CO;2>`__.
   *(mixed-layer depth)*
 * Huffman, G. J., and G. A. Norman Jr., 1988: The supercooled warm rain process
   and the specification of freezing precipitation. *Mon. Wea. Rev.*, **116**,
-  2172-2182, https://doi.org/10.1175/1520-0493(1988)116<2172:TSWRPA>2.0.CO;2.
+  2172-2182, `https://doi.org/10.1175/1520-0493(1988)116\<2172:TSWRPA\>2.0.CO;2 <https://doi.org/10.1175/1520-0493(1988)116%3C2172:TSWRPA%3E2.0.CO;2>`__.
   *(precipitation source phase, freezing drizzle)*
 * Libbrecht, K. G., 2005: The physics of snow crystals. *Rep. Prog. Phys.*,
   **68**, 855-895, https://doi.org/10.1088/0034-4885/68/4/R03. *(DGZ)*
@@ -333,7 +333,7 @@ A few thresholds are SounderPy's own choices: RHᵢ of at least 90 % for cloud,
 * Rauber, R. M., L. S. Olthoff, M. K. Ramamurthy, and K. E. Kunkel, 2000: The
   relative importance of warm rain and melting processes in freezing
   precipitation events. *J. Appl. Meteor.*, **39**, 1185-1195,
-  https://doi.org/10.1175/1520-0450(2000)039<1185:TRIOWR>2.0.CO;2.
+  `https://doi.org/10.1175/1520-0450(2000)039\<1185:TRIOWR\>2.0.CO;2 <https://doi.org/10.1175/1520-0450(2000)039%3C1185:TRIOWR%3E2.0.CO;2>`__.
   *(precipitation source phase, freezing drizzle)*
 * Takahashi, T., T. Endoh, G. Wakahama, and N. Fukuta, 1991: Vapor diffusional
   growth of free-falling snow crystals between -3 and -23 °C. *J. Meteor. Soc.

@@ -8,6 +8,8 @@ import metpy.calc as mpcalc
 from metpy.units import units
 import copy
 import difflib
+import functools
+import importlib.resources
 import math
 
 
@@ -27,6 +29,10 @@ import math
 
     (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024
 """
+
+
+class SounderPyWarning(UserWarning):
+    """A warning about the user's figure or data, such as missing radar; the CLI shows these even without --verbose."""
 
 
 
@@ -343,6 +349,85 @@ def find_station(ids, station_id, k_prefix=False, required=True, hint=''):
 
 
 #########################
+# RAOB / IGRA STATION LIST
+#########################################################################
+@functools.lru_cache(maxsize=1)
+def load_raob_stations():
+    '''
+    Return SounderPy's radiosonde station list (WMO, ICAO & IGRAv2 IDs) as a ``pandas.DataFrame``
+
+    The list ships with SounderPy (``sounderpy/RAOB-STATIONS-MASTER.csv``) and is read once per session.
+    It is built by ``tools/build_station_list.py`` (which keeps its own copy in ``tools/station_list/``)
+    and copied into the package with ``build ... --install``. Every column is text, so WMO
+    numbers keep their leading zeros (``'01001'``). The file's columns are lined up with spaces after
+    each comma, which are skipped when reading.
+
+    :return: one row per station
+    :rtype: pandas.DataFrame
+    '''
+    path = importlib.resources.files('sounderpy').joinpath('RAOB-STATIONS-MASTER.csv')
+    with path.open('r', encoding='utf-8') as f:
+        df = pd.read_csv(f, dtype=str, keep_default_na=False, skipinitialspace=True)
+    df.columns = df.columns.str.strip()
+    return df
+
+
+def find_raob_station(station_id):
+    '''
+    Return the station list row for a radiosonde station ID, as a ``dict``
+
+    Accepts an ICAO code (``'KOUN'``, or ``'OUN'`` for U.S. sites), a WMO number (``'72357'``,
+    ``'1001'`` for ``'01001'``), an IGRAv2 ID (``'USM00072357'``) or an alternate ICAO code (``'OTX'``).
+
+    :param station_id: the station ID
+    :type station_id: str, required
+    :return: the station's row (all values are text; blank when unknown)
+    :rtype: dict
+    '''
+    df = load_raob_stations()
+    target = str(station_id).strip().upper()
+
+    def first(mask):
+        hits = df.index[mask]
+        return df.loc[hits[0]].to_dict() if len(hits) else None
+
+    k_target = 'K' + target if len(target) == 3 and target.isalpha() else None
+    checks = [df['ICAO'] == target]
+    if k_target:
+        checks.append(df['ICAO'] == k_target)
+    if target.isdigit() and len(target) <= 5:
+        checks.append(df['WMO'] == target.zfill(5))
+    checks.append(df['IGRA_ID'] == target)
+    alt = df['ICAO_ALT'].str.split()
+    checks.append(alt.apply(lambda codes: target in codes))
+    if k_target:
+        checks.append(alt.apply(lambda codes: k_target in codes))
+
+    for mask in checks:
+        row = first(mask)
+        if row is not None:
+            return row
+
+    ids = pd.concat([df['ICAO'], df['WMO'], df['IGRA_ID']])
+    close = difflib.get_close_matches(target, ids[ids != ''].unique(), n=3, cutoff=0.6)
+    suggestion = f" Did you mean {', '.join(repr(c) for c in close)}?" if close else ''
+    raise ValueError(f"The station you requested ({station_id}) isn't in SounderPy's RAOB/IGRA station list.{suggestion}\n"
+                     "TIP: use an ICAO code ('KOUN' or 'OUN'), a WMO number ('72357') or an IGRAv2 ID ('USM00072357')")
+
+
+def split_display_name(display_name):
+    '''
+    Split a station display name into (name, region): ``'Norman, OK'`` -> ``('Norman', 'OK')``,
+    ``'Guam'`` -> ``('Guam', '')``
+    '''
+    name, sep, region = str(display_name).rpartition(', ')
+    return (name, region) if sep else (region, '')
+
+
+
+
+
+#########################
 # LAT-LON FINDER FUNCTION
 #########################################################################
 
@@ -426,52 +511,19 @@ def get_latlon(station_type, station_id):
 
 
 
-    ############################################### RAOB #####################################################
-    elif station_type.casefold() == 'raob':
-
+    ############################################### RAOB / IGRA #####################################################
+    elif station_type.casefold() in ('raob', 'igra'):
         '''
-        takes a RAOB site id such as 'DTX', searches over 9000 station IDs  and returns
-        a list including the lat/lon for the RAOB site
+        takes a RAOB or IGRA2 site id such as 'DTX', '72632' or 'USM00072632' and returns
+        a list including the lat/lon for the site, from SounderPy's packaged station list
         '''
-        # get RAOB stations list
-        RAOB_STATIONS = pd.read_csv(
-            f'https://raw.githubusercontent.com/kylejgillett/sounderpy/main/src/RAOB-STATIONS.txt',
-            skiprows=7, skipinitialspace=True)
-
-        # find lat-lon from stations list if it exists
-        idx = find_station(RAOB_STATIONS['ICAO'], station_id, k_prefix=True, required=False)
-        if idx is not None:
-            lat = dms2dd(RAOB_STATIONS['LAT'][idx], RAOB_STATIONS['A'][idx])
-            lon = dms2dd(RAOB_STATIONS['LON'][idx], RAOB_STATIONS['B'][idx])
-            return [lat, lon]
-        else:
-            try:
-                station = RAOB_STATIONS['WMO'][RAOB_STATIONS[RAOB_STATIONS['WMO'] == int(station_id)].index[0]]
-                lat = dms2dd(RAOB_STATIONS[RAOB_STATIONS['WMO'] == station]['LAT'].values[0],
-                             RAOB_STATIONS[RAOB_STATIONS['WMO'] == station]['A'].values[0])
-                lon = dms2dd(RAOB_STATIONS[RAOB_STATIONS['WMO'] == station]['LON'].values[0],
-                             RAOB_STATIONS[RAOB_STATIONS['WMO'] == station]['B'].values[0])
-                return [lat, lon]
-            except:
-                raise ValueError(f"The station you requested ({station_id}) doesn't seem to exist")
-
-
-
-    ############################################### IGRA #####################################################
-    elif station_type.casefold() == 'igra':
-        '''
-        takes a IGRA2 site id such as 'GMM00010393', searches nearly 3000 station IDs  and returns
-        a list including the lat/lon for the IGRA2 site
-        '''
-
-        # get IGRA stations list
-        IGRA_STATIONS = pd.read_csv(
-            f'https://raw.githubusercontent.com/kylejgillett/sounderpy/main/src/IGRA-STATIONS.txt',
-            skiprows=7, skipinitialspace=True)
-
-        # find lat-lon from stations list if it exists
-        idx = find_station(IGRA_STATIONS['ID'], station_id)
-        return [np.round(IGRA_STATIONS['LAT'][idx], 2), np.round(IGRA_STATIONS['LON'][idx], 2)]
+        row = find_raob_station(station_id)
+        if not row['LAT'] or not row['LON']:
+            raise ValueError(f"The station you requested ({station_id}) has no known location")
+        lat, lon = float(row['LAT']), float(row['LON'])
+        if station_type.casefold() == 'igra':
+            return [np.round(lat, 2), np.round(lon, 2)]
+        return [lat, lon]
 
 
 

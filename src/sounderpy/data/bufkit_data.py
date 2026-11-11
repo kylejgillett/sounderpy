@@ -79,9 +79,14 @@ def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_ho
     model = str.lower(model)
     station = str.upper(station)
 
-    # SREF and HIRESW files hold several ensemble members, so a single timeseries can't be built from them
-    if all_fcst_hours and model in ['sref', 'hiresw']:
-        raise ValueError(f"all_fcst_hours is not available for {model.upper()}, whose BUFKIT files hold several ensemble members. Request one fcst_hour at a time instead.")
+    # discontinued models: Penn State's 'latest' files stopped updating (2026-11-03), so there is no latest run.
+    # Iowa State keeps archived NAM and NAM Nest runs, but not SREF or HiResW
+    if model in ['nam', 'namnest'] and run_year is None:
+        raise ValueError(f"{model.upper()} has been discontinued, so there is no latest run. Archived {model.upper()} runs are "
+                         f"still available: give the run date and hour (run_year, run_month, run_day, run_hour; --run YYYY-MM-DD HH in the CLI). "
+                         f"For the latest run, use GFS, RAP, HRRR, or RRFS.")
+    if model in ['sref', 'hiresw']:
+        raise ValueError(f"{model.upper()} has been discontinued and isn't in the BUFKIT archive. Use GFS, RAP, HRRR, or RRFS.")
 
     # Check to make sure the user-defined site ID is a valid bufkit site before continuing
     # GET BUFKIT STATIONS LISTING FROM SOUNDERPY GITHUB REPO
@@ -101,14 +106,16 @@ def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_ho
     # if date variables (year, month, day) are not given, the user has 'selected' a most
     # recent forecast run, get that from PSU
     if run_year == None:
-        if model not in ['gfs', 'nam', 'namnest', 'rap', 'hrrr', 'rrfs', 'sref', 'hiresw']:
+        if model not in ['gfs', 'rap', 'hrrr', 'rrfs']:
             raise ValueError(
-                f"{model} is not a valid model option. Valid models include ['GFS', 'NAM', 'NAMNEST', 'RAP', 'HRRR', 'RRFS', 'SREF', 'HIRESW']")
+                f"{model} is not a valid model option. Valid models for the latest run include ['GFS', 'RAP', 'HRRR', 'RRFS'] "
+                f"(and ['NAM', 'NAMNEST'] for archived runs)")
         if model == 'gfs':
             model3 = 'gfs3'
         else:
             model3 = model
         data_conn = f'https://www.meteo.psu.edu/bufkit/data/{model.upper()}/{model3}_{url_station.lower()}.buf'
+        data_source = 'PENN STATE BUFKIT'
 
 
 
@@ -119,7 +126,7 @@ def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_ho
     else:
         if model not in ['gfs', 'nam', 'namnest', 'rap', 'hrrr', 'rrfs']:
             raise ValueError(
-                f"{model} is not a valid model option. Valid models include ['GFS', 'NAM', 'NAMNEST', 'RAP', 'HRRR', 'RRFS']")
+                f"{model} is not a valid model option. Valid models for archived runs include ['GFS', 'NAM', 'NAMNEST', 'RAP', 'HRRR', 'RRFS']")
         if model == 'namnest':
             model = 'nam4km'
         if model == 'gfs':
@@ -129,6 +136,7 @@ def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_ho
         if model == 'nam' and run_hour in ["06", "18"]:
             model3 = 'namm'
         data_conn = f'https://mtarchive.geol.iastate.edu/{run_year}/{run_month}/{run_day}/bufkit/{run_hour}/{model}/{model3}_{url_station.lower()}.buf'
+        data_source = 'IOWA STATE IEM BUFKIT ARCHIVE'
 
 
 
@@ -163,10 +171,12 @@ def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_ho
                     print(f"    > PSU RRFS file is {'missing' if buf_run is None else f'from the {buf_run:%m/%d %H}Z run'}; "
                           f"using the newer {nomads_run:%m/%d %H}Z run from NCEP NOMADS")
                     buf_file = nomads_file
+                    data_source = 'NCEP NOMADS RRFS BUFR'
         elif buf_file is None:
             try:
                 buf_file = ncep_bufr.fetch_nomads_rrfs(stnm, datetime(int(run_year), int(run_month), int(run_day), int(run_hour)))
                 print("    > RRFS run not found at IEM; using NCEP NOMADS")
+                data_source = 'NCEP NOMADS RRFS BUFR'
             except (OSError, ValueError, NotImplementedError, KeyError):
                 pass
         if buf_file is None:
@@ -182,8 +192,7 @@ def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_ho
         hr_deltas = {
             'gfs': [1, 180], 'hrrr': [1, 48], 'rrfs': [1, 84],
             'rap': [1, 51], 'nam': [1, 48],
-            'namnest': [1, 60], 'nam4km': [1, 60],
-            'sref': [1, 84], 'hiresw': [1, 48]}
+            'namnest': [1, 60], 'nam4km': [1, 60]}
 
 
 
@@ -365,7 +374,8 @@ def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_ho
                 'model': str.upper(model),
                 'fcst-hour': f'F0{fcst_hour}',
                 'run-time': [run_dt.strftime("%Y"), run_dt.strftime("%m"), run_dt.strftime("%d"), run_dt.strftime("%H")],
-                'valid-time': [fct_dt.strftime("%Y"), fct_dt.strftime("%m"), fct_dt.strftime("%d"), fct_dt.strftime("%H")]
+                'valid-time': [fct_dt.strftime("%Y"), fct_dt.strftime("%m"), fct_dt.strftime("%d"), fct_dt.strftime("%H")],
+                'data-source': data_source
             }
 
             clean_data['titles'] = {

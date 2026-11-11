@@ -4,6 +4,7 @@ import warnings
 from datetime import datetime
 
 import pandas as pd
+import requests
 import numpy as np
 
 from metpy.units import units
@@ -11,7 +12,7 @@ from metpy.units import units
 from siphon.simplewebservice.wyoming import WyomingUpperAir
 from siphon.simplewebservice.igra2 import IGRAUpperAir
 
-from ..utils import get_latlon, find_station
+from ..utils import find_raob_station, split_display_name
 from ..calc import sounding_params
 
 
@@ -59,6 +60,33 @@ def _choose_profile_stride(values, target_len=300):
 # RAOB AND IRGAv2 OBSERVATIONS DATA
 #########################################################################
 
+def _data_source(row, archive):
+    '''Footer text naming the archive a profile came from, plus the station's IDs and IGRAv2 record years'''
+    ids = ' / '.join(f'{name} {row[key]}' for name, key in (('WMO', 'WMO'), ('ICAO', 'ICAO'), ('IGRA2', 'IGRA_ID')) if row[key])
+    record = ''
+    if row['IGRA_FIRST_YEAR'] and row['IGRA_LAST_YEAR']:
+        record = f"RECORD {row['IGRA_FIRST_YEAR']}–{row['IGRA_LAST_YEAR']}" + (' (ACTIVE)' if row['ACTIVE'] == 'Y' else '')
+    return ' · '.join(part for part in (archive, ids, record) if part)
+
+
+def _site_info(row, site_id, year, month, day, hour, archive):
+    '''site_info for an observed profile, from a station list row (see utils.find_raob_station)'''
+    name, region = split_display_name(row['DISPLAY_NAME'] or row['NAME'])
+    has_pos = bool(row['LAT'] and row['LON'])
+    return {
+        'site-id': site_id,
+        'site-name': name,
+        'site-lctn': region,
+        'site-latlon': [round(float(row['LAT']), 2), round(float(row['LON']), 2)] if has_pos else [np.nan, np.nan],
+        'site-elv': float(row['ELEV_M']) if row['ELEV_M'] else np.nan,
+        'source': 'RAOB OBSERVED PROFILE',
+        'model': 'no-model',
+        'fcst-hour': 'no-fcst-hour',
+        'run-time': ['none', 'none', 'none', 'none'],
+        'valid-time': [year, month, day, hour],
+        'data-source': _data_source(row, archive)}
+
+
 def fetch_obs(station, year, month, day, hour, hush, clean_it):
 
     # record process time
@@ -85,57 +113,41 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
 
     print(f'> OBSERVED DATA ACCESS FUNCTION\n  -----------------------------------')
 
-    station = str.upper(station)
-    # get station lists from SounderPy GitHub Repo
-    RAOB_STATIONS = pd.read_csv(f'https://raw.githubusercontent.com/kylejgillett/sounderpy/main/src/RAOB-STATIONS.txt',
-                                skiprows=7, skipinitialspace=True)
-    IGRA_STATIONS = pd.read_csv(f'https://raw.githubusercontent.com/kylejgillett/sounderpy/main/src/IGRA-STATIONS.txt',
-                                skiprows=7, skipinitialspace=True)
+    station = str.upper(station).strip()
+
+    # look the station up in SounderPy's packaged station list (WMO, ICAO & IGRAv2 IDs)
+    try:
+        row = find_raob_station(station)
+    except ValueError as e:
+        raise ValueError(
+            f"{e}\nIf you think this is an error, contact the author: "
+            "https://kylejgillett.github.io/sounderpy/user_guide/about.html#about-the-author"
+        ) from None
 
     got_data = False
 
-    # set up siphon API call for raob data -- if station ID is found in RAOB_STATIONS, it is
-    # a RAOB ID and siphon UW or ISU must be used to get data
-    if len(station) == 11:
-        search_for = 'igra'
-    else:
-        search_for = 'raob'
-
-
-
+    # an 11-character IGRAv2 ID ('GMM00010393') is fetched from IGRAv2; anything else from UW
+    search_for = 'igra' if len(station) == 11 else 'raob'
 
 
 
     ### RAOB OBSERVATIONS ###
     #########################################################################################################
     if search_for == 'raob':
-        try:
-            idx = find_station(RAOB_STATIONS['ICAO'], station, k_prefix=True, required=False)
-            row = RAOB_STATIONS.loc[[idx]] if idx is not None else RAOB_STATIONS.iloc[0:0]
-            name_idx = 'ICAO'
-            if row.empty:
-                row = RAOB_STATIONS.query(f"WMO == {int(station)}")
-                name_idx = 'WMO'
-                if row.empty:
-                    raise ValueError
-        except ValueError:
+        station_icao = row['ICAO']
+        station_wmo  = row['WMO']      # text, so leading zeros are kept ('01001')
+        if not (station_wmo or station_icao):
             raise ValueError(
-                f"ICAO or WMO identifier '{station}' not found. "
-                "Please make sure you provided the correct RAOB ID. "
-                "If you think this is an error, contact the author: "
-                "https://kylejgillett.github.io/sounderpy/user_guide/about.html#about-the-author"
-            )
-        station_idx  = row.index[0]
-        station_icao = row.loc[station_idx, "ICAO"]
-        station_wmo  = str(row.loc[station_idx, "WMO"])
+                f"Station '{station}' has no WMO or ICAO ID, so it can't be requested from the Wyoming archive. "
+                f"Try its IGRAv2 ID instead: '{row['IGRA_ID']}'")
 
         # UW sometimes files a station under its ICAO ID only (e.g. 42410 / VEGT), so a WMO
         # request can be rejected even when the data exists. Try the WMO ID first, then the ICAO ID.
-        request_ids = [station_wmo]
-        if isinstance(station_icao, str) and station_icao.strip().strip('-'):
-            request_ids.append(station_icao.strip())
+        request_ids = [i for i in (station_wmo, station_icao) if i]
 
         request_time = datetime(int(year), int(month), int(day), int(hour))
+        # why each ID failed: 'no data' when UW answered without a profile, otherwise the server problem
+        failures = []
         for request_id in request_ids:
             # try up to 10 times, UW often returns temporary 'server busy' errors
             for i in range(1, 11):
@@ -147,9 +159,24 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
                     got_data = False
                     # a 400/404 means UW has no data under this ID -- retrying won't help.
                     # siphon only puts the status code in the message: 'Server Error ( 400: ...)'
-                    status = re.search(r'Server Error \(\s*(\d{3})', str(e.__cause__ or e))
+                    cause = e.__cause__ or e
+                    status = re.search(r'Server Error \(\s*(\d{3})', str(cause))
                     if status and status.group(1) in ('400', '404'):
+                        failure = 'no data'
                         break
+                    # other HTTP errors (503 'server busy', 5xx) and no response at all mean UW couldn't answer;
+                    # anything else (e.g. a reply with no profile in it) is treated as no data
+                    if status:
+                        failure = f'HTTP {status.group(1)}'
+                    elif isinstance(cause, requests.RequestException):
+                        failure = 'no response'
+                    else:
+                        failure = 'no data'
+                    # UW's 'server busy' (503) spells last a few seconds; back-to-back retries all fail
+                    if i < 10:
+                        time.sleep(2)
+            if not got_data:
+                failures.append(failure)
             if got_data:
                 print(f'    > PROFILE FOUND: {station} on {month}/{day}/{year} at {hour}z | From UW (ID: {request_id})')
                 break
@@ -173,17 +200,9 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
                     else:   
                         clean_data[new_key] = np.array(df.to_dict('list')[old_key])[non_dups][::stride] * units(unit)
 
-                clean_data['site_info'] = {
-                    'site-id': row.loc[station_idx, name_idx],
-                    'site-name': row.loc[station_idx, "NAME"],
-                    'site-lctn': row.loc[station_idx, "LOC"],
-                    'site-latlon': get_latlon('raob', str(station)),
-                    'site-elv': row.loc[station_idx, "EL(m)"],
-                    'source': 'RAOB OBSERVED PROFILE',
-                    'model': 'no-model',
-                    'fcst-hour': 'no-fcst-hour',
-                    'run-time': ['none', 'none', 'none', 'none'],
-                    'valid-time': [year, month, day, hour]}
+                # label the site the way the user asked for it: by WMO number or by ICAO code
+                site_id = station_wmo if station.isdigit() or not station_icao else station_icao
+                clean_data['site_info'] = _site_info(row, site_id, year, month, day, hour, 'UNIV. OF WYOMING')
 
                 try:
                     # trim data to 98hPa and below for less process time
@@ -194,9 +213,15 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
                     pass
 
         else:
+            # only call it missing data when UW answered for every ID; if it couldn't answer, the data may exist
+            problems = sorted({failure for failure in failures if failure != 'no data'})
+            if problems:
+                raise ValueError(
+                    f"The Wyoming Upper Air Archive is unavailable right now ({', '.join(problems)}), so station "
+                    f"{station} on {month}/{day}/{year} at {hour}z could not be checked -- try again later")
             raise ValueError(
-                f'Wyoming Upper Air Archive connection failed -- ensure you have the correct dates and corresponding station identifier\n' +
-                f'There is likely no available data for station {station} on {month}/{day}/{year} at {hour}z')
+                f'The Wyoming Upper Air Archive has no data for station {station} on {month}/{day}/{year} at {hour}z '
+                f'-- ensure you have the correct date, time, and station identifier')
     #########################################################################################################
 
 
@@ -223,7 +248,7 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
         # if data is found, parse data and create a dict of clean data
         if got_data:
             if clean_it:
-                station = IGRA_STATIONS['ID'][find_station(IGRA_STATIONS['ID'], station)].strip()
+                station = row['IGRA_ID'] or station
 
                 # create dict of data
                 head = df[1]
@@ -240,17 +265,7 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
                 stride = _choose_profile_stride(profile_values)
                 for old_key, new_key, unit in zip(old_keys, new_keys, units_list):
                     clean_data[new_key] = np.array(df.to_dict('list')[old_key])[mask][::stride] * units(unit)
-                clean_data['site_info'] = {
-                    'site-id': IGRA_STATIONS[IGRA_STATIONS['ID'] == station]['ID'].str.strip().values[0],
-                    'site-name': IGRA_STATIONS[IGRA_STATIONS['ID'] == station]['NAME'].str.strip().values[0],
-                    'site-lctn': '',
-                    'site-latlon': get_latlon('igra', station),
-                    'site-elv': IGRA_STATIONS[IGRA_STATIONS['ID'] == station]['EL(m)'].values[0],
-                    'source': 'RAOB OBSERVED PROFILE',
-                    'model': 'no-model',
-                    'fcst-hour': 'no-fcst-hour',
-                    'run-time': ['none', 'none', 'none', 'none'],
-                    'valid-time': [year, month, day, hour]}
+                clean_data['site_info'] = _site_info(row, station, year, month, day, hour, 'NOAA NCEI IGRA2')
                 # correct u & v units
                 clean_data['u'] = clean_data['u'] * 1.94384
                 clean_data['v'] = clean_data['v'] * 1.94384
@@ -323,7 +338,9 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
             # title specific to RAOB Obs
             'top_title': "RAOB OBSERVED VERTICAL PROFILE",
             'left_title': f"VALID: {clean_data['site_info']['valid-time'][1]}-{clean_data['site_info']['valid-time'][2]}-{clean_data['site_info']['valid-time'][0]} {clean_data['site_info']['valid-time'][3]}Z",
-            'right_title': f"{clean_data['site_info']['site-id']} - {clean_data['site_info']['site-name']}, {clean_data['site_info']['site-lctn']} | {clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]}    "
+            'right_title': f"{clean_data['site_info']['site-id']} - {clean_data['site_info']['site-name']}"
+                           + (f", {clean_data['site_info']['site-lctn']}" if clean_data['site_info']['site-lctn'] else '')
+                           + f" | {clean_data['site_info']['site-latlon'][0]}, {clean_data['site_info']['site-latlon'][1]}    "
         }
 
 

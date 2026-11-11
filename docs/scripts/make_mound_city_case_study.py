@@ -3,7 +3,8 @@
 Generate SounderPy figures for the 28 August 2024 Mound City, SD tornado
 case study.
 
-Run from the SounderPy repository root:
+Run from any directory (the default output folder is found from the
+script's own location):
 
     python docs/scripts/make_mound_city_case_study.py
 
@@ -48,7 +49,9 @@ import numpy.ma as ma
 import sounderpy as spy
 
 
-OUTPUT_DIR = Path("docs/source/case_studies/mound_city_20240828")
+# Resolved from this file, so the script works from any directory.
+DOCS_DIR = Path(__file__).resolve().parent.parent
+OUTPUT_DIR = DOCS_DIR / "source" / "case_studies" / "mound_city_20240828"
 
 HEADER_URL = (
     "https://www.weather.gov/images/abr/EventSummaries/"
@@ -256,10 +259,13 @@ def scalar(value):
 
 
 def profile_parameters(data: dict) -> dict[str, object]:
-    general, thermo, kinem, _ = spy.sounding_params(
+    params = spy.sounding_params(
         data,
         storm_motion="right_moving",
     ).calc()
+    general = params["general"]
+    thermo = params["thermo"]
+    kinem = params["kinem"]
 
     return {
         "SBCAPE_Jkg": scalar(thermo.get("sbcape")),

@@ -422,6 +422,14 @@ def get_rapruc_data(latlon, year, month, day, hour, dataset, box_avg_size, hush,
             valid_time=dt)
 
         clean_data["site_info"]["archive"] = result["source"]
+        # footer text for figures, which add the model name and init time after it:
+        # 'AWS RAP 13-km' -> 'AWS OPEN DATA 13-KM', 'NCEI RAP_13km_anl' -> 'NCEI THREDDS 13KM ANL'
+        if result["source"].startswith("AWS"):
+            data_source = f"AWS OPEN DATA {result['source'].split()[-1].upper()}"
+        else:
+            dataset = result["source"].split(" ", 1)[1].split("_", 1)[-1]
+            data_source = f"NCEI THREDDS {dataset.upper().replace('_', ' ')}"
+        clean_data["site_info"]["data-source"] = data_source
 
         print("    > parsing complete")
         print("    > temporary GRIB files will now be deleted")

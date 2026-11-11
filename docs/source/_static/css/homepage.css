@@ -36,9 +36,10 @@
 }
 
 .home-actions {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.65rem;
+    max-width: 30rem;
     margin: 1.1rem 0 1.25rem 0;
 }
 
@@ -47,7 +48,9 @@
 }
 
 .home-actions a {
-    display: inline-block;
+    display: block;
+    box-sizing: border-box;
+    text-align: center;
     padding: 0.55rem 0.9rem;
     border: 1px solid var(--color-border, #d0d7de);
     border-radius: 0.45rem;
@@ -262,8 +265,7 @@
     }
 
     .home-actions {
-        display: grid;
-        grid-template-columns: 1fr;
+        max-width: none;
     }
 
     .home-actions a {

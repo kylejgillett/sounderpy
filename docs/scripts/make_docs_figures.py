@@ -2,8 +2,8 @@
 """
 Generate the example figures in docs/source/_static/images/.
 
-Run this script from the repository root after installing SounderPy in editable
-mode:
+Install SounderPy in editable mode, then run this script from any directory
+(the default output folder is found from the script's own location):
 
     pip install -e .
     python docs/scripts/make_docs_figures.py
@@ -46,7 +46,9 @@ import matplotlib.pyplot as plt
 import sounderpy as spy
 
 
-DEFAULT_OUTPUT = Path("docs/source/_static/images")
+# Resolved from this file, so the script works from any directory.
+DOCS_DIR = Path(__file__).resolve().parent.parent
+DEFAULT_OUTPUT = DOCS_DIR / "source" / "_static" / "images"
 DPI = 200
 
 

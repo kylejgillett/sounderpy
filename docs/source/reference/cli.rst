@@ -35,7 +35,7 @@ To print the installed SounderPy version:
 Getting Data With The CLI
 =========================
 
-The CLI data retrieval is organized around four primary commands:
+The CLI data retrieval is organized around five primary commands:
 
 .. code-block:: text
 
@@ -43,9 +43,10 @@ The CLI data retrieval is organized around four primary commands:
    ├── obs
    ├── model
    ├── bufkit
-   └── acars
-       ├── list
-       └── get
+   ├── acars
+   │   ├── list
+   │   └── get
+   └── file
 
 The commands provide access to:
 
@@ -56,6 +57,8 @@ The commands provide access to:
 - ``bufkit``: Forecast vertical profiles from BUFKIT.
 
 - ``acars``: Listing and retrieval of ACARS aircraft vertical profiles.
+
+- ``file``: A local SHARPpy-format sounding file.
 
 Help is available for the main CLI and for each command by using ``--help``
 
@@ -101,7 +104,8 @@ For example, a RAP reanalysis profile can be requested with:
 
    sounderpy model rap-ruc 44.58 -100.82 2024-08-28 18
 
-
+``MODEL`` is ``rap-ruc`` (or ``rap`` / ``ruc``), ``era5``, or ``ncep``. ERA5 comes from the Copernicus Climate
+Data Store and needs a free CDS API key saved in ``~/.cdsapirc``.
 
 
 **Area Averaging**
@@ -145,7 +149,9 @@ BUFKIT profiles use the following structure:
 
    sounderpy bufkit MODEL STATION FHR
 
-where ``FHR`` is the requested forecast hour.
+where ``FHR`` is the requested forecast hour and ``MODEL`` is one of ``gfs``, ``rap``, ``hrrr``, or ``rrfs``.
+NAM and NAM Nest (``nam``, ``namnest``) are discontinued, so they are only available for archived runs
+(``--run``).
 
 For example:
 
@@ -205,10 +211,41 @@ For example:
 
 .. code-block:: bash
 
-   sounderpy acars get 2024-05-21 18 BNA_2320
+   sounderpy acars get 2024-05-21 18 BNA_1820
 
 Use a profile identifier returned by ``sounderpy acars list`` for the requested
 date and hour.
+
+
+**********************************************************************
+
+Local SHARPpy Files
+-------------------
+
+A SHARPpy-format sounding file, such as one saved earlier with ``--output profile.snd``, can be read with:
+
+.. code-block:: text
+
+   sounderpy file PATH
+
+For example, to export it as CSV:
+
+.. code-block:: bash
+
+   sounderpy file oax.snd --output oax.csv
+
+A SHARPpy file holds the station ID and valid time but not the location, so ``--plot`` and ``--params``
+need ``--latlon LAT LON`` (the map inset, and the latitude used for temperature advection):
+
+.. code-block:: bash
+
+   sounderpy file oax.snd \
+       --latlon 41.32 -96.37 \
+       --plot sounding \
+       --plot-file oax_sounding.png
+
+The plot title uses the file name, station ID, and valid time, and the station elevation is taken from
+the lowest height in the file.
 
 
 
@@ -323,6 +360,10 @@ Plotting from the CLI
 SounderPy can generate a sounding or hodograph immediately after retrieving a
 profile.
 
+Opening a plot in a window needs a display and an interactive Matplotlib backend. Without one
+(for example, on a server or over SSH), the CLI stops before downloading anything and asks for
+``--plot-file`` instead.
+
 Sounding Plot
 -------------
 
@@ -340,6 +381,9 @@ To save the sounding instead:
    sounderpy obs DTX 2024-05-21 00 \
        --plot sounding \
        --plot-file dtx_sounding.png
+
+The ``--plot-file`` extension sets the image format (``.png``, ``.pdf``, ``.svg``, ``.jpg``, and the
+other formats Matplotlib writes). A file name without an extension is saved as ``.png``.
 
 Hodograph
 ---------
@@ -366,7 +410,10 @@ To save the hodograph:
 Plot Options
 -------------
 
-Several SounderPy plotting options are available through the CLI.
+Several SounderPy plotting options are available through the CLI. They all need ``--plot``.
+``--color-blind``, ``--show-theta``, ``--mode``, ``--obs``, ``--parcels``, and ``--background-parcels``
+apply to ``--plot sounding`` only. ``--storm-motion``, ``--modify-sfc``, and ``--mode`` change the
+calculation as well, so they also work with ``--params`` (see `Calculated Parameters`_).
 
 **Dark Mode**
 
@@ -391,10 +438,23 @@ color-deficiency-friendly temperature/dewpoint styling:
        --plot-file dtx_colorblind.png
 
 
+**Theta and Theta-e**
+
+For sounding plots, ``--show-theta`` shows theta and theta-e:
+
+.. code-block:: bash
+
+   sounderpy obs DTX 2024-05-21 00 \
+       --plot sounding \
+       --show-theta \
+       --plot-file dtx_theta.png
+
+
 **Storm-Relative Hodograph**
 
 A hodograph can be transformed to storm-relative coordinates with
-``--storm-relative``:
+``--storm-relative``. It works with ``--plot hodograph`` and with the hodograph on
+``--plot sounding``:
 
 .. code-block:: bash
 
@@ -434,7 +494,8 @@ The output resolution can be changed with ``--dpi``:
 ``--mode`` chooses the sounding plot: ``severe`` (the default), ``winter``, or
 ``auto``, which draws the winter sounding when the surface wet-bulb temperature
 is below 35 degrees F. ``--obs`` adds the latest surface observation near the
-profile to a winter sounding (from the Iowa Environmental Mesonet):
+profile to a winter sounding (from the Iowa Environmental Mesonet), so it needs
+``--mode winter`` or ``--mode auto``:
 
 .. code-block:: bash
 
@@ -445,7 +506,67 @@ profile to a winter sounding (from the Iowa Environmental Mesonet):
        --obs \
        --plot-file kgfk_winter.png
 
-See :doc:`/tutorials/winter_soundings` for a guide to the winter sounding.
+See :doc:`/tutorials/winter_soundings` for a guide to the winter sounding. The winter sounding
+doesn't use ``--show-theta``, ``--storm-relative``, ``--parcels``, or ``--background-parcels``, so
+they can't be combined with ``--mode winter``.
+
+**Storm Motion**
+
+``--storm-motion`` sets the storm motion for the plot and the parameters: ``right_moving`` (the
+default), ``left_moving``, ``mean_wind``, or a direction in degrees and a speed in knots:
+
+.. code-block:: bash
+
+   sounderpy obs DTX 2024-05-21 00 \
+       --plot hodograph \
+       --storm-motion 250 30 \
+       --plot-file dtx_hodograph.png
+
+**Surface Modification**
+
+``--modify-sfc`` changes the surface with ``KEY=VALUE`` pairs: ``T`` and ``Td`` (°C), ``ws`` (kt)
+with ``wd`` (degrees), ``method`` (``mix``, ``replace``, or ``blend``), and ``depth`` (m, for
+``blend``). See :ref:`modify_sfc` for what each method does. The change applies to the plot and
+``--params``; a file saved with ``--output`` keeps the original surface.
+
+.. code-block:: bash
+
+   sounderpy bufkit hrrr KGFK 1 \
+       --run 2024-01-24 12 \
+       --plot sounding \
+       --mode winter \
+       --modify-sfc T=-6 Td=-7 method=blend depth=300 \
+       --plot-file kgfk_blend.png
+
+**Radar**
+
+``--radar`` chooses the map's radar: ``mosaic`` (the default; the CONUS mosaic is only available for
+recent dates), ``single`` (the nearest NEXRAD site), or ``none``. ``--radar-time`` draws the radar at
+the profile's valid time (``sounding``, the default) or ``now``. Both need the map, so they can't be
+combined with ``--map-zoom 0``.
+
+.. code-block:: bash
+
+   sounderpy obs OAX 2014-06-16 18 \
+       --plot sounding \
+       --radar single \
+       --plot-file oax_radar.png
+
+**Special Parcels**
+
+``--parcels`` draws special parcels from the ``ecape_parcel`` library on a severe sounding, by code
+(``mu``, ``ml``, or ``sb``; ``ps`` pseudoadiabatic or ``ia`` irreversible adiabatic; ``cape`` or
+``ecape``), and ``--background-parcels`` draws more of them faded behind. ``--parcels simple`` draws
+only the standard parcels and skips the default MUECAPE trace, which is faster. See
+:ref:`parcels_logic` for the parcel codes.
+
+.. code-block:: bash
+
+   sounderpy obs DTX 2024-05-21 00 \
+       --plot sounding \
+       --parcels mu_ia_ecape \
+       --background-parcels mu_ps_cape sb_ps_cape \
+       --plot-file dtx_parcels.png
 
 **********************************************************************
 
@@ -476,14 +597,47 @@ profile to CSV, and saves a sounding image:
 
 
 
+Calculated Parameters
+=====================
+
+``--params`` prints key parameters under the profile summary: CAPE, CIN, LCL, and ECAPE for each
+parcel, DCAPE, PWAT, lapse rates, freezing levels, the storm motion, SRH, bulk shear, and composite
+indices. With ``--mode winter`` (or ``--mode auto`` when the surface wet-bulb is below 35 °F), it
+adds the precipitation type, the phase from source to surface, the snow ratio, the DGZ, and the
+freezing drizzle and freezing fog levels.
+
+.. code-block:: bash
+
+   sounderpy bufkit hrrr KGFK 1 \
+       --run 2024-01-24 12 \
+       --params \
+       --mode auto
+
+``--storm-motion`` and ``--modify-sfc`` change the parameters the same way they change the plot.
+With ``--json``, every calculated value is added to the JSON as ``"params"``, next to the profile:
+
+.. code-block:: bash
+
+   sounderpy obs DTX 2024-05-21 00 --params --json | python -c "import json, sys; print(json.load(sys.stdin)['params']['thermo']['mlcape'])"
+
+
+**********************************************************************
+
+
 Verbose Output
 ==============
 
-The CLI suppresses most of SounderPy's internal retrieval and plotting status
-messages by default, producing cleaner command-line output.
+The CLI hides SounderPy's internal retrieval and plotting status messages and
+warnings by default, producing cleaner command-line output.
+SounderPy's own warnings about the figure or data, such as a radar mosaic that
+isn't available for the profile's date, are still shown, one line each:
 
-To display the underlying SounderPy status messages, use ``-v`` or
-``--verbose``:
+.. code-block:: text
+
+   sounderpy: warning: Radar mosaic could not be plotted: no radar mosaic for 08/05/2023 18:00Z: the mosaic archive only keeps about the last month. Use the nearest NEXRAD site for older dates (radar='single', or --radar single in the CLI)
+
+To display the underlying SounderPy status messages and warnings, and the full
+Python traceback when something fails, use ``-v`` or ``--verbose``:
 
 .. code-block:: bash
 
@@ -496,7 +650,17 @@ To display the underlying SounderPy status messages, use ``-v`` or
 Input Validation and Errors
 ===========================
 
-The CLI validates several common inputs before beginning a retrieval.
+The CLI validates its inputs before beginning a retrieval, so a mistake is reported
+without waiting for a download. Besides the values below, it checks that:
+
+* ``--output`` has a recognized extension, or ``--format`` is given (and ``--format`` is only used with ``--output``);
+* plot options are only used with ``--plot``, and sounding-only options only with ``--plot sounding``;
+* ``--storm-motion``, ``--modify-sfc``, and ``--mode`` are used with ``--plot`` or ``--params``, and their values are valid;
+* ``--parcels`` codes are valid, and severe-only options aren't combined with ``--mode winter``;
+* ``--radar`` and ``--radar-time`` aren't combined with ``--map-zoom 0``;
+* ``file`` has ``--latlon`` for ``--plot`` and ``--params``;
+* ``--plot-file`` has an extension Matplotlib can write;
+* ``--json`` is combined with a saved plot, not a plot window.
 
 Dates
 -----
@@ -530,13 +694,23 @@ Forecast Hours
 
 BUFKIT forecast hours must be zero or greater.
 
+Map Zoom and DPI
+----------------
+
+``--map-zoom`` must be zero or greater, and ``--dpi`` greater than zero.
+
 Box Size
 --------
 
 The model ``--box-size`` value must be greater than zero.
 
 Invalid command-line arguments produce a descriptive error and a non-zero
-exit status.
+exit status:
+
+* ``0``: success;
+* ``1``: the retrieval, export, or plot failed (for example, no data for that station and time);
+* ``2``: invalid arguments or options;
+* ``130``: interrupted with Ctrl+C.
 
 
 Additional Examples

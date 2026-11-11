@@ -250,7 +250,7 @@ vertical profiles from BUFKIT sites.
    :type hush: bool, optional, default is ``False``
    :param clean_it: whether to return the raw_data object or a clean_data dict.
    :type clean_it: bool, optional, default is ``True``
-   :param all_fcst_hours: return a list with every forecast hour in the BUFKIT file, from one download. ``fcst_hour`` is then ignored. Not available for ``sref`` and ``hiresw``, whose files hold several ensemble members.
+   :param all_fcst_hours: return a list with every forecast hour in the BUFKIT file, from one download. ``fcst_hour`` is then ignored.
    :type all_fcst_hours: bool, optional, default is ``False``
    :return: :ref:`clean_data<datadescription>`, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, omega, & model information, or a list of them, one per forecast hour, with ``all_fcst_hours``
    :rtype: dict or list of dicts
@@ -310,11 +310,11 @@ Model key names
 - ``hrrr``: High Resolution Rapid Refresh, analysis (F00) & forecast; out to forecast hour 48
 - ``rrfs``: Rapid Refresh Forecast System, analysis (F00) & forecast; out to forecast hour 84
 - ``rap``: Rapid Refresh Model, analysis (F00) & forecast; out to forecast hour 51
-- ``nam``: North American Mesoscale Model (archive only), analysis (F00) & forecast; out to forecast hour 48
-- ``namnest``: Nested North American Mesoscale model (archive only), analysis (F00) & forecast; out to forecast hour 60
+- ``nam``: North American Mesoscale Model (discontinued; archived runs only), analysis (F00) & forecast; out to forecast hour 48
+- ``namnest``: Nested North American Mesoscale model (discontinued; archived runs only), analysis (F00) & forecast; out to forecast hour 60
 - ``gfs``: Global Forecast System, analysis (F00) & forecast; out to forecast hour 180
-- ``sref``: Short Range Ensemble Forecast, analysis (F00) & forecast; out to forecast hour 84
-- ``hiresw``: High Resolution Window Forecast System, analysis (F00) & forecast; out to forecast hour 48
+
+SREF and HiResW have also been discontinued, and aren't in the Iowa State archive, so they are no longer available.
 
 
 .. tip::

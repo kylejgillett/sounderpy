@@ -745,3 +745,338 @@ def test_legacy_system_exit_is_converted_to_cli_error(monkeypatch, capsys):
 
     assert result == 1
     assert "legacy retrieval failure" in capsys.readouterr().err
+
+
+def test_verbose_shows_the_traceback(monkeypatch, capsys):
+    def fake_get_obs_data(*args, **kwargs):
+        raise IndexError()
+
+    monkeypatch.setattr(cli, "get_obs_data", fake_get_obs_data)
+
+    assert cli.main(["obs", "DTX", "2024-05-21", "00"]) == 1
+    err = capsys.readouterr().err
+    assert "Traceback" not in err
+    assert err.strip() == "sounderpy: error: IndexError"  # an exception without a message is named
+
+    assert cli.main(["obs", "DTX", "2024-05-21", "00", "-v"]) == 1
+    assert "Traceback (most recent call last)" in capsys.readouterr().err
+
+
+# ---------------------------------------------------------------------------
+# Options checked before any download
+# ---------------------------------------------------------------------------
+
+OBS = ["obs", "DTX", "2024-05-21", "00"]
+
+
+@pytest.mark.parametrize(
+    ("options", "message"),
+    [
+        (["--json", "--plot", "sounding"], "--json cannot be combined with an interactive plot"),
+        (["--output", "profile.unknown"], "Could not infer export format"),
+        (["--format", "csv"], "--format needs --output"),
+        (["--plot-file", "x.png"], "--plot-file needs --plot sounding or --plot hodograph"),
+        (["--dark-mode"], "--dark-mode needs --plot"),
+        (["--map-zoom", "0"], "--map-zoom needs --plot"),
+        (["--mode", "winter"], "--mode needs --plot"),
+        (["--plot", "hodograph", "--plot-file", "h.png", "--color-blind"], "--color-blind only applies to --plot sounding"),
+        (["--plot", "hodograph", "--plot-file", "h.png", "--mode", "winter"], "--mode only applies to --plot sounding"),
+        (["--plot", "sounding", "--plot-file", "s.png", "--obs"], "--obs only applies to winter soundings"),
+        (["--plot", "sounding", "--plot-file", "s.png", "--mode", "severe", "--obs"], "--obs only applies to winter soundings"),
+        (["--plot", "sounding", "--plot-file", "s.xyz"], "--plot-file can't be saved as '.xyz'"),
+        # the test suite runs Matplotlib's non-interactive Agg backend, as on a server
+        (["--plot", "sounding"], "No display is available to open the plot"),
+    ],
+)
+def test_bad_options_fail_before_retrieval(monkeypatch, capsys, tmp_path, options, message):
+    def should_not_run(*args, **kwargs):
+        raise AssertionError("retrieval should not have been called")
+
+    monkeypatch.setattr(cli, "get_obs_data", should_not_run)
+    monkeypatch.chdir(tmp_path)
+
+    assert cli.main(OBS + options) == 2
+    assert message in capsys.readouterr().err
+    assert not list(tmp_path.iterdir())  # nothing written
+
+
+@pytest.mark.parametrize(("option", "value"), [("--dpi", "0"), ("--dpi", "high"), ("--map-zoom", "-1")])
+def test_parser_rejects_bad_plot_numbers(option, value, capsys):
+    with pytest.raises(SystemExit):
+        cli.main(OBS + ["--plot", "sounding", option, value])
+    assert f"argument {option}" in capsys.readouterr().err
+
+
+def test_plot_file_without_extension_is_saved_as_png(monkeypatch, clean_profile, tmp_path, capsys):
+    calls = []
+    monkeypatch.setattr(cli, "get_obs_data", lambda *args, **kwargs: clean_profile)
+    monkeypatch.setattr(cli, "build_hodograph", lambda data, **kwargs: calls.append(kwargs))
+
+    assert cli.main(OBS + ["--plot", "hodograph", "--plot-file", str(tmp_path / "hodo"), "-v"]) == 0
+    assert calls[0]["filename"] == str(tmp_path / "hodo.png")
+    assert f"Saved plot: {tmp_path / 'hodo.png'}" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize("extension", [".pdf", ".svg", ".JPG"])
+def test_plot_file_keeps_other_formats(monkeypatch, clean_profile, tmp_path, extension):
+    calls = []
+    monkeypatch.setattr(cli, "get_obs_data", lambda *args, **kwargs: clean_profile)
+    monkeypatch.setattr(cli, "build_sounding", lambda data, **kwargs: calls.append(kwargs))
+
+    assert cli.main(OBS + ["--plot", "sounding", "--plot-file", str(tmp_path / f"s{extension}")]) == 0
+    assert calls[0]["filename"] == str(tmp_path / f"s{extension}")
+
+
+def test_plot_defaults_are_filled_in(monkeypatch, clean_profile, tmp_path):
+    calls = []
+    monkeypatch.setattr(cli, "get_obs_data", lambda *args, **kwargs: clean_profile)
+    monkeypatch.setattr(cli, "build_sounding", lambda data, **kwargs: calls.append(kwargs))
+
+    assert cli.main(OBS + ["--plot", "sounding", "--plot-file", str(tmp_path / "s.png"), "--mode", "auto", "--obs"]) == 0
+    assert (calls[0]["map_zoom"], calls[0]["dpi"], calls[0]["mode"], calls[0]["show_obs"]) == (2, 100, "auto", True)
+
+
+# ---------------------------------------------------------------------------
+# Quiet output and the summary
+# ---------------------------------------------------------------------------
+
+def test_library_warnings_are_hidden_unless_verbose(monkeypatch, clean_profile, capsys):
+    import logging
+    import warnings
+
+    def noisy_get_obs_data(*args, **kwargs):
+        warnings.warn("SYNTHETIC LIBRARY WARNING")
+        logging.getLogger("matplotlib.axes").warning("SYNTHETIC MATPLOTLIB LOG")
+        return clean_profile
+
+    monkeypatch.setattr(cli, "get_obs_data", noisy_get_obs_data)
+
+    assert cli.main(OBS) == 0
+    err = capsys.readouterr().err
+    assert "SYNTHETIC LIBRARY WARNING" not in err and "SYNTHETIC MATPLOTLIB LOG" not in err
+
+    with pytest.warns(UserWarning, match="SYNTHETIC LIBRARY WARNING"):
+        assert cli.main(OBS + ["-v"]) == 0
+
+
+def test_summary_formats_lat_lon_and_hides_placeholders(monkeypatch, clean_profile, capsys):
+    import numpy as np
+
+    clean_profile["site_info"].update({"site-latlon": [np.float64(43.37), np.float64(-84.44)],
+                                       "site-lctn": "no-site-location", "model": "no-model"})
+    monkeypatch.setattr(cli, "get_obs_data", lambda *args, **kwargs: clean_profile)
+
+    assert cli.main(OBS) == 0
+    out = capsys.readouterr().out
+    assert "Lat/Lon: 43.37, -84.44" in out
+    assert "np.float64" not in out and "no-site-location" not in out and "Model:" not in out
+
+
+# ---------------------------------------------------------------------------
+# Calculation and plot options: --storm-motion, --modify-sfc, --radar, --parcels
+# ---------------------------------------------------------------------------
+
+@pytest.mark.parametrize(
+    ("options", "message"),
+    [
+        (["--storm-motion", "left_moving"], "--storm-motion needs --plot or --params"),
+        (["--modify-sfc", "T=30"], "--modify-sfc needs --plot or --params"),
+        (["--mode", "winter"], "--mode needs --plot or --params"),
+        (["--radar", "single"], "--radar needs --plot"),
+        (["--parcels", "simple"], "--parcels needs --plot"),
+        (["--params", "--storm-motion", "sideways"], "--storm-motion must be one of"),
+        (["--params", "--storm-motion", "270"], "--storm-motion must be one of"),
+        (["--params", "--storm-motion", "400", "20"], "direction from 0 to 360"),
+        (["--params", "--modify-sfc", "T30"], "--modify-sfc takes KEY=VALUE pairs"),
+        (["--params", "--modify-sfc", "P=900"], "--modify-sfc takes KEY=VALUE pairs"),
+        (["--params", "--modify-sfc", "T=warm"], "--modify-sfc T must be a number"),
+        (["--params", "--modify-sfc", "T=30", "T=31"], "has T more than once"),
+        (["--params", "--modify-sfc", "method=blend"], "needs at least one of T, Td"),
+        (["--params", "--modify-sfc", "ws=20"], "ws and wd go together"),
+        (["--params", "--modify-sfc", "T=30", "method=mixed"], "method must be mix, replace, or blend"),
+        (["--params", "--modify-sfc", "T=30", "depth=300"], "depth only applies to method=blend"),
+        (["--params", "--modify-sfc", "T=30", "method=blend", "depth=0"], "depth must be a height in m above 0"),
+        (["--plot", "hodograph", "--plot-file", "h.png", "--parcels", "simple"], "--parcels only applies to --plot sounding"),
+        (["--plot", "hodograph", "--plot-file", "h.png", "--mode", "auto"], "--mode only applies to --plot sounding and --params"),
+        (["--plot", "sounding", "--plot-file", "s.png", "--mode", "winter", "--parcels", "simple"], "--parcels doesn't apply to winter soundings"),
+        (["--plot", "sounding", "--plot-file", "s.png", "--mode", "winter", "--storm-relative"], "--storm-relative doesn't apply to winter soundings"),
+        (["--plot", "sounding", "--plot-file", "s.png", "--parcels", "xx_ps_cape"], "--parcels doesn't know xx_ps_cape"),
+        (["--plot", "sounding", "--plot-file", "s.png", "--parcels", "simple", "--background-parcels", "mu_ia_cape"], "can't be combined"),
+        (["--plot", "sounding", "--plot-file", "s.png", "--map-zoom", "0", "--radar", "single"], "--radar needs the map"),
+    ],
+)
+def test_bad_calculation_and_plot_options_fail_before_retrieval(monkeypatch, capsys, tmp_path, options, message):
+    def should_not_run(*args, **kwargs):
+        raise AssertionError("retrieval should not have been called")
+
+    monkeypatch.setattr(cli, "get_obs_data", should_not_run)
+    monkeypatch.chdir(tmp_path)
+
+    assert cli.main(OBS + options) == 2
+    assert message in capsys.readouterr().err
+
+
+@pytest.mark.parametrize(
+    ("options", "expected"),
+    [
+        ([], {"storm_motion": "right_moving", "modify_sfc": None, "radar": "mosaic", "radar_time": "sounding",
+              "special_parcels": None}),
+        (["--storm-motion", "Left_Moving"], {"storm_motion": "left_moving"}),
+        (["--storm-motion", "250", "30.5"], {"storm_motion": [250.0, 30.5]}),
+        (["--modify-sfc", "T=-6", "Td=-7", "ws=25", "wd=20"], {"modify_sfc": {"T": -6.0, "Td": -7.0, "ws": 25.0, "wd": 20.0}}),
+        (["--modify-sfc", "T=30", "method=blend", "depth=300"], {"modify_sfc": {"T": 30.0, "method": "blend", "depth": 300.0}}),
+        (["--radar", "single", "--radar-time", "now"], {"radar": "single", "radar_time": "now"}),
+        (["--parcels", "simple"], {"special_parcels": "simple"}),
+        (["--parcels", "mu_ia_ecape", "sb_ps_cape"], {"special_parcels": [["mu_ia_ecape", "sb_ps_cape"], []]}),
+        (["--background-parcels", "ml_ps_cape"], {"special_parcels": [[], ["ml_ps_cape"]]}),
+    ],
+)
+def test_sounding_routes_calculation_and_plot_options(monkeypatch, clean_profile, tmp_path, options, expected):
+    calls = []
+    monkeypatch.setattr(cli, "get_obs_data", lambda *args, **kwargs: clean_profile)
+    monkeypatch.setattr(cli, "build_sounding", lambda data, **kwargs: calls.append(kwargs))
+
+    assert cli.main(OBS + ["--plot", "sounding", "--plot-file", str(tmp_path / "s.png")] + options) == 0
+    assert {key: calls[0][key] for key in expected} == expected
+
+
+def test_hodograph_routes_storm_motion_modify_sfc_and_radar(monkeypatch, clean_profile, tmp_path):
+    calls = []
+    monkeypatch.setattr(cli, "get_obs_data", lambda *args, **kwargs: clean_profile)
+    monkeypatch.setattr(cli, "build_hodograph", lambda data, **kwargs: calls.append(kwargs))
+
+    assert cli.main(OBS + ["--plot", "hodograph", "--plot-file", str(tmp_path / "h.png"), "--storm-motion", "mean_wind",
+                           "--modify-sfc", "ws=10", "wd=180", "--radar", "none"]) == 0
+    assert calls[0]["storm_motion"] == "mean_wind"
+    assert calls[0]["modify_sfc"] == {"ws": 10.0, "wd": 180.0}
+    assert calls[0]["radar"] == "none"
+    assert "special_parcels" not in calls[0] and "mode" not in calls[0]
+
+
+# ---------------------------------------------------------------------------
+# --params
+# ---------------------------------------------------------------------------
+
+def test_params_readout(monkeypatch, clean_profile, capsys):
+    monkeypatch.setattr(cli, "get_obs_data", lambda *args, **kwargs: clean_profile)
+
+    assert cli.main(OBS + ["--params", "--storm-motion", "250", "30", "--modify-sfc", "T=35"]) == 0
+    out = capsys.readouterr().out
+    assert "SounderPy profile" in out and "Parameters" in out
+    assert "Modified surface: T 35°C · mixed to 1.0 km" in out
+    for line in ("SB parcel: CAPE ", "ML parcel: CAPE ", "MU parcel: CAPE ", "Storm motion (custom): ", "SRH: 0-500 m ",
+                 "Bulk shear: 0-1 km ", "STP: "):
+        assert line in out
+    assert "Precip type" not in out
+
+
+def test_params_include_winter_values(monkeypatch, capsys):
+    from helpers import make_winter_profile
+
+    monkeypatch.setattr(cli, "get_bufkit_data", lambda *args, **kwargs: make_winter_profile("fzra"))
+
+    assert cli.main(["bufkit", "hrrr", "KGFK", "1", "--params", "--mode", "auto"]) == 0
+    out = capsys.readouterr().out
+    assert "Precip type: FREEZING RAIN (SPC: Freezing Rain)" in out
+    assert "Phase from source to surface: SN -> RA -> FZRA" in out
+
+
+def test_params_json(monkeypatch, clean_profile, capsys):
+    monkeypatch.setattr(cli, "get_obs_data", lambda *args, **kwargs: clean_profile)
+
+    assert cli.main(OBS + ["--params", "--json"]) == 0
+    parsed = json.loads(capsys.readouterr().out)
+    assert {"general", "thermo", "kinem", "intrp"} <= set(parsed["params"])
+    assert parsed["params"]["thermo"]["mlcape"] > 0
+    assert parsed["site_info"]["site-id"] == "TEST"  # the profile is still at the top level
+
+
+def test_json_without_params_has_no_params(monkeypatch, clean_profile, capsys):
+    monkeypatch.setattr(cli, "get_obs_data", lambda *args, **kwargs: clean_profile)
+    assert cli.main(OBS + ["--json"]) == 0
+    assert "params" not in json.loads(capsys.readouterr().out)
+
+
+# ---------------------------------------------------------------------------
+# file
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def sharppy_file(clean_profile, tmp_path):
+    from sounderpy.data.file_io import to_file
+
+    path = tmp_path / "profile.snd"
+    to_file("sharppy", clean_profile, filename=str(path))
+    return path
+
+
+def test_file_summary(sharppy_file, capsys):
+    assert cli.main(["file", str(sharppy_file)]) == 0
+    out = capsys.readouterr().out
+    assert "Source: SHARPPY FILE" in out and "Site: TEST" in out
+    assert "Valid time: 2024-05-21 00Z" in out
+
+
+def test_file_export(sharppy_file, tmp_path):
+    output = tmp_path / "profile.csv"
+    assert cli.main(["file", str(sharppy_file), "-o", str(output)]) == 0
+    assert output.read_text().splitlines()[0] == "p,z,T,Td,u,v"
+
+
+def test_file_plot_and_params_need_a_location(sharppy_file, capsys):
+    assert cli.main(["file", str(sharppy_file), "--params"]) == 2
+    assert "--params needs the profile's location; add --latlon LAT LON" in capsys.readouterr().err
+    assert cli.main(["file", str(sharppy_file), "--plot", "sounding", "--plot-file", "x.png"]) == 2
+    assert "--plot needs the profile's location" in capsys.readouterr().err
+
+
+def test_file_plot_fills_in_site_details(monkeypatch, sharppy_file, tmp_path):
+    calls = []
+    monkeypatch.setattr(cli, "build_sounding", lambda data, **kwargs: calls.append(data))
+
+    assert cli.main(["file", str(sharppy_file), "--latlon", "47.9", "-97.0", "--plot", "sounding",
+                     "--plot-file", str(tmp_path / "s.png")]) == 0
+    site, titles = calls[0]["site_info"], calls[0]["titles"]
+    assert site["site-latlon"] == [47.9, -97.0]
+    assert site["site-elv"] == pytest.approx(0.0)  # the lowest height in the file
+    assert titles == {"top_title": "SHARPPY FILE PROFILE | profile.snd", "left_title": "VALID: 05/21/2024 00Z",
+                      "right_title": "TEST | 47.9, -97"}
+
+
+def test_file_params(sharppy_file, capsys):
+    assert cli.main(["file", str(sharppy_file), "--latlon", "47.9", "-97.0", "--params"]) == 0
+    assert "SB parcel: CAPE " in capsys.readouterr().out
+
+
+@pytest.mark.parametrize(("argv", "message"), [
+    (["file", "missing.snd"], "No such file: missing.snd"),
+    (["file", "x.snd", "--latlon", "95", "0"], "--latlon needs a latitude from -90 to 90"),
+])
+def test_file_errors(argv, message, capsys, tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "x.snd").write_text("")
+    assert cli.main(argv) == 2
+    assert message in capsys.readouterr().err
+
+
+def test_file_that_is_not_sharppy(tmp_path, capsys):
+    path = tmp_path / "notes.txt"
+    path.write_text("not a sounding\n")
+    assert cli.main(["file", str(path)]) == 1
+    assert "does not appear to be a SHARPpy" in capsys.readouterr().err
+
+
+def test_sounderpy_warnings_are_shown_without_verbose(monkeypatch, clean_profile, capsys):
+    import warnings
+    from sounderpy.utils import SounderPyWarning
+
+    def get_obs_data(*args, **kwargs):
+        warnings.warn("Radar mosaic could not be plotted: no radar mosaic for X", SounderPyWarning)
+        warnings.warn("LIBRARY NOISE")
+        return clean_profile
+
+    monkeypatch.setattr(cli, "get_obs_data", get_obs_data)
+
+    assert cli.main(OBS) == 0
+    err = capsys.readouterr().err
+    assert err.splitlines() == ["sounderpy: warning: Radar mosaic could not be plotted: no radar mosaic for X"]

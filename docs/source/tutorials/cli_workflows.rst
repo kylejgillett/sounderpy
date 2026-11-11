@@ -262,6 +262,50 @@ One retrieval can produce several outputs:
 
 ***************************************************************
  
+Calculated Parameters
+=====================
+
+Print key parameters (CAPE, SRH, shear, composite indices, and, for winter profiles, the
+precipitation type) under the summary:
+
+.. code-block:: bash
+
+   sounderpy bufkit hrrr KGFK 1 \
+       --run 2024-01-24 12 \
+       --params \
+       --mode auto
+
+Try a different storm motion or a modified surface:
+
+.. code-block:: bash
+
+   sounderpy obs OAX 2014-06-16 18 \
+       --params \
+       --storm-motion 250 30 \
+       --modify-sfc T=31 Td=22
+
+
+***************************************************************
+ 
+Work With a Saved File
+======================
+
+Save a profile once, then plot or export it later without downloading it again. A SHARPpy file
+doesn't store the location, so give it with ``--latlon`` for plots and parameters:
+
+.. code-block:: bash
+
+   sounderpy obs OAX 2014-06-16 18 --output oax.snd
+
+   sounderpy file oax.snd \
+       --latlon 41.32 -96.37 \
+       --plot sounding \
+       --map-zoom 0 \
+       --plot-file oax_sounding.png
+
+
+***************************************************************
+ 
 JSON Output
 ===========
 

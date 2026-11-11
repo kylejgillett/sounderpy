@@ -303,8 +303,8 @@ HODOGRAPH_KINEMATICS_LAYOUT = {"label_x": 0.036,
 HODOGRAPH_PARCEL_LAYOUT = {"label_x": 0.036,
                            "columns": [0.155, 0.391, 0.614, 0.828],
                            "header_columns": [0.155, 0.420, 0.614, 0.828],
-                           "header_y": 0.430,
-                           "rows_y": [0.363, 0.296, 0.230]}
+                           "header_y": 0.440,
+                           "rows_y": [0.380, 0.320, 0.260]}
 
 
 

@@ -2,20 +2,21 @@
 
 - [ ] `_get_zoomed_background_lines`: on a thin or inverted zoomed view (e.g. fzra at `ylim=(1000, 900)`, sleet at (1000, 700)) the x-axis hits `ZOOM_MAX_SPAN`, the hot top-right corner gives MetPy `wet_bulb_potential_temperature` values in the thousands of °C, and up to ~1200 moist adiabats are drawn instead of ~12 (strict xfail in `tests/test_plot_components.py`)
 - [ ] `utils.mag()` truncates instead of rounding (`int()`), so readouts drop toward zero (999.9 J/kg shows 999, -0.6 shows 0)
+- [ ] `calc.py:824-845` ECAPE: on a zero-CAPE profile (no LFC, e.g. KABR 2024-08-28 12Z) `ecape_parcel` crashes on `lfc_z=None`, the bare `except` sets MU/ML/SB-ECAPE to masked (readout shows `--` instead of 0) and warns "could not be computed (calculation error)" three times; should be 0 with no warning when the parcel has no CAPE
 - [ ] `plot/components.py`: no public API for building custom figures; every drawing function is private; will need to determine the best option for this, what users should have and shouldn't have
-- [ ] Check the CLI. Test for bugs, errors, and missing features.
+
 
 
 # FUTURE FIXES
 - [ ] `set_watermark`: settings are shared across a Python process, so a shared web app worker would affect all users
 - [ ] MetPy's skew-T uses a Matplotlib function deprecated in 3.11 and due for removal in 3.13; confirm a MetPy fix before relaxing or raising version limits; MetPy 1.7.1's `StationPlot` text already fails to draw under Matplotlib 3.11 (its `TextCollection.draw` unpacks 4 layout values, 3.11 returns 3), so any station plot needs plain text + MetPy's symbol font until MetPy fixes it
-- [ ] Station lists: `BUFKIT-STATIONS-MASTER.txt` has 8,527 rows for 2,093 IDs, and 23 IDs have conflicting entries (typos such as `B44` at lon -100.29 and -110.29, `B48` at -80.51 and -81.51; different stations sharing `CYQX`); all station lists are downloaded from GitHub `main` on every call rather than read from the package
+- [ ] Station lists: `BUFKIT-STATIONS-MASTER.txt` has 8,527 rows for 2,093 IDs, and 23 IDs have conflicting entries (typos such as `B44` at lon -100.29 and -110.29, `B48` at -80.51 and -81.51; different stations sharing `CYQX`); the BUFKIT, METAR, buoy and airport lists are still downloaded from GitHub `main` on every call (RAOB/IGRA now ship in the package as `RAOB-STATIONS-MASTER.csv`)
 - [ ] Full sounding hodograph: the storm-motion text block (top left) can overlap a ring speed label, e.g. "SSE @ 26 kt" over the "30kt" label on the 9ZT9MRK ship sounding, 2026-11-10 00Z
 
 
 
 ### Timeseries, Publication Figures, VAD hodos
-- [ ] `build_publication_sounding`: experimental; hodograph height labels can overlap with several profiles or tight traces, and no tests or docs yet
+- [ ] `build_publication_sounding`: reworked 2026-11-11 (panels, layouts, widths, map, parameter table, `(fig, axes)`); tests in `sandbox/plot_api/test_publication.py` until the module is tracked; no docs yet
 - [ ] `build_editorial_sounding`: experimental; choose whether to keep it, and it has no tests or docs yet
 - [ ] `build_timeseries`: parameters with the same unit share an axis (e.g. 0-3 km MUCAPE flattens next to MU-ECAPE); only the built-in SCP and CIN axes can be split, users can't choose
 - [ ] Timeseries docs: no docs page yet for `timeseries_params()` / `build_timeseries()`

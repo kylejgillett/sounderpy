@@ -2,8 +2,8 @@
 """
 Generate SounderPy documentation/gallery figures.
 
-Run this script from the repository root after installing SounderPy in editable
-mode:
+Install SounderPy in editable mode, then run this script from any directory
+(the default output folder is found from the script's own location):
 
     pip install -e .
     python docs/scripts/make_gallery_figures.py
@@ -62,7 +62,9 @@ import sounderpy as spy
 # CONFIGURATION
 # =============================================================================
 
-DEFAULT_OUTPUT = Path("docs/source/_static/gallery")
+# Resolved from this file, so the script works from any directory.
+DOCS_DIR = Path(__file__).resolve().parent.parent
+DEFAULT_OUTPUT = DOCS_DIR / "source" / "_static" / "gallery"
 DPI = 200
 
 # A deep, severe-weather sounding that works well for theme, parcel, and

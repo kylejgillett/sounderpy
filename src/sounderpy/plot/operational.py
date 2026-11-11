@@ -21,6 +21,7 @@ import numpy as np
 import numpy.ma as ma
 
 # STANDARD PYTHON
+import re
 import warnings
 import time
 
@@ -66,6 +67,7 @@ from .components import (_clip_skewt_text,
                          _plot_composite_skewt_profiles,
                          _plot_composite_table,
                          _plot_credits,
+                         _plot_data_source,
                          _plot_downdraft_parcel,
                          _plot_figure_titles,
                          _plot_hodograph_boundary,
@@ -376,6 +378,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     _plot_figure_titles(fig, clean_data["titles"], theme)
     _plot_skewt_legend(skew, theme)
     _plot_credits(fig, theme)
+    _plot_data_source(fig, clean_data["site_info"], theme)
     _plot_logo(fig.add_axes(layout["logo"], anchor="SE", zorder=3))
     _add_figure_margin(fig, layout["margin"])
 
@@ -594,6 +597,7 @@ def __winter_sounding(clean_data, color_blind, dark_mode, storm_motion='right_mo
     _plot_figure_titles(fig, clean_data["titles"], theme)
     _plot_skewt_legend(skew, theme)
     _plot_credits(fig, theme)
+    _plot_data_source(fig, clean_data["site_info"], theme)
     _plot_logo(fig.add_axes(layout["logo"], anchor="SE", zorder=3))
     _add_figure_margin(fig, layout["margin"])
 
@@ -706,10 +710,14 @@ def _build_hodograph_figure(snd_params, site_data, titles, dark_mode, storm_moti
     ### PLOT EXTRAS ###
     #################################################################
     print(f'    > FIGURE LOADING...')
-    titles = dict(titles, top_title=f"{titles['top_title']} {hodo_title}")
+    # "VERTICAL" and "PROFILE" are redundant next to "HODOGRAPH", a vertical profile of wind
+    top_title = " ".join(re.sub(r"\b(VERTICAL|PROFILES?)\b", "", titles['top_title']).split())
+    titles = dict(titles, top_title=f"{top_title} {hodo_title}")
     _plot_figure_titles(fig, titles, theme, left_x=0.2262, right_x=1.1815, top_y=0.92, sub_y=0.89, top_fontsize=FONT_SIZES["title_small"], sub_fontsize=FONT_SIZES["table_large"])
     # the watermark sits beside the map, or at the edge of the axis without one
     _plot_credits(hodo.ax, theme, x=0.298 if has_map else 0.0873, title_y=0.045, subtitle_y=0.017, style="compact", title_fontsize=FONT_SIZES["table_large"], subtitle_fontsize=FONT_SIZES["label"], max_x=0.99)
+    # the data source runs along the bottom margin, under the hodograph
+    _plot_data_source(fig, site_data.get("site_info", {}), theme, x=0.2262, y=0.0985, max_x=0.80)
     _plot_logo(fig.add_axes(layout["logo" if has_map else "logo_no_map"], anchor="SW"))
     _add_figure_margin(fig, layout["margin"])
 

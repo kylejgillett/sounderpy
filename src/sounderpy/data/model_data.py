@@ -541,6 +541,11 @@ def fetch_model(model, latlon, year, month, day, hour, dataset, box_avg_size, hu
                                 axis=(1, 2)) * units.percent)).m,
                 }
 
+                # keep 100 hPa and below, like RAP and RUC, and only levels with every value: NCEP-FNL goes up to
+                # 0.01 hPa, and its RH is 0 % above about 100 hPa, which leaves the dewpoint undefined (NaN)
+                keep = (vert_data['vert_p'] >= 100) & np.all([np.isfinite(value) for value in vert_data.values()], axis=0)
+                vert_data = {key: value[keep] for key, value in vert_data.items()}
+
                 # create a dict of sfc data
                 sfc_data = {
                     'sfc_T': np.mean(
@@ -706,7 +711,13 @@ def fetch_model(model, latlon, year, month, day, hour, dataset, box_avg_size, hu
             'fcst-hour': 'F00',
             'run-time': latlon_data['data_time'],
             'valid-time': latlon_data['data_time'],
-            'box_area': f'{box_avg_size}° BOX AVG'}
+            'box_area': f'{box_avg_size}° BOX AVG',
+            # the figure adds the model name and init time after this
+            'data-source': {'era': 'COPERNICUS CDS',
+                            'era5': 'COPERNICUS CDS',
+                            'ncep': 'NCAR RDA THREDDS 0.25°',
+                            'ncep-fnl': 'NCAR RDA THREDDS 0.25°',
+                            'rap-now': 'UNIDATA THREDDS 13-KM'}.get(model, 'NCEI THREDDS')}
 
         # add plot title to clean_data dict
         clean_data['titles'] = {

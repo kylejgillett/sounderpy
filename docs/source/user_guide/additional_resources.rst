@@ -19,9 +19,6 @@ start.
 * `Project Pythia: Getting Started with Python <https://foundations.projectpythia.org/foundations/getting-started-python/>`_
   — A geoscience-focused introduction to installing, running, and managing Python.
 
-* `Unidata: Introduction to Python for Atmospheric Science & Meteorology <https://unidata.github.io/python-training/python/intro-to-python/>`_
-  — Introductory Python material written specifically for atmospheric-science users.
-
 * `Official Python Tutorial <https://docs.python.org/3/tutorial/>`_
   — The official introduction to the Python language.
 
@@ -91,17 +88,16 @@ Useful starting points include:
 Pythia is particularly useful for users moving from basic Python into scientific
 data analysis with NumPy, Matplotlib, Xarray, Pandas, and Cartopy.
 
-Unidata Python Training
-~~~~~~~~~~~~~~~~~~~~~~~
+MetPy Cookbook
+~~~~~~~~~~~~~~
 
-`Unidata Python Training <https://unidata.github.io/python-training/>`_ provides
-Python lessons and examples specifically for atmospheric science and meteorology.
-
-The
-`Unidata Python Workshop <https://unidata.github.io/python-training/workshop/workshop-intro/>`_
-includes examples involving upper-air data, Skew-T diagrams and hodographs,
-weather-model output, satellite data, surface observations, Cartopy, MetPy,
-Xarray, and Siphon.
+Unidata's Python training material now lives in the
+`MetPy Cookbook <https://projectpythia.org/metpy-cookbook/>`_ on Project Pythia.
+It has worked examples for meteorology with MetPy, including
+`Skew-T and sounding analysis <https://projectpythia.org/metpy-cookbook/notebooks/skewt/>`_
+(hodograph insets, sounding calculations),
+`convective calculations <https://projectpythia.org/metpy-cookbook/notebooks/convective/>`_,
+synoptic analysis, and MetPy's declarative plotting interface.
 
 MetPy
 ~~~~~
@@ -174,7 +170,7 @@ For a new Python and SounderPy user, a reasonable learning path is:
 #. Become familiar with Jupyter or an editor such as VS Code.
 #. Learn the basics of NumPy, Matplotlib, and Xarray.
 #. Work through the
-   `Unidata Python Training <https://unidata.github.io/python-training/>`_
+   `MetPy Cookbook <https://projectpythia.org/metpy-cookbook/>`_
    meteorology examples.
 #. Explore the
    `MetPy Tutorials <https://unidata.github.io/MetPy/latest/tutorials/index.html>`_

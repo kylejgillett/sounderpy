@@ -140,7 +140,7 @@ class acars_data:
             header = loadtxt(urlopen(profile_url).readlines()[0:3], dtype='str', comments="%", unpack=True)
         except HTTPError as err:
             if err.code == 404:
-                raise ValueError(f'Invalid profile OR profile does not exist: {acars_profile}. Try again with a valid profile from list_profiles() (ex: BNA_2320)') from None
+                raise ValueError(f'Invalid profile OR profile does not exist: {acars_profile}. Try again with a profile ID from list_profiles() for the same date and hour') from None
             else:
                 raise
 
@@ -192,7 +192,8 @@ class acars_data:
                 'model': 'no-model',
                 'fcst-hour': 'no-fcst-hour',
                 'run-time': ['none', 'none', 'none', 'none'],
-                'valid-time': [f'20{header[1][0:2]}', header[1][2:4], header[1][4:6], f'{header[1][7:9]}:{header[1][9:11]}']
+                'valid-time': [f'20{header[1][0:2]}', header[1][2:4], header[1][4:6], f'{header[1][7:9]}:{header[1][9:11]}'],
+                'data-source': f'OU SHARP ACARS ARCHIVE · FLIGHT {acars_profile}'
             }
 
             # add clean_data title dict

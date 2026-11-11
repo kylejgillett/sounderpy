@@ -170,7 +170,7 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
        :type hush: bool, optional, default is `False`
        :param clean_it: whether to return the raw_data object or a clean_data dict.
        :type clean_it: bool, optional, default is `True`
-       :param all_fcst_hours: return a list with every forecast hour in the BUFKIT file, from one download. ``fcst_hour`` is then ignored. Not available for ``sref`` and ``hiresw``, whose files hold several ensemble members.
+       :param all_fcst_hours: return a list with every forecast hour in the BUFKIT file, from one download. ``fcst_hour`` is then ignored.
        :type all_fcst_hours: bool, optional, default is `False`
 
 
