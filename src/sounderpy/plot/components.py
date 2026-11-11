@@ -152,10 +152,16 @@ def _calculate_special_parcel(parcel, data, snd_params):
     """Calculate a special (E)CAPE parcel trace with the ecape_parcel library, adding its density temperature."""
     kinem = snd_params["kinem"]
     parcel_type, adiabatic_type, cape_type = parcel.split("_")
-    trace = calc_ecape_parcel(data["p"], data["z"], data["T"], data["Td"], data["u"], data["v"], False,
-        cape_type=PARCEL_DETAILS["term1"][parcel_type], pseudoadiabatic_switch=PARCEL_DETAILS["term2"][adiabatic_type][0],
-        entrainment_switch=PARCEL_DETAILS["term3"][cape_type], storm_motion_type="user_defined",
-        storm_motion_u=kinem["sm_u"] * units.kts, storm_motion_v=kinem["sm_v"] * units.kts)
+    try:
+        trace = calc_ecape_parcel(data["p"], data["z"], data["T"], data["Td"], data["u"], data["v"], False,
+            cape_type=PARCEL_DETAILS["term1"][parcel_type], pseudoadiabatic_switch=PARCEL_DETAILS["term2"][adiabatic_type][0],
+            entrainment_switch=PARCEL_DETAILS["term3"][cape_type], storm_motion_type="user_defined",
+            storm_motion_u=kinem["sm_u"] * units.kts, storm_motion_v=kinem["sm_v"] * units.kts)
+    except (IndexError, ValueError):
+        # e.g. an old sounding with dewpoints only in its lowest levels; draw no trace, like the library
+        # does for a parcel with no CAPE
+        warnings.warn(f"The {_format_special_parcel_name(parcel)} parcel could not be computed for this sounding (not enough data)", Warning)
+        return ([None],) * 5
 
     if trace[0][0] is None:
         return trace
@@ -406,21 +412,19 @@ def _plot_skewt_surface_annotations(skew, data, theme, modify_sfc=None, original
     Td = data["Td"]
     # convert surface T/Td to the requested unit
     unit_label = f"°{temperature_unit[-1]}"
-    # nearest whole degree, with halves rounded up (72.5 -> 73)
-    T_sfc = int(np.floor(T[0].to(units(temperature_unit)).m + 0.5))
-    Td_sfc = int(np.floor(Td[0].to(units(temperature_unit)).m + 0.5))
     # a * marks a surface value the user set
     modify_sfc = modify_sfc or {}
-    T_mark, Td_mark = ("*" if key in modify_sfc else "" for key in ("T", "Td"))
-    # a faded background keeps the surface labels readable where they land on the axis labels
-    # surface temperature
-    skew.ax.annotate(f"{T_sfc}{unit_label}{T_mark}", (T[0], p[0]), textcoords="offset points", xytext=(16, -15),
-                      fontsize=FONT_SIZES["annotation_large"], color=theme["temperature"], weight="bold", alpha=0.9, ha="center", zorder=10,
-                      bbox=dict(facecolor=theme["background"], edgecolor="none", alpha=0.6, pad=1.5))
-    # surface dewpoint
-    skew.ax.annotate(f"{Td_sfc}{unit_label}{Td_mark}", (Td[0], p[0]), textcoords="offset points", xytext=(-16, -15),
-                      fontsize=FONT_SIZES["annotation_large"], color=theme["dewpoint"], weight="bold", alpha=0.9, ha="center", zorder=10,
-                      bbox=dict(facecolor=theme["background"], edgecolor="none", alpha=0.6, pad=1.5))
+    # a faded background keeps the surface labels readable where they land on the axis labels;
+    # a missing surface value (e.g. no dewpoint in an old sounding) gets no label
+    for key, values, color, offset in (("T", T, theme["temperature"], 16), ("Td", Td, theme["dewpoint"], -16)):
+        value = np.ma.filled(np.ma.asarray(values[0].to(units(temperature_unit)).m, dtype=float), np.nan)
+        if not np.isfinite(value):
+            continue
+        # nearest whole degree, with halves rounded up (72.5 -> 73)
+        label = f"{int(np.floor(value + 0.5))}{unit_label}{'*' if key in modify_sfc else ''}"
+        skew.ax.annotate(label, (values[0], p[0]), textcoords="offset points", xytext=(offset, -15),
+                          fontsize=FONT_SIZES["annotation_large"], color=color, weight="bold", alpha=0.9, ha="center", zorder=10,
+                          bbox=dict(facecolor=theme["background"], edgecolor="none", alpha=0.6, pad=1.5))
     # what the user changed, in a box at the top middle of the skew-t
     if modify_sfc:
         skew.ax.text(0.5, 0.985, f"* MODIFIED SURFACE\n{_describe_surface_modification(original, modify_sfc)}",

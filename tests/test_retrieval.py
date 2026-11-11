@@ -8,7 +8,7 @@ The routing tests mock each backend and check SounderPy calls it with the right 
 from __future__ import annotations
 
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import numpy as np
 import pytest
@@ -136,9 +136,43 @@ def test_station_list_copies_match():
     ("72357", "72357"), ("USM00072357", "72357"),                    # WMO number, IGRAv2 ID
     ("1001", "01001"), ("01001", "01001"), ("ENJA", "01001"),        # leading-zero WMO numbers
     ("VEGT", "42410"), ("OTX", "72786"),                             # alternate ICAO code -> Spokane
+    ("KNKX", "72293"), ("NKX", "72293"), ("KMYF", "72293"),          # Miramar, not the closed San Diego 72290
+    ("PGAC", "91212"), ("PTTP", "91348"),                            # same pattern: Guam, Pohnpei
 ])
 def test_find_raob_station_accepts_any_id(station_id, wmo):
     assert utils.find_raob_station(station_id)["WMO"] == wmo
+
+
+def test_no_inactive_station_holds_an_active_stations_alternate_icao():
+    """An ICAO code an active station lists in ICAO_ALT must not be the main ICAO of an inactive station
+    (tools/build_station_list.py moves it), or the lookup would find the closed station first."""
+    df = utils.load_raob_stations()
+    inactive_icao = set(df.loc[(df["ACTIVE"] != "Y") & (df["ICAO"] != ""), "ICAO"])
+    active_alt = {code for codes in df.loc[df["ACTIVE"] == "Y", "ICAO_ALT"] for code in codes.split()}
+    assert not inactive_icao & active_alt
+
+
+def test_find_raob_station_prefers_active_station(monkeypatch):
+    import pandas as pd
+    rows = [{"WMO": "11111", "ICAO": "KAAA", "ICAO_ALT": "", "IGRA_ID": "", "ACTIVE": ""},
+            {"WMO": "22222", "ICAO": "KBBB", "ICAO_ALT": "KAAA", "IGRA_ID": "", "ACTIVE": "Y"},
+            {"WMO": "33333", "ICAO": "KCCC", "ICAO_ALT": "", "IGRA_ID": "", "ACTIVE": ""}]
+    monkeypatch.setattr(utils, "load_raob_stations", lambda: pd.DataFrame(rows))
+    assert utils.find_raob_station("KAAA")["WMO"] == "22222"   # active alternate beats inactive main ICAO
+    assert utils.find_raob_station("AAA")["WMO"] == "22222"
+    assert utils.find_raob_station("KCCC")["WMO"] == "33333"   # an inactive station is still found
+
+
+def test_stations_with_no_known_data_are_flagged():
+    """tools/build_station_list.py notes every row with no IGRAv2 record, no recent Wyoming data and no active
+    status, and the package flags the same rows (old San Diego 72290 yes, the active Miramar site 72293 no)."""
+    df = utils.load_raob_stations()
+    flagged = df.apply(utils.raob_station_has_no_known_data, axis=1)
+    noted = df["NOTE"].str.contains("no IGRA record or recent Wyoming data", regex=False)
+    assert flagged.any()
+    assert (flagged == noted).all()
+    assert utils.raob_station_has_no_known_data(utils.find_raob_station("72290"))
+    assert not utils.raob_station_has_no_known_data(utils.find_raob_station("72293"))
 
 
 def test_find_raob_station_unknown_id():
@@ -198,6 +232,31 @@ def test_fetch_obs_keeps_leading_zeros(monkeypatch):
     assert requested == ["01001"]
     assert data["site_info"]["site-id"] == "ENJA"
     assert data["titles"]["right_title"].startswith("ENJA - Jan Mayen | ")   # no empty region
+
+
+@pytest.mark.parametrize(("station", "label"), [
+    ("NKX", "KNKX"), ("KNKX", "KNKX"),    # an alternate ICAO: labeled as asked, not with 72293's main code KMYF
+    ("KMYF", "KMYF"), ("72293", "72293"), ("OUN", "KOUN"),
+])
+def test_fetch_obs_labels_the_station_as_requested(monkeypatch, station, label):
+    from sounderpy.data.obs_data import fetch_obs
+    fake_wyoming(monkeypatch, {"72293", "72357"})
+    data = fetch_obs(station, "2024", "05", "20", "00", hush=True, clean_it=True)
+    assert data["site_info"]["site-id"] == label
+    assert data["titles"]["right_title"].startswith(f"{label} - ")
+
+
+def test_fetch_obs_warns_for_station_with_no_known_data(monkeypatch):
+    """A flagged station is still requested (Wyoming may hold old soundings), but with a warning."""
+    import warnings
+    from sounderpy.data.obs_data import fetch_obs
+    requested = fake_wyoming(monkeypatch, {"72290", "72293"})
+    with pytest.warns(UserWarning, match=r"Station '72290' \(San Diego, CA\) has no IGRAv2 record"):
+        fetch_obs("72290", "1975", "01", "15", "00", hush=True, clean_it=True)
+    with warnings.catch_warnings():
+        warnings.filterwarnings("error", message=".*has no IGRAv2 record")
+        fetch_obs("72293", "1975", "01", "15", "00", hush=True, clean_it=True)
+    assert requested == ["72290", "72293"]
 
 
 def failing_wyoming(monkeypatch, responses):
@@ -422,6 +481,179 @@ def test_live_rap_reanalysis_retrieval():
     assert data["site_info"]["model"].upper() in {"RAP", "RUC"}
     assert data["site_info"]["valid-time"][:4] == ["2024", "08", "28", "18"]
     assert "archive" in data["site_info"]
+
+
+# -----------------------------------------------------------------------------
+# IGRAv2 station file reader (obs_data.request_igra), on small in-memory station files
+# -----------------------------------------------------------------------------
+
+def igra_sounding(station, when, levels, hour=None, rh=False):
+    """One sounding in IGRAv2 text format: mandatory levels with temperature, and dewpoint depression or RH."""
+    hour = f"{when.hour:02d}" if hour is None else hour
+    # fixed columns from igra2-data-format.txt
+    header = f"#{station} {when:%Y %m %d} {hour} 9999 {len(levels):4d} {'ncdc6210':8s} {'ncdc6210':8s} {404667:7d} {-800800:8d}\n"
+    body = ""
+    for p, z, t in levels:
+        # LVLTYP1 LVLTYP2 _ ETIME _ PRESS PFLAG GPH ZFLAG TEMP TFLAG RH _ DPDP _ WDIR _ WSPD
+        rh_val, dpd = (500, -9999) if rh else (-9999, 50)
+        body += f"10 {-9999:5d} {p * 100:6d} {z:5d}B{t * 10:5d}B{rh_val:5d} {dpd:5d} {270:5d} {100:5d}\n"
+    return header + body
+
+
+def igra_zip(text):
+    import io
+    import zipfile
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("TEST-data.txt", text)
+    return buf.getvalue()
+
+
+LEVELS = [(1000, 100, 20), (850, 1500, 10), (700, 3000, 0), (500, 5600, -18), (300, 9200, -45)]
+STATION = "USM00099999"
+
+
+def igra_file(*whens, **kw):
+    return "".join(igra_sounding(STATION, w, LEVELS, **kw) for w in whens)
+
+
+def chunked(data, size=64):
+    """Iterator over data in small chunks, recording how many were read."""
+    read = []
+    def gen():
+        for i in range(0, len(data), size):
+            read.append(i)
+            yield data[i:i + size]
+    return gen(), read
+
+
+@pytest.mark.parametrize("chunk", [7, 64, 100000])
+def test_igra_reader_finds_one_sounding(chunk):
+    from sounderpy.data import obs_data
+    text = igra_file(datetime(1960, 1, 1, 0), datetime(1960, 1, 1, 12), datetime(1960, 1, 2, 0))
+    chunks, _ = chunked(igra_zip(text), chunk)
+    lines = obs_data._find_igra_sounding(obs_data._unzip_stream(chunks), STATION, datetime(1960, 1, 1, 12))
+    assert len(lines) == 1 + len(LEVELS)
+    assert lines[0].startswith(f"#{STATION} 1960 01 01 12")
+    assert all(not line.startswith("#") for line in lines[1:])
+
+
+def test_igra_reader_stops_once_past_the_date():
+    from sounderpy.data import obs_data
+    # a year of soundings with varied values, so the zip doesn't compress to almost nothing
+    rng = np.random.default_rng(0)
+    text = "".join(igra_sounding(STATION, datetime(1960, 1, 1) + timedelta(days=d),
+                                 [(p, z + int(rng.integers(0, 99)), t + int(rng.integers(-5, 5))) for p, z, t in LEVELS])
+                   for d in range(365))
+    content = igra_zip(text)
+    chunks, read = chunked(content, 64)
+    assert obs_data._find_igra_sounding(obs_data._unzip_stream(chunks), STATION, datetime(1960, 1, 2, 12)) is None
+    assert len(read) < len(content) / 64 / 10   # read the start of the file, not the rest
+
+
+def test_igra_reader_counts_a_missing_hour_as_00z():
+    from sounderpy.data import obs_data
+    chunks, _ = chunked(igra_zip(igra_file(datetime(1950, 3, 4, 0), hour="99")))
+    lines = obs_data._find_igra_sounding(obs_data._unzip_stream(chunks), STATION, datetime(1950, 3, 4, 0))
+    assert lines and lines[0].startswith(f"#{STATION} 1950 03 04 99")
+
+
+def test_igra_station_files_use_the_year_to_date_file_for_recent_dates():
+    from sounderpy.data.obs_data import _igra_station_files
+    now = datetime(2026, 11, 11, tzinfo=timezone.utc)
+    names = lambda when: [url.rsplit("/", 2)[-2] + "/" + url.rsplit("/", 1)[-1] for url in _igra_station_files(STATION, when, now)]
+    assert names(datetime(2026, 5, 1)) == [f"data-y2d/{STATION}-data-beg2026.txt.zip", f"data-y2d/{STATION}-data-beg2025.txt.zip",
+                                          f"data-por/{STATION}-data.txt.zip"]
+    assert names(datetime(2025, 5, 1)) == [f"data-y2d/{STATION}-data-beg2025.txt.zip", f"data-por/{STATION}-data.txt.zip"]
+    assert names(datetime(2020, 5, 1)) == [f"data-por/{STATION}-data.txt.zip"]
+
+
+class FakeResponse:
+    def __init__(self, content, status=200):
+        self.content, self.status_code = content, status
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    def raise_for_status(self):
+        pass
+
+    def iter_content(self, size):
+        return (self.content[i:i + size] for i in range(0, len(self.content), size))
+
+
+def fake_igra(monkeypatch, files):
+    """Serve `files` ({'data-por' or 'data-y2d': zip bytes}) instead of NCEI; return the URLs requested."""
+    import requests
+    requested = []
+
+    def get(url, **kwargs):
+        requested.append(url)
+        folder = url.rsplit("/", 2)[-2]
+        return FakeResponse(files[folder]) if folder in files else FakeResponse(b"", 404)
+
+    monkeypatch.setattr(requests, "get", get)
+    return requested
+
+
+def test_request_igra_matches_siphon(monkeypatch):
+    # the same body and header DataFrames siphon builds from the whole file
+    from siphon.simplewebservice.igra2 import IGRAUpperAir
+    from sounderpy.data import obs_data
+    content = igra_zip(igra_file(datetime(1960, 1, 1, 0), datetime(1960, 1, 1, 12), datetime(1960, 1, 2, 0)))
+    fake_igra(monkeypatch, {"data-por": content})
+    body, header = obs_data.request_igra(STATION, datetime(1960, 1, 1, 12))
+
+    class Resp:
+        pass
+    resp = Resp()
+    resp.content = content
+    monkeypatch.setattr(IGRAUpperAir, "get_path", lambda self, path: resp)
+    body2, header2 = IGRAUpperAir.request_data(datetime(1960, 1, 1, 12), STATION)
+    assert body.equals(body2) and header.equals(header2)
+    assert list(body["pressure"]) == [p for p, _, _ in LEVELS]
+
+
+def test_request_igra_missing_sounding(monkeypatch):
+    from sounderpy.data import obs_data
+    requested = fake_igra(monkeypatch, {"data-por": igra_zip(igra_file(datetime(1960, 1, 1, 0)))})
+    with pytest.raises(obs_data.IGRANoData):
+        obs_data.request_igra(STATION, datetime(1961, 1, 1, 0))
+    assert len(requested) == 1
+
+
+def test_fetch_obs_igra_fills_dewpoint_from_humidity_and_does_not_retry(monkeypatch):
+    from sounderpy.data.obs_data import fetch_obs
+    requested = fake_igra(monkeypatch, {"data-por": igra_zip(igra_sounding("USM00072520", datetime(1965, 5, 1, 0), LEVELS, rh=True))})
+    data = fetch_obs("USM00072520", "1965", "05", "01", "00", hush=True, clean_it=True)
+    # 50 % relative humidity at 20 deg C is a 9.3 deg C dewpoint
+    assert abs(data["Td"][0].m - 9.3) < 0.1
+    assert np.isfinite(data["Td"].m).all()
+
+    requested.clear()
+    with pytest.raises(ValueError, match="no available data"):
+        fetch_obs("USM00072520", "1965", "05", "02", "00", hush=True, clean_it=True)
+    assert len(requested) == 1   # IGRAv2 answered; one download, no retry
+
+
+@pytest.mark.network
+def test_live_old_igra_sounding_builds(tmp_path):
+    # Jan Mayen, 1958: six mandatory levels, humidity only, no winds -- crashed sounding_params before
+    from sounderpy.calc import sounding_params
+    data = spy.get_obs_data("JNM00001005", "1958", "01", "15", "00", hush=True)
+    assert len(data["p"]) == 6
+    with pytest.warns(Warning):
+        params = sounding_params(data).calc()
+    assert np.isfinite(params["thermo"]["mucape"]) or np.ma.is_masked(params["thermo"]["mucape"])
+
+
+@pytest.mark.network
+def test_live_igra_retrieval():
+    data = spy.get_obs_data("USM00072357", "2024", "05", "20", "00", hush=True)
+    assert_clean_profile(data, min_levels=15)
 
 
 @pytest.mark.network

@@ -389,7 +389,10 @@ def find_raob_station(station_id):
 
     def first(mask):
         hits = df.index[mask]
-        return df.loc[hits[0]].to_dict() if len(hits) else None
+        if not len(hits):
+            return None
+        active = hits[df.loc[hits, 'ACTIVE'] == 'Y']
+        return df.loc[(active if len(active) else hits)[0]].to_dict()
 
     k_target = 'K' + target if len(target) == 3 and target.isalpha() else None
     checks = [df['ICAO'] == target]
@@ -403,16 +406,26 @@ def find_raob_station(station_id):
     if k_target:
         checks.append(alt.apply(lambda codes: k_target in codes))
 
-    for mask in checks:
-        row = first(mask)
-        if row is not None:
-            return row
+    # checks run in order of preference, but an active station wins over an inactive one: a code that is
+    # the main ICAO of a closed station and an alternate of a working one finds the working one
+    hits = [row for row in map(first, checks) if row is not None]
+    if hits:
+        return next((row for row in hits if row['ACTIVE'] == 'Y'), hits[0])
 
     ids = pd.concat([df['ICAO'], df['WMO'], df['IGRA_ID']])
     close = difflib.get_close_matches(target, ids[ids != ''].unique(), n=3, cutoff=0.6)
     suggestion = f" Did you mean {', '.join(repr(c) for c in close)}?" if close else ''
     raise ValueError(f"The station you requested ({station_id}) isn't in SounderPy's RAOB/IGRA station list.{suggestion}\n"
                      "TIP: use an ICAO code ('KOUN' or 'OUN'), a WMO number ('72357') or an IGRAv2 ID ('USM00072357')")
+
+
+def raob_station_has_no_known_data(row):
+    '''
+    ``True`` when a station list row (from ``find_raob_station``) has no IGRAv2 record, wasn't seen in the
+    recent Wyoming files and isn't marked active: mostly closed military or old city sites from the legacy
+    RAOB list. Wyoming's archive may still hold old soundings for them, so they stay in the list.
+    '''
+    return not (row.get('IGRA_ID') or row.get('WYOMING_SEEN') or row.get('ACTIVE') == 'Y')
 
 
 def split_display_name(display_name):

@@ -139,3 +139,46 @@ def test_missing_levels_are_skipped(clean_profile):
         clean_profile[key] = values * clean_profile[key].units
     snd = sounding_params(clean_profile).calc()
     assert np.isfinite(snd["kinem"]["srh_0_to_3000"]) and snd["thermo"]["mlcape"] > 0
+
+
+# -----------------------------------------------------------------------------
+# sparse historical soundings (IGRAv2 before ~1970): few levels, little or no moisture or wind
+# -----------------------------------------------------------------------------
+
+@pytest.mark.parametrize("moisture, winds", [("none", True), ("none", False), ("low", True)])
+def test_sparse_old_sounding_calculates(moisture, winds):
+    from helpers import make_sparse_old_profile
+    with pytest.warns(Warning):
+        params = sounding_params(make_sparse_old_profile(moisture, winds)).calc()
+    thermo = params["thermo"]
+    if moisture == "none":
+        # no parcel can be lifted: every parcel value is missing, and each parcel says so
+        for parcel in ("sb", "mu", "ml"):
+            assert np.ma.is_masked(thermo[f"{parcel}cape"])
+            assert np.ma.is_masked(thermo[f"{parcel}_lcl_p"])
+    else:
+        # dewpoints in the lower levels are enough for all three parcels
+        for parcel in ("sb", "mu", "ml"):
+            assert np.isfinite(thermo[f"{parcel}cape"])
+            assert 700 < thermo[f"{parcel}_lcl_p"] < 973
+
+
+def test_sparse_old_sounding_warns_about_each_missing_parcel():
+    from helpers import make_sparse_old_profile
+    with pytest.warns(Warning) as record:
+        sounding_params(make_sparse_old_profile("none")).calc()
+    messages = " ".join(str(w.message) for w in record)
+    for name in ("surface-based", "most-unstable", "mixed-layer"):
+        assert f"The {name} parcel could not be computed" in messages
+
+
+def test_most_unstable_level_without_moisture_is_masked():
+    # SHARPpy raised IndexError here (params.py most_unstable_level) for soundings with no dewpoints
+    from helpers import make_sparse_old_profile
+    from sounderpy.SHARPPYMAIN.sharppy.sharptab.params import DefineParcel, most_unstable_level
+    from sounderpy.SHARPPYMAIN.sharppy.sharptab.profile import create_profile
+    data = make_sparse_old_profile("none")
+    prof = create_profile(profile="default", pres=data["p"].m, hght=data["z"].m, tmpc=data["T"].m,
+                          dwpc=data["Td"].m, u=data["u"].m, v=data["v"].m, missing=-9999, strictQC=False)
+    assert np.ma.is_masked(most_unstable_level(prof))
+    assert np.ma.is_masked(DefineParcel(prof, 3).pres)

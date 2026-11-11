@@ -218,3 +218,19 @@ def test_winter_sounding_without_obs_found(monkeypatch, tmp_path, capsys):
     monkeypatch.setattr(operational, "sounding_obs", lambda clean_data: None)
     build(spy.build_sounding, make_winter_profile("fzra"), tmp_path / "winter_no_obs.png", mode="winter", show_obs=True)
     assert "SFC OB: none found" in capsys.readouterr().out
+
+
+# -----------------------------------------------------------------------------
+# SPARSE HISTORICAL SOUNDINGS
+# -----------------------------------------------------------------------------
+
+@pytest.mark.slow
+@pytest.mark.parametrize("moisture, winds", [("none", False), ("low", True)])
+def test_build_sounding_sparse_old_profile(moisture, winds, tmp_path):
+    # a 1958/1965-style sounding: mandatory levels only, no (or only low-level) dewpoints, maybe no winds.
+    # The default parcels (MUECAPE trace included) must fall back to missing values, not crash
+    from helpers import make_sparse_old_profile
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        build(spy.build_sounding, make_sparse_old_profile(moisture, winds), tmp_path / f"old_{moisture}.png")
+        build(spy.build_hodograph, make_sparse_old_profile(moisture, winds), tmp_path / f"old_{moisture}_hodo.png")

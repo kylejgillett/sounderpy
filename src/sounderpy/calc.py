@@ -190,6 +190,21 @@ def cin_below_lfc(prof, pcl, pres, tmpc, dwpc, dp=-2.0):
     return float(layer_energy[layer_energy < 0].sum())
 
 
+# Lift a parcel with SHARPpy, or return an empty one (every value masked) when the profile can't define it.
+# Sparse historical soundings (IGRAv2 before ~1970) often have no dewpoints in the lowest levels, or none
+# at all; SHARPpy's parcel search then fails (e.g. most_unstable_level finds no levels and raises IndexError)
+def lift_parcel(prof, flag, name, pres, tmpc, dwpc):
+    start = [pres, tmpc, dwpc]
+    if any(ma.is_masked(v) or not np.isfinite(float(v)) for v in start):
+        warnings.warn(f"The {name} parcel could not be computed for this sounding (no moisture data at its level)", Warning)
+        return Parcel()
+    try:
+        return parcelx(prof, flag=flag, pres=pres, tmpc=tmpc, dwpc=dwpc)
+    except (IndexError, ValueError):
+        warnings.warn(f"The {name} parcel could not be computed for this sounding (not enough data)", Warning)
+        return Parcel()
+
+
 
 
 
@@ -371,7 +386,7 @@ class sounding_params:
         ####################################################################
         #--- SURFACE BASED PARCEL PROPERTIES ---#
         # ---------------------------------------------------------------
-        sbpcl = parcelx(prof, flag=1, pres=p[0].m, tmpc=T[0].m, dwpc=Td[0].m)
+        sbpcl = lift_parcel(prof, 1, 'surface-based', p[0].m, T[0].m, Td[0].m)
         thermo['sbT_trace'] = sbpcl.ttrace
         thermo['sbP_trace'] = sbpcl.ptrace
         thermo['sbZ_trace'] = to_agl(prof, hght(prof, thermo['sbP_trace']))  # m AGL, from the profile's own heights
@@ -391,8 +406,14 @@ class sounding_params:
 
         #--- MOST UNSTABLE PARCEL PROPERTIES ---#
         # ---------------------------------------------------------------
-        mupcl_p, mupcl_T, mupcl_Td = mpcalc.most_unstable_parcel(p, T, Td)[0:3]
-        mupcl = parcelx(prof, flag=3, pres=mupcl_p.m, tmpc=mupcl_T.m, dwpc=mupcl_Td.m)
+        # MU & ML parcels come from the levels with a temperature and dewpoint: MetPy's search picks a level
+        # with a missing dewpoint (argmax of nan), and old soundings often have no dewpoint aloft
+        has_moist = np.isfinite(p.m) & np.isfinite(T.m) & np.isfinite(Td.m)
+        if has_moist.sum() >= 2:
+            mupcl_p, mupcl_T, mupcl_Td = mpcalc.most_unstable_parcel(p[has_moist], T[has_moist], Td[has_moist])[0:3]
+        else:
+            mupcl_p, mupcl_T, mupcl_Td = np.nan*units.hPa, np.nan*units.degC, np.nan*units.degC
+        mupcl = lift_parcel(prof, 3, 'most-unstable', mupcl_p.m, mupcl_T.m, mupcl_Td.m)
         thermo['muT_trace'] = mupcl.ttrace
         thermo['muP_trace'] = mupcl.ptrace
         thermo['muZ_trace'] = to_agl(prof, hght(prof, thermo['muP_trace']))  # m AGL, from the profile's own heights
@@ -412,8 +433,11 @@ class sounding_params:
 
         #--- MIXED LAYER PARCEL PROPERTIES ---#
         # ---------------------------------------------------------------
-        mlpcl_p, mlpcl_T, mlpcl_Td = mpcalc.mixed_parcel(p, T, Td, bottom=p[0], depth=100*units.hPa, interpolate=True)[0:3]
-        mlpcl = parcelx(prof, flag=5, pres=mlpcl_p.m, tmpc=mlpcl_T.m, dwpc=mlpcl_Td.m)
+        if has_moist.sum() >= 2:
+            mlpcl_p, mlpcl_T, mlpcl_Td = mpcalc.mixed_parcel(p[has_moist], T[has_moist], Td[has_moist], bottom=p[0], depth=100*units.hPa, interpolate=True)[0:3]
+        else:
+            mlpcl_p, mlpcl_T, mlpcl_Td = np.nan*units.hPa, np.nan*units.degC, np.nan*units.degC
+        mlpcl = lift_parcel(prof, 5, 'mixed-layer', mlpcl_p.m, mlpcl_T.m, mlpcl_Td.m)
         thermo['mlT_trace'] = mlpcl.ttrace
         thermo['mlP_trace'] = mlpcl.ptrace
         # compute heights

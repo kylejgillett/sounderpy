@@ -1,18 +1,21 @@
 import re
+import struct
 import time
 import warnings
-from datetime import datetime
+import zlib
+from datetime import datetime, timezone
 
 import pandas as pd
 import requests
 import numpy as np
 
 from metpy.units import units
+import metpy.calc as mpcalc
 
 from siphon.simplewebservice.wyoming import WyomingUpperAir
 from siphon.simplewebservice.igra2 import IGRAUpperAir
 
-from ..utils import find_raob_station, split_display_name
+from ..utils import find_raob_station, raob_station_has_no_known_data, split_display_name
 from ..calc import sounding_params
 
 
@@ -53,7 +56,137 @@ def _choose_profile_stride(values, target_len=300):
             best_diff = diff
             best_interval = candidate
 
-    return best_interval 
+    return best_interval
+
+
+
+
+#######################
+# IGRAv2 STATION FILE READER
+#########################################################################
+# siphon's IGRAUpperAir downloads a station's whole period-of-record zip (82 MB for 72357), unzips all of it
+# into a list of Python strings (243 MB of text, 4.5 million lines, ~1.1 GB of memory) and then keeps one
+# sounding. Here the zip is decompressed while it downloads and only the requested sounding is kept, so memory
+# stays at a few MB; the download stops once the sounding is read or the file has passed its date (the file
+# is in time order); and recent dates are read from IGRA's much smaller year-to-date file.
+
+IGRA_URL = 'https://www.ncei.noaa.gov/pub/data/igra/data/'
+
+
+class IGRANoData(ValueError):
+    '''IGRAv2 answered, but has no sounding for this station and time'''
+
+
+class _IGRAFormatError(Exception):
+    '''the station file isn't a zip this reader can stream; siphon's full-file reader is used instead'''
+
+
+class _IGRASounding(IGRAUpperAir):
+    '''siphon's IGRA parser, fed the lines of one sounding instead of the whole station file'''
+
+    def __init__(self, lines):
+        super().__init__()
+        self._lines = lines
+
+    def _get_data_raw(self):
+        return self._select_date_range(self._lines)
+
+
+def _unzip_stream(chunks):
+    '''Yield the decompressed bytes of the first file in a zip archive, from an iterator of its raw bytes.'''
+    head = b''
+    for part in chunks:
+        head += part
+        if len(head) >= 30:
+            break
+    if len(head) < 30:
+        raise _IGRAFormatError('station file is empty')
+    sig, _, _, method, _, _, _, _, _, name_len, extra_len = struct.unpack('<IHHHHHIIIHH', head[:30])
+    if sig != 0x04034b50 or method != 8:   # local file header, deflate
+        raise _IGRAFormatError('station file is not a deflated zip')
+    start = 30 + name_len + extra_len
+    while len(head) < start:
+        part = next(chunks, None)
+        if part is None:
+            raise _IGRAFormatError('station file is truncated')
+        head += part
+    unzip = zlib.decompressobj(-zlib.MAX_WBITS)
+    out = unzip.decompress(head[start:])
+    if out:
+        yield out
+    for part in chunks:
+        if unzip.eof:
+            return
+        out = unzip.decompress(part)
+        if out:
+            yield out
+
+
+def _find_igra_sounding(chunks, station, when):
+    '''
+    Return the lines (header first) of the sounding at ``when`` from an IGRAv2 station file, given as an
+    iterator of its decompressed bytes, or ``None`` if the file doesn't have it.
+
+    Like siphon, a sounding with no launch hour (``99``) counts as 00z.
+    '''
+    key = f'#{station} {when:%Y %m %d} '.encode()
+    hours = {f'{when.hour:02d}'.encode()} | ({b'99'} if when.hour == 0 else set())
+    day = f'{when:%Y %m %d}'.encode()
+    buf = b''
+    for chunk in chunks:
+        buf += chunk
+        end = buf.rfind(b'\n') + 1          # search whole lines only
+        pos = buf.find(key, 0, end)
+        while pos >= 0:
+            if (pos == 0 or buf[pos - 1] == 10) and buf[pos + len(key):pos + len(key) + 2] in hours:
+                block = buf[pos:]
+                n_lines = int(block[32:36]) + 1  # header + its levels
+                while block.count(b'\n') < n_lines:
+                    more = next(chunks, None)
+                    if more is None:
+                        break
+                    block += more
+                return [line.decode('utf-8') + '\n' for line in block.split(b'\n')[:n_lines]]
+            pos = buf.find(key, pos + 1, end)
+        # soundings are in time order: once a header is past the requested day, the file doesn't have it
+        last = buf.rfind(b'#', 0, end)
+        if last >= 0 and (last == 0 or buf[last - 1] == 10) and buf[last + 13:last + 23] > day:
+            return None
+        buf = buf[end:]
+    return None
+
+
+def _igra_station_files(station, when, now=None):
+    '''
+    URLs of the IGRAv2 files that could hold ``when``, smallest first. The first one that exists is
+    the only one read: a year-to-date file is updated as often as the period-of-record file.
+    '''
+    now = now or datetime.now(timezone.utc)
+    # data-y2d holds everything since January 1 of the current or previous year, named for that year
+    files = [f'{IGRA_URL}data-y2d/{station}-data-beg{year}.txt.zip'
+             for year in (now.year, now.year - 1) if year <= when.year]
+    return files + [f'{IGRA_URL}data-por/{station}-data.txt.zip']
+
+
+def request_igra(station, when, chunk_size=1 << 20, timeout=(15, 60)):
+    '''
+    Return siphon's ``(body, header)`` DataFrames for one IGRAv2 sounding, reading only as much of the
+    station file as needed. Raises ``IGRANoData`` when IGRAv2 doesn't have the sounding.
+    '''
+    for url in _igra_station_files(station, when):
+        with requests.get(url, stream=True, timeout=timeout) as resp:
+            if resp.status_code == 404:
+                continue   # no year-to-date file under this year's name (or no station file at all)
+            resp.raise_for_status()
+            chunks = _unzip_stream(resp.iter_content(chunk_size))
+            lines = _find_igra_sounding(chunks, station, when)
+        if lines is None:
+            break
+        igra = _IGRASounding(lines)
+        igra.begin_date = igra.end_date = when
+        igra.site_id = station
+        return igra._get_data()
+    raise IGRANoData(f'No IGRAv2 sounding for station {station} at {when:%Y-%m-%d %HZ}')
 
 
 #######################
@@ -67,6 +200,18 @@ def _data_source(row, archive):
     if row['IGRA_FIRST_YEAR'] and row['IGRA_LAST_YEAR']:
         record = f"RECORD {row['IGRA_FIRST_YEAR']}–{row['IGRA_LAST_YEAR']}" + (' (ACTIVE)' if row['ACTIVE'] == 'Y' else '')
     return ' · '.join(part for part in (archive, ids, record) if part)
+
+
+def _requested_icao(station, row):
+    '''
+    The ICAO code the user asked for, as the station list spells it: ``'NKX'`` -> ``'KNKX'`` even when the row's
+    main code is ``'KMYF'``. Falls back to the row's main ICAO when the request matched some other way.
+    '''
+    codes = [row['ICAO']] + row['ICAO_ALT'].split()
+    for code in (station, 'K' + station):
+        if code in codes:
+            return code
+    return row['ICAO']
 
 
 def _site_info(row, site_id, year, month, day, hour, archive):
@@ -123,6 +268,12 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
             f"{e}\nIf you think this is an error, contact the author: "
             "https://kylejgillett.github.io/sounderpy/user_guide/about.html#about-the-author"
         ) from None
+
+    if raob_station_has_no_known_data(row):
+        warnings.warn(
+            f"Station '{station}' ({row['DISPLAY_NAME'] or row['NAME']}) has no IGRAv2 record and hasn't reported to "
+            "the Wyoming archive recently, so data may not be available. Older soundings may still be in "
+            "Wyoming's archive.", stacklevel=2)
 
     got_data = False
 
@@ -200,8 +351,8 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
                     else:   
                         clean_data[new_key] = np.array(df.to_dict('list')[old_key])[non_dups][::stride] * units(unit)
 
-                # label the site the way the user asked for it: by WMO number or by ICAO code
-                site_id = station_wmo if station.isdigit() or not station_icao else station_icao
+                # label the site the way the user asked for it: by WMO number or by the ICAO code they typed
+                site_id = station_wmo if station.isdigit() or not station_icao else _requested_icao(station, row)
                 clean_data['site_info'] = _site_info(row, site_id, year, month, day, hour, 'UNIV. OF WYOMING')
 
                 try:
@@ -233,17 +384,23 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
     ### IGRAv2 OBSERVATIONS ###
     #########################################################################################################
     elif search_for == 'igra':
+        request_time = datetime(int(year), int(month), int(day), int(hour))
         for i in range(1, 3):
             try:
-                # try siphon IGRA request
-                df = IGRAUpperAir.request_data(datetime(int(year), int(month), int(day), int(hour)), station)
+                try:
+                    df = request_igra(station, request_time)
+                except _IGRAFormatError:
+                    # a station file this reader can't stream: let siphon read the whole thing
+                    df = IGRAUpperAir.request_data(request_time, station)
                 got_data = True
-                if got_data:
-                    print(f'    > PROFILE FOUND: {station} on {month}/{day}/{year} at {hour}z | From IGRAv2')
-                    break
-            except:
+                print(f'    > PROFILE FOUND: {station} on {month}/{day}/{year} at {hour}z | From IGRAv2')
+                break
+            except IGRANoData:
+                # IGRAv2 answered without the sounding; asking again would download the file again for nothing
                 got_data = False
-                pass
+                break
+            except Exception:
+                got_data = False
 
         # if data is found, parse data and create a dict of clean data
         if got_data:
@@ -263,6 +420,15 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
                 mask = zflag + pflag + tflag >= 4
                 profile_values = np.array(df.to_dict('list')['pressure'])[mask]
                 stride = _choose_profile_stride(profile_values)
+                # older soundings often report relative humidity but no dewpoint depression, and siphon
+                # builds the dewpoint from the depression only: fill those dewpoints from the humidity
+                df = df.copy()
+                rh = df['relative_humidity'].to_numpy(dtype=float)
+                fill = df['dewpoint'].isna().to_numpy() & np.isfinite(rh) & (rh > 0) & df['temperature'].notna().to_numpy()
+                if fill.any():
+                    df.loc[fill, 'dewpoint'] = mpcalc.dewpoint_from_relative_humidity(
+                        df.loc[fill, 'temperature'].to_numpy(dtype=float) * units.degC,
+                        np.minimum(rh[fill], 100.) * units.percent).m
                 for old_key, new_key, unit in zip(old_keys, new_keys, units_list):
                     clean_data[new_key] = np.array(df.to_dict('list')[old_key])[mask][::stride] * units(unit)
                 clean_data['site_info'] = _site_info(row, station, year, month, day, hour, 'NOAA NCEI IGRA2')

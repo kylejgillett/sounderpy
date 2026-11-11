@@ -4,6 +4,14 @@
 - [ ] `utils.mag()` truncates instead of rounding (`int()`), so readouts drop toward zero (999.9 J/kg shows 999, -0.6 shows 0)
 - [ ] `calc.py:824-845` ECAPE: on a zero-CAPE profile (no LFC, e.g. KABR 2024-08-28 12Z) `ecape_parcel` crashes on `lfc_z=None`, the bare `except` sets MU/ML/SB-ECAPE to masked (readout shows `--` instead of 0) and warns "could not be computed (calculation error)" three times; should be 0 with no warning when the parcel has no CAPE
 - [ ] `plot/components.py`: no public API for building custom figures; every drawing function is private; will need to determine the best option for this, what users should have and shouldn't have
+- [x] IGRAv2 fetch: siphon unzipped the whole period-of-record file (~35 s and ~1.1 GB RAM for 72357); now streamed, stops at the sounding, uses the year-to-date file for recent dates, and no longer re-downloads when the date is missing
+- [x] Station list: KNKX, PGAC, PTTP were the main ICAO of inactive stations while active ones listed them as alternates, so lookups found the closed station (fixed in `tools/build_station_list.py`; `find_raob_station` also prefers active stations)
+- [x] Sparse pre-1970 IGRAv2 soundings (e.g. JNM00001005 1958-01-15 00Z) crashed `build_sounding` in SHARPpy `most_unstable_level`, then in the surface T/Td labels and the MUECAPE trace; parcels are now masked with a warning
+- [x] Old IGRAv2 records with humidity but no dewpoint depression had no dewpoints at all; dewpoints are now filled from RH
+- [x] `calc.py` MU/ML parcels: MetPy picked a level with a missing dewpoint (argmax of nan), so MUCAPE was silently masked on profiles with a few missing dewpoints
+- [x] Observed profile requested as `NKX`/`KNKX` was labeled `KMYF` (72293's main ICAO, from the old list); Wyoming profiles are now labeled with the ICAO code the user asked for (`NKX` -> `KNKX`), the data-source line still lists the main ICAO
+- [x] Station list: 626 stations (mostly closed military and old city sites from the legacy RAOB list) have no IGRAv2 record, no recent Wyoming data and no active status; the build script now notes them and `get_obs_data` warns when one is requested (kept, not dropped: Wyoming still serves e.g. 72290 San Diego 1975 and 72270 El Paso 1985)
+- [x] Wyoming files old San Diego soundings under 72290 (1975 works) but has none under 72293 for 1975, while IGRAv2 files them all under 72293; so `NKX`/`KNKX` for 1975 gets no Wyoming data, and users must know to ask for `72290` (or the IGRAv2 ID)
 
 
 

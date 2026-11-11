@@ -55,6 +55,31 @@ def make_clean_profile():
     }
 
 
+def make_sparse_old_profile(moisture="none", winds=True):
+    """
+    A sparse pre-1970 style RAOB: mandatory levels only (IGRAv2 USM00072520, Pittsburgh, 1965-05-01 00Z).
+
+    ``moisture``: ``"none"`` (no dewpoints at all, as IGRA's oldest records), ``"low"`` (dewpoints to 400 hPa
+    only, as old records with humidity in the lower troposphere) or ``"full"``. ``winds=False`` blanks the winds.
+    """
+    p = np.array([973, 850, 700, 500, 400, 300, 250, 200, 150, 100, 70, 50], dtype=float)
+    z = np.array([373, 1505, 3084, 5672, 7298, 9273, 10456, 11844, 13610, 16122, 18352, 20493], dtype=float)
+    t = np.array([21.6, 10.4, -1.8, -18.8, -31.2, -47.0, -56.7, -63.8, -61.2, -61.4, -57.8, -53.5])
+    td_low = np.array([5.9, -1.3, -6.2, -29.1, -41.4] + [np.nan] * 7)
+    td = {"none": np.full(p.size, np.nan), "low": td_low,
+          "full": np.where(np.isnan(td_low), t - 30.0, td_low)}[moisture]
+    u = np.array([2.6, 10.0, 17.1, 21.3, 20.6, 20.3, 27.1, 21.8, 16.1, 9.9, 5.7, 3.9])
+    v = np.array([-1.5, -4.6, -13.8, -14.9, -24.5, -26.0, -25.2, -23.4, -13.5, -6.7, -1.9, -0.8])
+    if not winds:
+        u = v = np.full(p.size, np.nan)
+
+    data = make_clean_profile()
+    data.update({"p": p * units.hPa, "z": z * units.m, "T": t * units.degC, "Td": td * units.degC,
+                 "u": u * units.kts, "v": v * units.kts})
+    data["site_info"].update({"site-elv": 373, "valid-time": ["1965", "05", "01", "00"]})
+    return data
+
+
 def make_second_profile():
     """The clean profile, slightly warmer, moister and windier, for composites."""
     profile = copy.deepcopy(make_clean_profile())

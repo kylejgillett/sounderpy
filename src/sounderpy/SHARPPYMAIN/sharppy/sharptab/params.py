@@ -1384,6 +1384,9 @@ def most_unstable_level(prof, pbot=None, ptop=None, dp=-1, exact=False):
         d = interp.dwpt(prof, p)
     p2, t2 = thermo.drylift(p, t, d)
     mt = thermo.wetlift(p2, t2, 1000.) # Essentially this is making the Theta-E profile, which we are already doing in the Profile object!
+    # SounderPy: no level in the layer has a dewpoint (common in sparse pre-1970 soundings)
+    if not np.any(np.isfinite(ma.filled(ma.asarray(mt, dtype=float), np.nan))):
+        return ma.masked
     ind = np.where(np.fabs(mt - np.nanmax(mt)) < TOL)[0]
     return p[ind[0]]
 
