@@ -10,6 +10,7 @@
 - [ ] `set_watermark`: settings are shared across a Python process, so a shared web app worker would affect all users
 - [ ] MetPy's skew-T uses a Matplotlib function deprecated in 3.11 and due for removal in 3.13; confirm a MetPy fix before relaxing or raising version limits; MetPy 1.7.1's `StationPlot` text already fails to draw under Matplotlib 3.11 (its `TextCollection.draw` unpacks 4 layout values, 3.11 returns 3), so any station plot needs plain text + MetPy's symbol font until MetPy fixes it
 - [ ] Station lists: `BUFKIT-STATIONS-MASTER.txt` has 8,527 rows for 2,093 IDs, and 23 IDs have conflicting entries (typos such as `B44` at lon -100.29 and -110.29, `B48` at -80.51 and -81.51; different stations sharing `CYQX`); all station lists are downloaded from GitHub `main` on every call rather than read from the package
+- [ ] Full sounding hodograph: the storm-motion text block (top left) can overlap a ring speed label, e.g. "SSE @ 26 kt" over the "30kt" label on the 9ZT9MRK ship sounding, 2026-11-10 00Z
 
 
 

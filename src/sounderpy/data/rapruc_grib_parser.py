@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import threading
+
 import numpy as np
 import pandas as pd
 import xarray as xr
@@ -27,6 +29,11 @@ from scipy.interpolate import interp1d
 
 DZ = 250.0
 MS_TO_KT = 1.94384
+
+# cfgrib/ecCodes is not thread safe, and xarray reads cfgrib data lazily, so every
+# GRIB open, read, and close in this module happens while holding this lock.
+# Downloads happen before parsing and are not affected.
+_GRIB_LOCK = threading.RLock()
 
 
 ###############
@@ -391,13 +398,14 @@ def parse_rapruc_grib(pressure_file, latlon, *, native_file=None, box_avg_size=0
     """
     Parse downloaded RAP/RUC GRIB file(s) into a SounderPy clean_dict.
     """
-    datasets = open_rapruc_grib(pressure_file, native_file=native_file)
+    with _GRIB_LOCK:
+        datasets = open_rapruc_grib(pressure_file, native_file=native_file)
 
-    try:
-        return build_clean_dict(*datasets, latlon=latlon, box_avg_size=box_avg_size, model=model, valid_time=valid_time)
-    finally:
-        for ds in datasets:
-            ds.close()
+        try:
+            return build_clean_dict(*datasets, latlon=latlon, box_avg_size=box_avg_size, model=model, valid_time=valid_time)
+        finally:
+            for ds in datasets:
+                ds.close()
 
 
 def subset_rapruc_grib(pressure_file, latlon, *, native_file=None, box_avg_size=0.25):
@@ -407,19 +415,20 @@ def subset_rapruc_grib(pressure_file, latlon, *, native_file=None, box_avg_size=
     """
     lat = float(latlon[0])
     lon = float(_normalize_lon(latlon[1]))
-    datasets = open_rapruc_grib(pressure_file, native_file=native_file)
+    with _GRIB_LOCK:
+        datasets = open_rapruc_grib(pressure_file, native_file=native_file)
 
-    try:
-        raw_data = {}
-        for key, ds in zip(("pressure", "2m", "10m", "surface"), datasets):
-            iy, ix = np.where(_box_mask(ds, lat, lon, box_avg_size))
-            if ds["latitude"].ndim == 2:
-                y_dim, x_dim = ds["latitude"].dims
-            else:
-                y_dim, x_dim = ds["latitude"].dims[0], ds["longitude"].dims[0]
-            raw_data[key] = ds.isel({y_dim: slice(iy.min(), iy.max() + 1),
-                                     x_dim: slice(ix.min(), ix.max() + 1)}).load()
-        return raw_data
-    finally:
-        for ds in datasets:
-            ds.close()
+        try:
+            raw_data = {}
+            for key, ds in zip(("pressure", "2m", "10m", "surface"), datasets):
+                iy, ix = np.where(_box_mask(ds, lat, lon, box_avg_size))
+                if ds["latitude"].ndim == 2:
+                    y_dim, x_dim = ds["latitude"].dims
+                else:
+                    y_dim, x_dim = ds["latitude"].dims[0], ds["longitude"].dims[0]
+                raw_data[key] = ds.isel({y_dim: slice(iy.min(), iy.max() + 1),
+                                         x_dim: slice(ix.min(), ix.max() + 1)}).load()
+            return raw_data
+        finally:
+            for ds in datasets:
+                ds.close()

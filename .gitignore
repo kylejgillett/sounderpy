@@ -36,3 +36,4 @@ sounderpy_data
 src/sounderpy/timeseries.py
 src/sounderpy/plot/timeseries.py
 src/sounderpy/plot/publication.py
+/tools

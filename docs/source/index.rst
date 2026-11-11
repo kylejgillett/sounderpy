@@ -207,6 +207,7 @@ What's New in SounderPy 3.3.0
    * 🧮 ``spy.winter_params(clean_data).calc()`` returns every ``sounding_params`` value plus the winter values behind the winter sounding.
    * 💻 The command line tool adds ``--mode {severe,winter,auto}`` and ``--obs`` for sounding plots.
    * ✈️ ACARS profiles now use the airport elevation in meters (it was read in feet), which corrects the surface label and surface pressure.
+   * 🧵 RAP/RUC reanalysis GRIB parsing is now thread safe. ``get_model_data('rap-ruc', ...)`` can run from several threads at once (for example, to fetch composite profiles in parallel); downloads still run in parallel while GRIB decoding takes turns.
    * 🌦️ The NAM and NAMNEST (NAM3km) BUFKIT forecasts are archive only after their NCEP decommissioning on Nov. 2nd, 2026.
    * 📚 Refactored and redesigned documentation to match new SounderPy web app: sounderpy.app
 
