@@ -1,11 +1,13 @@
 import os
 import re
 import warnings
-from datetime import datetime
+from datetime import date as dt_date, datetime, time as dt_time, timedelta
 import csv
 import numpy as np
 import metpy.calc as mpcalc
 from metpy.units import units
+
+from ..utils import SounderPyNotice, SounderPyWarning
 
 
 
@@ -113,7 +115,10 @@ def from_sharppy(filepath):
 
     u, v = mpcalc.wind_components(ws, wd)
 
-    print("**NOTE**: to plot your SHARPPY file data with SounderPy, you'll have to manually provide additional site meta-data.\nThis process is fairly simple and is discussed in detail at https://kylejgillett.github.io/sounderpy/reference/customdatasources.html#ingesting-your-own-data-into-sounderpy.\nBe sure to include a site ID, name, location, lat/lon, and elevation. You must also create plot titles for the sounding plot.")
+    warnings.warn("To plot SHARPpy file data with SounderPy, add site meta-data to clean_data['site_info'] and plot "
+                  "titles (see https://kylejgillett.github.io/sounderpy/reference/customdatasources.html"
+                  "#ingesting-your-own-data-into-sounderpy). Include a site ID, name, location, lat/lon, and elevation.",
+                  SounderPyNotice, stacklevel=2)
 
 
     return {
@@ -136,12 +141,25 @@ def from_sharppy(filepath):
 #########################################################################
 # GRAW, iMet, and Windsond readers, built on the conversion scripts that Alec Sczepanski (University of
 # North Dakota) contributed for the radiosondes UND launches. Each returns the same dict as from_sharppy(),
-# with any site meta-data the file holds already in site_info.
+# with any site meta-data the file holds already in site_info, plus:
+#   'launch-time'      the launch as an ISO 8601 UTC string ('2026-01-25T20:26:35Z'), or None
+#   'data-gaps'        [[p_bottom, p_top], ...] (hPa) for each telemetry dropout; [] when there are none
+#   'missing-sfc-wind' True when the lowest level has no wind (e.g. the GPS still locking on after launch)
+# Problems with the data come as SounderPyWarnings; the note about site meta-data to add is a SounderPyNotice.
 
 # value the iMet software writes for a missing field
 IMET_MISSING = 99999
 # the iMet ascent rate (m/s) that marks the launch; earlier rows are the sonde sitting before launch
 IMET_LAUNCH_ASCENT = 1.0
+# a jump between consecutive levels bigger than either of these is a data gap (a telemetry dropout). The full
+# UND example flights never step more than 2.6 hPa or 20 m between levels
+GAP_MAX_DP = 25     # hPa
+GAP_MAX_DZ = 500    # m
+# the least a profile needs to plot: SounderPy's mixed-layer parcel uses the lowest 100 hPa
+MIN_LEVELS = 10
+MIN_DEPTH = 100     # hPa
+# the UTF-8 byte order mark some Windows programs (e.g. Excel) write at the start of a file
+UTF8_BOM = b"\xef\xbb\xbf"
 
 
 def _column_index(header, name, file_type):
@@ -161,22 +179,62 @@ def _to_float(value, missing=None):
     return np.nan if missing is not None and number == missing else number
 
 
-def _ascent_only(rows, p_col, z_col):
+def _iso_utc(moment):
+    """A datetime as the ISO 8601 UTC string SounderPy uses for 'launch-time', e.g. '2026-01-25T20:26:35Z'."""
+    return moment.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _ascent_only(rows, p_col, z_col, t_col):
     """The rows of the balloon's ascent, from the first row to the burst (lowest pressure).
 
-    Rows missing a pressure or height are dropped, as are rows whose pressure doesn't fall below every
-    level under them (the balloon bobbing, or repeated pressures), so pressure always decreases upward.
+    Rows missing a pressure, height, or temperature are dropped (a hole they leave is then reported as a
+    data gap), as are rows whose pressure doesn't fall below every level under them (the balloon bobbing,
+    or repeated pressures), so pressure always decreases upward.
     """
-    rows = rows[np.isfinite(rows[:, p_col]) & np.isfinite(rows[:, z_col])]
+    rows = rows[np.isfinite(rows[:, p_col]) & np.isfinite(rows[:, z_col]) & np.isfinite(rows[:, t_col])]
     if len(rows) == 0:
-        raise ValueError("No sounding rows with a pressure and height were found in the file.")
+        raise ValueError("No sounding rows with a pressure, height, and temperature were found in the file.")
     rows = rows[: int(np.argmin(rows[:, p_col])) + 1]
     lowest_below = np.minimum.accumulate(np.concatenate([[np.inf], rows[:-1, p_col]]))
     return rows[rows[:, p_col] < lowest_below]
 
 
+def _data_gaps(p, z):
+    """[[p_bottom, p_top], ...] (hPa) for each jump between consecutive levels of over GAP_MAX_DP or GAP_MAX_DZ."""
+    jumps = np.where((-np.diff(p) > GAP_MAX_DP) | (np.diff(z) > GAP_MAX_DZ))[0]
+    return [(int(i), [round(float(p[i]), 1), round(float(p[i + 1]), 1)]) for i in jumps]
+
+
 def _radiosonde_clean_data(p, z, T, Td, ws_ms, wd, site_info, file_type):
-    """Assemble the clean_data dict (as from_sharppy() returns it) from radiosonde arrays."""
+    """Check the radiosonde arrays and assemble the clean_data dict (as from_sharppy() returns it).
+
+    Raises a ValueError when the profile is too short to plot. Warns (SounderPyWarning) about data gaps and a
+    missing surface wind, and records them in site_info as 'data-gaps' and 'missing-sfc-wind'.
+    """
+    if len(p) < MIN_LEVELS or p[0] - p[-1] < MIN_DEPTH:
+        raise ValueError(f"The {file_type} profile is too short to plot: {len(p)} level(s) from {p[0]:.1f} to "
+                         f"{p[-1]:.1f} hPa after cleanup. SounderPy needs at least {MIN_LEVELS} levels spanning "
+                         f"{MIN_DEPTH} hPa.")
+
+    # telemetry dropouts: the plot would draw a straight line across them
+    gaps = _data_gaps(p, z)
+    site_info["data-gaps"] = [bounds for _, bounds in gaps]
+    for i, (bottom, top) in gaps:
+        warnings.warn(f"The {file_type} file has a data gap from {bottom} to {top} hPa ({z[i]:.0f} to {z[i + 1]:.0f} m); "
+                      f"the plot draws a straight line across it.", SounderPyWarning, stacklevel=3)
+
+    # no wind at the lowest level (e.g. the GPS still locking on after launch)
+    has_wind = np.isfinite(ws_ms) & np.isfinite(wd)
+    site_info["missing-sfc-wind"] = not bool(has_wind[0])
+    if not has_wind[0]:
+        if has_wind.any():
+            first = int(np.argmax(has_wind))
+            detail = (f"the lowest {first} level(s) have none; the lowest wind is {z[first] - z[0]:.0f} m above "
+                      f"the first level")
+        else:
+            detail = "the file has no winds at all"
+        warnings.warn(f"The {file_type} file has no surface wind: {detail}.", SounderPyWarning, stacklevel=3)
+
     p = p * units.hPa
     z = z * units.m
     T = T * units.degC
@@ -189,9 +247,11 @@ def _radiosonde_clean_data(p, z, T, Td, ws_ms, wd, site_info, file_type):
     missing = [name for name, key in (("site ID", "site-id"), ("name", "site-name"), ("location", "site-lctn"),
                                       ("lat/lon", "site-latlon"), ("elevation", "site-elv"))
                if site_info.get(key) is None]
-    print(f"**NOTE**: to plot your {file_type} file data with SounderPy, you'll have to manually provide additional site meta-data.\n"
-          f"This process is fairly simple and is discussed in detail at https://kylejgillett.github.io/sounderpy/reference/customdatasources.html#ingesting-your-own-data-into-sounderpy.\n"
-          f"Still needed: {', '.join(missing) if missing else 'nothing'} in site_info, and plot titles for the sounding plot.")
+    warnings.warn(f"To plot {file_type} file data with SounderPy, add the site meta-data the file doesn't hold to "
+                  f"clean_data['site_info'], and plot titles (see https://kylejgillett.github.io/sounderpy/reference/"
+                  f"customdatasources.html#ingesting-your-own-data-into-sounderpy). Still needed: "
+                  f"{', '.join(missing) if missing else 'nothing'} in site_info, and plot titles.",
+                  SounderPyNotice, stacklevel=3)
 
     return {
         "p": p,
@@ -212,6 +272,51 @@ def _dewpoint_from_rh(T, rh):
     return mpcalc.dewpoint_from_relative_humidity(T * units.degC, rh * units.percent).to('degC').m
 
 
+def _graw_launch(times, date, filepath):
+    """The GRAW launch as a datetime (or None when the file has no launch time), from the rows' times of day
+    and the date given or in the file name. See from_graw() for the rule near midnight."""
+
+    # the launch time of day: the first time after the surface observation's placeholder (00:00:00)
+    launch_tod = next((t for t in times if t not in ("", "00:00:00")), None)
+    try:
+        launch_tod = datetime.strptime(launch_tod, "%H:%M:%S").time() if launch_tod else None
+    except ValueError:
+        launch_tod = None
+
+    # the date: from `date`, else the file name ('20260125_2100.txt'), whose HHMM is the nominal launch time
+    nominal = None
+    if date is None:
+        name = re.match(r"(\d{8})(?:[_\-T]?(\d{2})(\d{2}))?", os.path.basename(str(filepath)))
+        if name is None:
+            raise ValueError("GRAW files don't hold the launch date: give it with date='YYYY-MM-DD', "
+                             "or name the file starting with YYYYMMDD (e.g. '20260125_2100.txt').")
+        date = name.group(1)
+        if name.group(2) and int(name.group(2)) < 24 and int(name.group(3)) < 60:
+            nominal = dt_time(int(name.group(2)), int(name.group(3)))
+    if isinstance(date, datetime):
+        date = date.date()
+    elif not isinstance(date, dt_date):
+        try:
+            date = datetime.strptime(str(date).replace("-", ""), "%Y%m%d").date()
+        except ValueError:
+            raise ValueError(f"The GRAW launch date '{date}' isn't a date: give it as 'YYYY-MM-DD' or 'YYYYMMDD'.") from None
+
+    if launch_tod is None:
+        return None
+    launch = datetime.combine(date, launch_tod)
+
+    # a launch more than 12 hours from the name's nominal time was on the day before (or after)
+    if nominal is not None:
+        shift = launch - datetime.combine(date, nominal)
+        days = -1 if shift > timedelta(hours=12) else 1 if shift < -timedelta(hours=12) else 0
+        if days:
+            launch += timedelta(days=days)
+            warnings.warn(f"The GRAW launch time ({launch_tod}) is more than 12 hours from the time in the file name "
+                          f"({nominal.strftime('%H%M')} on {date}), so the launch is taken to be on {launch.date()}. "
+                          f"Give date= to set the launch date yourself.", SounderPyWarning, stacklevel=3)
+    return launch
+
+
 def from_graw(filepath, date=None):
     """
     Read a GRAW radiosonde file and return a SounderPy-style clean_data dict.
@@ -222,13 +327,18 @@ def from_graw(filepath, date=None):
     ..., Lon, Lat, Dew, ...). Its first row is the ground station's surface observation at launch; the
     profile runs from there to the burst. Heights are above sea level.
 
-    GRAW files hold the time of day but not the date, so give `date` ('YYYY-MM-DD', 'YYYYMMDD', or a
-    datetime.date). Without it, the date is read from a file name that starts with YYYYMMDD
-    (e.g. '20260125_2100.txt').
+    GRAW files hold the time of day but not the date, so give the launch `date` ('YYYY-MM-DD', 'YYYYMMDD',
+    or a datetime.date), which is used as is. Without it, the date is read from a file name that starts
+    with YYYYMMDD (e.g. '20260125_2100.txt'). That date may be the nominal (synoptic) one, so when the name
+    also has a time (HHMM) and the launch is more than 12 hours from it, the launch is moved a day: a 23:30
+    launch in '20260126_0000.txt' is on 2026-01-25 (with a warning).
     """
 
-    with open(filepath, "r", encoding="latin-1") as f:
-        lines = [line.rstrip("\r\n") for line in f if line.strip()]
+    with open(filepath, "rb") as f:
+        text = f.read()
+    if text.startswith(UTF8_BOM):
+        text = text[len(UTF8_BOM):]
+    lines = [line.rstrip("\r") for line in text.decode("latin-1").split("\n") if line.strip()]
 
     if not lines:
         raise ValueError("The GRAW file is empty.")
@@ -251,23 +361,11 @@ def from_graw(filepath, date=None):
 
     # remember each row's time, then keep the ascent
     rows = np.column_stack([np.array(rows), np.arange(len(rows))])
-    rows = _ascent_only(rows, 0, 1)
+    rows = _ascent_only(rows, 0, 1, 2)
     p, z, T, Td, rh, ws, wd, lat, lon, idx = rows.T
     Td = np.where(np.isfinite(Td), Td, _dewpoint_from_rh(T, rh))
 
-    # the launch date, from `date` or the file name
-    if date is None:
-        match = re.match(r"(\d{8})", os.path.basename(str(filepath)))
-        if match is None:
-            raise ValueError("GRAW files don't hold the launch date: give it with date='YYYY-MM-DD', "
-                             "or name the file starting with YYYYMMDD (e.g. '20260125_2100.txt').")
-        date = match.group(1)
-    if isinstance(date, str):
-        date = datetime.strptime(date.replace("-", ""), "%Y%m%d").date()
-
-    # the launch time: the first time after the surface observation's placeholder (00:00:00)
-    launch = next((times[int(i)] for i in idx if times[int(i)] not in ("", "00:00:00")), None)
-    hour = int(launch.split(":")[0]) if launch else None
+    launch = _graw_launch([times[int(i)] for i in idx], date, filepath)
 
     site_info = {
         "site-id": None,
@@ -276,7 +374,8 @@ def from_graw(filepath, date=None):
         "site-latlon": [round(float(lat[0]), 2), round(float(lon[0]), 2)] if np.isfinite([lat[0], lon[0]]).all() else None,
         "site-elv": int(round(float(z[0]))),
         "source": "GRAW RADIOSONDE",
-        "valid-time": [date.year, date.month, date.day, hour] if hour is not None else None,
+        "valid-time": [launch.year, launch.month, launch.day, launch.hour] if launch else None,
+        "launch-time": _iso_utc(launch) if launch else None,
     }
 
     return _radiosonde_clean_data(p, z, T, Td, ws, wd, site_info, "GRAW")
@@ -294,7 +393,7 @@ def from_imet(filepath):
     dropped. Dewpoint is calculated from the temperature and relative humidity.
     """
 
-    with open(filepath, "r", encoding="utf-8", errors="replace", newline="") as f:
+    with open(filepath, "r", encoding="utf-8-sig", errors="replace", newline="") as f:
         lines = [row for row in csv.reader(f)]
 
     if not lines:
@@ -339,15 +438,14 @@ def from_imet(filepath):
     start = int(launched[0])
     rows, stamps = rows[start:], stamps[start:]
 
-    rows = _ascent_only(rows, 1, 0)
+    rows = _ascent_only(rows, 1, 0, 2)
     z, p, T, rh, _, ws, wd = rows.T
     Td = _dewpoint_from_rh(T, rh)
 
     try:
         launch = datetime.strptime(" ".join(stamps[0]), "%Y-%m-%d %H:%M:%S")
-        valid_time = [launch.year, launch.month, launch.day, launch.hour]
     except ValueError:
-        valid_time = None
+        launch = None
 
     lat = _to_float(meta.get("station latitude"), IMET_MISSING)
     lon = _to_float(meta.get("station longitude"), IMET_MISSING)
@@ -360,13 +458,14 @@ def from_imet(filepath):
         "site-latlon": [round(lat, 2), round(lon, 2)] if np.isfinite([lat, lon]).all() else None,
         "site-elv": int(round(elevation)) if np.isfinite(elevation) else int(round(float(z[0]))),
         "source": "IMET RADIOSONDE",
-        "valid-time": valid_time,
+        "valid-time": [launch.year, launch.month, launch.day, launch.hour] if launch else None,
+        "launch-time": _iso_utc(launch) if launch else None,
     }
 
     return _radiosonde_clean_data(p, z, T, Td, ws, wd, site_info, "iMet")
 
 
-def from_windsond(filepath, elevation=None):
+def from_windsond(filepath, elevation):
     """
     Read a Windsond radiosonde file and return a SounderPy-style clean_data dict.
 
@@ -376,12 +475,21 @@ def from_windsond(filepath, elevation=None):
     then height (m AGL), pressure, temperature, relative humidity, wind speed, and wind direction.
     Dewpoint is calculated from the temperature and relative humidity.
 
-    Windsond heights are above ground level and the file holds no station elevation, so give the
-    launch site's `elevation` (m) to put the heights above sea level like other SounderPy data. Without
-    it, the heights stay above ground and site_info has no elevation.
+    Windsond heights are above ground level and the file holds no station elevation, so the launch site's
+    `elevation` (m above sea level) is required: it puts the heights above sea level like other SounderPy data.
     """
 
-    with open(filepath, "r", encoding="utf-8", errors="replace", newline="") as f:
+    if elevation is None:
+        raise ValueError("from_windsond() needs the launch site's elevation (m above sea level): Windsond files "
+                         "hold heights above ground only.")
+    try:
+        elevation = float(elevation)
+    except (TypeError, ValueError):
+        raise ValueError(f"The Windsond launch site's elevation must be a number of meters, not {elevation!r}.") from None
+    if not np.isfinite(elevation):
+        raise ValueError(f"The Windsond launch site's elevation must be a number of meters, not {elevation!r}.")
+
+    with open(filepath, "r", encoding="utf-8-sig", errors="replace", newline="") as f:
         lines = [row for row in csv.reader(f)]
 
     if not lines:
@@ -411,17 +519,15 @@ def from_windsond(filepath, elevation=None):
     if not rows:
         raise ValueError("No sounding rows were found in the Windsond file.")
 
-    rows = _ascent_only(np.array(rows), 1, 0)
+    rows = _ascent_only(np.array(rows), 1, 0, 2)
     z, p, T, rh, ws, wd = rows.T
     Td = _dewpoint_from_rh(T, rh)
-    if elevation is not None:
-        z = z + float(elevation)
+    z = z + elevation
 
     try:
         launch = datetime.strptime(params.get("utc_time", ""), "%Y-%m-%d %H:%M")
-        valid_time = [launch.year, launch.month, launch.day, launch.hour]
     except ValueError:
-        valid_time = None
+        launch = None
     lat, lon = _to_float(params.get("lat")), _to_float(params.get("lon"))
 
     site_info = {
@@ -429,13 +535,13 @@ def from_windsond(filepath, elevation=None):
         "site-name": None,
         "site-lctn": None,
         "site-latlon": [round(lat, 2), round(lon, 2)] if np.isfinite([lat, lon]).all() else None,
-        "site-elv": int(round(float(elevation))) if elevation is not None else None,
+        "site-elv": int(round(elevation)),
         "source": "WINDSOND RADIOSONDE",
-        "valid-time": valid_time,
+        "valid-time": [launch.year, launch.month, launch.day, launch.hour] if launch else None,
+        "launch-time": _iso_utc(launch) if launch else None,
     }
 
     return _radiosonde_clean_data(p, z, T, Td, ws, wd, site_info, "Windsond")
-
 
 
 #########################################################################

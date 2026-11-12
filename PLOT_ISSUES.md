@@ -7,6 +7,8 @@
 - [ ] Skew-t omega panel: the "+10" / "-10" reference labels at 150 hPa overlap the "13km" height label (e.g. KGFK HRRR 2026-01-18 16Z)
 - [ ] Skew-t: when the DGZ sits at the surface (surface T near -12 to -17 °C) its "DGZ" label overlaps the "-SFC (257m)-" label (KGFK HRRR 2026-01-18 16Z)
 - [ ] `calc.py:824-845` ECAPE: on a zero-CAPE profile (no LFC, e.g. KABR 2024-08-28 12Z) `ecape_parcel` crashes on `lfc_z=None`, the bare `except` sets MU/ML/SB-ECAPE to masked (readout shows `--` instead of 0) and warns "could not be computed (calculation error)" three times; should be 0 with no warning when the parcel has no CAPE
+- [x] Radiosonde readers (`from_graw`/`from_imet`/`from_windsond`): data gaps, launch time, GRAW midnight date, missing surface wind, print() notes, NaN temperatures, too-short profiles, Windsond elevation, Windsond BOM (uncommitted, 2026-11-11)
+- [ ] `from_imet`: the profile starts at the sonde's PTU altitude (268 m in UND 2026-01-16 18:37Z) but the plot's surface label uses the station altitude (256 m)
 
 
 

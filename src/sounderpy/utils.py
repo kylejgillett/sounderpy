@@ -35,6 +35,14 @@ class SounderPyWarning(UserWarning):
     """A warning about the user's figure or data, such as missing radar; the CLI shows these even without --verbose."""
 
 
+class SounderPyNotice(UserWarning):
+    """Information rather than a problem, such as the site meta-data a file reader couldn't fill in.
+
+    Filter these on their own (``warnings.filterwarnings("ignore", category=SounderPyNotice)``) to keep a
+    log quiet while still seeing ``SounderPyWarning``s about the data. The CLI hides them.
+    """
+
+
 
 
 

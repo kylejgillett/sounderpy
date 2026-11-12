@@ -144,3 +144,39 @@ def test_freezing_drizzle_needs_dry_air_above_for_mod(rh_above, depth, level):
     cloud = {"bottom": 0.0, "top": float(depth), "top_T": 2.4}
     fzdz = freezing_drizzle_potential([cloud], z, rh_ice, np.full_like(z, np.nan), False, -1.2)
     assert fzdz["level"] == level
+
+
+# -----------------------------------------------------------------------------
+# SURFACE WIND: the lowest wind nearby when the lowest level has none (a radiosonde's GPS locking on after launch)
+# -----------------------------------------------------------------------------
+
+def with_level_near_ground(data, height):
+    """The profile with one more level `height` m above the lowest, and no wind at the lowest level."""
+    z = data["z"].m
+    out = dict(data)
+    for key in ("p", "z", "T", "Td", "u", "v", "omega"):
+        values = data[key].m
+        new = z[0] + height if key == "z" else np.interp(z[0] + height, z, values)
+        out[key] = np.insert(values, 1, new) * data[key].units
+    for key in ("u", "v"):
+        values = out[key].m.copy()
+        values[0] = np.nan
+        out[key] = values * out[key].units
+    return out
+
+
+def test_surface_wind_falls_back_to_the_lowest_wind_nearby():
+    data = with_level_near_ground(make_winter_profile("rasn"), 20)
+    winter = winter_params(data).calc()["winter"]
+    assert winter["sfc_wind_uv"] == pytest.approx((data["u"].m[1], data["v"].m[1]))
+    assert winter["sfc_wind_z"] == pytest.approx(20)
+    assert np.isfinite(winter["sfc_wind_kt"])
+    assert not np.ma.is_masked(winter["wind_chill"])
+
+
+def test_surface_wind_stays_missing_when_the_lowest_wind_is_too_high():
+    data = with_level_near_ground(make_winter_profile("rasn"), 60)
+    winter = winter_params(data).calc()["winter"]
+    assert np.isnan(winter["sfc_wind_kt"])
+    assert winter["sfc_wind_z"] == 0
+    assert np.ma.is_masked(winter["wind_chill"])

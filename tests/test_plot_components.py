@@ -487,3 +487,14 @@ def test_indices_box_without_a_pbl(severe_params):
     ax = plt.figure().add_subplot()
     c._plot_indices_box(ax, snd, THEME)
     assert texts_on(ax).count(MISSING_VALUE) == 2
+
+
+def test_thin_sounding_keeps_the_lowest_wind_when_the_surface_has_none(clean_profile):
+    data = copy.deepcopy(clean_profile)
+    u, v = data["u"].m.copy(), data["v"].m.copy()
+    u[:3] = v[:3] = np.nan
+    data["u"], data["v"] = u * data["u"].units, v * data["v"].units
+    thinned = c._thin_sounding(data, 10)
+    assert len(thinned["p"]) == 11
+    assert thinned["p"][1] == data["p"][3]
+    assert np.isfinite(thinned["u"].m[1])

@@ -114,7 +114,7 @@ Ingesting SHARPPY Files
 
 
 .. note::
-   To plot your SHARPPY file data with SounderPy, you'll have to manually provide additional site meta-data. Be sure to include a site ID, name, location, lat/lon, and elevation. You must also create plot titles for the sounding plot.
+   To plot your SHARPPY file data with SounderPy, you'll have to manually provide additional site meta-data. Be sure to include a site ID, name, location, lat/lon, and elevation. You must also create plot titles for the sounding plot. ``from_sharppy`` reminds you with a ``SounderPyNotice`` warning (it no longer prints).
 
 
 .. _sharppyexample:
@@ -164,7 +164,7 @@ SounderPy can read the files saved by three common research radiosonde systems. 
 
    :param filepath: filepath to the tab-separated table saved by GRAW's software
    :type filepath: str, required
-   :param date: the launch date, as ``'YYYY-MM-DD'``, ``'YYYYMMDD'``, or a ``datetime.date``. GRAW files hold the time of day but not the date; without ``date``, it is read from a file name that starts with ``YYYYMMDD`` (e.g. ``20260125_2100.txt``)
+   :param date: the launch date, as ``'YYYY-MM-DD'``, ``'YYYYMMDD'``, or a ``datetime.date``, used as is. GRAW files hold the time of day but not the date; without ``date``, it is read from a file name that starts with ``YYYYMMDD`` (e.g. ``20260125_2100.txt``). That date may be the nominal (synoptic) one, so when the name also has a time (``HHMM``) and the launch is more than 12 hours from it, the launch is moved a day, with a warning: a 23:30 launch in ``20260126_0000.txt`` is on 2026-01-25
    :type date: str or datetime.date, optional
    :return: clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind
    :rtype: dict
@@ -179,24 +179,43 @@ SounderPy can read the files saved by three common research radiosonde systems. 
    :return: clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind
    :rtype: dict
 
-.. py:function:: spy.from_windsond(filepath, elevation=None)
+.. py:function:: spy.from_windsond(filepath, elevation)
 
 
    Return a ``dict`` of 'cleaned up' profile data from a Windsond radiosonde file
 
    :param filepath: filepath to the Windsond .sounding.csv
    :type filepath: str, required
-   :param elevation: the launch site's elevation (m). Windsond heights are above ground level; with ``elevation``, they are put above sea level like other SounderPy data
-   :type elevation: int or float, optional
+   :param elevation: the launch site's elevation (m above sea level). Windsond files hold heights above ground level only, so the elevation is required to put them above sea level like other SounderPy data
+   :type elevation: int or float, required
    :return: clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind
    :rtype: dict
 
 
+Besides the usual ``site_info`` keys, these readers add:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 22 78
+
+   * - Key
+     - Value
+   * - ``launch-time``
+     - The launch as an ISO 8601 UTC string, e.g. ``'2026-01-25T20:26:35Z'``, or ``None`` when the file has no launch time. ``valid-time`` still holds ``[year, month, day, hour]`` of the launch.
+   * - ``data-gaps``
+     - ``[[p_bottom, p_top], ...]`` (hPa) for each telemetry dropout: consecutive levels more than 25 hPa or 500 m apart, which the plot draws as a straight line. ``[]`` when there are none.
+   * - ``missing-sfc-wind``
+     - ``True`` when the lowest level has no wind (e.g. an iMet sonde's GPS still locking on after launch). The winter mode then uses the lowest wind within 30 m of the surface for the 10 m wind and wind chill.
+
+
 .. note::
-   - Rows are kept from launch to burst: iMet rows before launch (ascent rate under 1 m/s) and after the burst are dropped, and so is any level whose pressure doesn't fall below the levels under it.
+   - Rows are kept from launch to burst: iMet rows before launch (ascent rate under 1 m/s) and after the burst are dropped, and so is any level missing a pressure, height, or temperature, or whose pressure doesn't fall below the levels under it. A file saved mid-flight ends at the last level received.
    - GRAW's first row is the ground station's surface observation. iMet and Windsond dewpoints are calculated from temperature and relative humidity.
-   - Missing values (e.g. iMet winds before the GPS locks on) are kept as NaN.
-   - As with SHARPpy files, add the site meta-data the file doesn't hold (each reader prints what's still needed) and plot titles before plotting.
+   - Missing winds and humidities (e.g. iMet winds before the GPS locks on) are kept as NaN.
+   - Files with a UTF-8 byte order mark (as Excel saves them) and either Windows or Unix line endings are read the same way.
+   - A file that isn't in the reader's format, or whose profile is too short to plot after cleanup (fewer than 10 levels, or less than 100 hPa deep), raises a ``ValueError``.
+   - Data gaps and a missing surface wind come as a ``SounderPyWarning``. The reminder of the site meta-data still needed is a ``SounderPyNotice``, which a server can silence on its own: ``warnings.filterwarnings('ignore', category=SounderPyNotice)`` (``from sounderpy.utils import SounderPyNotice``).
+   - As with SHARPpy files, add the site meta-data the file doesn't hold and plot titles before plotting.
 
 
 .. code-block:: python

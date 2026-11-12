@@ -117,12 +117,21 @@ VALID_PARCEL_CODES = ("mu_ps_cape", "mu_ia_cape", "mu_ps_ecape", "mu_ia_ecape",
 #########################################################################
 
 def _thin_sounding(data, max_levels):
-    """Keep at most max_levels evenly spaced levels, always including the surface and top."""
+    """Keep at most max_levels evenly spaced levels, always including the surface and top.
+
+    When the surface has no wind (e.g. a radiosonde's GPS still locking on after launch), the lowest level with
+    one is kept too, so the winter surface wind can fall back to it (one level over max_levels).
+    """
     n_levels = len(data["p"])
     if max_levels is None or n_levels <= max_levels:
         return data
 
     keep = np.unique(np.round(np.linspace(0, n_levels - 1, max_levels)).astype(int))
+    if "u" in data and "v" in data:
+        has_wind = np.isfinite(np.asarray(getattr(data["u"], "m", data["u"]), dtype=float)) & \
+                   np.isfinite(np.asarray(getattr(data["v"], "m", data["v"]), dtype=float))
+        if has_wind.shape == (n_levels,) and not has_wind[0] and has_wind.any():
+            keep = np.union1d(keep, [int(np.argmax(has_wind))])
     return {key: value[keep] if getattr(value, "shape", ())[:1] == (n_levels,) else value for key, value in data.items()}
 
 

@@ -38,6 +38,7 @@ G = 9.81                # gravity, m/s2
 T0 = 273.15             # 0 °C in K
 KT_TO_MS = 0.514444
 PA_S_TO_UB_S = 10.0     # 1 Pa/s = 10 µb/s, SHARPpy's omega unit
+SFC_WIND_MAX_AGL = 30   # m: how high to look for a surface wind when the lowest level has none
 
 
 
@@ -476,8 +477,14 @@ class winter_params:
         # ---------------------------------------------------------------
         winter['sfc_T_F'] = T[0] * 9 / 5 + 32
         winter['sfc_Tw'] = float(Tw[0])
-        winter['sfc_wind_uv'] = (float(u[0]), float(v[0]))
-        winter['sfc_wind_kt'] = float(wspd[0])
+        # the lowest wind, when the lowest level has none (e.g. a radiosonde's GPS still locking on after launch):
+        # the first level with a wind within SFC_WIND_MAX_AGL of the surface, else missing
+        has_wind = np.isfinite(u) & np.isfinite(v)
+        sfc_i = int(np.argmax(has_wind)) if has_wind.any() else 0
+        sfc_i = sfc_i if z[sfc_i] <= SFC_WIND_MAX_AGL else 0
+        winter['sfc_wind_uv'] = (float(u[sfc_i]), float(v[sfc_i]))
+        winter['sfc_wind_kt'] = float(wspd[sfc_i])
+        winter['sfc_wind_z'] = float(z[sfc_i])
 
         #--- WIND CHILL ---#
         # ---------------------------------------------------------------
