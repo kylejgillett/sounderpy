@@ -108,5 +108,37 @@
    button sat off the right edge. Long words now wrap, and anything else that reaches past the edge is clipped. */
 html, body { overflow-x: clip; }
 .rst-content p, .rst-content li, .rst-content td, .rst-content dd, .rst-content a, .rst-content strong, .rst-content em { overflow-wrap: anywhere; }
-.rst-content code.literal { white-space: normal; overflow-wrap: anywhere; }
+.rst-content code.literal { white-space: normal; overflow-wrap: break-word; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+/* Tables on phones: words stay whole and a table wider than the screen scrolls sideways inside its own box
+   (these tables have no theme wrapper, so without this the extra columns were cut off at the screen edge) */
+@media (max-width: 768px) {
+    .rst-content table.docutils { display: block; max-width: 100%; overflow-x: auto; font-size: .92em; }
+    .rst-content table.docutils td, .rst-content table.docutils th { padding: 8px 10px; overflow-wrap: normal; }
+    .rst-content table code.literal { white-space: nowrap; overflow-wrap: normal; }
+}
+/* Code in a heading (the notebooks' function signatures) reads as part of the heading, not as a row of boxes */
+.rst-content :is(h1, h2, h3, h4) code.literal { padding: 0; border: 0; background: none; color: inherit; font-size: .9em; }
+@media (max-width: 768px) { .rst-content :is(h1, h2, h3, h4) code.literal { font-size: .78em; } }
 
+/* Figures line up with the text. Notebook cells drop the "[1]:" prompt column, which indented every code cell
+   and figure on wider screens while their right edges ran to the edge of the text. */
+div.nbinput.container div.prompt, div.nboutput.container div.prompt { display: none; }
+div.nbinput.container div.input_area, div.nboutput.container div.output_area { margin-left: 0; }
+/* A picture narrower than the text column (a :width: under 100%) sits in the middle instead of on the left */
+.rst-content section > img:not([class*="align-"]),
+.rst-content section > a.image-reference > img:not([class*="align-"]) { display: block; margin-inline: auto; }
+@media (max-width: 768px) {
+    /* Side-by-side picture tables (the gallery, light vs dark) stack one picture per row, each the full width,
+       instead of two uneven pictures spilling sideways */
+    .rst-content table.docutils:has(img) { display: table; width: 100%; table-layout: fixed; }
+    .rst-content table.docutils:has(img) colgroup { display: none; }
+    .rst-content table.docutils:has(img) tr { display: block; }
+    .rst-content table.docutils:has(img) td { display: block; width: 100%; padding: 10px 0; border: 0; background: none; }
+    .rst-content table.docutils:has(img) img { display: block; width: 100%; height: auto; }
+    /* Pictures floated beside text sit on their own line, so the text beside them isn't squeezed to a sliver */
+    .rst-content img.align-left, .rst-content img.align-right, .rst-content .align-left > img, .rst-content .align-right > img {
+        float: none; display: block; max-width: 100%; height: auto; margin: 1rem auto;
+    }
+}
+/* A link to a section lands with its heading just below the fixed header, not hidden under it */
+.rst-content [id] { scroll-margin-top: calc(var(--app-header-h, 70px) + 12px); }
