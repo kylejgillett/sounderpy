@@ -4,7 +4,8 @@ name: Documentation
 # development branch's docs at https://dev.sounderpy.app/docs/). The web app's own workflows build them from
 # this repo. This workflow:
 #   1. checks the docs still build;
-#   2. asks the web app to rebuild, so docs changes go live: `main` -> sounderpy.app, `development` -> dev.sounderpy.app;
+#   2. asks the web app to rebuild, so docs changes go live: `development` -> dev.sounderpy.app, and the branch in
+#      LIVE_DOCS_BRANCH -> sounderpy.app;
 #   3. on `main`, publishes this repo's own GitHub Pages site (kylejgillett.github.io/sounderpy/) as redirects to
 #      the same pages at sounderpy.app/docs/, so old links keep working.
 #
@@ -27,6 +28,11 @@ permissions:
 concurrency:
   group: docs-${{ github.ref }}
   cancel-in-progress: true
+
+env:
+  # The branch whose docs are live on sounderpy.app/docs/. It must match DOCS_REF in the web app's deploy.yml.
+  # TEMPORARY: `development` until the 3.3.0 docs are ready; set both back to main when 3.3.0 is released.
+  LIVE_DOCS_BRANCH: development
 
 jobs:
   build:
@@ -58,13 +64,20 @@ jobs:
             echo "::error::The SITE_DEPLOY_TOKEN secret isn't set in this repo (Settings > Secrets and variables > Actions)."
             exit 1
           fi
-          if [ "${GITHUB_REF_NAME}" = "main" ]; then workflow=deploy.yml; ref=main; else workflow=deploy-dev.yml; ref=dev; fi
+          # Which web app builds show this branch's docs: the live site (deploy.yml on main) and/or staging
+          # (deploy-dev.yml on dev)
+          targets=""
+          if [ "${GITHUB_REF_NAME}" = "${LIVE_DOCS_BRANCH}" ]; then targets="deploy.yml:main"; fi
+          if [ "${GITHUB_REF_NAME}" = "development" ]; then targets="${targets} deploy-dev.yml:dev"; fi
+          if [ -z "${targets}" ]; then echo "No web app build shows the ${GITHUB_REF_NAME} docs; nothing to rebuild."; exit 0; fi
+          for target in ${targets}; do
+          workflow=${target%%:*}; ref=${target##*:}
           status=$(curl -sS -o response.json -w "%{http_code}" -X POST \
             -H "Authorization: Bearer ${GH_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/kylejgillett/sounderpy-webapp/actions/workflows/${workflow}/dispatches" \
             -d "{\"ref\": \"${ref}\"}")
-          if [ "${status}" = "204" ]; then echo "Started ${workflow} on sounderpy-webapp@${ref}"; exit 0; fi
+          if [ "${status}" = "204" ]; then echo "Started ${workflow} on sounderpy-webapp@${ref}"; continue; fi
           cat response.json; echo
           case "${status}" in
             401) echo "::error::GitHub rejected SITE_DEPLOY_TOKEN (401): it's wrong or expired. Make a new token and update the secret." ;;
@@ -74,6 +87,7 @@ jobs:
             *) echo "::error::Starting the web app rebuild failed with HTTP ${status}." ;;
           esac
           exit 1
+          done
 
       - name: Turn the old docs address into redirects
         if: github.ref_name == 'main'
