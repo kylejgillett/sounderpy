@@ -1,0 +1,21 @@
+{#- The sounderpy.app footer, at the bottom of each docs page (under the docs' own previous / next links).
+    It sits inside the theme's footer because the Read the Docs layout is positioned absolutely, so anything
+    placed after it would show at the top of the page. Styles: _static/css/app-shell.css. -#}
+{% extends "!footer.html" %}
+{%- set ext_icon = '<svg class="app-ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>' %}
+{%- block extrafooter %}
+<div class="app-footer">
+  <span class="app-footer-id">
+    <img src="{{ pathto('_static/images/sounderpy-logo-small.png', 1) }}" width="160" height="160" alt="" loading="lazy" />
+    <span>© {{ copyright.split(',')[0] }} Kyle J. Gillett<small>SounderPy {{ release }} · SounderPy is open source</small></span>
+  </span>
+  <nav class="app-footer-links" aria-label="Footer">
+    <a href="/about/">About SounderPy</a>
+    <a href="/">Build soundings</a>
+    <a href="https://github.com/kylejgillett/sounderpy" target="_blank" rel="noopener">Source{{ ext_icon }}</a>
+    <a href="https://github.com/kylejgillett/sounderpy/issues" target="_blank" rel="noopener">Report an issue{{ ext_icon }}</a>
+    <a href="https://www.buymeacoffee.com/kylejgillett" target="_blank" rel="noopener">Support{{ ext_icon }}</a>
+  </nav>
+  <a class="app-footer-by" href="https://kylegillettphoto.com/about_and_work/" target="_blank" rel="noopener">Built by <strong>Kyle Gillett</strong>{{ ext_icon }}</a>
+</div>
+{%- endblock %}

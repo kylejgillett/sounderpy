@@ -3,6 +3,8 @@
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+import os
+
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
@@ -17,6 +19,14 @@ html_favicon = 'https://raw.githubusercontent.com/kylejgillett/sounderpy/main/im
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = ['nbsphinx', 'sphinx_reredirects']
+
+# The docs are published at sounderpy.app/docs/, inside the web app (its build runs sphinx-build). The app's
+# header, menu and footer come from _templates/layout.html. DOCS_BASEURL is set for the staging build.
+templates_path = ['_templates']
+html_baseurl = os.environ.get('DOCS_BASEURL', 'https://sounderpy.app/docs/')
+# Don't publish a second copy of every page's source (the notebooks alone are 30+ MB)
+html_copy_source = False
+html_show_sourcelink = False
 
 exclude_patterns = []
 
@@ -81,8 +91,9 @@ html_css_files = [
     "css/gallery.css",
     "css/case_studies.css",
     "css/sounderpy-theme.css",
+    "css/app-shell.css",
 ]
 
-html_js_files = ["js/param-layout.js"]
+html_js_files = ["js/param-layout.js", "js/app-shell.js"]
 
 html_extra_path = ["_extra"]

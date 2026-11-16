@@ -1,0 +1,104 @@
+/* The sounderpy.app header, menu and footer around the docs (_templates/layout.html).
+ * Same look as the web app's own (sounderpy-webapp: src/styles/global.css). Sizes are in px because the
+ * Read the Docs theme sets its own root font size. */
+
+:root { --app-header-h: 68px; }
+
+/* ---- Header: logo and name on the left, the menu tray on the right; stays at the top ---- */
+.app-header {
+    position: fixed; top: 0; right: 0; left: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    height: var(--app-header-h); padding: 0 clamp(16px, 4vw, 56px); box-sizing: border-box;
+    border-bottom: 1px solid var(--line-strong); background: rgb(69 65 58 / 97%); backdrop-filter: blur(10px);
+    font-family: var(--sans);
+}
+.app-brand { display: flex; flex: none; align-items: center; gap: 12px; color: var(--forest-deep) !important; text-decoration: none !important; }
+.app-brand img { width: 42px; height: 42px; border-radius: 50%; box-shadow: 0 2px 8px rgb(0 0 0 / 30%); }
+.app-brand > span { display: flex; align-items: baseline; gap: 10px; }
+.app-brand-name { font-family: var(--serif); font-size: 26px; font-weight: 700; letter-spacing: -.02em; }
+.app-brand-title { padding-left: 10px; border-left: 1px solid var(--line-strong); color: var(--ochre); font-size: 15px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+
+.app-nav-tray {
+    display: flex; align-items: center; gap: 2px; padding: 4px; border: 1px solid rgb(166 146 109 / 45%); border-radius: 10px;
+    background: rgb(0 0 0 / 16%); box-shadow: inset 0 1px 3px rgb(0 0 0 / 25%);
+}
+.app-nav-tray a {
+    display: inline-flex; align-items: center; gap: 4px; padding: 6px 13px; border-radius: 7px; color: var(--forest) !important;
+    font-size: 16px; font-weight: 650; line-height: 1.35; text-decoration: none !important; white-space: nowrap;
+    transition: background-color .15s ease, color .15s ease;
+}
+.app-nav-tray a:hover { background: rgb(255 255 255 / 6%); color: var(--forest-deep) !important; }
+.app-nav-tray a[aria-current="page"] { background: rgb(221 195 134 / 16%); box-shadow: inset 0 -2px 0 var(--ochre); color: var(--forest-deep) !important; }
+.app-ext { flex: none; width: .7em; height: .7em; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; opacity: .55; }
+
+/* The theme's layout (sidebar and page) starts under the fixed header. The header is fixed rather than sticky
+   because the theme's wrapper stops sticky positioning from working. */
+.wy-grid-for-nav { top: var(--app-header-h); }
+.wy-nav-side { top: var(--app-header-h); min-height: 0; }
+.wy-nav-side .wy-side-scroll { height: 100%; }
+
+@media (max-width: 1180px) {
+    .app-nav-tray a { padding: 6px 9px; font-size: 14.5px; }
+    .app-brand-name { font-size: 22px; }
+}
+@media (max-width: 1000px) and (min-width: 769px) {
+    .app-nav-tray a .app-ext { display: none; }
+    .app-nav-tray a { padding: 6px 7px; font-size: 13.5px; }
+    .app-brand-name { display: none; }
+    .app-brand-title { padding-left: 0; border-left: 0; }
+}
+
+/* ---- Phones: a slim bar with a three-line menu button (the docs' own Contents bar sits under it) ---- */
+.app-menu-toggle, .app-menu, .app-menu-scrim { display: none; }
+@media (max-width: 768px) {
+    :root { --app-header-h: calc(56px + env(safe-area-inset-top)); }
+    .app-header { padding: env(safe-area-inset-top) 14px 0; }
+    .app-nav { display: none; }
+    .app-brand img { width: 36px; height: 36px; }
+    .app-brand-name { font-size: 20px; }
+    .app-brand-title { font-size: 13px; }
+
+    .app-menu-toggle {
+        display: inline-flex; width: 44px; height: 44px; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+        padding: 0; border: 1px solid var(--line-strong); border-radius: 8px; background: transparent; cursor: pointer;
+    }
+    .app-menu-toggle span { display: block; width: 21px; height: 2px; border-radius: 2px; background: var(--forest-deep); transition: transform .2s ease, opacity .2s ease; }
+    .app-menu-toggle[aria-expanded="true"] { border-color: var(--ochre); }
+    .app-menu-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .app-menu-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .app-menu-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .app-menu {
+        position: fixed; z-index: 299; top: var(--app-header-h); right: 0; left: 0; display: grid; gap: 4px; padding: 10px 12px 16px;
+        border-bottom: 1px solid var(--line-strong); background: rgb(58 54 47 / 98%); backdrop-filter: blur(12px);
+        box-shadow: 0 14px 30px rgb(0 0 0 / 40%); font-family: var(--serif);
+    }
+    .app-menu[hidden] { display: none; }
+    .app-menu a { display: flex; min-height: 50px; align-items: center; gap: 14px; padding: 6px 12px; border-radius: 10px; color: var(--forest-deep) !important; font-size: 20px; text-decoration: none !important; }
+    .app-menu a[aria-current="page"] { background: rgb(221 195 134 / 12%); color: var(--ochre) !important; }
+    .app-menu svg { width: 22px; height: 22px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .app-menu .app-ext { width: 13px; height: 13px; margin-left: auto; }
+    .app-menu-scrim { position: fixed; z-index: 298; inset: 0; display: block; background: rgb(12 10 8 / 62%); opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+    html.app-menu-open .app-menu-scrim { opacity: 1; pointer-events: auto; }
+    html.app-menu-open { overflow: hidden; }
+
+    /* the docs' own bar: a "Contents" button that opens the docs sidebar */
+    .wy-nav-top { position: relative; z-index: 250; display: flex !important; align-items: center; gap: 10px; padding: 10px 16px; line-height: 1; text-align: left; }
+    .wy-nav-top i { font-size: 18px; }
+    .app-contents-label { color: var(--forest-deep); font-size: 15px; font-weight: 700; cursor: pointer; }
+    .wy-nav-side { top: var(--app-header-h); }
+}
+
+/* ---- Footer, at the bottom of the reading column: logo, © and version; links; author credit ---- */
+.app-footer {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 28px;
+    margin-top: 28px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper-light);
+    color: var(--ink-soft); font-family: var(--sans); font-size: 13.5px; line-height: 1.4;
+}
+.app-footer-id { display: flex; align-items: center; gap: 12px; color: var(--ink); font-size: 14.5px; }
+.app-footer-id img { width: 38px; height: 38px; border-radius: 50%; }
+.app-footer-id small { display: block; color: var(--ink-soft); font-size: 12.5px; }
+.app-footer-links { display: flex; flex-wrap: wrap; gap: 6px 20px; }
+.app-footer a { display: inline-flex; align-items: center; gap: 4px; color: var(--forest) !important; font-size: 15px; font-weight: 600; text-decoration: none !important; }
+.app-footer a:hover { color: var(--clay) !important; text-decoration: underline !important; }
+.app-footer-by { font-weight: 500 !important; }
+@media (max-width: 600px) { .app-footer { flex-direction: column; align-items: flex-start; } }

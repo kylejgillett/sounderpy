@@ -1,0 +1,55 @@
+{#- The SounderPy docs live at sounderpy.app/docs/, inside the web app. This adds the web app's own header, menu
+    and footer around the Read the Docs layout, so moving between the app and the docs feels like one site.
+    Styles: _static/css/app-shell.css. Menu button: _static/js/app-shell.js. Links are root-relative ("/", "/about/"),
+    so they work on sounderpy.app and on the dev.sounderpy.app staging site. -#}
+{% extends "!layout.html" %}
+
+{%- set app_links = [
+  ("Build Soundings", "/", "sounding", False, False),
+  ("About SounderPy", "/about/", "info", False, False),
+  ("Read the Docs", "/docs/", "book", False, True),
+  ("Source Code", "https://github.com/kylejgillett/sounderpy", "code", True, False),
+  ("Paper", "https://doi.org/10.21105/joss.08087", "paper", True, False),
+  ("Support", "https://www.buymeacoffee.com/kylejgillett", "coffee", True, False),
+] %}
+{%- set app_icons = {
+  "sounding": '<path d="M3 3v18h18" /><path d="M20 21l-2.5-3.5-1.5-2 3-1.5-2-3-3-3.5L11 3" /><path d="M15 21l-1-3-.5-2L9.5 14.5 8.5 10.5 7.5 6 7 3" />',
+  "info": '<circle cx="12" cy="12" r="9" /><path d="M12 11v6M12 7.5v.01" />',
+  "book": '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z" /><path d="M4 21V5M8 7h7" />',
+  "code": '<path d="m8 8-4 4 4 4m8-8 4 4-4 4M14 5l-4 14" />',
+  "paper": '<path d="M6 3h9l4 4v14H6z" /><path d="M14 3v5h5M9 12h7M9 16h7" />',
+  "coffee": '<path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z" /><path d="M16 11h1.5a2.5 2.5 0 0 1 0 5H16M8 3v3M12 3v3" />',
+} %}
+{%- set ext_icon = '<svg class="app-ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>' %}
+
+{%- block extrabody %}
+<header class="app-header">
+  <a class="app-brand" href="/">
+    <img src="{{ pathto('_static/images/sounderpy-logo-small.png', 1) }}" width="160" height="160" alt="" />
+    <span><span class="app-brand-name">sounderpy.app</span><span class="app-brand-title">Docs</span></span>
+  </a>
+  <nav class="app-nav" aria-label="Main navigation">
+    <div class="app-nav-tray">
+      {%- for label, href, icon, external, current in app_links %}
+      <a href="{{ href }}"{% if current %} aria-current="page"{% endif %}{% if external %} target="_blank" rel="noopener"{% endif %}>{{ label }}{% if external %}{{ ext_icon }}{% endif %}</a>
+      {%- endfor %}
+    </div>
+  </nav>
+  <button class="app-menu-toggle" type="button" aria-expanded="false" aria-controls="app-menu" aria-label="Open menu" data-app-menu-toggle>
+    <span></span><span></span><span></span>
+  </button>
+</header>
+<div class="app-menu-scrim" aria-hidden="true" data-app-menu-scrim></div>
+<nav class="app-menu" id="app-menu" aria-label="Main navigation" data-app-menu hidden>
+  {%- for label, href, icon, external, current in app_links %}
+  <a href="{{ href }}"{% if current %} aria-current="page"{% endif %}{% if external %} target="_blank" rel="noopener"{% endif %}>
+    <svg viewBox="0 0 24 24" aria-hidden="true">{{ app_icons[icon] }}</svg><span>{{ label }}</span>{% if external %}{{ ext_icon }}{% endif %}
+  </a>
+  {%- endfor %}
+</nav>
+{%- endblock %}
+
+{%- block mobile_nav %}
+  <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+  <span class="app-contents-label" data-toggle="wy-nav-top">Contents</span>
+{%- endblock %}

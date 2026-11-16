@@ -1,9 +1,22 @@
-name: Build and Deploy Documentation
+name: Documentation
+
+# The docs are published as part of the web app, at https://sounderpy.app/docs/ (and a preview of the
+# development branch's docs at https://dev.sounderpy.app/docs/). The web app's own workflows build them from
+# this repo. This workflow:
+#   1. checks the docs still build;
+#   2. asks the web app to rebuild, so docs changes go live: `main` -> sounderpy.app, `development` -> dev.sounderpy.app;
+#   3. on `main`, publishes this repo's own GitHub Pages site (kylejgillett.github.io/sounderpy/) as redirects to
+#      the same pages at sounderpy.app/docs/, so old links keep working.
+#
+# Needs the repository secret SITE_DEPLOY_TOKEN: a fine-grained personal access token limited to
+# kylejgillett/sounderpy-webapp with "Actions: Read and write".
 
 on:
   push:
-    branches:
-      - main
+    branches: [main, development]
+    paths:
+      - "docs/**"
+      - ".github/workflows/docs.yml"
   workflow_dispatch:
 
 permissions:
@@ -12,13 +25,12 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: docs-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -32,34 +44,45 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r docs/requirements.txt
-
-      - name: Install Pandoc
-        run: |
           sudo apt-get update
           sudo apt-get install -y pandoc
 
+      - name: Build documentation
+        run: sphinx-build -W --keep-going docs/source docs/build/html
+
+      - name: Rebuild the web app, which publishes these docs
+        env:
+          GH_TOKEN: ${{ secrets.SITE_DEPLOY_TOKEN }}
+        run: |
+          if [ "${GITHUB_REF_NAME}" = "main" ]; then workflow=deploy.yml; ref=main; else workflow=deploy-dev.yml; ref=dev; fi
+          curl -fsS -X POST \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/kylejgillett/sounderpy-webapp/actions/workflows/${workflow}/dispatches" \
+            -d "{\"ref\": \"${ref}\"}"
+          echo "Started ${workflow} on sounderpy-webapp@${ref}"
+
+      - name: Turn the old docs address into redirects
+        if: github.ref_name == 'main'
+        run: python docs/make_redirects.py docs/build/html
+
       - name: Configure GitHub Pages
+        if: github.ref_name == 'main'
         uses: actions/configure-pages@v6
 
-      - name: Build documentation
-        run: |
-          sphinx-build -W --keep-going \
-            docs/source \
-            docs/build/html
-
-      - name: Upload documentation
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload redirects
+        if: github.ref_name == 'main'
+        uses: actions/upload-pages-artifact@v4
         with:
           path: docs/build/html
 
   deploy:
+    if: github.ref_name == 'main'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     runs-on: ubuntu-latest
     needs: build
-
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
