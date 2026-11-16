@@ -26,6 +26,9 @@ templates_path = ['_templates']
 html_baseurl = os.environ.get('DOCS_BASEURL', 'https://sounderpy.app/docs/')
 # Don't publish a second copy of every page's source (the notebooks alone are 30+ MB)
 html_copy_source = False
+# Browser tabs and search results read "Page name — SounderPy docs" (the default adds the version and "documentation")
+html_title = 'SounderPy docs'
+html_short_title = 'SounderPy docs'
 html_show_sourcelink = False
 
 exclude_patterns = []

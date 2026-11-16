@@ -8,19 +8,45 @@
   ("Build Soundings", "/", "sounding", False, False),
   ("About SounderPy", "/about/", "info", False, False),
   ("Read the Docs", "/docs/", "book", False, True),
-  ("Source Code", "https://github.com/kylejgillett/sounderpy", "code", True, False),
-  ("Paper", "https://doi.org/10.21105/joss.08087", "paper", True, False),
-  ("Support", "https://www.buymeacoffee.com/kylejgillett", "coffee", True, False),
 ] %}
 {%- set app_icons = {
   "sounding": '<path d="M3 3v18h18" /><path d="M20 21l-2.5-3.5-1.5-2 3-1.5-2-3-3-3.5L11 3" /><path d="M15 21l-1-3-.5-2L9.5 14.5 8.5 10.5 7.5 6 7 3" />',
   "info": '<circle cx="12" cy="12" r="9" /><path d="M12 11v6M12 7.5v.01" />',
   "book": '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z" /><path d="M4 21V5M8 7h7" />',
-  "code": '<path d="m8 8-4 4 4 4m8-8 4 4-4 4M14 5l-4 14" />',
-  "paper": '<path d="M6 3h9l4 4v14H6z" /><path d="M14 3v5h5M9 12h7M9 16h7" />',
-  "coffee": '<path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z" /><path d="M16 11h1.5a2.5 2.5 0 0 1 0 5H16M8 3v3M12 3v3" />',
 } %}
 {%- set ext_icon = '<svg class="app-ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>' %}
+
+{#- What search engines and link previews read: a description on the docs home page (other pages get a snippet
+    from their text), and a share card on every page. The card image is the web app's (sounderpy.app/og-card.jpg). -#}
+{#- Page titles without the emoji that starts most page headings; the docs home gets a descriptive title -#}
+{%- macro plain_title() -%}
+{%- set t = title|striptags -%}
+{%- if t and t[0] > '~' and ' ' in t %}{% set t = t.split(' ', 1)[1] %}{% endif -%}
+{{ t }}
+{%- endmacro %}
+{%- block htmltitle %}
+{%- if pagename == 'index' %}
+<title>SounderPy Documentation | Python Sounding Analysis</title>
+{%- else %}
+<title>{{ plain_title()|e }} | SounderPy docs</title>
+{%- endif %}
+{%- endblock %}
+
+{%- block extrahead %}
+{{ super() }}
+{%- set page_url = pageurl or '' %}
+{%- if pagename == 'index' %}
+<meta name="description" content="Documentation for SounderPy, the open-source Python package for getting, analyzing, and plotting atmospheric soundings: installation, tutorials, example notebooks, and the API reference." />
+{%- endif %}
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="sounderpy.app" />
+<meta property="og:title" content="{% if pagename == 'index' %}SounderPy Documentation{% else %}{{ plain_title()|e }} | SounderPy docs{% endif %}" />
+<meta property="og:url" content="{{ page_url }}" />
+<meta property="og:image" content="https://sounderpy.app/og-card.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+{%- endblock %}
 
 {%- block extrabody %}
 <header class="app-header">
@@ -31,7 +57,7 @@
   <nav class="app-nav" aria-label="Main navigation">
     <div class="app-nav-tray">
       {%- for label, href, icon, external, current in app_links %}
-      <a href="{{ href }}"{% if current %} aria-current="page"{% endif %}{% if external %} target="_blank" rel="noopener"{% endif %}>{{ label }}{% if external %}{{ ext_icon }}{% endif %}</a>
+      <a href="{{ href }}"{% if current %} aria-current="page"{% endif %}{% if external %} target="_blank" rel="noopener"{% endif %}><svg class="app-nav-icon" viewBox="0 0 24 24" aria-hidden="true">{{ app_icons[icon] }}</svg>{{ label }}{% if external %}{{ ext_icon }}{% endif %}</a>
       {%- endfor %}
     </div>
   </nav>

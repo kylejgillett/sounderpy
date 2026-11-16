@@ -54,13 +54,26 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.SITE_DEPLOY_TOKEN }}
         run: |
+          if [ -z "${GH_TOKEN}" ]; then
+            echo "::error::The SITE_DEPLOY_TOKEN secret isn't set in this repo (Settings > Secrets and variables > Actions)."
+            exit 1
+          fi
           if [ "${GITHUB_REF_NAME}" = "main" ]; then workflow=deploy.yml; ref=main; else workflow=deploy-dev.yml; ref=dev; fi
-          curl -fsS -X POST \
+          status=$(curl -sS -o response.json -w "%{http_code}" -X POST \
             -H "Authorization: Bearer ${GH_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/kylejgillett/sounderpy-webapp/actions/workflows/${workflow}/dispatches" \
-            -d "{\"ref\": \"${ref}\"}"
-          echo "Started ${workflow} on sounderpy-webapp@${ref}"
+            -d "{\"ref\": \"${ref}\"}")
+          if [ "${status}" = "204" ]; then echo "Started ${workflow} on sounderpy-webapp@${ref}"; exit 0; fi
+          cat response.json; echo
+          case "${status}" in
+            401) echo "::error::GitHub rejected SITE_DEPLOY_TOKEN (401): it's wrong or expired. Make a new token and update the secret." ;;
+            403) echo "::error::SITE_DEPLOY_TOKEN can't start workflows (403): give it Repository permissions > Actions: Read and write." ;;
+            404) echo "::error::SITE_DEPLOY_TOKEN can't see sounderpy-webapp or ${workflow} (404): add sounderpy-webapp under the token's Repository access." ;;
+            422) echo "::error::sounderpy-webapp's ${workflow} can't be started on '${ref}' (422): check that branch exists and its workflow has workflow_dispatch." ;;
+            *) echo "::error::Starting the web app rebuild failed with HTTP ${status}." ;;
+          esac
+          exit 1
 
       - name: Turn the old docs address into redirects
         if: github.ref_name == 'main'

@@ -28,6 +28,8 @@
 }
 .app-nav-tray a:hover { background: rgb(255 255 255 / 6%); color: var(--forest-deep) !important; }
 .app-nav-tray a[aria-current="page"] { background: rgb(221 195 134 / 16%); box-shadow: inset 0 -2px 0 var(--ochre); color: var(--forest-deep) !important; }
+.app-nav-icon { flex: none; width: 1.15em; height: 1.15em; margin-right: 3px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; opacity: .8; }
+.app-nav-tray a:hover .app-nav-icon, .app-nav-tray a[aria-current="page"] .app-nav-icon { opacity: 1; }
 .app-ext { flex: none; width: .7em; height: .7em; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; opacity: .55; }
 
 /* The theme's layout (sidebar and page) starts under the fixed header. The header is fixed rather than sticky
@@ -41,10 +43,8 @@
     .app-brand-name { font-size: 22px; }
 }
 @media (max-width: 1000px) and (min-width: 769px) {
-    .app-nav-tray a .app-ext { display: none; }
-    .app-nav-tray a { padding: 6px 7px; font-size: 13.5px; }
-    .app-brand-name { display: none; }
-    .app-brand-title { padding-left: 0; border-left: 0; }
+    .app-nav-tray a { padding: 6px 8px; font-size: 14px; }
+    .app-brand-name { font-size: 20px; }
 }
 
 /* ---- Phones: a slim bar with a three-line menu button (the docs' own Contents bar sits under it) ---- */
@@ -102,3 +102,11 @@
 .app-footer a:hover { color: var(--clay) !important; text-decoration: underline !important; }
 .app-footer-by { font-weight: 500 !important; }
 @media (max-width: 600px) { .app-footer { flex-direction: column; align-items: flex-start; } }
+
+/* Nothing in a page widens it past the screen. On phones, long inline code, links and notebook output text
+   (which don't break on their own) made pages wider than the screen, so the browser zoomed and the menu
+   button sat off the right edge. Long words now wrap, and anything else that reaches past the edge is clipped. */
+html, body { overflow-x: clip; }
+.rst-content p, .rst-content li, .rst-content td, .rst-content dd, .rst-content a, .rst-content strong, .rst-content em { overflow-wrap: anywhere; }
+.rst-content code.literal { white-space: normal; overflow-wrap: anywhere; }
+
