@@ -176,8 +176,10 @@ def _plot_dgz_bar(skew, winter, snd, theme):
     # always the DGZ: SounderPy's growth-zone helper shows the hail growth zone when the surface is >= 5 °C
     if not ma.is_masked(winter["dgz_depth"]):
         p_bottom, p_top = winter["dgz_p"]
+        # a DGZ at the surface would put its label on the "-SFC (...m) -" label, so lift it above that text
+        label_offset = max(12, p_top - snd["intrp"]["pINTRP"][0] * 0.965)
         _plot_labeled_bar(skew, SKEWT_COLUMNS["dgz"], p_bottom, p_top, "DGZ", theme["dgz"], alpha=0.4, label_alpha=0.6,
-                          linewidth=3, label_offset=12, label_va="baseline", fontsize=FONT_SIZES["tick"])
+                          linewidth=3, label_offset=label_offset, label_va="baseline", fontsize=FONT_SIZES["tick"])
 
 
 def _plot_pbl(skew, data, snd, theme):

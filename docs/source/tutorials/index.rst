@@ -18,6 +18,7 @@ and workflow tutorials.
 
    plot_appearance
    maps_radar
+   custom_map_data
    winter_soundings
    parcel_settings
    hodograph_options
@@ -43,6 +44,12 @@ figure resolution, and saved output.
 
 Control the map inset, map zoom, single-site WSR-88D reflectivity, recent radar
 mosaics, and radar timing.
+
+🧭 Custom Map Data
+------------------
+
+Draw your own data on the map inset with ``map_layers``: METAR observations from
+the Iowa Environmental Mesonet and a RAP model field from NOAA's archive on AWS.
 
 🧪 Parcel Settings
 ------------------

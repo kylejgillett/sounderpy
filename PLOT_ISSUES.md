@@ -1,18 +1,37 @@
 # FIXES NEEDED BEFORE RELEASE
 
-- [ ] `_get_zoomed_background_lines`: on a thin or inverted zoomed view (e.g. fzra at `ylim=(1000, 900)`, sleet at (1000, 700)) the x-axis hits `ZOOM_MAX_SPAN`, the hot top-right corner gives MetPy `wet_bulb_potential_temperature` values in the thousands of °C, and up to ~1200 moist adiabats are drawn instead of ~12 (strict xfail in `tests/test_plot_components.py`)
-- [ ] `utils.mag()` truncates instead of rounding (`int()`), so readouts drop toward zero (999.9 J/kg shows 999, -0.6 shows 0)
+- [x] `_get_zoomed_background_lines`: on a thin or inverted zoomed view (e.g. fzra at `ylim=(1000, 900)`, sleet at (1000, 700)) the x-axis hits `ZOOM_MAX_SPAN`, the hot top-right corner gives MetPy `wet_bulb_potential_temperature` values in the thousands of °C, and up to ~1200 moist adiabats are drawn instead of ~12 (strict xfail in `tests/test_plot_components.py`) (fixed 2026-11-18: moist adiabats follow `moist_lapse` to 1000 hPa)
+- [x] `utils.mag()` truncates instead of rounding (`int()`), so readouts drop toward zero (999.9 J/kg shows 999, -0.6 shows 0) (fixed 2026-11-18: rounds)
 - [ ] Severe and winter docs/gallery images predate the PBL changes (one PBL bar, PBL row in the severe SRH/BWD box, winter PBL gust/mean/depth/LR rows and hodograph PBL arrow)
-- [ ] Figures compute parameters on the `max_levels`-thinned profile, so level-snapped values change with thinning: GRAW 1 s sounding (UND 2026-01-25 20:26Z) PBL depth/LR is 520 m / 8.7 °C/km at full resolution, 589 m / 7.5 at the default 250 levels
-- [ ] Skew-t omega panel: the "+10" / "-10" reference labels at 150 hPa overlap the "13km" height label (e.g. KGFK HRRR 2026-01-18 16Z)
-- [ ] Skew-t: when the DGZ sits at the surface (surface T near -12 to -17 °C) its "DGZ" label overlaps the "-SFC (257m)-" label (KGFK HRRR 2026-01-18 16Z)
-- [ ] `calc.py:824-845` ECAPE: on a zero-CAPE profile (no LFC, e.g. KABR 2024-08-28 12Z) `ecape_parcel` crashes on `lfc_z=None`, the bare `except` sets MU/ML/SB-ECAPE to masked (readout shows `--` instead of 0) and warns "could not be computed (calculation error)" three times; should be 0 with no warning when the parcel has no CAPE
+- [x] Skew-t: when the DGZ sits at the surface (surface T near -12 to -17 °C) its "DGZ" label overlaps the "-SFC (257m)-" label (KGFK HRRR 2026-01-18 16Z) (fixed 2026-11-18 in the winter figure: label lifted above the SFC label)
 - [x] Radiosonde readers (`from_graw`/`from_imet`/`from_windsond`): data gaps, launch time, GRAW midnight date, missing surface wind, print() notes, NaN temperatures, too-short profiles, Windsond elevation, Windsond BOM (uncommitted, 2026-11-11)
 - [ ] `from_imet`: the profile starts at the sonde's PTU altitude (268 m in UND 2026-01-16 18:37Z) but the plot's surface label uses the station altitude (256 m)
 
 
 
+# PUBLISHING PROCESS TO-DOS
+- [ ] What's New (`docs/source/index.rst`): add GRAW/iMET/Windsond readers, `make_cm1_profile`/`make_wrf_profile` -> `from_cm1`/`from_wrf`, RRFS BUFKIT, packaged RAOB station list (ICAO fallback, leading-zero WMO IDs), IGRA RH -> Td, data source statements on figures, new composite params, SHARPpy HGZ fix, darker EIL with top/bottom heights, `smooth_profile()` Savitzky-Golay default, HRRR & RAP NOMADS BUFR fallback, `map_layers` / `map_label`
+- [ ] README.md: replace the "SounderPy 3.2" section with 3.3
+- [ ] Clean up code comments and the module header blocks at the top of each file (purpose, (C) years)
+- [ ] Build the docs and check them (winter docs never built)
+- [ ] Build the 3.3.0 wheel/sdist from a clean clone (git-ignored `timeseries.py` / `publication.py` are on disk)
+
+
+
+# NEW FEATURES
+- [x] Map inset: let users draw their own 2D x/y data on it (e.g. `.contourf()`) (done 2026-11-18: `map_layers=` functions + `map_label=` on build_sounding (severe & winter), build_hodograph, build_vad_hodograph; Python only, not in the CLI)
+- [x] Map inset tutorial for `map_layers` / `map_label` (done 2026-11-18: `tutorials/custom_map_data.rst`, IEM METARs + AWS RAP on the ABR 2024-08-29 00Z RAOB; images from `make_gallery_figures.py --sections custom-map`)
+- [ ] Built-in METARs on the map: `map_obs=None | 'dewpoint' | 'temperature'` (+ `--map-obs` CLI flag) on all map figures; fetch stations inside the map extent in one IEM request (reuse `data/sfc_obs.py` station table), draw/thin like the custom map tutorial; one value per station (MetPy `StationPlot` fails under Matplotlib 3.11)
+- [x] BUFKIT: add the HRRR to the NOMADS fallback (only RRFS falls back now; PSU HRRR runs behind), if NOMADS serves HRRR BUFR soundings (done 2026-11-18: RRFS, HRRR & RAP share `ncep_bufr.NOMADS_MODELS`)
+- [x] Skew-t: EIL top and bottom heights next to the EIL annotation (done 2026-11-18: heights beside the end ticks, EIL moved to x=0.22, color #4a9fd0)
+- [ ] User request: plot EPV, e.g. to show instability above a frontal zone/inversion
+- [ ] User request: 0-10 km shear and the min-max theta-e difference (Cohen et al. 2007 derecho discriminators, https://journals.ametsoc.org/view/journals/wefo/22/5/waf1040_1.xml)
+- [x] `smooth_profile()` (`profile_utils.py`): add a kwarg to choose a Savitzky-Golay filter (new default) or the current Gaussian (`sigma`); update `helpertools.rst` (done 2026-11-18: `method=`, `window_length=5`, `polyorder=2`; `sigma` alone still means Gaussian)
+
+
+
 # FUTURE FIXES
+- [ ] Calc module refactor: move `calc.py` and `calc_winter.py` into a `calc/` dir (like `data/`) with a `calc_utils.py` of shared helpers (e.g. `layer_mean`, `layer_max`, `value_at` from `calc_winter.py`) and `FutureWarning` stand-ins for the old paths; revisit once new calc work (Cohen 2007 params, EPV) shares helpers
 - [ ] `set_watermark`: settings are shared across a Python process, so a shared web app worker would affect all users
 - [ ] MetPy's skew-T uses a Matplotlib function deprecated in 3.11 and due for removal in 3.13; confirm a MetPy fix before relaxing or raising version limits; MetPy 1.7.1's `StationPlot` text already fails to draw under Matplotlib 3.11 (its `TextCollection.draw` unpacks 4 layout values, 3.11 returns 3), so any station plot needs plain text + MetPy's symbol font until MetPy fixes it
 - [ ] Station lists: `BUFKIT-STATIONS-MASTER.txt` has 8,527 rows for 2,093 IDs, and 23 IDs have conflicting entries (typos such as `B44` at lon -100.29 and -110.29, `B48` at -80.51 and -81.51; different stations sharing `CYQX`); the BUFKIT, METAR, buoy and airport lists are still downloaded from GitHub `main` on every call (RAOB/IGRA now ship in the package as `RAOB-STATIONS-MASTER.csv`)

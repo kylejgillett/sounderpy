@@ -150,16 +150,11 @@ def test_zoomed_skewt_axes_match_its_limits():
     assert list(skew.ax.get_yticks()) == c._get_pressure_ticks((1000, 700))
 
 
-THIN_VIEW_BUG = pytest.mark.xfail(strict=True, reason="PLOT_ISSUES.md: on a thin or inverted zoomed view the x-axis "
-                                   "reaches ZOOM_MAX_SPAN and the moist adiabats' wet-bulb potential temperatures at "
-                                   "the hot corner blow up, giving hundreds of lines")
-
-
 @pytest.mark.parametrize(("case", "ylim", "has_mixing_lines"), [
     ("fzra", (1000, 700), True),
     ("fzra", (500, 300), False),
-    pytest.param("fzra", (1000, 900), True, marks=THIN_VIEW_BUG),
-    pytest.param("pl", (1000, 700), True, marks=THIN_VIEW_BUG),
+    ("fzra", (1000, 900), True),
+    ("pl", (1000, 700), True),
 ])
 def test_zoomed_background_lines_are_spaced_to_the_view(case, ylim, has_mixing_lines):
     lines = c._get_zoomed_background_lines(zoomed_skewt(make_winter_profile(case), ylim))

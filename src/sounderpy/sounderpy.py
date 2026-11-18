@@ -5,6 +5,7 @@ import warnings
 from typing import List, Tuple, Optional
 
 from .plot import __full_sounding, __winter_sounding, _resolve_sounding_mode, __full_hodograph, __composite_sounding, __vad_hodograph
+from .plot.components import _warn_unused_map_layers
 from .calc import sounding_params
 from .data.model_data import fetch_model
 from .data.bufkit_data import fetch_bufkit
@@ -197,7 +198,7 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
 def build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion='right_moving',
                    special_parcels=None, radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None,
                    show_theta=False, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_sounding', max_levels=250, ylim=None, theme=None,
-                   sr_hodo=False, mode='severe', show_obs=False):
+                   sr_hodo=False, mode='severe', show_obs=False, map_layers=None, map_label=None):
     
     '''
     Return a full sounding plot of SounderPy data, ``plt``
@@ -242,25 +243,39 @@ def build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion=
     :type mode: str, optional
     :param show_obs: winter sounding only: draw the surface observation (METAR) nearest the sounding in space and time as a station model in the hodograph's corner, from the Iowa Environmental Mesonet archive. Needs an internet connection; nothing is drawn when no station within 75 km has a report within an hour of the valid time. Default is ``False``.
     :type show_obs: bool, optional
+    :param map_layers: your own data for the map inset: a function, or a list of functions, that each take the map's axes (a cartopy ``PlateCarree`` axes) and draw on it, such as ``lambda ax: ax.contourf(lon, lat, values, transform=ccrs.PlateCarree(), zorder=3)``. They're drawn after the radar and before the profile's location marker; ``zorder=3`` puts filled data above the satellite image and below the radar and the county and state lines. Use ``radar=None`` to show only your data. Default is ``None``.
+    :type map_layers: function or list of functions, optional
+    :param map_label: a label for the map, such as ``'HRRR MLCAPE (J/kg)'``, shown in a box at the top of the map. Default is ``None``.
+    :type map_label: str, optional
     :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
     :rtype: plt
     '''
     
     print(f'> SOUNDING PLOTTER FUNCTION\n  ---------------------------------')
 
+    # map_layers & map_label need the map
+    _warn_unused_map_layers(map_zoom, map_layers, map_label)
+
     mode = _resolve_sounding_mode(mode, clean_data, modify_sfc, max_levels)
     if mode == 'winter':
-        # severe-only settings changed from their defaults are ignored, with a warning
+        # generate a winter sounding instead
+        # severe-only custom settings are ignored with a warning
         ignored = [name for name, value, default in (('special_parcels', special_parcels, None), ('show_theta', show_theta, False),
-                                                     ('sr_hodo', sr_hodo, False), ('hodo_boundary', hodo_boundary, None))
-                   if value != default]
+                                                     ('sr_hodo', sr_hodo, False), ('hodo_boundary', hodo_boundary, None)) if value != default]
         if ignored:
+            # print ignored setting warning
             warnings.warn(f"The winter sounding doesn't use {', '.join(ignored)}; ignoring {'it' if len(ignored) == 1 else 'them'}.", Warning)
-        plt = __winter_sounding(clean_data, color_blind, dark_mode, storm_motion, radar, radar_time, map_zoom, modify_sfc, dpi, max_levels, ylim, theme, show_obs)
+
+        # build winter plot
+        plt = __winter_sounding(clean_data, color_blind, dark_mode, storm_motion, radar, radar_time, map_zoom, modify_sfc, dpi, max_levels, ylim, theme, show_obs,
+                                map_layers, map_label)
     else:
         if show_obs:
+            # print warning for show_obs kwarg on a normal sounding
             warnings.warn("show_obs is only used by the winter sounding (mode='winter'); ignoring it.", Warning)
-        plt = __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, radar, radar_time, map_zoom, modify_sfc, show_theta, hodo_boundary, dpi, max_levels, ylim, theme, sr_hodo)
+        # build normal severe sounding figure
+        plt = __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, radar, radar_time, map_zoom, modify_sfc, show_theta, hodo_boundary, dpi, max_levels, ylim, theme, sr_hodo,
+                              map_layers, map_label)
     if save:
         plt.savefig(filename, bbox_inches='tight')
     else:
@@ -275,7 +290,8 @@ def build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion=
 # FULL HODOGRAPH
 #########################################################################
 def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr_hodo=False, modify_sfc=None,
-                    radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_hodograph', max_levels=250, theme=None):
+                    radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_hodograph', max_levels=250, theme=None,
+                    map_layers=None, map_label=None):
 
     '''
        Return a hodograph plot of SounderPy data, ``plt`` 
@@ -308,6 +324,10 @@ def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr
        :type max_levels: int or None, optional
        :param theme: changes to the figure's colors, such as ``{'border': 'k', 'parcel': {'ml': 'black'}}``. An invalid name lists the valid ones. Default is ``None``.
        :type theme: dict, optional
+       :param map_layers: your own data for the map inset: a function, or a list of functions, that each take the map's axes (a cartopy ``PlateCarree`` axes) and draw on it, such as ``lambda ax: ax.contourf(lon, lat, values, transform=ccrs.PlateCarree(), zorder=3)``. They're drawn after the radar and before the profile's location marker; ``zorder=3`` puts filled data above the satellite image and below the radar and the county and state lines. Use ``radar=None`` to show only your data. Default is ``None``.
+       :type map_layers: function or list of functions, optional
+       :param map_label: a label for the map, such as ``'HRRR MLCAPE (J/kg)'``, shown in a box at the top of the map. Default is ``None``.
+       :type map_label: str, optional
        :return: plt, a SounderPy hodograph built with Matplotlib, MetPy, SharpPy, & SounderPy.
        :rtype: plt
     '''
@@ -315,7 +335,11 @@ def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr
 
     print(f'> HODOGRAPH PLOTTER FUNCTION --\n-------------------------------')
 
-    plt = __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc, radar, radar_time, map_zoom, hodo_boundary, dpi, max_levels, theme)
+    # map_layers & map_label need the map
+    _warn_unused_map_layers(map_zoom, map_layers, map_label)
+
+    plt = __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc, radar, radar_time, map_zoom, hodo_boundary, dpi, max_levels, theme,
+                           map_layers, map_label)
     if save:
         plt.savefig(filename, bbox_inches='tight')
     else:
@@ -381,13 +405,14 @@ def build_composite(data_list, shade_between=True, cmap='viridis', colors=None, 
     
     print(f'> COMPOSITE SOUNDING FUNCTION\n  -------------------------------')
 
-    # the old argument names still work for now
+    # warn on only kawrg names, accept for now but will be deprecated later
     def _use_new_name(old_name, old_value, new_name, new_value):
         if old_value is None:
             return new_value
         warnings.warn(f"'{old_name}' is deprecated and will be removed in a future release. Use '{new_name}' instead.", FutureWarning, stacklevel=3)
         return old_value if new_value is None else new_value
 
+    # convert to new kawrg names
     colors = _use_new_name('colors_to_use', colors_to_use, 'colors', colors)
     linestyles = _use_new_name('ls_to_use', ls_to_use, 'linestyles', linestyles)
     alphas = _use_new_name('alphas_to_use', alphas_to_use, 'alphas', alphas)
@@ -415,7 +440,8 @@ def build_composite(data_list, shade_between=True, cmap='viridis', colors=None, 
 # VAD HODOGRAPH
 #########################################################################
 def build_vad_hodograph(vad_data, save=False, dark_mode=False, storm_motion='right_moving', sr_hodo=False,
-                        filename='vad_hodograph', radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, theme=None):
+                        filename='vad_hodograph', radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, theme=None,
+                        map_layers=None, map_label=None):
     '''
        Return a VAD hodograph plot of SounderPy VAD data, ``plt``
 
@@ -443,13 +469,21 @@ def build_vad_hodograph(vad_data, save=False, dark_mode=False, storm_motion='rig
        :type dpi: int, optional
        :param theme: changes to the figure's colors, such as ``{'border': 'k', 'temperature': 'navy', 'parcel': {'mu': 'black'}}``. An invalid name lists the valid ones. Default is ``None``.
        :type theme: dict, optional
+       :param map_layers: your own data for the map inset: a function, or a list of functions, that each take the map's axes (a cartopy ``PlateCarree`` axes) and draw on it, such as ``lambda ax: ax.contourf(lon, lat, values, transform=ccrs.PlateCarree(), zorder=3)``. They're drawn after the radar and before the profile's location marker; ``zorder=3`` puts filled data above the satellite image and below the radar and the county and state lines. Use ``radar=None`` to show only your data. Default is ``None``.
+       :type map_layers: function or list of functions, optional
+       :param map_label: a label for the map, such as ``'HRRR MLCAPE (J/kg)'``, shown in a box at the top of the map. Default is ``None``.
+       :type map_label: str, optional
        :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
        :rtype: plt
     '''
 
     print(f'> VAD HODOGRAPH PLOTTER FUNCTION --\n------------------------------------')
 
-    plt =  __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo, radar, radar_time, map_zoom, hodo_boundary, dpi, theme)
+    # map_layers & map_label need the map
+    _warn_unused_map_layers(map_zoom, map_layers, map_label)
+
+    plt =  __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo, radar, radar_time, map_zoom, hodo_boundary, dpi, theme,
+                           map_layers, map_label)
     if save:
         plt.savefig(filename, bbox_inches='tight')
     else:

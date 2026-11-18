@@ -297,10 +297,12 @@ Available Models:
 - RRFS (00, 06, 12, and 18Z runs)
 
 .. note::
-   For the **RRFS**, if the Penn State file is missing or older than the newest run NCEP
+   For the **RRFS**, **HRRR**, and **RAP**, if the Penn State file is missing or older than the newest run NCEP
    has posted, or an archived run is missing from Iowa State, SounderPy decodes NCEP's own
-   RRFS BUFR soundings from `NOMADS <https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/v1.0/>`_
-   instead. NOMADS keeps about the last two days of runs.
+   BUFR soundings from `NOMADS <https://nomads.ncep.noaa.gov/pub/data/nccf/com/>`_
+   instead. NOMADS keeps about the last two days of runs. Only some HRRR (00, 06, 12, and 18Z) and
+   RAP (03, 09, 15, and 21Z) runs go past forecast hour 18 (HRRR) or 21 (RAP), so later forecast hours
+   use the newest of those runs.
 
 
 .. _forecastkeys:

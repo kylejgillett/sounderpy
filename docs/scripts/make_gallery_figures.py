@@ -754,6 +754,96 @@ def make_composite_examples(out: Path, strict: bool) -> None:
 
 
 # =============================================================================
+# TUTORIAL — CUSTOM MAP DATA
+# =============================================================================
+
+# the custom map data tutorial uses the Aberdeen, SD RAOB at 00 UTC on 29 August 2024 (see the Mound City case study)
+CUSTOM_MAP_CASE = {"station": "ABR", "year": "2024", "month": "08", "day": "29", "hour": "00"}
+
+
+def make_custom_map_examples(out: Path, strict: bool) -> None:
+    banner("CUSTOM MAP DATA EXAMPLES")
+
+    import tempfile
+
+    import cartopy.crs as ccrs
+    import fsspec
+    import numpy as np
+    import pandas as pd
+    import xarray as xr
+    from metpy.calc import reduce_point_density
+
+    case = CUSTOM_MAP_CASE
+    data = spy.get_obs_data(case["station"], case["year"], case["month"], case["day"], case["hour"], hush=True)
+    # each example keeps its layers here so the last one can use them all
+    layers = {}
+
+    # 1. METAR dewpoints from the Iowa Environmental Mesonet (same code as the tutorial)
+    def metar_example() -> None:
+        url = ("https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?"
+               "network=SD_ASOS&network=ND_ASOS&network=NE_ASOS&network=MN_ASOS"
+               "&data=dwpf&sts=2024-08-28T23:30Z&ets=2024-08-29T00:30Z&tz=Etc/UTC"
+               "&format=onlycomma&latlon=yes&missing=empty&report_type=3")
+        metars = pd.read_csv(url, parse_dates=["valid"]).dropna(subset=["dwpf"])
+        metars["offset"] = (metars["valid"] - pd.Timestamp("2024-08-29 00:00")).abs()
+        metars = metars.sort_values("offset").drop_duplicates("station")
+
+        def plot_metars(ax):
+            # keep the stations inside the map (with room for their labels), then thin them so labels don't overlap
+            west, east, south, north = ax.get_extent(ccrs.PlateCarree())
+            obs = metars[metars["lon"].between(west + 0.2, east - 0.2) & metars["lat"].between(south + 0.3, north - 0.3)]
+            obs = obs[reduce_point_density(np.column_stack([obs["lon"], obs["lat"]]), 0.35)]
+            ax.scatter(obs["lon"], obs["lat"], c=obs["dwpf"], cmap="BrBG", vmin=40, vmax=75, s=60,
+                       edgecolor="black", transform=ccrs.PlateCarree(), zorder=8)
+            for _, ob in obs.iterrows():
+                ax.text(ob["lon"], ob["lat"] + 0.12, f"{ob['dwpf']:.0f}", ha="center", va="bottom", fontsize=8,
+                        weight="bold", transform=ccrs.PlateCarree(), zorder=8)
+
+        layers["metars"] = plot_metars
+        save_sounding(data, out / "custom_map" / "metar_dewpoints.png", radar=None, map_zoom=3,
+                      map_layers=plot_metars, map_label="METAR DEWPOINTS (F), 00 UTC")
+
+    run_example("METAR dewpoints on the map", metar_example, strict=strict)
+
+    # 2. RAP analysis SBCAPE & MSLP from NOAA's RAP archive on AWS (same code as the tutorial)
+    def rap_example() -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            grib = f"{tmp}/rap.grib2"
+            fs = fsspec.filesystem("s3", anon=True)
+            fs.get("s3://noaa-rap-pds/rap.20240829/rap.t00z.awp130pgrbf00.grib2", grib)
+
+            def open_rap(keys):
+                return xr.open_dataset(grib, engine="cfgrib", backend_kwargs={"filter_by_keys": keys, "indexpath": ""})
+
+            cape = open_rap({"typeOfLevel": "surface", "stepType": "instant", "shortName": "cape"})["cape"].load()
+            mslp = (open_rap({"typeOfLevel": "meanSea"})["mslma"] / 100).load()
+            lat, lon = cape.latitude, cape.longitude
+
+            def plot_cape(ax):
+                ax.contourf(lon, lat, cape, levels=np.arange(250, 5001, 250), cmap="magma_r", alpha=0.6,
+                            transform=ccrs.PlateCarree(), zorder=3)
+
+            def plot_mslp(ax):
+                ax.contour(lon, lat, mslp, levels=np.arange(980, 1041, 2), colors="black", linewidths=1,
+                           transform=ccrs.PlateCarree(), zorder=7)
+
+            layers["cape"], layers["mslp"] = plot_cape, plot_mslp
+            save_sounding(data, out / "custom_map" / "rap_cape_mslp.png", radar=None, map_zoom=3,
+                          map_layers=[plot_cape, plot_mslp], map_label="RAP SBCAPE (J/kg) & MSLP (2 hPa)")
+
+    run_example("RAP SBCAPE & MSLP on the map", rap_example, strict=strict)
+
+    # 3. ...and everything at once (the tutorial's closing joke): single-site radar, CAPE, isobars & METARs
+    def everything_example() -> None:
+        save_sounding(data, out / "custom_map" / "everything.png", radar="single", map_zoom=3,
+                      map_layers=[layers["cape"], layers["mslp"], layers["metars"]],
+                      map_label="RAP SBCAPE & MSLP + METAR Td + RADAR")
+
+    if {"metars", "cape", "mslp"} <= set(layers):
+        run_example("Everything on the map", everything_example, strict=strict)
+
+
+# =============================================================================
 # MAIN
 # =============================================================================
 
@@ -765,6 +855,7 @@ VALID_SECTIONS = (
     "options",
     "data-sources",
     "composites",
+    "custom-map",
 )
 
 
@@ -857,6 +948,9 @@ def main() -> int:
 
     if "composites" in args.sections:
         make_composite_examples(out, args.strict)
+
+    if "custom-map" in args.sections:
+        make_custom_map_examples(out, args.strict)
 
     banner("GALLERY GENERATION FINISHED")
     print(f"Images written beneath: {out.resolve()}")

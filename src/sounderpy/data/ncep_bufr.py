@@ -58,10 +58,20 @@ STD_D = {
                '000018', '000019', '000020'],
 }
 
-NOMADS_RRFS = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com/rrfs/v1.0'
-RRFS_SOUNDING_CYCLES = 6      # NCEP only writes RRFS soundings for the 00, 06, 12 & 18Z runs
-NOMADS_RRFS_LATENCY = 3       # hours after a run starts before its soundings are usually posted
+NOMADS = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com'
 NOMADS_TIMEOUT = 20
+NOMADS_DAYS = 2               # NOMADS keeps about the last two days of runs
+# each model's NOMADS sounding files: 'path' is the station file, 'every' is how often a run with soundings
+# starts (hours), 'latency' is the hours after a run starts before its soundings are usually posted, and
+# 'short_runs' is the forecast length of the runs not in 'long_runs' (None: every run is a long run)
+NOMADS_MODELS = {
+    'rrfs': {'path': 'rrfs/v1.0/rrfs.{run:%Y%m%d}/{run:%H}/bufrsnd.t{run:%H}z/bufr.{stnm:06d}.{run:%Y%m%d%H}',
+             'every': 6, 'latency': 3, 'long_runs': (0, 6, 12, 18), 'short_runs': None},
+    'hrrr': {'path': 'hrrr/prod/hrrr.{run:%Y%m%d}/conus/bufrsnd.t{run:%H}z/bufr.{stnm:06d}.{run:%Y%m%d%H}',
+             'every': 1, 'latency': 2, 'long_runs': (0, 6, 12, 18), 'short_runs': 18},
+    'rap':  {'path': 'rap/prod/rap.{run:%Y%m%d}/bufrsnd.t{run:%H}z/bufr.{stnm:06d}.{run:%Y%m%d%H}',
+             'every': 1, 'latency': 2, 'long_runs': (3, 9, 15, 21), 'short_runs': 21},
+}
 
 
 
@@ -409,45 +419,55 @@ def to_bufkit_lines(run_time, profiles):
 
 
 ###############
-# NOMADS RRFS ACCESS
+# NOMADS ACCESS (RRFS, HRRR & RAP)
 #########################################################################
 
-def nomads_rrfs_url(stnm, run_dt):
-    return (f'{NOMADS_RRFS}/rrfs.{run_dt:%Y%m%d}/{run_dt:%H}/bufrsnd.t{run_dt:%H}z/'
-            f'bufr.{int(stnm):06d}.{run_dt:%Y%m%d%H}')
+def nomads_url(model, stnm, run_dt):
+    return f"{NOMADS}/{NOMADS_MODELS[model]['path'].format(run=run_dt, stnm=int(stnm))}"
 
 
 
-def latest_expected_rrfs_run(now=None):
-    # the newest RRFS run whose soundings should be posted by now
+def latest_expected_run(model, now=None):
+    # the newest run whose soundings should be posted by now
+    every = NOMADS_MODELS[model]['every']
     now = now or datetime.now(timezone.utc).replace(tzinfo=None)
-    t = now - timedelta(hours=NOMADS_RRFS_LATENCY)
-    return t.replace(hour=t.hour - t.hour % RRFS_SOUNDING_CYCLES, minute=0, second=0, microsecond=0)
+    t = now - timedelta(hours=NOMADS_MODELS[model]['latency'])
+    return t.replace(hour=t.hour - t.hour % every, minute=0, second=0, microsecond=0)
 
 
 
-def fetch_nomads_rrfs(stnm, run_dt):
-    # download one station's RRFS BUFR soundings from NOMADS and return BUFKIT text lines
-    with urlopen(nomads_rrfs_url(stnm, run_dt), timeout=NOMADS_TIMEOUT) as resp:
+def run_reaches(model, run_dt, fcst_hour):
+    # whether a run goes out to fcst_hour: the HRRR & RAP only run their full length at some hours
+    short_runs = NOMADS_MODELS[model]['short_runs']
+    return short_runs is None or run_dt.hour in NOMADS_MODELS[model]['long_runs'] or int(fcst_hour) <= short_runs
+
+
+
+def fetch_nomads(model, stnm, run_dt):
+    # download one station's BUFR soundings from NOMADS and return BUFKIT text lines
+    with urlopen(nomads_url(model, stnm, run_dt), timeout=NOMADS_TIMEOUT) as resp:
         data = resp.read()
     run_time, profiles = decode_soundings(data)
     return to_bufkit_lines(run_time, profiles)
 
 
 
-def newest_nomads_rrfs(stnm, newer_than=None, tries=8):
-    # walk back from the newest expected run until NOMADS has one (NOMADS keeps about two days)
-    run_dt = latest_expected_rrfs_run()
-    for _ in range(tries):
+def newest_nomads(model, stnm, newer_than=None, fcst_hour=0, tries=8):
+    # walk back from the newest expected run until NOMADS has one that reaches fcst_hour
+    run_dt = latest_expected_run(model)
+    oldest = run_dt - timedelta(days=NOMADS_DAYS)
+    while tries > 0 and run_dt > oldest:
         if newer_than is not None and run_dt <= newer_than:
             return None, None
-        try:
-            return run_dt, fetch_nomads_rrfs(stnm, run_dt)
-        except HTTPError as e:
-            if e.code not in (403, 404):
-                raise
-        except ValueError:
-            # the file may still be uploading; try the run before it
-            pass
-        run_dt -= timedelta(hours=RRFS_SOUNDING_CYCLES)
+        if run_reaches(model, run_dt, fcst_hour):
+            tries -= 1
+            try:
+                return run_dt, fetch_nomads(model, stnm, run_dt)
+            except HTTPError as e:
+                if e.code not in (403, 404):
+                    raise
+            except ValueError:
+                # the file may still be uploading; try the run before it
+                pass
+        run_dt -= timedelta(hours=NOMADS_MODELS[model]['every'])
     return None, None

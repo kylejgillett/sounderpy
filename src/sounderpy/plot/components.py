@@ -577,7 +577,17 @@ def _plot_skewt_layer_annotations(skew, data, snd_params, theme, layers=("lapse_
         _plot_labeled_layer(0.175, thermo["lr_max"][1:3], f"{np.round(thermo['lr_max'][0], 1)}\n°C/km", theme["lapse_max"], 0.8, 0.6)
 
     if "eil" in layers and _has_eil(kinem):
-        _plot_labeled_layer(0.19, kinem["eil"], "EIL", theme["eil"], 1, 1, linewidth=4, ticks=True)
+        # far enough right of the lapse rate layer that the two labels don't touch
+        eil_x = 0.22
+        _plot_labeled_layer(eil_x, kinem["eil"], "EIL", theme["eil"], 1, 1, linewidth=4, ticks=True)
+        # EIL bottom and top heights (km AGL) beside the end ticks
+        intrp = snd_params["intrp"]
+        for bound in kinem["eil"]:
+            if bound < skew.ax.get_ylim()[1]:
+                continue
+            height = np.interp(np.log(bound), np.log(intrp["pINTRP"][::-1]), intrp["zINTRP"][::-1])
+            skew.ax.text(eil_x + 0.015, bound, "SFC" if height < 50 else f"{height / 1000:.1f} km", weight="bold",
+                         color=theme["eil"], ha="left", va="center", fontsize=FONT_SIZES["small"], transform=transform, clip_on=True)
 
     if "growth_zone" in layers:
         if T[0].m < 5:
@@ -1080,6 +1090,10 @@ def _setup_map_inset(map_ax, latlon, theme, map_zoom=2, show_satellite=True, sat
     # map_ax needs a cartopy projection (e.g., fig.add_axes(rect, projection=ccrs.PlateCarree()))
     lat, lon = latlon
     west, east, south, north = lon - map_zoom, lon + map_zoom, lat - map_zoom / 1.6, lat + map_zoom * 1.6
+    # trim the top and bottom to a square now, as the square box (set_box_aspect) would when drawn, so
+    # map_ax.get_extent() gives the extent that's shown (e.g. in a map_layers function)
+    trim = ((north - south) - (east - west)) / 2
+    south, north = south + trim, north - trim
     bounds = (west - 0.5, south - 0.5, east + 0.5, north + 0.5)
 
     # map border
@@ -1105,9 +1119,9 @@ def _setup_map_inset(map_ax, latlon, theme, map_zoom=2, show_satellite=True, sat
     return map_ax
 
 
-def _add_map_label(map_ax, text, theme):
-    """Add a boxed label to the bottom of the map."""
-    label = map_ax.text(0.50, 0.03, text, transform=map_ax.transAxes, ha="center", va="bottom", alpha=0.9, weight="bold",
+def _add_map_label(map_ax, text, theme, y=0.03, va="bottom"):
+    """Add a boxed label to the map, at its bottom unless told otherwise."""
+    label = map_ax.text(0.50, y, text, transform=map_ax.transAxes, ha="center", va=va, alpha=0.9, weight="bold",
                         fontsize=FONT_SIZES["small"], zorder=13, color=theme["text"], bbox=dict(facecolor=theme["background"], alpha=0.8, edgecolor=theme["border"], pad=3))
     _fit_text(label, map_ax, 0.92)
 
@@ -1177,6 +1191,27 @@ def _plot_map_single_site_radar(map_ax, sounding_data, radar_time, theme, reflec
             _add_map_label(map_ax, "RADAR UNAVAILABLE", theme)
         return False
 
+
+
+def _plot_map_layers(map_ax, map_layers, map_label, theme):
+    """Draw the user's own data on the map: each map_layers function gets the map axes (cartopy PlateCarree),
+    and map_label goes in a box at the top of the map (the radar's label is at the bottom)."""
+    if map_layers is not None:
+        layers = map_layers if isinstance(map_layers, (list, tuple)) else [map_layers]
+        for layer in layers:
+            if not callable(layer):
+                raise TypeError(f"map_layers takes a function (or a list of them) that draws on the map axes, not {type(layer).__name__}")
+            layer(map_ax)
+    if map_label:
+        _add_map_label(map_ax, map_label, theme, y=0.97, va="top")
+
+
+def _warn_unused_map_layers(map_zoom, map_layers, map_label):
+    """Warn when map_layers or map_label are given but map_zoom=0 hides the map."""
+    unused = [name for name, value in (("map_layers", map_layers), ("map_label", map_label)) if value]
+    if map_zoom <= 0 and unused:
+        warnings.warn(f"{' and '.join(unused)} {'needs' if len(unused) == 1 else 'need'} the map, which map_zoom=0 hides; ignoring "
+                      f"{'it' if len(unused) == 1 else 'them'}.", SounderPyWarning)
 
 
 def _plot_map_profile_location(map_ax, latlon, theme, marker_size=90, center_size=16):
@@ -1932,15 +1967,21 @@ def _get_zoomed_background_lines(skew, target=12):
         p = np.array([ylim[0], ylim[0], p_top, p_top])
         return p * units.hPa, (np.array([left, right, left, right]) - _zoom_lean(p, ylim) * (right - left)) * units.degC
 
-    def spaced(values, steps=(1, 2, 5, 10)):
+    def spaced(values, steps=(1, 2, 5, 10, 20)):
         """About `target` evenly spaced round values covering a range, in degC."""
         step = next((step for step in steps if np.ptp(values) / step <= target), steps[-1])
         return np.arange(step * np.floor(values.min() / step), values.max() + step, step) * units.degC
 
+    def wet_bulb_potential_temperature(p, t):
+        """Each corner's moist adiabat followed down to 1000 hPa, in degC. MetPy's wet_bulb_potential_temperature
+        is an approximation that blows up (thousands of degC) at the hot corner of a wide zoomed view."""
+        return np.array([mpcalc.moist_lapse(units.Quantity([p_i.m, 1000], "hPa"), t_i, p_i)[-1].to("degC").m
+                         for p_i, t_i in zip(p, t)])
+
     p, t = corners(ylim[1])
     pressure = np.linspace(*ylim, 50) * units.hPa
     lines = {"dry": {"t0": spaced(mpcalc.potential_temperature(p, t).to("degC").m), "pressure": pressure},
-             "moist": {"t0": spaced(mpcalc.wet_bulb_potential_temperature(p, t, t).to("degC").m), "pressure": pressure},
+             "moist": {"t0": spaced(wet_bulb_potential_temperature(p, t)), "pressure": pressure},
              "mixing": {"mixing_ratio": np.array([]), "pressure": pressure}}
     if ylim[0] > 600:
         p, t = corners(max(ylim[1], 600))

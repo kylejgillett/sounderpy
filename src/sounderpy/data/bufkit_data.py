@@ -147,42 +147,44 @@ def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_ho
         buf_file = urlopen(data_conn)
         buf_file = [str(line).replace("b'", "").replace("\\r\\n'", "") for line in buf_file]
     except (HTTPError, URLError):
-        if model != 'rrfs':
+        if model not in ncep_bufr.NOMADS_MODELS:
             raise
         buf_file = None
 
 
 
-    # RRFS BACKUP: NCEP'S OWN BUFR SOUNDINGS ON NOMADS
-    # PSU & IEM sometimes fall behind or miss RRFS runs, so fall back to decoding NCEP's
+    # RRFS, HRRR & RAP BACKUP: NCEP'S OWN BUFR SOUNDINGS ON NOMADS
+    # PSU & IEM sometimes fall behind or miss runs, so fall back to decoding NCEP's
     # BUFR soundings when their file is missing, or older than the newest run NCEP has posted
-    if model == 'rrfs':
+    if model in ncep_bufr.NOMADS_MODELS:
+        name = model.upper()
         stnm = BUFKIT_STATIONS[BUFKIT_STATIONS['ID'] == station]['NUM'].values[0]
         if run_year == None:
             buf_run = _bufkit_run_time(buf_file) if buf_file else None
-            if buf_run is None or buf_run < ncep_bufr.latest_expected_rrfs_run():
+            if buf_run is None or buf_run < ncep_bufr.latest_expected_run(model):
                 try:
-                    nomads_run, nomads_file = ncep_bufr.newest_nomads_rrfs(stnm, newer_than=buf_run)
+                    nomads_run, nomads_file = ncep_bufr.newest_nomads(model, stnm, newer_than=buf_run, fcst_hour=fcst_hour)
                 except (OSError, ValueError, NotImplementedError, KeyError) as e:
                     # never let the backup source break a request PSU can still serve
-                    print(f"    > could not get RRFS data from NCEP NOMADS ({type(e).__name__}: {e})")
+                    print(f"    > could not get {name} data from NCEP NOMADS ({type(e).__name__}: {e})")
                     nomads_file = None
                 if nomads_file:
-                    print(f"    > PSU RRFS file is {'missing' if buf_run is None else f'from the {buf_run:%m/%d %H}Z run'}; "
+                    print(f"    > PSU {name} file is {'missing' if buf_run is None else f'from the {buf_run:%m/%d %H}Z run'}; "
                           f"using the newer {nomads_run:%m/%d %H}Z run from NCEP NOMADS")
                     buf_file = nomads_file
-                    data_source = 'NCEP NOMADS RRFS BUFR'
+                    data_source = f'NCEP NOMADS {name} BUFR'
         elif buf_file is None:
             try:
-                buf_file = ncep_bufr.fetch_nomads_rrfs(stnm, datetime(int(run_year), int(run_month), int(run_day), int(run_hour)))
-                print("    > RRFS run not found at IEM; using NCEP NOMADS")
-                data_source = 'NCEP NOMADS RRFS BUFR'
+                buf_file = ncep_bufr.fetch_nomads(model, stnm, datetime(int(run_year), int(run_month), int(run_day), int(run_hour)))
+                print(f"    > {name} run not found at IEM; using NCEP NOMADS")
+                data_source = f'NCEP NOMADS {name} BUFR'
             except (OSError, ValueError, NotImplementedError, KeyError):
                 pass
         if buf_file is None:
             raise ValueError(
-                f"No RRFS BUFKIT data was found for {station} at PSU/IEM or NCEP NOMADS. "
-                f"RRFS soundings are only made for the 00, 06, 12 & 18Z runs, and NOMADS only keeps about two days")
+                f"No {name} BUFKIT data was found for {station} at PSU/IEM or NCEP NOMADS. "
+                + ("RRFS soundings are only made for the 00, 06, 12 & 18Z runs, and " if model == 'rrfs' else "")
+                + "NOMADS only keeps about two days")
 
 
     if clean_it:

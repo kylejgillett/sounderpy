@@ -82,6 +82,7 @@ from .components import (_clip_skewt_text,
                          _plot_indices_box,
                          _plot_kinematics_table,
                          _plot_logo,
+                         _plot_map_layers,
                          _plot_map_mosaic_radar,
                          _plot_map_profile_location,
                          _plot_map_single_site_radar,
@@ -146,7 +147,8 @@ from .components_winter import (_plot_clouds,
 
 def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels=None, 
                     radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None,
-                    show_theta=False, hodo_boundary=None, dpi=100, max_levels=250, ylim=None, theme_overrides=None, sr_hodo=False):
+                    show_theta=False, hodo_boundary=None, dpi=100, max_levels=250, ylim=None, theme_overrides=None, sr_hodo=False,
+                    map_layers=None, map_label=None):
     
     # record process time 
     st = time.time()
@@ -326,6 +328,8 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
         elif radar in ("single-site", "single"):
             _plot_map_single_site_radar(map_ax, clean_data, radar_time, theme)
 
+        # the user's own data (map_layers) & label
+        _plot_map_layers(map_ax, map_layers, map_label, theme)
         _plot_map_profile_location(map_ax, latlon, theme)
         
 
@@ -425,7 +429,8 @@ def _resolve_sounding_mode(mode, clean_data, modify_sfc=None, max_levels=250):
 ########################### WINTER SOUNDING #############################
 
 def __winter_sounding(clean_data, color_blind, dark_mode, storm_motion='right_moving', radar='mosaic', radar_time='sounding',
-                      map_zoom=2, modify_sfc=None, dpi=100, max_levels=250, ylim=None, theme_overrides=None, show_obs=False):
+                      map_zoom=2, modify_sfc=None, dpi=100, max_levels=250, ylim=None, theme_overrides=None, show_obs=False,
+                      map_layers=None, map_label=None):
 
     # record process time
     st = time.time()
@@ -558,6 +563,8 @@ def __winter_sounding(clean_data, color_blind, dark_mode, storm_motion='right_mo
                                         reflectivity_min=WINTER_REFLECTIVITY_MIN,
                                         reflectivity_max=WINTER_REFLECTIVITY_MAX)
 
+        # the user's own data (map_layers) & label
+        _plot_map_layers(map_ax, map_layers, map_label, theme)
         _plot_map_profile_location(map_ax, latlon, theme)
 
 
@@ -613,7 +620,7 @@ def __winter_sounding(clean_data, color_blind, dark_mode, storm_motion='right_mo
 ############################ HODOGRAPH ##################################
 
 def _build_hodograph_figure(snd_params, site_data, titles, dark_mode, storm_motion, sr_hodo,
-                            radar, radar_time, map_zoom, hodo_boundary, dpi, theme_overrides=None):
+                            radar, radar_time, map_zoom, hodo_boundary, dpi, theme_overrides=None, map_layers=None, map_label=None):
     """Build a hodograph figure from calculated parameters, shared by sounding and VAD data.
 
     Data with thermodynamics gets the stepwise CAPE/CIN panel and parcel values. Wind-only data gets
@@ -683,6 +690,8 @@ def _build_hodograph_figure(snd_params, site_data, titles, dark_mode, storm_moti
         elif radar in ("single-site", "single"):
             _plot_map_single_site_radar(map_ax, site_data, radar_time, theme)
 
+        # the user's own data (map_layers) & label
+        _plot_map_layers(map_ax, map_layers, map_label, theme)
         _plot_map_profile_location(map_ax, latlon, theme)
 
 
@@ -729,7 +738,8 @@ def _build_hodograph_figure(snd_params, site_data, titles, dark_mode, storm_moti
 
 
 def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc,
-                     radar, radar_time, map_zoom, hodo_boundary, dpi, max_levels=250, theme_overrides=None):
+                     radar, radar_time, map_zoom, hodo_boundary, dpi, max_levels=250, theme_overrides=None,
+                     map_layers=None, map_label=None):
 
     print(f'    > PREPARING DATA')
     sounding_data = _prepare_sounding_data(clean_data, modify_sfc, max_levels)
@@ -738,7 +748,7 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc,
     snd_params = sounding_params(sounding_data, storm_motion, include_all_parcels=True, parcel_depth=STABILITY_PANEL_DEPTH).calc()
 
     return _build_hodograph_figure(snd_params, sounding_data, clean_data["titles"], dark_mode, storm_motion, sr_hodo,
-                                   radar, radar_time, map_zoom, hodo_boundary, dpi, theme_overrides)
+                                   radar, radar_time, map_zoom, hodo_boundary, dpi, theme_overrides, map_layers, map_label)
 
 
 
@@ -900,7 +910,8 @@ def __composite_sounding(data_list, shade_between, cmap, colors, linestyles, alp
 #########################################################################
 ########################### VAD HODOGRAPH ###############################
 
-def __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo, radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, theme_overrides=None):
+def __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo, radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, theme_overrides=None,
+                    map_layers=None, map_label=None):
 
     print(f'    > PREPARING DATA')
     vad_result = vad_params(vad_data, storm_motion).calc()
@@ -913,4 +924,4 @@ def __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo, radar='mosaic', 
               "right_title": f"{site['site-id']} - {site['site-name']} | {site['site-latlon'][0]}, {site['site-latlon'][1]}"}
 
     return _build_hodograph_figure({"kinem": kinem, "intrp": intrp}, vad_data, titles, dark_mode, storm_motion, sr_hodo,
-                                   radar, radar_time, map_zoom, hodo_boundary, dpi, theme_overrides)
+                                   radar, radar_time, map_zoom, hodo_boundary, dpi, theme_overrides, map_layers, map_label)

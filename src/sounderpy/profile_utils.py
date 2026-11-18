@@ -3,6 +3,7 @@ import numpy as np
 from scipy.interpolate import interp1d
 from metpy.units import units
 from scipy.ndimage import gaussian_filter
+from scipy.signal import savgol_filter
 from metpy.units import units as mpunits
 
 
@@ -20,11 +21,28 @@ from metpy.units import units as mpunits
 
 
 # PROFILE SMOOTHING SCHEME
-def smooth_profile(clean_data, sigma=0.5):
+# kwargs - 'method': 'savgol' (Savitzky-Golay, default) or 'gaussian';
+# 'sigma': the gaussian kernel's standard deviation (passing it alone picks 'gaussian', as before 3.3.0);
+# 'window_length' & 'polyorder': the Savitzky-Golay window (levels, odd) and polynomial order
+def smooth_profile(clean_data, sigma=None, method=None, window_length=5, polyorder=2):
+    if method is None:
+        method = 'gaussian' if sigma is not None else 'savgol'
+    if method not in ('savgol', 'sg', 'gaussian'):
+        raise ValueError(f"method must be 'savgol' ('sg') or 'gaussian', not '{method}'")
+    if sigma is None:
+        sigma = 0.5
+
     for key in clean_data.keys():
         try:
             unit = clean_data[key].units
-            clean_data[key] = gaussian_filter(clean_data[key], sigma)*mpunits(str(unit))
+            values = np.asarray(clean_data[key].m)
+            if method in ['savgol', 'sg']:
+                # the window can't be longer than the profile, and has to be odd
+                window = min(window_length, values.size if values.size % 2 else values.size - 1)
+                values = savgol_filter(values, window, min(polyorder, window - 1))
+            else:
+                values = gaussian_filter(values, sigma)
+            clean_data[key] = values*mpunits(str(unit))
         except:
             pass
     return clean_data

@@ -35,8 +35,7 @@ from .data.rapruc_grib_retriever import get_rapruc_data
 
 # OLD MODULE PATHS
 # the data modules moved into sounderpy.data in 3.3.0. The old paths (e.g. `from sounderpy.bufkit_data
-# import fetch_bufkit`) still work through these stand-ins, which show a FutureWarning when used.
-# Remove this block, and the old paths with it, in a later release.
+# import fetch_bufkit`) still work through these stand-ins with a FutureWarning.
 import sys as _sys
 import types as _types
 import warnings as _warnings

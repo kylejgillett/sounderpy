@@ -73,14 +73,10 @@ def modify_surface(clean_data, modify_sfc):
     warmer surface gives a superadiabatic layer of that depth and the profile above it is
     unchanged. Dewpoint is capped at the temperature.
 
-    Holzworth, G. C., 1964: Estimates of mean maximum mixing depths in the contiguous
-        United States. Mon. Wea. Rev., 92, 235-242.
-    Betts, A. K., 1973: Non-precipitating cumulus convection and its parameterization.
-        Quart. J. Roy. Meteor. Soc., 99, 178-196.
-    Carson, D. J., 1973: The development of a dry inversion-capped convectively unstable
-        boundary layer. Quart. J. Roy. Meteor. Soc., 99, 450-467.
-    Tennekes, H., 1973: A model for the dynamics of the inversion above a convective
-        boundary layer. J. Atmos. Sci., 30, 558-567.
+    Holzworth, G. C., 1964: Estimates of mean maximum mixing depths in the contiguous United States. Mon. Wea. Rev., 92, 235-242.
+    Betts, A. K., 1973: Non-precipitating cumulus convection and its parameterization. Quart. J. Roy. Meteor. Soc., 99, 178-196.
+    Carson, D. J., 1973: The development of a dry inversion-capped convectively unstable boundary layer. Quart. J. Roy. Meteor. Soc., 99, 450-467.
+    Tennekes, H., 1973: A model for the dynamics of the inversion above a convective boundary layer. J. Atmos. Sci., 30, 558-567.
     """
 
     method = modify_sfc.get('method', 'mix')
@@ -90,11 +86,11 @@ def modify_surface(clean_data, modify_sfc):
     if method == 'blend' and not depth > 0:
         raise ValueError(f"modify_sfc 'depth' must be a height in m above 0. Got: {depth!r}")
 
+    # prep sounding data
     sounding_data = copy.deepcopy(clean_data)
     p = sounding_data['p'].to(units.hPa)
     T = sounding_data['T'].to(units.degC)
     Td = sounding_data['Td'].to(units.degC)
-
     T_sfc = modify_sfc.get('T', T[0].m) * units.degC
     Td_sfc = min(modify_sfc.get('Td', Td[0].m), T_sfc.m) * units.degC
 
@@ -208,10 +204,10 @@ def mag(param):
         fixed = '---'
     else:
         try:
-            fixed = int(param.m)
+            fixed = int(np.round(param.m))
         except:
             try:
-                fixed = int(param)
+                fixed = int(np.round(param))
             except:
                 fixed = param
     return fixed
@@ -317,7 +313,7 @@ def make_sfc_based_3D(arr, sfc_arr):
 def find_station(ids, station_id, k_prefix=False, required=True, hint=''):
     '''
     Return the row label of a station ID in a column of station IDs, matching the whole ID
-    (ignoring case & padding) instead of any ID that contains it
+    (ignoring case & padding)
 
     :param ids: the column of station IDs to search, such as ``BUFKIT_STATIONS['ID']``
     :type ids: pandas.Series, required
@@ -365,10 +361,8 @@ def load_raob_stations():
     Return SounderPy's radiosonde station list (WMO, ICAO & IGRAv2 IDs) as a ``pandas.DataFrame``
 
     The list ships with SounderPy (``sounderpy/RAOB-STATIONS-MASTER.csv``) and is read once per session.
-    It is built by ``tools/build_station_list.py`` (which keeps its own copy in ``tools/station_list/``)
-    and copied into the package with ``build ... --install``. Every column is text, so WMO
-    numbers keep their leading zeros (``'01001'``). The file's columns are lined up with spaces after
-    each comma, which are skipped when reading.
+    Every column is text, so WMO numbers keep their leading zeros (``'01001'``). The file's columns are 
+    lined up with spaces after each comma, which are skipped when reading.
 
     :return: one row per station
     :rtype: pandas.DataFrame

@@ -221,14 +221,20 @@ Example:
 Smooth a profile
 -----------------
 
-Apply a simple ``SciPy`` gaussian smoother to a SounderPy ``clean_data`` profile
+Apply a ``SciPy`` Savitzky-Golay or gaussian smoother to a SounderPy ``clean_data`` profile
 
-.. py:function:: spy.smooth_profile(clean_data, sigma)
+.. py:function:: spy.smooth_profile(clean_data, sigma=None, method=None, window_length=5, polyorder=2)
 
    :param clean_data: a SounderPy ``clean_data`` dictionary.
    :type clean_data: dict, required
-   :param sigma: standard deviation of the Gaussian kernel. Larger values produce stronger smoothing.
+   :param sigma: standard deviation of the gaussian kernel. Larger values produce stronger smoothing. Passing ``sigma`` without a ``method`` uses the gaussian smoother, as before SounderPy 3.3.0.
    :type sigma: float, optional, default is ``0.5``
+   :param method: ``'savgol'`` (a Savitzky-Golay filter, which keeps peaks and inversions sharper) or ``'gaussian'``.
+   :type method: str, optional, default is ``'savgol'`` (``'gaussian'`` when only ``sigma`` is given)
+   :param window_length: the number of levels in the Savitzky-Golay window (odd). Larger values produce stronger smoothing.
+   :type window_length: int, optional, default is ``5``
+   :param polyorder: the order of the polynomial fit in each Savitzky-Golay window. Lower values produce stronger smoothing.
+   :type polyorder: int, optional, default is ``2``
    :return: a ``clean_data`` dictionary with smoothed values for z, T, Td, u, v, and p. Metadata remains unchanged.
    :rtype: dict
 
@@ -240,7 +246,8 @@ Here is an (extreme) example:
     # load in some sounding data
     clean_data = spy.get_obs_data("OAX", "2014", "06", "16", "18")
 
-    smoothed_profile = spy.smooth_profile(clean_data, 3)
+    smoothed_profile = spy.smooth_profile(clean_data, 3)                             # gaussian, sigma = 3
+    # smoothed_profile = spy.smooth_profile(clean_data, window_length=11, polyorder=2)  # Savitzky-Golay
     spy.build_sounding(smoothed_profile, radar=None, special_parcels='simple')
 
 .. image:: /_static/images/smoothed_profile_example.png

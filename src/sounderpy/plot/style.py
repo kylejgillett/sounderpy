@@ -59,7 +59,7 @@ BASE_THEME = {# skew-t profiles
 
               # skew-t annotations
               "pbl": "gray",
-              "eil": "lightblue",
+              "eil": "#4a9fd0",
               "dgz": "blue",
               "hgz": "green",
               "lapse_max": "firebrick",
