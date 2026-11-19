@@ -1,3 +1,9 @@
+"""
+    SOUNDERPY: vertical profile data retrieval and analysis tool for Python
+
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2026
+"""
+
 # __init__.py
 from .sounderpy import get_model_data 
 from .sounderpy import get_obs_data 

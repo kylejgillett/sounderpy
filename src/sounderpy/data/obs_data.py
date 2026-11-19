@@ -1,3 +1,30 @@
+"""
+    SOUNDERPY RAOB OBSERVATIONS DATA
+
+    Purpose of module:
+
+    Load and parse observed radiosonde (RAOB) profiles into SounderPy `clean_data` dictionaries, from
+    the University of Wyoming archive and the Integrated Global Radiosonde Archive (IGRA v2), using
+    SounderPy's packaged station list to match WMO, ICAO, and IGRA IDs. Called by spy.get_obs_data().
+
+    Docs:
+        RAOB data:      https://sounderpy.app/docs/reference/gettingdata.html#observed-data-raob-igrav2-profiles
+        RAOB sites:     https://sounderpy.app/docs/reference/gettingdata.html#available-raob-sites
+        RAOB tutorial:  https://sounderpy.app/docs/tutorials/data_sources.html#observed-raob-igra-profiles
+
+    References:
+        University of Wyoming upper air soundings: https://weather.uwyo.edu/upperair/sounding.shtml
+            (observed soundings)
+        Durre, I., X. Yin, R. S. Vose, S. Applequist, and J. Arnfield, 2018: Enhancing the data coverage in
+            the Integrated Global Radiosonde Archive. J. Atmos. Oceanic Technol., 35, 1753-1770,
+            https://doi.org/10.1175/JTECH-D-17-0223.1 (IGRA v2)
+        May, R. M., S. C. Arms, J. R. Leeman, and J. Chastang, 2017: Siphon: A collection of Python
+            utilities for accessing remote atmospheric and oceanic datasets. Unidata,
+            https://doi.org/10.5065/D6CN72NW (Wyoming and IGRA readers)
+
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2026
+"""
+
 import re
 import struct
 import time
@@ -17,26 +44,6 @@ from siphon.simplewebservice.igra2 import IGRAUpperAir
 
 from ..utils import find_raob_station, raob_station_has_no_known_data, split_display_name
 from ..calc import sounding_params
-
-
-
-
-
-
-
-"""
-    SOUNDERPY RAOB OBSERVATIONS 'GET-DATA' FUNCTIONS  
-
-    Purpose of module: 
-
-    House function for loading and parsing RAOB & IGRAv2 observation
-    data. Functions here are referenced by sounderpy.py
-
-
-    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2026
-"""
-
-
 
 
 def _choose_profile_stride(values, target_len=300):
@@ -266,7 +273,7 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
     except ValueError as e:
         raise ValueError(
             f"{e}\nIf you think this is an error, contact the author: "
-            "https://kylejgillett.github.io/sounderpy/user_guide/about.html#about-the-author"
+            "https://sounderpy.app/docs/user_guide/about.html#about-the-author"
         ) from None
 
     if raob_station_has_no_known_data(row):

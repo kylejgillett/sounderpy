@@ -1,3 +1,30 @@
+"""
+    SOUNDERPY RAP-RUC DATA RETRIEVAL - from NCEI and AWS
+
+    Purpose of module:
+
+    Downloads RAP/RUC GRIB files from AWS and NCEI's archive for the requested date
+    (NCEI no longer serves the NetCDF subsets earlier versions used).
+
+    Part of this script is based on the AWS method used by Chase Archive.
+
+    Docs:
+        reanalysis data:   https://sounderpy.app/docs/reference/gettingdata.html#model-reanalysis-data-rap-ruc-era5-ncep
+        RAP/RUC tutorial:  https://sounderpy.app/docs/tutorials/data_sources.html#rap-ruc-reanalysis
+
+    References:
+        Benjamin, S. G., and Coauthors, 2016: A North American hourly assimilation and model forecast cycle:
+            The Rapid Refresh. Mon. Wea. Rev., 144, 1669-1694, https://doi.org/10.1175/MWR-D-15-0242.1 (RAP)
+        NOAA Rapid Refresh (RAP) on AWS: https://registry.opendata.aws/noaa-rap/ (RAP GRIB files, 2021 on)
+        NCEI Rapid Refresh / Rapid Update Cycle archive:
+            https://www.ncei.noaa.gov/products/weather-climate-models/rapid-refresh-update (RAP/RUC GRIB
+            archive)
+        fsspec / s3fs: filesystem interfaces for Python. https://filesystem-spec.readthedocs.io/ (AWS
+            downloads)
+
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2026
+"""
+
 from __future__ import annotations
 
 import tempfile
@@ -11,23 +38,6 @@ import warnings
 
 from .rapruc_grib_parser import parse_rapruc_grib, subset_rapruc_grib
 from ..calc import *
-
-
-"""
-    SOUNDERPY NEW RAP-RUC DATA RETRIEVAL - from NCEI and AWS   
-
-    Purpose of module: 
-
-    A new way to download and plot RAP/RUC data as previous option using .nc
-    has been essentially discontinued by NCEI. This version searches AWS and 
-    existsing NCEI *grib* datasets for the requested date.
-    
-    Part of this script is based on the AWS method used by Chase Archive.
-
-
-    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2026
-"""
-
 
 
 AWS_BUCKET = "noaa-rap-pds"

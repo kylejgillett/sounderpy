@@ -1,8 +1,17 @@
-"""Command-line interface for SounderPy.
+"""
+    SOUNDERPY CLI
 
-The CLI is intentionally a thin wrapper around SounderPy's public Python API.
-Scientific calculations, retrieval, plotting, and export logic remain in the
-package modules themselves.
+    Purpose of module:
+
+    The `sounderpy` command line tool: get profiles, export them, print their parameters, and plot
+    soundings and hodographs from a shell. It is a thin wrapper around SounderPy's Python functions,
+    so the calculations, data retrieval, plotting, and file export all live in the package modules.
+
+    Docs:
+        command line tool:       https://sounderpy.app/docs/reference/cli.html
+        command line workflows:  https://sounderpy.app/docs/tutorials/cli_workflows.html
+
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2026
 """
 
 from __future__ import annotations
@@ -1028,7 +1037,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"sounderpy: error: {exc}", file=sys.stderr)
         return 2
     except SystemExit as exc:
-        # Some legacy SounderPy internals currently call sys.exit().
+        # some SounderPy functions call sys.exit() on errors; report them like any other error
         if exc.code not in (None, 0):
             print(f"sounderpy: error: {exc.code}", file=sys.stderr)
             return 1

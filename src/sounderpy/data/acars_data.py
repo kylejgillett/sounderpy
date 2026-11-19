@@ -1,3 +1,28 @@
+"""
+    SOUNDERPY ACARS DATA
+
+    Purpose of module:
+
+    List and load ACARS aircraft profiles from the University of Oklahoma's archive and parse them into
+    SounderPy `clean_data` dictionaries. `acars_data(year, month, day, hour)` lists the profiles for an
+    hour, and `.get_profile(profile_id)` returns one.
+
+    Docs:
+        ACARS data:      https://sounderpy.app/docs/reference/gettingdata.html#observed-data-acars-aircraft-profiles
+        ACARS tutorial:  https://sounderpy.app/docs/tutorials/data_sources.html#acars-aircraft-profiles
+
+    References:
+        University of Oklahoma ACARS sounding archive: https://sharp.weather.ou.edu/soundings/acars/ (ACARS
+            profiles)
+        Moninger, W. R., R. D. Mamrosh, and P. M. Pauley, 2003: Automated meteorological reports from
+            commercial aircraft. Bull. Amer. Meteor. Soc., 84, 203-216,
+            https://doi.org/10.1175/BAMS-84-2-203 (ACARS aircraft observations)
+        Richardson, L.: Beautiful Soup. https://www.crummy.com/software/BeautifulSoup/ (ACARS archive
+            listings)
+
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2026
+"""
+
 ### IMPORT SOFTWARE ###
 #########################################################################################################
 import time
@@ -14,25 +39,6 @@ from metpy.units import units
 
 from ..calc import *
 from ..utils import find_station
-
-
-
-"""
-    SOUNDERPY ACARS 'GET-DATA' FUNCTIONS  
-
-    Purpose of module: 
-
-    House functions for loading and parsing ACARS profiles and 
-    ACARS profile data. Functions here are explicitly called by
-    the user.
-
-
-    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024
-"""
-
-
-
-
 
 
 # define acars data class

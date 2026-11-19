@@ -8,10 +8,59 @@
     a `winter` dict to what it returns.
 
     Sources are noted beside each parameter: [peer-reviewed] journal articles, [operational] SPC/NWS
-    practice that isn't formally published, [informal] methods without a paper, and [prototype]
-    choices made for the winter prototype that still need review.
+    practice that isn't formally published, [informal] methods without a paper, and [SounderPy]
+    SounderPy's own choices, not from a paper.
 
-    (C) KYLE J GILLETT, 2026
+    Docs:
+        winter soundings:       https://sounderpy.app/docs/tutorials/winter_soundings.html
+        winter parameters:      https://sounderpy.app/docs/reference/helpertools.html#returning-a-dictionary-of-winter-parameters
+        winter values in code:  https://sounderpy.app/docs/tutorials/winter_soundings.html#winter-values-in-code
+        winter references:      https://sounderpy.app/docs/tutorials/winter_soundings.html#references
+
+    References:
+        Blumberg, W. G., K. T. Halbert, T. A. Supinie, P. T. Marsh, R. L. Thompson, and J. A. Hart, 2017:
+            SHARPpy: An open-source sounding analysis toolkit for the atmospheric sciences. Bull. Amer.
+            Meteor. Soc., 98, 1625-1636, https://doi.org/10.1175/BAMS-D-15-00309.1 (SPC precipitation type,
+            OPRH, and PBL)
+        May, R. M., S. C. Arms, P. Marsh, E. Bruning, J. R. Leeman, K. Goebbert, J. E. Thielen, Z. S.
+            Bruick, and M. D. Camron, 2023: MetPy: A Python package for meteorological data. Unidata,
+            https://doi.org/10.5065/D6WW7G29 (thermodynamic calculations)
+        Alduchov, O. A., and R. E. Eskridge, 1996: Improved Magnus form approximation of saturation vapor
+            pressure. J. Appl. Meteor., 35, 601-609 (RH over ice)
+        Banacos, P. C., A. N. Loconto, and G. A. DeVoir, 2014: Snow squalls: Forecasting and hazard
+            mitigation. J. Operational Meteor., 2 (12), 130-151, https://doi.org/10.15191/nwajom.2014.0212
+            (snow squall parameter)
+        Bernstein, B. C., and Coauthors, 2005: Current icing potential: Algorithm description and comparison
+            with aircraft observations. J. Appl. Meteor., 44, 969-986, https://doi.org/10.1175/JAM2246.1
+            (icing layers)
+        Birk, K., E. Lenning, K. Donofrio, and M. T. Friedlein, 2021: A revised Bourgouin precipitation-type
+            algorithm. Wea. Forecasting, 36, 425-438, https://doi.org/10.1175/WAF-D-20-0118.1 (wet-bulb
+            energies; thresholds for warm layers aloft)
+        Bourgouin, P., 2000: A method to determine precipitation types. Wea. Forecasting, 15, 583-592
+            (precipitation type: warm surface layer)
+        Gultepe, I., and Coauthors, 2007: Fog research: A review of past achievements and future
+            perspectives. Pure Appl. Geophys., 164, 1121-1159, https://doi.org/10.1007/s00024-007-0211-x
+            (freezing fog)
+        Huffman, G. J., and G. A. Norman Jr., 1988: The supercooled warm rain process and the specification
+            of freezing precipitation. Mon. Wea. Rev., 116, 2172-2182 (precipitation source phase, freezing
+            drizzle)
+        Libbrecht, K. G., 2005: The physics of snow crystals. Rep. Prog. Phys., 68, 855-895,
+            https://doi.org/10.1088/0034-4885/68/4/R03 (DGZ)
+        McDonough, F., B. C. Bernstein, M. K. Politovich, and C. A. Wolff, 2004: The Forecast Icing
+            Potential (FIP) algorithm. Preprints, 11th Conf. on Aviation, Range, and Aerospace Meteorology,
+            Hyannis, MA, Amer. Meteor. Soc., 3.2 (icing layers, freezing drizzle)
+        NOAA VLab: NWP snow accumulation products. Forecast Guide (snow-to-liquid ratio)
+        NWS, 2001: Wind chill chart. https://www.weather.gov/safety/cold-wind-chill-chart (wind chill)
+        Osczevski, R., and M. Bluestein, 2005: The new wind chill equivalent temperature chart. Bull. Amer.
+            Meteor. Soc., 86, 1453-1458, https://doi.org/10.1175/BAMS-86-10-1453 (wind chill)
+        Rauber, R. M., L. S. Olthoff, M. K. Ramamurthy, and K. E. Kunkel, 2000: The relative importance of
+            warm rain and melting processes in freezing precipitation events. J. Appl. Meteor., 39,
+            1185-1195 (precipitation source phase, freezing drizzle)
+        Takahashi, T., T. Endoh, G. Wakahama, and N. Fukuta, 1991: Vapor diffusional growth of free-falling
+            snow crystals between -3 and -23 C. J. Meteor. Soc. Japan, 69, 15-30,
+            https://doi.org/10.2151/jmsj1965.69.1_15 (DGZ)
+
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2026
 """
 
 # STANDARD PYTHON
@@ -170,7 +219,7 @@ def melting_refreezing_layers(z, T, top):
 # refreezing layer under it (energy RE), Birk et al. (2021): ice pellets if RE > 208 + 0.08 ME (freezing rain
 #   < 20 %), a mix if RE >= 117 + 0.08 ME, else it stays liquid; partly melted particles refreeze to ice pellets
 # liquid reaching a surface at or below 0 °C is freezing rain / drizzle
-# [prototype] applied layer by layer (Birk et al. use column totals)
+# [SounderPy] applied layer by layer (Birk et al. use column totals)
 # returns (trace [{"z", "phase"}], surface ptype, why it started as it did)
 MELT_SFC, MELT_ALOFT = (5.6, 13.2), (9.4, 15.0)
 REFREEZE_MIX, REFREEZE_PL, REFREEZE_SLOPE = 117.0, 208.0, 0.08
@@ -241,7 +290,7 @@ def hazard_level(ok, required, needed_for_mod=None):
 #         needed for MOD
 #   deep  cloud >= 500 m deep: deep enough for drizzle drops to grow
 #   lift  mean omega < 0 in the cloud: shown when omega is available, not counted in the level
-# [prototype] the 2 km, 75 % and 500 m thresholds
+# [SounderPy] the 2 km, 75 % and 500 m thresholds
 def freezing_drizzle_potential(clouds, z, rh_ice, omega, has_omega, sfc_Tw):
     low = [cloud for cloud in clouds if cloud["bottom"] <= 2000]
     if not low:
@@ -271,7 +320,7 @@ def freezing_drizzle_potential(clouds, z, rh_ice, omega, has_omega, sfc_Tw):
 #   calm  10 m wind <= 6 kt: mixing doesn't lift or dry out the fog
 #   inv   a surface-based inversion traps cold, moist air at the ground
 # Gultepe et al. (2007, Pure Appl. Geophys.) [peer-reviewed]. Called freezing fog at any temperature (no separate ice fog)
-# [prototype] the 95 % and 6 kt thresholds. Checks use the same rounded values the figure shows
+# [SounderPy] the 95 % and 6 kt thresholds. Checks use the same rounded values the figure shows
 def freezing_fog_potential(sfc_T, sfc_rh, sfc_wind_kt, inv_strength):
     # a missing value (e.g. no surface wind before the radiosonde's GPS locks on) isn't met
     ok = {"cold": bool(sfc_T < 0), "sat": bool(np.isfinite(sfc_rh) and round(sfc_rh) >= 95),
@@ -373,9 +422,9 @@ class winter_params:
 
         #--- CLOUD & ICING LAYERS ---#
         # ---------------------------------------------------------------
-        # [prototype] cloud: RH (over ice below 0 °C) >= 90 %. icing: 0 to -15 °C with RH over water >= 90 %,
+        # [SounderPy] cloud: RH (over ice below 0 °C) >= 90 %. icing: 0 to -15 °C with RH over water >= 90 %,
         # where supercooled liquid ices aircraft (the ingredients of NCAR's icing products: Bernstein et al. 2005,
-        # J. Appl. Meteor.; McDonough et al. 2004, FIP). The 0 to -15 °C range is our choice
+        # J. Appl. Meteor.; McDonough et al. 2004, FIP). The 0 to -15 °C range is SounderPy's choice
         winter['clouds'] = find_layers((rh_icei >= 90) & (zi <= 8000), zi, pi)
         for cloud in winter['clouds']:
             cloud['top_T'] = float(np.interp(cloud['top'], zi, Ti))
@@ -511,7 +560,7 @@ class winter_params:
         #--- SURFACE INVERSION ---#
         # ---------------------------------------------------------------
         # a surface-based inversion: the warmest point in the lowest 1.5 km when it's > 0.5 °C above the
-        # surface (model profiles often cool slightly in the lowest layer first) [prototype]
+        # surface (model profiles often cool slightly in the lowest layer first) [SounderPy]
         i_max = int(np.nanargmax(np.where(zi <= 1500, Ti, -999)))
         inversion = Ti[i_max] - Ti[0] > 0.5
         winter['sfc_inv_depth'] = float(zi[i_max]) if inversion else 0.0
@@ -546,7 +595,7 @@ class winter_params:
         #--- MEAN WINDS ---#
         # ---------------------------------------------------------------
         # PBL (from the standard calc): surface to the PBL top, the flow blowing snow and lake-effect bands follow.
-        # DGZ [prototype]: the flow where snow grows, a guide to how bands generated aloft drift
+        # DGZ [SounderPy]: the flow where snow grows, a guide to how bands generated aloft drift
         winter['mean_wind_pbl'] = snd['kinem']['mean_wind_pbl']
         winter['mean_wind_dgz'] = ((layer_mean(ui, zi, *winter['dgz_z']), layer_mean(vi, zi, *winter['dgz_z']))
                                    if has_dgz else (ma.masked, ma.masked))

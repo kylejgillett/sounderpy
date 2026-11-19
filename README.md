@@ -14,9 +14,9 @@ Create publication-ready soundings and hodographs.
 [![License](https://img.shields.io/pypi/l/sounderpy.svg)](https://github.com/kylejgillett/sounderpy/blob/main/LICENSE)
 [![JOSS](https://joss.theoj.org/papers/10.21105/joss.08087/status.svg)](https://doi.org/10.21105/joss.08087)
 
-**[Documentation](https://kylejgillett.github.io/sounderpy/)** ·
-**[Tutorials](https://kylejgillett.github.io/sounderpy/tutorials/index.html)** ·
-**[Plot Gallery](https://kylejgillett.github.io/sounderpy/gallery/examplegallery.html)** ·
+**[Documentation](https://sounderpy.app/docs/)** ·
+**[Tutorials](https://sounderpy.app/docs/tutorials/index.html)** ·
+**[Plot Gallery](https://sounderpy.app/docs/gallery/examplegallery.html)** ·
 **[Operational Site](https://sounderpy.app/)** ·
 **[PyPI](https://pypi.org/project/sounderpy/)**
 
@@ -24,7 +24,7 @@ Create publication-ready soundings and hodographs.
 
 ---
 
-![SounderPy example sounding](https://kylejgillett.github.io/sounderpy/_static/gallery/themes/sounding_light.png)
+![SounderPy example sounding](https://sounderpy.app/docs/_static/gallery/themes/sounding_light.png)
 
 ## What is SounderPy?
 
@@ -121,7 +121,7 @@ site_info  profile metadata
 ```
 
 Explore more examples in the
-**[SounderPy Plot Gallery](https://kylejgillett.github.io/sounderpy/gallery/examplegallery.html)**.
+**[SounderPy Plot Gallery](https://sounderpy.app/docs/gallery/examplegallery.html)**.
 
 <br>
 <br>
@@ -181,7 +181,7 @@ Topics include:
 - command-line workflows;
 - real severe-weather case studies.
 
-Start here: **[SounderPy Tutorials →](https://kylejgillett.github.io/sounderpy/tutorials/index.html)**
+Start here: **[SounderPy Tutorials →](https://sounderpy.app/docs/tutorials/index.html)**
 
 ---
 
@@ -211,9 +211,9 @@ for version-specific details.
 
 ## Documentation and Project Links
 
-- **Documentation:** https://kylejgillett.github.io/sounderpy/
-- **Tutorials:** https://kylejgillett.github.io/sounderpy/tutorials/index.html
-- **Plot Gallery:** https://kylejgillett.github.io/sounderpy/gallery/examplegallery.html
+- **Documentation:** https://sounderpy.app/docs/
+- **Tutorials:** https://sounderpy.app/docs/tutorials/index.html
+- **Plot Gallery:** https://sounderpy.app/docs/gallery/examplegallery.html
 - **GitHub:** https://github.com/kylejgillett/sounderpy
 - **PyPI:** https://pypi.org/project/sounderpy/
 - **conda-forge:** https://anaconda.org/conda-forge/sounderpy
@@ -287,7 +287,7 @@ SounderPy is distributed under the
 
 <div align="center">
 
-[Documentation](https://kylejgillett.github.io/sounderpy/) ·
+[Documentation](https://sounderpy.app/docs/) ·
 [GitHub](https://github.com/kylejgillett/sounderpy) ·
 [PyPI](https://pypi.org/project/sounderpy/) ·
 [JOSS](https://doi.org/10.21105/joss.08087)

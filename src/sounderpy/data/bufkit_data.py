@@ -1,3 +1,32 @@
+"""
+    SOUNDERPY BUFKIT DATA
+
+    Purpose of module:
+
+    Load and parse BUFKIT model forecast profiles (GFS, NAM, NAM Nest, RAP, HRRR, and RRFS) into
+    SounderPy `clean_data` dictionaries: the latest runs from Penn State, archived runs from the
+    Iowa Environmental Mesonet, and NCEP's own BUFR soundings from NOMADS (decoded by ncep_bufr.py)
+    when the RRFS, HRRR, or RAP file is missing or behind. Called by spy.get_bufkit_data().
+
+    Docs:
+        BUFKIT data:      https://sounderpy.app/docs/reference/gettingdata.html#model-forecast-data-bufkit-profiles
+        BUFKIT sites:     https://sounderpy.app/docs/reference/gettingdata.html#available-bufkit-sites
+        BUFKIT tutorial:  https://sounderpy.app/docs/tutorials/data_sources.html#bufkit-forecast-profiles
+
+    References:
+        Penn State BUFKIT data: https://www.meteo.psu.edu/bufkit/ (latest BUFKIT runs)
+        Iowa Environmental Mesonet BUFKIT archive: https://mtarchive.geol.iastate.edu/ (archived BUFKIT
+            runs)
+        NCEP NOMADS: https://nomads.ncep.noaa.gov/ (RRFS, HRRR, and RAP BUFR soundings)
+        Benjamin, S. G., and Coauthors, 2016: A North American hourly assimilation and model forecast cycle:
+            The Rapid Refresh. Mon. Wea. Rev., 144, 1669-1694, https://doi.org/10.1175/MWR-D-15-0242.1 (RAP)
+        Dowell, D. C., and Coauthors, 2022: The High-Resolution Rapid Refresh (HRRR): An hourly updating
+            convection-allowing forecast model. Part I: Motivation and system description. Wea. Forecasting,
+            37, 1371-1395, https://doi.org/10.1175/WAF-D-21-0151.1 (HRRR)
+
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2026
+"""
+
 from datetime import datetime, timedelta
 from urllib.request import urlopen
 from urllib.error import HTTPError, URLError
@@ -11,22 +40,6 @@ from metpy.units import units
 from ..calc import *
 from . import ncep_bufr
 from ..utils import find_station
-
-
-
-
-"""
-    SOUNDERPY BUFKIT 'GET-DATA' FUNCTIONS  
-
-    Purpose of module: 
-
-    House functions for loading and parsing BUFKIT model forecast data.
-    Functions here are referenced by sounderpy.py
-
-
-    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024
-"""
-
 
 
 #######################

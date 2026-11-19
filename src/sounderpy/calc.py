@@ -1,3 +1,103 @@
+"""
+    SOUNDERPY CALC
+
+    Purpose of module:
+
+    Compute sounding parameters from a SounderPy `clean_data` profile: surface-based, mixed-layer,
+    and most-unstable parcels (CAPE, CIN, LCL, LFC, EL), entraining CAPE, DCAPE and DCIN, lapse rates,
+    the PBL, bulk shear, storm-relative helicity and winds, streamwise vorticity, storm motions,
+    the effective inflow layer, and composite indices. `sounding_params(clean_data).calc()` returns
+    them in a dict; `vad_params(vad_data).calc()` does the same for VAD wind profiles.
+
+    Docs:
+        sounding parameters:   https://sounderpy.app/docs/reference/helpertools.html#returning-a-dictionary-of-profile-parameters
+        storm motions:         https://sounderpy.app/docs/reference/plottingdata.html#storm-motion-logic
+        parcels:               https://sounderpy.app/docs/reference/plottingdata.html#parcel-logic
+        surface modification:  https://sounderpy.app/docs/reference/plottingdata.html#surface-modification-logic
+
+    References:
+        Blumberg, W. G., K. T. Halbert, T. A. Supinie, P. T. Marsh, R. L. Thompson, and J. A. Hart, 2017:
+            SHARPpy: An open-source sounding analysis toolkit for the atmospheric sciences. Bull. Amer.
+            Meteor. Soc., 98, 1625-1636, https://doi.org/10.1175/BAMS-D-15-00309.1 (parcels, indices, and
+            storm motions)
+        May, R. M., S. C. Arms, P. Marsh, E. Bruning, J. R. Leeman, K. Goebbert, J. E. Thielen, Z. S.
+            Bruick, and M. D. Camron, 2023: MetPy: A Python package for meteorological data. Unidata,
+            https://doi.org/10.5065/D6WW7G29 (thermodynamic calculations)
+        Doswell, C. A., III, and E. N. Rasmussen, 1994: The effect of neglecting the virtual temperature
+            correction on CAPE calculations. Wea. Forecasting, 9, 625-629,
+            https://doi.org/10.1175/1520-0434(1994)009<0625:TEONTV>2.0.CO;2 (virtual temperature correction
+            in CAPE)
+        Blanchard, D. O., 1998: Assessing the vertical distribution of convective available potential
+            energy. Wea. Forecasting, 13, 870-877,
+            https://doi.org/10.1175/1520-0434(1998)013<0870:ATVDOC>2.0.CO;2 (normalized CAPE)
+        Peters, J. M., D. R. Chavas, C.-Y. Su, H. Morrison, and B. E. Coffer, 2023: An analytic formula for
+            entraining CAPE in midlatitude storm environments. J. Atmos. Sci., 80, 2165-2186,
+            https://doi.org/10.1175/JAS-D-23-0003.1; computed with the ecape-parcel package,
+            https://github.com/a-urq/ecape-parcel-py (entraining CAPE)
+        Emanuel, K. A., 1994: Atmospheric Convection. Oxford University Press, 592 pp. (DCAPE)
+        Market, P. S., S. M. Rochette, J. Shewchuk, R. Difani, J. S. Kastman, C. B. Henson, and N. I. Fox,
+            2017: Evaluating elevated convection with the downdraft convective inhibition. Atmos. Sci.
+            Lett., 18, 76-81, https://doi.org/10.1002/asl.727 (DCIN)
+        Gilmore, M. S., and L. J. Wicker, 1998: The influence of midtropospheric dryness on supercell
+            morphology and evolution. Mon. Wea. Rev., 126, 943-958,
+            https://doi.org/10.1175/1520-0493(1998)126<0943:TIOMDO>2.0.CO;2 (DCAPE)
+        Bunkers, M. J., B. A. Klimowski, J. W. Zeitler, R. L. Thompson, and M. L. Weisman, 2000: Predicting
+            supercell motion using a new hodograph technique. Wea. Forecasting, 15, 61-79,
+            https://doi.org/10.1175/1520-0434(2000)015<0061:PSMUAN>2.0.CO;2 (Bunkers storm motion)
+        Bunkers, M. J., D. A. Barber, R. L. Thompson, R. Edwards, and J. Garner, 2014: Choosing a universal
+            mean wind for supercell motion prediction. J. Operational Meteor., 2 (11), 115-129,
+            https://doi.org/10.15191/nwajom.2014.0211 (Bunkers storm motion from the effective inflow layer)
+        Corfidi, S. F., 2003: Cold pools and MCS propagation: Forecasting the motion of downwind-developing
+            MCSs. Wea. Forecasting, 18, 997-1017,
+            https://doi.org/10.1175/1520-0434(2003)018<0997:CPAMPF>2.0.CO;2 (Corfidi MCS motion)
+        Nixon, C. J., and J. T. Allen, 2021: Anticipating deviant tornado motion using a simple hodograph
+            technique. Wea. Forecasting, 36, 219-235, https://doi.org/10.1175/WAF-D-20-0056.1 (deviant
+            tornado motion)
+        Davies-Jones, R., 1984: Streamwise vorticity: The origin of updraft rotation in supercell storms. J.
+            Atmos. Sci., 41, 2991-3006, https://doi.org/10.1175/1520-0469(1984)041<2991:SVTOOU>2.0.CO;2
+            (streamwise vorticity)
+        Davies-Jones, R., D. W. Burgess, and M. P. Foster, 1990: Test of helicity as a tornado forecast
+            parameter. Preprints, 16th Conf. on Severe Local Storms, Kananaskis Park, AB, Canada, Amer.
+            Meteor. Soc., 588-592 (SRH)
+        Brandt, S., 2022: Storm-Relative Hodograph Plotter (Streamwise_Hodograph_Operational.py). GitHub,
+            https://github.com/SamBrandtMeteo/Storm-Relative-Hodograph-Plotter (streamwise vorticity)
+        Thompson, R. L., R. Edwards, and C. M. Mead, 2004: An update to the supercell composite and
+            significant tornado parameters. Preprints, 22nd Conf. on Severe Local Storms, Hyannis, MA, Amer.
+            Meteor. Soc., P8.1, https://www.spc.noaa.gov/publications/thompson/stp_scp.pdf (SCP)
+        Thompson, R. L., C. M. Mead, and R. Edwards, 2007: Effective storm-relative helicity and bulk shear
+            in supercell thunderstorm environments. Wea. Forecasting, 22, 102-115,
+            https://doi.org/10.1175/WAF969.1 (effective inflow layer, effective bulk shear, and effective
+            SRH)
+        Thompson, R. L., B. T. Smith, J. S. Grams, A. R. Dean, and C. Broyles, 2012: Convective modes for
+            significant severe thunderstorms in the contiguous United States. Part II: Supercell and QLCS
+            tornado environments. Wea. Forecasting, 27, 1136-1154, https://doi.org/10.1175/WAF-D-11-00116.1
+            (STP)
+        Hart, J. A., and W. Korotky, 1991: The SHARP Workstation v1.50 Users Guide. NOAA/National Weather
+            Service, 30 pp. (EHI)
+        Davies, J. M., 1993: Hourly helicity, instability, and EHI in forecasting supercell tornadoes.
+            Preprints, 17th Conf. on Severe Local Storms, St. Louis, MO, Amer. Meteor. Soc., 107-111 (EHI)
+        Weisman, M. L., and J. B. Klemp, 1982: The dependence of numerically simulated convective storms on
+            vertical wind shear and buoyancy. Mon. Wea. Rev., 110, 504-520,
+            https://doi.org/10.1175/1520-0493(1982)110<0504:TDONSC>2.0.CO;2 (bulk Richardson number)
+        George, J. J., 1960: Weather Forecasting for Aeronautics. Academic Press, 673 pp. (K-index)
+        Miller, R. C., 1972: Notes on analysis and severe-storm forecasting procedures of the Air Force
+            Global Weather Central. AWS Tech. Rep. 200 (Rev.), Air Weather Service, Scott AFB, IL, 190 pp.
+            (Total Totals)
+        Storm Prediction Center: Significant Hail Parameter (SHIP).
+            https://www.spc.noaa.gov/exper/mesoanalysis/help/help_sigh.html (SHIP)
+        Johnson, A. W., and K. E. Sugden, 2014: Evaluation of sounding-derived thermodynamic and
+            wind-related parameters associated with large hail events. Electronic J. Severe Storms Meteor.,
+            9 (5), 1-42, https://doi.org/10.55599/ejssm.v9i5.57 (SHIP)
+        Cohen, A. E., M. C. Coniglio, S. F. Corfidi, and S. J. Corfidi, 2007: Discrimination of mesoscale
+            convective system environments using sounding observations. Wea. Forecasting, 22, 1045-1062,
+            https://doi.org/10.1175/WAF1040.1 (0-10 km bulk shear and theta-e difference)
+        Browning, K. A., and R. Wexler, 1968: The determination of kinematic properties of a wind field
+            using Doppler radar. J. Appl. Meteor., 7, 105-113,
+            https://doi.org/10.1175/1520-0450(1968)007<0105:TDOKPO>2.0.CO;2 (VAD wind profiles)
+
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2025, 2026
+"""
+
 # sharppy
 from .SHARPPYMAIN.sharppy.sharptab.profile import create_profile
 from .SHARPPYMAIN.sharppy.sharptab.interp import *
@@ -22,26 +122,6 @@ from ecape_parcel.ecape_calc import calc_ecape
 
 # sounderpy modules
 from .utils import modify_surface, find_nearest, mag, mag_round
-
-
-"""
-    SOUNDERPY SPYCALC FUNCTIONS  
-
-    Purpose of module: 
-
-    House tools for computing a number of useful sounding parameters based on data 
-    retrieved by the user; store it and return a dict of the data. 
-    
-    Tools here are accessed by the plotting functions in the plot module, but can be explicitly
-    accessed by calling `spy.sounding_params.calc(clean_data)`
-    
-    
-    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2025, 2026
-"""
-
-
-
-
 
 
 # STORM MOTION NAMES
@@ -503,8 +583,7 @@ class sounding_params:
             intrp['3cape_profileINTRP'] = interpolate(thermo['3cape_profile'], zINTRP, resolution)
 
 
-        # ENTRAINING CAPE NOW LOCATED BELOW KINEMATICS SECTION SO 
-        # CALCULATED STORM MOTION IS INCLUDED IN ECAPE CALCULATIONS
+        # entraining CAPE is computed after the kinematics, so it can use the storm motion
         
         
         
@@ -541,6 +620,18 @@ class sounding_params:
         thermo['lr_75']   = lapse_rate(prof, 700, 500, pres=True)
         thermo['lr_max']  = max_lapse_rate(prof, lower=0, upper=6000,
                                          interval=250, depth=2000)
+
+        #--- THETA-E DIFFERENCE ---#
+        # ---------------------------------------------------------------
+        # the minimum theta-e between the level of maximum theta-e in the lowest 3 km and 7 km, minus that
+        # maximum (K, negative); larger differences favor severe MCS winds (Cohen et al. 2007)
+        low = (intrp['zINTRP'] <= 3000) & np.isfinite(intrp['thetaeINTRP'])
+        if np.nanmax(intrp['zINTRP']) >= 3000 and low.any():
+            max_idx = np.nanargmax(np.where(low, intrp['thetaeINTRP'], np.nan))
+            mid = (intrp['zINTRP'] >= intrp['zINTRP'][max_idx]) & (intrp['zINTRP'] <= 7000)
+            thermo['thetae_diff'] = np.nanmin(intrp['thetaeINTRP'][mid]) - intrp['thetaeINTRP'][max_idx]
+        else:
+            thermo['thetae_diff'] = ma.masked
 
         #--- K-INDEX & TOTAL TOTALS ---#
         # ---------------------------------------------------------------
@@ -587,6 +678,7 @@ class sounding_params:
         # ---------------------------------------------------------------   
         kinem['eil'] = effective_inflow_layer(prof, ecape=100, ecinh=-150)
         kinem['eil_z'] = [to_agl(prof, hght(prof, kinem['eil'][0])), to_agl(prof, hght(prof, kinem['eil'][1]))]
+        kinem['eil_depth'] = kinem['eil_z'][1] - kinem['eil_z'][0]
         
         eil_idx = [find_nearest(intrp['zINTRP'], kinem['eil_z'][0]), find_nearest(intrp['zINTRP'], kinem['eil_z'][1])]
 
@@ -681,6 +773,7 @@ class sounding_params:
         p3km = pres(prof, to_msl(prof, 3000.))
         p6km = pres(prof, to_msl(prof, 6000.))
         p9km = pres(prof, to_msl(prof, 9000.))
+        p10km = pres(prof, to_msl(prof, 10000.))
 
         shear_0_to_500  = wind_shear(prof, pbot=sfc, ptop=p500m)
         shear_0_to_1000 = wind_shear(prof, pbot=sfc, ptop=p1km)
@@ -689,6 +782,8 @@ class sounding_params:
         shear_6_to_9000 = wind_shear(prof, pbot=p6km, ptop=p9km)
         shear_0_to_3000 = wind_shear(prof, pbot=sfc, ptop=p3km)
         shear_0_to_6000 = wind_shear(prof, pbot=sfc, ptop=p6km)
+        # 0-10 km shear discriminates weak from derecho-producing MCSs (Cohen et al. 2007)
+        shear_0_to_10000 = wind_shear(prof, pbot=sfc, ptop=p10km)
         shear_eil       = wind_shear(prof, pbot=kinem['eil'][0], ptop=kinem['eil'][1])
 
         kinem['shear_0_to_500']  = comp2vec(shear_0_to_500[0], shear_0_to_500[1])[1]
@@ -698,6 +793,7 @@ class sounding_params:
         kinem['shear_6_to_9000'] = comp2vec(shear_6_to_9000[0], shear_6_to_9000[1])[1]
         kinem['shear_0_to_3000'] = comp2vec(shear_0_to_3000[0], shear_0_to_3000[1])[1]
         kinem['shear_0_to_6000'] = comp2vec(shear_0_to_6000[0], shear_0_to_6000[1])[1]
+        kinem['shear_0_to_10000'] = comp2vec(shear_0_to_10000[0], shear_0_to_10000[1])[1]
         kinem['shear_eil'] = comp2vec(shear_eil[0], shear_eil[1])[1]
 
         # effective bulk wind difference: EIL base to half the MU EL height

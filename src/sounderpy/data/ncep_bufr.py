@@ -1,28 +1,34 @@
-from datetime import datetime, timedelta, timezone
-from urllib.error import HTTPError
-from urllib.request import urlopen
-
-import numpy as np
-
-
-
-
 """
     SOUNDERPY NCEP BUFR SOUNDING DECODER
 
     Purpose of module:
 
-    Decode NCEP model BUFR sounding files (the 'bufrsnd' station files NCEP
-    builds BUFKIT files from) and write them out as BUFKIT text, so that
-    bufkit_data.py can read them like any other BUFKIT file.
+    Decode NCEP model BUFR sounding files (the 'bufrsnd' station files NCEP builds BUFKIT files from)
+    and write them out as BUFKIT text, so that bufkit_data.py can read them like any other BUFKIT file.
+    NCEP BUFR files carry their own descriptor tables (DX tables) in the first few messages, so no outside
+    BUFR tables or libraries are needed. Also finds and downloads the newest RRFS, HRRR, and RAP soundings
+    on NOMADS.
 
-    NCEP BUFR files carry their own descriptor tables (DX tables) in the
-    first few messages, so no outside BUFR tables or libraries are needed.
+    Docs:
+        BUFKIT data (NOMADS backup):  https://sounderpy.app/docs/reference/gettingdata.html#model-forecast-data-bufkit-profiles
 
+    References:
+        WMO: Manual on Codes, Volume I.2: International Codes, Part B (Binary Codes), FM 94 BUFR. WMO-No.
+            306, World Meteorological Organization, Geneva, https://library.wmo.int/idurl/4/35625 (BUFR
+            format)
+        NCEP NOMADS: https://nomads.ncep.noaa.gov/ (RRFS, HRRR, and RAP BUFR soundings)
+        Bolton, D., 1980: The computation of equivalent potential temperature. Mon. Wea. Rev., 108,
+            1046-1053, https://doi.org/10.1175/1520-0493(1980)108<1046:TCOEPT>2.0.CO;2 (dewpoint and
+            equivalent potential temperature)
 
     (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2026
 """
 
+from datetime import datetime, timedelta, timezone
+from urllib.error import HTTPError
+from urllib.request import urlopen
+
+import numpy as np
 
 
 ###############

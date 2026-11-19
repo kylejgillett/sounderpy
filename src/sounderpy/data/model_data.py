@@ -1,3 +1,37 @@
+"""
+    SOUNDERPY MODEL REANALYSIS DATA
+
+    Purpose of module:
+
+    Load and parse ERA5, RAP/RUC, and NCEP-FNL reanalysis profiles into SounderPy `clean_data`
+    dictionaries: ERA5 from the Copernicus Climate Data Store, and RAP/RUC and NCEP-FNL through THREDDS.
+    Called by spy.get_model_data().
+
+    Docs:
+        reanalysis data:           https://sounderpy.app/docs/reference/gettingdata.html#model-reanalysis-data-rap-ruc-era5-ncep
+        model keys:                https://sounderpy.app/docs/reference/gettingdata.html#model-key-names
+        RAP/RUC tutorial:          https://sounderpy.app/docs/tutorials/data_sources.html#rap-ruc-reanalysis
+        other reanalysis sources:  https://sounderpy.app/docs/tutorials/data_sources.html#other-model-reanalysis-sources
+
+    References:
+        Hersbach, H., and Coauthors, 2020: The ERA5 global reanalysis. Quart. J. Roy. Meteor. Soc., 146,
+            1999-2049, https://doi.org/10.1002/qj.3803 (ERA5)
+        Benjamin, S. G., and Coauthors, 2016: A North American hourly assimilation and model forecast cycle:
+            The Rapid Refresh. Mon. Wea. Rev., 144, 1669-1694, https://doi.org/10.1175/MWR-D-15-0242.1 (RAP)
+        National Centers for Environmental Prediction/National Weather Service/NOAA/U.S. Department of
+            Commerce, 2000: NCEP FNL Operational Model Global Tropospheric Analyses, continuing from July
+            1999. NSF National Center for Atmospheric Research, https://doi.org/10.5065/D6M043C6 (NCEP-FNL)
+        May, R. M., S. C. Arms, J. R. Leeman, and J. Chastang, 2017: Siphon: A collection of Python
+            utilities for accessing remote atmospheric and oceanic datasets. Unidata,
+            https://doi.org/10.5065/D6CN72NW (THREDDS NetCDF subsets)
+        Hoyer, S., and J. Hamman, 2017: xarray: N-D labeled arrays and datasets in Python. J. Open Res.
+            Software, 5 (1), 10, https://doi.org/10.5334/jors.148 (gridded data)
+        ECMWF: cdsapi, the Copernicus Climate Data Store API client. https://github.com/ecmwf/cdsapi (ERA5
+            downloads)
+
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2026
+"""
+
 from datetime import datetime
 import warnings
 import time
@@ -17,26 +51,6 @@ import metpy.calc as mpcalc
 from metpy.units import units
 
 from ..calc import *
-
-
-
-
-
-"""
-    SOUNDERPY MODEL REANALYSIS 'GET-DATA' FUNCTIONS  
-
-    Purpose of module: 
-
-    House function for loading and parsing ERA5, RAP, RUC and NCEP-FNL
-    model reanalysis data. Functions here are referenced by sounderpy.py
-
-
-    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024
-"""
-
-
-
-
 
 
 #######################

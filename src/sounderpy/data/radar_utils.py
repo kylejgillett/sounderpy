@@ -1,3 +1,29 @@
+"""
+    SOUNDERPY RADAR UTILITIES
+
+    Purpose of module:
+
+    Radar data for the map inset: the nearest NEXRAD site's lowest-tilt reflectivity from the Unidata
+    NEXRAD Level II archive on AWS, the CONUS reflectivity mosaic from Unidata's THREDDS server, the
+    radar valid time, and the reflectivity colormap.
+
+    Docs:
+        map insets & radar:     https://sounderpy.app/docs/reference/plottingdata.html#radar-logic
+        maps & radar tutorial:  https://sounderpy.app/docs/tutorials/maps_radar.html
+
+    References:
+        Helmus, J. J., and S. M. Collis, 2016: The Python ARM Radar Toolkit (Py-ART), a library for working
+            with weather radar data in the Python programming language. J. Open Res. Software, 4 (1), e25,
+            https://doi.org/10.5334/jors.119 (NEXRAD Level II radar data)
+        NOAA NEXRAD on AWS (Unidata Level II archive): https://registry.opendata.aws/noaa-nexrad/
+            (single-site radar)
+        May, R. M., S. C. Arms, J. R. Leeman, and J. Chastang, 2017: Siphon: A collection of Python
+            utilities for accessing remote atmospheric and oceanic datasets. Unidata,
+            https://doi.org/10.5065/D6CN72NW (THREDDS radar mosaic)
+
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2025, 2026
+"""
+
 from pyproj import Geod
 import numpy as np
 from matplotlib.colors import ListedColormap
@@ -22,18 +48,6 @@ def import_pyart():
     with suppress_stdout_stderr():
         import pyart
     return pyart
-
-"""
-    SOUNDERPY RADAR UTILITY FUNCTIONS 
-
-    Purpose of module: 
-
-     A collection of radar-related helper functions for plotting radar data
-     on SounderPY figures
-
-
-    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2025
-"""
 
 
 #########################

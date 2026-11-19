@@ -1,3 +1,27 @@
+"""
+    SOUNDERPY PROFILE UTILITIES
+
+    Purpose of module:
+
+    Merge and smooth profiles: `merge_profiles()` blends two `clean_data` profiles by weighted
+    averaging on a common height axis, and `smooth_profile()` smooths a profile with a Savitzky-Golay
+    or Gaussian filter.
+
+    Docs:
+        merging profiles:     https://sounderpy.app/docs/reference/helpertools.html#merging-two-profiles-via-weighted-averaging
+        smoothing a profile:  https://sounderpy.app/docs/reference/helpertools.html#smooth-a-profile
+
+    References:
+        Savitzky, A., and M. J. E. Golay, 1964: Smoothing and differentiation of data by simplified least
+            squares procedures. Anal. Chem., 36, 1627-1639, https://doi.org/10.1021/ac60214a047
+            (Savitzky-Golay smoothing)
+        Virtanen, P., R. Gommers, T. E. Oliphant, and Coauthors, 2020: SciPy 1.0: Fundamental algorithms for
+            scientific computing in Python. Nature Methods, 17 (3), 261-272 (Gaussian and Savitzky-Golay
+            filters)
+
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2025, 2026
+"""
+
 # IMPORTS SOFTWARE
 import numpy as np
 from scipy.interpolate import interp1d
@@ -5,19 +29,6 @@ from metpy.units import units
 from scipy.ndimage import gaussian_filter
 from scipy.signal import savgol_filter
 from metpy.units import units as mpunits
-
-
-"""
-    SOUNDERPY MERGE & SMOOTH PROFILE FUNCTIONS
-
-    Purpose of module: 
-
-     A function to merge two profiles together using weighted averaging of values along a 
-     common height axis to return a single profile.
-
-
-    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2025
-"""
 
 
 # PROFILE SMOOTHING SCHEME

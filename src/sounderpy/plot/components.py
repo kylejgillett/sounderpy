@@ -3,9 +3,31 @@
 
     Purpose of module:
 
-    House the reusable pieces that SounderPy figures are built from: themes,
-    layouts, skew-t and hodograph tools, accessory panels, text tables, and
-    map insets. Figures are put together in operational.py.
+    The reusable pieces that SounderPy figures are built from: the skew-T and its annotations, the
+    hodograph, side panels, parameter tables, map insets with radar and custom map layers, and figure
+    text. Figures are put together in operational.py.
+
+    Docs:
+        soundings:           https://sounderpy.app/docs/reference/plottingdata.html#building-soundings
+        hodographs:          https://sounderpy.app/docs/reference/plottingdata.html#building-hodographs
+        map insets & radar:  https://sounderpy.app/docs/reference/plottingdata.html#radar-logic
+        custom map data:     https://sounderpy.app/docs/tutorials/custom_map_data.html
+
+    References:
+        Hunter, J. D., 2007: Matplotlib: A 2D graphics environment. Computing in Science & Engineering, 9
+            (3), 90-95 (figures)
+        May, R. M., S. C. Arms, P. Marsh, E. Bruning, J. R. Leeman, K. Goebbert, J. E. Thielen, Z. S.
+            Bruick, and M. D. Camron, 2023: MetPy: A Python package for meteorological data. Unidata,
+            https://doi.org/10.5065/D6WW7G29 (skew-T and hodograph)
+        Met Office, 2010-2015: Cartopy: a cartographic Python library with a Matplotlib interface. Exeter,
+            Devon, https://cartopy.readthedocs.io (map insets)
+        Peters, J. M., D. R. Chavas, C.-Y. Su, H. Morrison, and B. E. Coffer, 2023: An analytic formula for
+            entraining CAPE in midlatitude storm environments. J. Atmos. Sci., 80, 2165-2186,
+            https://doi.org/10.1175/JAS-D-23-0003.1; computed with the ecape-parcel package,
+            https://github.com/a-urq/ecape-parcel-py (ECAPE parcel traces)
+        Cohen, A. E., M. C. Coniglio, S. F. Corfidi, and S. J. Corfidi, 2007: Discrimination of mesoscale
+            convective system environments using sounding observations. Wea. Forecasting, 22, 1045-1062,
+            https://doi.org/10.1175/WAF1040.1 (0-10 km bulk shear and theta-e difference)
 
     (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2026
 """
@@ -557,8 +579,6 @@ def _plot_skewt_layer_annotations(skew, data, snd_params, theme, layers=("lapse_
 
     def _plot_labeled_layer(x, bounds, label, color, label_alpha, line_alpha, linewidth=3, ticks=False):
         """Draw a layer's vertical line with a label above it, and optional ticks."""
-        # skip a layer with no usable top, or one whose top is above the plot (a bad level there once put
-        # the label a million pixels off the axes and blew up the tight-bbox savefig)
         p_top = bounds[1]
         if ma.is_masked(p_top) or not np.isfinite(p_top) or p_top < skew.ax.get_ylim()[1]:
             return
@@ -1616,7 +1636,7 @@ def _plot_thermo_table(ax, snd_params, theme):
     _draw_text(ax, 0.015, THERMO_TABLE_LAYOUT["rows_y"][1] - 0.04, "100 hPa", text, fontsize=FONT_SIZES["fine"], alpha=0.5)
 
     # single-value thermo parameters, in two rows:
-    # top:    DCAPE | MUNCAPE | K-index & total totals
+    # top:    DCAPE | MUNCAPE | EIL depth | K-index & total totals
     # bottom: DCIN  | 0-3 km, 3-6 km, & 700-500 hPa lapse rates
     top, bottom = 0.310, 0.175
     _draw_text(ax, 0.015, top, "DCAPE:", text)
@@ -1626,6 +1646,8 @@ def _plot_thermo_table(ax, snd_params, theme):
 
     _draw_text(ax, 0.300, top, "MUNCAPE:", text)
     _draw_text(ax, 0.450, top, _format_value(thermo['mu_ncape'], decimals=1), theme["ncape"], alpha=0.7)
+    _draw_text(ax, 0.510, top, "EIL:", text)
+    _draw_text(ax, 0.575, top, _format_value(snd_params["kinem"]['eil_depth'], f" {UNIT_M}"), theme["eil"])
     for x, label, key in ((0.720, "KI:", 'k_index'), (0.855, "TT:", 't_totals')):
         value_text = _format_value(thermo[key], decimals=0)
         _draw_text(ax, x, top, label, text)
@@ -1709,7 +1731,8 @@ def _plot_kinematics_table(ax, snd_params, theme):
 
 
 def _plot_indices_box(ax, snd_params, theme):
-    """Draw the 0-3 and 0-6 km SRH and bulk shear box, and the PBL depth and mean wind."""
+    """Draw the 0-3 and 0-6 km SRH and bulk shear box, the 0-10 km bulk shear and theta-e difference, and the
+    PBL depth and mean wind."""
 
     kinem = snd_params["kinem"]
     thermo = snd_params["thermo"]
@@ -1722,17 +1745,21 @@ def _plot_indices_box(ax, snd_params, theme):
         _draw_text(ax, x, y_value, value, color, fontsize=FONT_SIZES["tick"], alpha=0.9, ha="center")
 
     # SRH and bulk shear (composite indices are in the thermo table)
-    _draw_stat(0.30, 0.861, 0.709, "  0-3ₖₘ SRH,", _format_value(kinem['srh_0_to_3000'], UNIT_M2S2), theme["kinematics_strong"])
-    _draw_stat(0.73, 0.861, 0.709, "BWD", _format_value(kinem['shear_0_to_3000'], UNIT_KT), theme["kinematics_strong"])
-    _draw_stat(0.30, 0.556, 0.404, "  0-6ₖₘ SRH,", _format_value(kinem['srh_0_to_6000'], UNIT_M2S2), theme["kinematics_strong"])
-    _draw_stat(0.73, 0.556, 0.404, "BWD", _format_value(kinem['shear_0_to_6000'], UNIT_KT), theme["kinematics_strong"])
+    _draw_stat(0.30, 0.885, 0.780, "  0-3ₖₘ SRH,", _format_value(kinem['srh_0_to_3000'], UNIT_M2S2), theme["kinematics_strong"])
+    _draw_stat(0.73, 0.885, 0.780, "BWD", _format_value(kinem['shear_0_to_3000'], UNIT_KT), theme["kinematics_strong"])
+    _draw_stat(0.30, 0.664, 0.559, "  0-6ₖₘ SRH,", _format_value(kinem['srh_0_to_6000'], UNIT_M2S2), theme["kinematics_strong"])
+    _draw_stat(0.73, 0.664, 0.559, "BWD", _format_value(kinem['shear_0_to_6000'], UNIT_KT), theme["kinematics_strong"])
+
+    # MCS wind potential: 0-10 km bulk shear and the low-to-midlevel theta-e difference (Cohen et al. 2007)
+    _draw_stat(0.30, 0.443, 0.338, "  0-10ₖₘ BWD,", _format_value(kinem['shear_0_to_10000'], UNIT_KT), theme["kinematics_strong"])
+    _draw_stat(0.73, 0.443, 0.338, "Δθₑ", _format_value(thermo['thetae_diff'], " K"), theme["cool"])
 
     # the PBL depth and mean (transport) wind, named for the direction it blows from
     pbl_u, pbl_v = kinem['mean_wind_pbl']
     pbl_wind = (MISSING_VALUE if ma.is_masked(pbl_u) or ma.is_masked(pbl_v) or not np.isfinite([pbl_u, pbl_v]).all()
                 else f"{wind_to_dir(-pbl_u, -pbl_v)} {mag(np.hypot(pbl_u, pbl_v))}kt")
-    _draw_stat(0.30, 0.251, 0.112, "  PBL depth,", _format_value(thermo['pbl_depth'], "m"), theme["lapse"])
-    _draw_stat(0.73, 0.251, 0.112, "wind", pbl_wind, theme["kinematics_strong"])
+    _draw_stat(0.30, 0.222, 0.117, "  PBL depth,", _format_value(thermo['pbl_depth'], "m"), theme["lapse"])
+    _draw_stat(0.73, 0.222, 0.117, "wind", pbl_wind, theme["kinematics_strong"])
 
     return ax
 

@@ -1,21 +1,29 @@
+"""
+    SOUNDERPY CM1 UTILITIES
+
+    Purpose of module:
+
+    Read CM1 input_sounding files into SounderPy `clean_data` dictionaries with `from_cm1()`, so CM1
+    initial soundings can be analyzed and plotted like any other profile.
+
+    Docs:
+        CM1 input soundings:  https://sounderpy.app/docs/reference/customdatasources.html#ingesting-cm1-input-sounding-data
+
+    References:
+        Bryan, G. H., and J. M. Fritsch, 2002: A benchmark simulation for moist nonhydrostatic numerical
+            models. Mon. Wea. Rev., 130, 2917-2928,
+            https://doi.org/10.1175/1520-0493(2002)130<2917:ABSFMN>2.0.CO;2 (CM1)
+        May, R. M., S. C. Arms, P. Marsh, E. Bruning, J. R. Leeman, K. Goebbert, J. E. Thielen, Z. S.
+            Bruick, and M. D. Camron, 2023: MetPy: A Python package for meteorological data. Unidata,
+            https://doi.org/10.5065/D6WW7G29 (thermodynamic calculations)
+
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2025, 2026
+"""
+
 import warnings
 import numpy as np
 import metpy.calc as mpcalc
 from metpy.units import units
-
-"""
-    SOUNDERPY CM1 UTILITIES  
-
-    Purpose of module: 
-
-     A collection of functions that parse and process CM1 input files
-     into SounderPy `clean_data` dictionaries for easy analysis of 
-     input_sounding files.
-
-
-    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2025
-"""
-
 
 
 #########################
@@ -171,7 +179,7 @@ def from_cm1(filename, meta_data_dict):
 
 # OLD NAME
 # make_cm1_profile() was renamed from_cm1() to match SounderPy's other readers (from_sharppy, from_graw, ...). The old
-# name still works, with a FutureWarning; remove it in a later release.
+# name still works, with a FutureWarning, and will be removed in a later release.
 def make_cm1_profile(*args, **kwargs):
     """Deprecated: use from_cm1(), which takes the same arguments (filename, meta_data_dict)."""
     warnings.warn("make_cm1_profile() is now from_cm1(); the old name will be removed in a later SounderPy release",

@@ -13,8 +13,19 @@
     Station coordinates come from MetPy's built-in station table (downloaded once to ~/.cache/metpy,
     then read locally). IEM rate-limits rapid requests, so callers should treat a failure as "no obs".
 
-    (C) KYLE J GILLETT, 2026
+    Docs:
+        surface observation:  https://sounderpy.app/docs/tutorials/winter_soundings.html#add-the-latest-surface-observation
+
+    References:
+        Iowa Environmental Mesonet ASOS archive: https://mesonet.agron.iastate.edu/request/download.phtml
+            (METARs)
+        May, R. M., S. C. Arms, P. Marsh, E. Bruning, J. R. Leeman, K. Goebbert, J. E. Thielen, Z. S.
+            Bruick, and M. D. Camron, 2023: MetPy: A Python package for meteorological data. Unidata,
+            https://doi.org/10.5065/D6WW7G29 (station table)
+
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2026
 """
+
 import csv
 import io
 import math

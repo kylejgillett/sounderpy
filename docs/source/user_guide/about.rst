@@ -191,7 +191,8 @@ References
 ==========
 
 SounderPy relies on a number of open-source scientific Python projects. Key
-references include:
+references include the list below; every reference behind SounderPy's calculations,
+data sources, and plots is on the :doc:`Parameters & References </reference/references>` page.
 
 * Harris, C. R., K. J. Millman, S. J. van der Walt, and Coauthors, 2020:
   Array programming with NumPy. *Nature*, **585**, 357–362,

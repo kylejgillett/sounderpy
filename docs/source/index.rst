@@ -262,6 +262,7 @@ Directory
    reference/plottingdata
    reference/helpertools
    reference/cli
+   reference/references
 
 .. toctree::
    :maxdepth: 5

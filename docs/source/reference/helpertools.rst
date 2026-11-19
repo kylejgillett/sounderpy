@@ -17,6 +17,7 @@ Returning a dictionary of profile parameters
 --------------------------------------------
 
 Calculate SounderPy's thermodynamic, kinematic, and interpolated profile parameters for a given ``clean_data`` profile.
+Every parameter, its units, and its source are listed in :doc:`Parameters & References </reference/references>`.
 
 The calculation returns a dictionary with four dictionaries inside it:
 

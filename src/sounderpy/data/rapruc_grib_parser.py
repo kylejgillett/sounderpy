@@ -1,3 +1,32 @@
+"""
+    SOUNDERPY RAP/RUC GRIB PARSER
+
+    Purpose of module:
+
+    Parse RAP and RUC GRIB files (pressure-level and native-level) into a SounderPy `clean_data`
+    profile: open the GRIB files with cfgrib and xarray, average the grid points in a box around the
+    requested point, and build the profile. Parsing is thread safe, so profiles can be fetched in parallel.
+
+    * the development of this module was aided by artificial intelligence
+
+    Docs:
+        reanalysis data:   https://sounderpy.app/docs/reference/gettingdata.html#model-reanalysis-data-rap-ruc-era5-ncep
+        RAP/RUC tutorial:  https://sounderpy.app/docs/tutorials/data_sources.html#rap-ruc-reanalysis
+
+    References:
+        Benjamin, S. G., and Coauthors, 2016: A North American hourly assimilation and model forecast cycle:
+            The Rapid Refresh. Mon. Wea. Rev., 144, 1669-1694, https://doi.org/10.1175/MWR-D-15-0242.1 (RAP)
+        ECMWF: cfgrib, a Python interface to map GRIB files to xarray. https://github.com/ecmwf/cfgrib (GRIB
+            decoding)
+        Hoyer, S., and J. Hamman, 2017: xarray: N-D labeled arrays and datasets in Python. J. Open Res.
+            Software, 5 (1), 10, https://doi.org/10.5334/jors.148 (gridded data)
+        May, R. M., S. C. Arms, P. Marsh, E. Bruning, J. R. Leeman, K. Goebbert, J. E. Thielen, Z. S.
+            Bruick, and M. D. Camron, 2023: MetPy: A Python package for meteorological data. Unidata,
+            https://doi.org/10.5065/D6WW7G29 (thermodynamic calculations)
+
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2026
+"""
+
 from __future__ import annotations
 
 import threading
@@ -9,22 +38,6 @@ import metpy.calc as mpcalc
 
 from metpy.units import units
 from scipy.interpolate import interp1d
-
-
-
-"""
-    SOUNDERPY RAP/RUC GRIB PARSER
-
-    The purpose of this module is to parse the *annoying* grib
-    files for RAP/RUC data -- now the only option from NOAA through
-    AWS and NCEI. 
-
-    * the development of this script was aided by artificial intelligence 
-
-    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2026
-"""
-
-
 
 
 DZ = 250.0

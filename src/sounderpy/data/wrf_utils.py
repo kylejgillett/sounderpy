@@ -1,23 +1,33 @@
-import warnings
-import numpy as np
-from datetime import datetime
-from scipy import interpolate
-from metpy.units import units
-
 """
     SOUNDERPY WRF UTILITIES
 
     Purpose of module:
 
-        Parse WRF-ARW simulation output and build a SounderPy
-        `clean_data` dictionary for a given latitude and longitude
-        point to plot a sounding.
+    Read WRF-ARW output (a netCDF4 dataset of a wrfout file) into a SounderPy `clean_data` dictionary
+    for a latitude and longitude with `from_wrf()`, so WRF profiles can be analyzed and plotted like any
+    other profile.
 
-    Input type: netcdf4 dataset obj of a wrfout___.nc file
+    Docs:
+        WRF output:  https://sounderpy.app/docs/reference/customdatasources.html#ingesting-wrf-output-data
 
-    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024
+    References:
+        Skamarock, W. C., and Coauthors, 2019: A Description of the Advanced Research WRF Model Version 4.
+            NCAR Tech. Note NCAR/TN-556+STR, https://doi.org/10.5065/1dfh-6p97 (WRF-ARW)
+        Bolton, D., 1980: The computation of equivalent potential temperature. Mon. Wea. Rev., 108,
+            1046-1053, https://doi.org/10.1175/1520-0493(1980)108<1046:TCOEPT>2.0.CO;2 (dewpoint from vapor
+            pressure)
+        May, R. M., S. C. Arms, P. Marsh, E. Bruning, J. R. Leeman, K. Goebbert, J. E. Thielen, Z. S.
+            Bruick, and M. D. Camron, 2023: MetPy: A Python package for meteorological data. Unidata,
+            https://doi.org/10.5065/D6WW7G29 (thermodynamic calculations)
+
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2026
 """
 
+import warnings
+import numpy as np
+from datetime import datetime
+from scipy import interpolate
+from metpy.units import units
 
 
 #############################################
@@ -303,7 +313,7 @@ def from_wrf(ds, latlon, model_name='WRF-ARW', run_name='CONTROL RUN', box_avg_s
 
 # OLD NAME
 # make_wrf_profile() was renamed from_wrf() to match SounderPy's other readers (from_sharppy, from_graw, ...). The old
-# name still works, with a FutureWarning; remove it in a later release.
+# name still works, with a FutureWarning, and will be removed in a later release.
 def make_wrf_profile(*args, **kwargs):
     """Deprecated: use from_wrf(), which takes the same arguments (ds, latlon, model_name='WRF-ARW', run_name='CONTROL RUN', box_avg_size=0.10, time_idx=0)."""
     warnings.warn("make_wrf_profile() is now from_wrf(); the old name will be removed in a later SounderPy release",

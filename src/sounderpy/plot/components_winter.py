@@ -9,7 +9,35 @@
     observation; the side panels show T & Tw, RHᵢ & RH, wind and theta-e (0-3 km); the tables show precipitation
     type, snow growth and winter hazards. SounderPy's own plot components are reused wherever they fit.
 
-    (C) KYLE J GILLETT, 2026
+    Docs:
+        winter soundings:      https://sounderpy.app/docs/tutorials/winter_soundings.html
+        a tour of the figure:  https://sounderpy.app/docs/tutorials/winter_soundings.html#a-tour-of-the-figure
+
+    References:
+        Hunter, J. D., 2007: Matplotlib: A 2D graphics environment. Computing in Science & Engineering, 9
+            (3), 90-95 (figures)
+        May, R. M., S. C. Arms, P. Marsh, E. Bruning, J. R. Leeman, K. Goebbert, J. E. Thielen, Z. S.
+            Bruick, and M. D. Camron, 2023: MetPy: A Python package for meteorological data. Unidata,
+            https://doi.org/10.5065/D6WW7G29 (skew-T)
+        Gultepe, I., and Coauthors, 2007: Fog research: A review of past achievements and future
+            perspectives. Pure Appl. Geophys., 164, 1121-1159, https://doi.org/10.1007/s00024-007-0211-x
+            (freezing fog)
+        Huffman, G. J., and G. A. Norman Jr., 1988: The supercooled warm rain process and the specification
+            of freezing precipitation. Mon. Wea. Rev., 116, 2172-2182 (precipitation source phase, freezing
+            drizzle)
+        McDonough, F., B. C. Bernstein, M. K. Politovich, and C. A. Wolff, 2004: The Forecast Icing
+            Potential (FIP) algorithm. Preprints, 11th Conf. on Aviation, Range, and Aerospace Meteorology,
+            Hyannis, MA, Amer. Meteor. Soc., 3.2 (icing layers, freezing drizzle)
+        Rauber, R. M., L. S. Olthoff, M. K. Ramamurthy, and K. E. Kunkel, 2000: The relative importance of
+            warm rain and melting processes in freezing precipitation events. J. Appl. Meteor., 39,
+            1185-1195 (precipitation source phase, freezing drizzle)
+        Sczepanski, A., A. D. Kennedy, N. Wood, D. H. Bromwich, and S. D. Shuvo, 2024: Synthesis of in situ
+            and remotely sensed observations in North Dakota to understand Northern Great Plains ground
+            blizzards. 24th Symp. on Meteorological Observation and Instrumentation, Baltimore, MD, Amer.
+            Meteor. Soc., 645, https://ams.confex.com/ams/104ANNUAL/webprogram/Paper433440.html (PBL depth,
+            lapse rate, and mixing for blowing snow)
+
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2026
 """
 
 # NUMPY OPERATIONS

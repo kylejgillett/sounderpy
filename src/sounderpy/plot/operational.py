@@ -3,9 +3,28 @@
 
     Purpose of module:
 
-    House tools for plotting sounding, hodograph, and composite sounding
-    figures from data provided by the user. Functions here are referenced
-    by sounderpy.py.
+    Build SounderPy's figures from the pieces in components.py and components_winter.py: the full
+    severe and winter soundings, the hodograph, composite soundings, and the VAD hodograph,
+    including their map and radar insets. Called by spy.build_sounding(), spy.build_hodograph(),
+    spy.build_composite(), and spy.build_vad_hodograph().
+
+    Docs:
+        soundings:           https://sounderpy.app/docs/reference/plottingdata.html#building-soundings
+        hodographs:          https://sounderpy.app/docs/reference/plottingdata.html#building-hodographs
+        composites:          https://sounderpy.app/docs/reference/plottingdata.html#building-composite-soundings
+        VAD hodographs:      https://sounderpy.app/docs/reference/plottingdata.html#building-vad-hodographs
+        winter soundings:    https://sounderpy.app/docs/tutorials/winter_soundings.html
+        map insets & radar:  https://sounderpy.app/docs/reference/plottingdata.html#radar-logic
+        custom map data:     https://sounderpy.app/docs/tutorials/custom_map_data.html
+
+    References:
+        Hunter, J. D., 2007: Matplotlib: A 2D graphics environment. Computing in Science & Engineering, 9
+            (3), 90-95 (figures)
+        May, R. M., S. C. Arms, P. Marsh, E. Bruning, J. R. Leeman, K. Goebbert, J. E. Thielen, Z. S.
+            Bruick, and M. D. Camron, 2023: MetPy: A Python package for meteorological data. Unidata,
+            https://doi.org/10.5065/D6WW7G29 (skew-T and hodograph)
+        Met Office, 2010-2015: Cartopy: a cartographic Python library with a Matplotlib interface. Exeter,
+            Devon, https://cartopy.readthedocs.io (map insets)
 
     (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2026
 """
@@ -207,7 +226,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     '''
     SounderPy 'Special Parcels Logic' using Amelia Urquhart's ecape_parcels library: https://github.com/a-urq/ecape-parcel-py
     
-    Docs: https://kylejgillett.github.io/sounderpy/reference/plottingdata.html#parcel-logic
+    Docs: https://sounderpy.app/docs/reference/plottingdata.html#parcel-logic
     '''
 
     # user-requested special parcels

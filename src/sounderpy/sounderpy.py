@@ -1,3 +1,34 @@
+"""
+    SOUNDERPY | Vertical Profile Data Retrieval and Analysis Tool For Python
+
+    Purpose of module:
+
+    SounderPy is an open-source atmospheric science Python package for vertical profile analysis.
+    This tool is designed to get data, 'clean it up' for simple use, and plot the data on advanced-sounding
+    plots. SounderPy was developed with the goal in mind to keep the code simple and efficient for users of
+    all experience levels and for reliability in all use cases.
+
+    This module holds the public functions: get_obs_data(), get_bufkit_data(), get_model_data(),
+    build_sounding(), build_hodograph(), build_composite(), build_vad_hodograph(), and print_variables().
+
+    Version: 3.3.0 | November 2026
+    Code: https://github.com/kylejgillett/sounderpy
+    PyPI: https://pypi.org/project/sounderpy/
+    Operational site: https://sounderpy.app/
+
+    Docs:
+        documentation:  https://sounderpy.app/docs/
+        getting data:   https://sounderpy.app/docs/reference/gettingdata.html
+        plotting data:  https://sounderpy.app/docs/reference/plottingdata.html
+        helper tools:   https://sounderpy.app/docs/reference/helpertools.html
+
+    References:
+        Gillett, K. J., 2025: SounderPy: An atmospheric sounding visualization and analysis tool for Python.
+            J. Open Source Software, 10 (112), 8087, https://doi.org/10.21105/joss.08087 (SounderPy)
+
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2023, 2024, 2025, 2026
+"""
+
 ### IMPORT SOFTWARE ###
 #########################################################################################################
 # SOUNDERPY
@@ -17,44 +48,11 @@ from .data.rapruc_grib_retriever import get_rapruc_data
 #########################################################################################################
 
 
-
-
-
-'''
-    SOUNDERPY | Vertical Profile Data Retrieval and Analysis Tool For Python
-    -------------------------------------------------------------------------
-    SounderPy is an open-source atmospheric science Python package for vertical profile analysis. 
-    This tool is designed to get data, 'clean it up' for simple use, and plot the data on advanced-sounding 
-    plots. SounderPy was developed with the goal in mind to keep the code simple and efficient for users of 
-    all experience levels and for reliability in all use cases. 
-
-
-    THIS RELEASE
-    -------
-    Version: 3.3.0 | November 2026
-
-
-    DOCUMENTATION
-    -------
-    Docs: https://kylejgillett.github.io/sounderpy/
-    Code: https://github.com/kylejgillett/sounderpy
-    PyPi: https://pypi.org/project/sounderpy/
-    Operational Site: https://sounderpy.app/
-
-    COPYRIGHT
-    ---------
-    Created & maintained by Kyle J Gillett (@wxkylegillett) 2023, 2024, 2025, 2026
-    
-'''
-
-
-
-
 citation_text = f"""
 ## ---------------------------------- SOUNDERPY ----------------------------------- ##
 ##          Vertical Profile Data Retrieval and Analysis Tool For Python            ##
 ##                   v3.3.0 | November 2026 | (C) Kyle J Gillett                    ##
-##                 Docs: https://kylejgillett.github.io/sounderpy/                  ##
+##                 Docs: https://sounderpy.app/docs/                  ##
 ## --------------------- THANK YOU FOR USING THIS PACKAGE! ------------------------ ##
 """
 #print(citation_text)
@@ -405,14 +403,14 @@ def build_composite(data_list, shade_between=True, cmap='viridis', colors=None, 
     
     print(f'> COMPOSITE SOUNDING FUNCTION\n  -------------------------------')
 
-    # warn on only kawrg names, accept for now but will be deprecated later
+    # changed in v3.3.0: the old kwarg names (colors_to_use, ...) still work with a FutureWarning
     def _use_new_name(old_name, old_value, new_name, new_value):
         if old_value is None:
             return new_value
         warnings.warn(f"'{old_name}' is deprecated and will be removed in a future release. Use '{new_name}' instead.", FutureWarning, stacklevel=3)
         return old_value if new_value is None else new_value
 
-    # convert to new kawrg names
+    # convert to the new kwarg names
     colors = _use_new_name('colors_to_use', colors_to_use, 'colors', colors)
     linestyles = _use_new_name('ls_to_use', ls_to_use, 'linestyles', linestyles)
     alphas = _use_new_name('alphas_to_use', alphas_to_use, 'alphas', alphas)

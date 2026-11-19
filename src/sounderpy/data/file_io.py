@@ -1,3 +1,34 @@
+"""
+    SOUNDERPY FILE READING AND WRITING
+
+    Purpose of module:
+
+    Write profiles to CSV, SHARPpy, and CM1 input_sounding files (`to_file`), and read SHARPpy files and
+    GRAW, iMet, and Windsond radiosonde files into SounderPy `clean_data` dictionaries (`from_sharppy`,
+    `from_graw`, `from_imet`, `from_windsond`).
+
+    Docs:
+        saving data to a file:     https://sounderpy.app/docs/reference/helpertools.html#saving-data-to-a-file
+        exporting data:            https://sounderpy.app/docs/tutorials/exporting_data.html
+        reading SHARPpy files:     https://sounderpy.app/docs/reference/customdatasources.html#ingesting-sharppy-files
+        reading radiosonde files:  https://sounderpy.app/docs/reference/customdatasources.html#ingesting-graw-imet-and-windsond-radiosonde-files
+
+    References:
+        Blumberg, W. G., K. T. Halbert, T. A. Supinie, P. T. Marsh, R. L. Thompson, and J. A. Hart, 2017:
+            SHARPpy: An open-source sounding analysis toolkit for the atmospheric sciences. Bull. Amer.
+            Meteor. Soc., 98, 1625-1636, https://doi.org/10.1175/BAMS-D-15-00309.1 (SHARPpy file format)
+        Bryan, G. H., and J. M. Fritsch, 2002: A benchmark simulation for moist nonhydrostatic numerical
+            models. Mon. Wea. Rev., 130, 2917-2928,
+            https://doi.org/10.1175/1520-0493(2002)130<2917:ABSFMN>2.0.CO;2 (CM1)
+        Halbert, K., and L. Orf: LOFS-read sndmod (CM1 input_sounding writer). GitHub,
+            https://github.com/leighorf/LOFS-read/blob/master/bin/sndmod (CM1 input_sounding writer)
+        May, R. M., S. C. Arms, P. Marsh, E. Bruning, J. R. Leeman, K. Goebbert, J. E. Thielen, Z. S.
+            Bruick, and M. D. Camron, 2023: MetPy: A Python package for meteorological data. Unidata,
+            https://doi.org/10.5065/D6WW7G29 (thermodynamic calculations)
+
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2026
+"""
+
 import os
 import re
 import warnings
@@ -8,20 +39,6 @@ import metpy.calc as mpcalc
 from metpy.units import units
 
 from ..utils import SounderPyNotice, SounderPyWarning
-
-
-
-"""
-    SOUNDERPY FILE READING AND WRITING FUNCTIONS 
-
-    Purpose of module: 
-
-     Functions for writing files CM1/SHARPPY/CSV and reading SHARPPY, GRAW, iMet, and Windsond files
-
-
-    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2026
-"""
-
 
 
 #########################
@@ -116,7 +133,7 @@ def from_sharppy(filepath):
     u, v = mpcalc.wind_components(ws, wd)
 
     warnings.warn("To plot SHARPpy file data with SounderPy, add site meta-data to clean_data['site_info'] and plot "
-                  "titles (see https://kylejgillett.github.io/sounderpy/reference/customdatasources.html"
+                  "titles (see https://sounderpy.app/docs/reference/customdatasources.html"
                   "#ingesting-your-own-data-into-sounderpy). Include a site ID, name, location, lat/lon, and elevation.",
                   SounderPyNotice, stacklevel=2)
 
@@ -248,8 +265,8 @@ def _radiosonde_clean_data(p, z, T, Td, ws_ms, wd, site_info, file_type):
                                       ("lat/lon", "site-latlon"), ("elevation", "site-elv"))
                if site_info.get(key) is None]
     warnings.warn(f"To plot {file_type} file data with SounderPy, add the site meta-data the file doesn't hold to "
-                  f"clean_data['site_info'], and plot titles (see https://kylejgillett.github.io/sounderpy/reference/"
-                  f"customdatasources.html#ingesting-your-own-data-into-sounderpy). Still needed: "
+                  f"clean_data['site_info'], and plot titles (see https://sounderpy.app/docs/reference/"
+                  f"clean_data_scheme.html#site-info-metadata). Still needed: "
                   f"{', '.join(missing) if missing else 'nothing'} in site_info, and plot titles.",
                   SounderPyNotice, stacklevel=3)
 

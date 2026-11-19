@@ -3,9 +3,15 @@
 
     Purpose of module:
 
-    House the look of SounderPy figures in one place: themes, font sizes, units,
-    layouts, winter settings, and watermark settings. Drawing tools are in components.py
-    (and components_winter.py for the winter sounding).
+    The look of SounderPy figures in one place: themes, font sizes, units, layouts, winter settings,
+    and watermark settings. Drawing tools are in components.py (and components_winter.py for the
+    winter sounding).
+
+    Docs:
+        figure colors & themes:  https://sounderpy.app/docs/reference/plottingdata.html#figure-colors
+        theme settings:          https://sounderpy.app/docs/reference/plottingdata.html#theme-settings
+        watermark:               https://sounderpy.app/docs/reference/plottingdata.html#watermark
+        plot appearance:         https://sounderpy.app/docs/tutorials/plot_appearance.html
 
     (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2026
 """
@@ -209,7 +215,7 @@ FULL_SOUNDING_LAYOUT = {"skewt": (0.1124, 0.1005, 0.60, 0.85),
                         "thermo_table": (0.124, -0.08, 0.406, 0.18),
                         "moisture_table": (0.53, -0.13, 0.15, 0.23),
                         "kinematics_table": (0.68, -0.13, 0.265, 0.23),
-                        "indices_box": (1.094, 0.10, 0.112, 0.151),
+                        "indices_box": (1.094, 0.10, 0.112, 0.19),
                         "logo": (0.115, -0.135, 0.05, 0.05),
                         "margin": (0.1136, -0.1454, 1.1064, 1.1639)}
 

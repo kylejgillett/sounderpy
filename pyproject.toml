@@ -55,7 +55,7 @@ dependencies = [
 ]
 
 [project.urls]
-"Docs" = "https://kylejgillett.github.io/sounderpy/"
+"Docs" = "https://sounderpy.app/docs/"
 "Code" = "https://github.com/kylejgillett/sounderpy"
 "Operational Site" = "https://sounderpy.app/"
 "PyPi" = "https://pypi.org/project/sounderpy/"
@@ -106,7 +106,7 @@ markers = [
     "slow: renders a full figure; skip with -m \"not slow\"",
 ]
 filterwarnings = [
-    # MetPy 1.7's skew-t on Matplotlib 3.11, and ecape_parcel on MetPy; see PLOT_ISSUES.md (FUTURE FIXES)
+    # MetPy 1.7's skew-t on Matplotlib 3.11, and ecape_parcel on MetPy; see TODO.md (FUTURE FIXES)
     "ignore:The interval_contains function was deprecated",
     "ignore:Temperature argument is unused",
 ]

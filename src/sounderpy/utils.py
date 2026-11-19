@@ -1,3 +1,34 @@
+"""
+    SOUNDERPY UTILITIES
+
+    Purpose of module:
+
+    Helper functions for working with vertical profile data: surface modification (`modify_surface`),
+    interpolation, nearest values, surface-based profiles, station lookups for the RAOB and BUFKIT
+    station lists, readout formatting, and SounderPy's warning classes. Some are called by other
+    modules, and some are meant to be called by the user.
+
+    Docs:
+        helper tools:          https://sounderpy.app/docs/reference/helpertools.html
+        surface modification:  https://sounderpy.app/docs/reference/plottingdata.html#surface-modification-logic
+        station identifiers:   https://sounderpy.app/docs/reference/gettingdata.html#station-identifiers
+
+    References:
+        Holzworth, G. C., 1964: Estimates of mean maximum mixing depths in the contiguous United States.
+            Mon. Wea. Rev., 92, 235-242 (surface modification mixing depth)
+        Betts, A. K., 1973: Non-precipitating cumulus convection and its parameterization. Quart. J. Roy.
+            Meteor. Soc., 99, 178-196 (mixed-layer surface modification)
+        Carson, D. J., 1973: The development of a dry inversion-capped convectively unstable boundary layer.
+            Quart. J. Roy. Meteor. Soc., 99, 450-467 (mixed-layer surface modification)
+        Tennekes, H., 1973: A model for the dynamics of the inversion above a convective boundary layer. J.
+            Atmos. Sci., 30, 558-567 (mixed-layer surface modification)
+        May, R. M., S. C. Arms, P. Marsh, E. Bruning, J. R. Leeman, K. Goebbert, J. E. Thielen, Z. S.
+            Bruick, and M. D. Camron, 2023: MetPy: A Python package for meteorological data. Unidata,
+            https://doi.org/10.5065/D6WW7G29 (thermodynamic calculations)
+
+    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2026
+"""
+
 from datetime import datetime
 import csv
 import requests
@@ -11,24 +42,6 @@ import difflib
 import functools
 import importlib.resources
 import math
-
-
-
-
-
-
-"""
-    SOUNDERPY UTILITY FUNCTIONS 
-
-    Purpose of module: 
-
-     A collection of helper functions that users may find useful for processing 
-     vertical profile data but are not necessary to use the basic functions of 
-     SounderPy. May be called by other modules or explicitly called by the user.
-
-
-    (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024
-"""
 
 
 class SounderPyWarning(UserWarning):
