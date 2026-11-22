@@ -257,3 +257,4 @@ motion and ground-relative/storm-relative wind displays.
 See also:
 
 * :doc:`Plotting Data </reference/plottingdata>`
+* :doc:`Plot Settings </reference/plotsettings>`

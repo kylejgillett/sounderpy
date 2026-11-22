@@ -3,14 +3,14 @@
 
     Purpose of module:
 
-    Helper functions for working with vertical profile data: surface modification (`modify_surface`),
-    interpolation, nearest values, surface-based profiles, station lookups for the RAOB and BUFKIT
-    station lists, readout formatting, and SounderPy's warning classes. Some are called by other
-    modules, and some are meant to be called by the user.
+    Helper functions for working with vertical profile data: surface modification
+    (spy.modify_surface()), interpolation, nearest values, surface-based profiles, station lookups for
+    the RAOB and BUFKIT station lists, readout formatting, and SounderPy's warning classes. Some are
+    called by other modules, and some are meant to be called by the user.
 
     Docs:
         helper tools:          https://sounderpy.app/docs/reference/helpertools.html
-        surface modification:  https://sounderpy.app/docs/reference/plottingdata.html#surface-modification-logic
+        surface modification:  https://sounderpy.app/docs/reference/plotsettings.html#surface-modification
         station identifiers:   https://sounderpy.app/docs/reference/gettingdata.html#station-identifiers
 
     References:
@@ -29,8 +29,6 @@
     (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2024, 2026
 """
 
-from datetime import datetime
-import csv
 import requests
 import pandas as pd
 import numpy as np
@@ -64,9 +62,15 @@ class SounderPyNotice(UserWarning):
 #########################################################################
 def modify_surface(clean_data, modify_sfc):
     """
-    where,
-    modify_sfc = {'T': 20, 'Td': 12, 'ws': 10, 'wd': 270, 'method': 'mix'}
-    and units = degC, degC, kts, degrees
+    Return a copy of a profile with new surface values. The profile given is left as it is, so the modified copy
+    can be plotted, calculated, saved, or compared with the original like any other profile.
+
+    :param clean_data: the profile, a SounderPy ``clean_data`` dict
+    :type clean_data: dict, required
+    :param modify_sfc: the new surface values, such as ``{'T': 20, 'Td': 12, 'ws': 10, 'wd': 270, 'method': 'mix'}``: ``T`` and ``Td`` in °C, ``ws`` in knots, ``wd`` in degrees, and ``method`` (below). Leave out any value to keep it as it is
+    :type modify_sfc: dict, required
+    :return: the modified profile, a new ``clean_data`` dict
+    :rtype: dict
 
     method 'mix' (the default):
     A warmer surface temperature is mixed upward along its dry adiabat until it meets the
@@ -247,13 +251,11 @@ def mag_round(param, dec, mag=False):
 #########################################################################
 def get_sfc_index(height_arr):
     """
-    Return a value of an index of an array who's value is closest to a define value.
+    Return the index of the first height at or above 0 (the surface in an AGL profile).
 
-    :param array: an array of data to be searched through
-    :type array: arr, required
-    :param heights: the value used to compare against the array of data
-    :type heights: int or float, required
-    :return: nearest_idx, index of the data array that corresponds with the nearest value to the given value
+    :param height_arr: an array of heights, m AGL
+    :type height_arr: arr, required
+    :return: the index of the first height >= 0, or -1 if there is none
     :rtype: int
     """
 
@@ -323,7 +325,7 @@ def make_sfc_based_3D(arr, sfc_arr):
 #########################
 # STATION ID LOOKUP
 #########################################################################
-def find_station(ids, station_id, k_prefix=False, required=True, hint=''):
+def find_station(ids, station_id, required=True, hint=''):
     '''
     Return the row label of a station ID in a column of station IDs, matching the whole ID
     (ignoring case & padding)
@@ -332,8 +334,6 @@ def find_station(ids, station_id, k_prefix=False, required=True, hint=''):
     :type ids: pandas.Series, required
     :param station_id: the station ID to find
     :type station_id: str, required
-    :param k_prefix: if a 3-letter ID isn't found, also try it with a 'K' in front ('OAX' -> 'KOAX')
-    :type k_prefix: bool, optional, default is `False`
     :param required: raise an error if the station isn't found; otherwise return `None`
     :type required: bool, optional, default is `True`
     :param hint: extra text added to the error message
@@ -345,14 +345,9 @@ def find_station(ids, station_id, k_prefix=False, required=True, hint=''):
     clean_ids = ids.astype(str).str.strip().str.rstrip('*').str.upper()
     target = str(station_id).strip().upper()
 
-    candidates = [target]
-    if k_prefix and len(target) == 3 and target.isalpha():
-        candidates.append('K' + target)
-
-    for candidate in candidates:
-        matches = clean_ids.index[clean_ids == candidate]
-        if len(matches):
-            return matches[0]
+    matches = clean_ids.index[clean_ids == target]
+    if len(matches):
+        return matches[0]
 
     if not required:
         return None
@@ -533,7 +528,7 @@ def get_latlon(station_type, station_id):
             f'https://raw.githubusercontent.com/kylejgillett/sounderpy/main/src/BUFKIT-STATIONS-MASTER.txt',
             skiprows=7, skipinitialspace=True)
 
-        idx = find_station(BUFKIT_STATIONS['ID'], station_id, k_prefix=True,
+        idx = find_station(BUFKIT_STATIONS['ID'], station_id,
                            hint="TIP: some IDs include a 'K' in front, such as 'KMOP', others are 3 digits, such a 'DTX'")
         return [BUFKIT_STATIONS['LAT'][idx], BUFKIT_STATIONS['LON'][idx]]
 

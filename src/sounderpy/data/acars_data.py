@@ -26,7 +26,6 @@
 ### IMPORT SOFTWARE ###
 #########################################################################################################
 import time
-import sys
 from urllib.request import urlopen
 from urllib.error import HTTPError
 import warnings
@@ -218,8 +217,10 @@ class acars_data:
             if not hush:
                 print(
                     f"    > SUMMARY: {clean_data['site_info']['valid-time'][3]}Z Flight from {clean_data['site_info']['site-id']}, {clean_data['site_info']['site-name']} at {clean_data['site_info']['valid-time'][1]}-{clean_data['site_info']['valid-time'][2]}-{clean_data['site_info']['valid-time'][0]}-{clean_data['site_info']['valid-time'][3]}Z")
-                warnings.filterwarnings("ignore")
-                sounding_params(clean_data).print_vals()
+                # hide the calculation warnings for this printout only
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    sounding_params(clean_data).print_vals()
 
             return clean_data
 

@@ -684,3 +684,107 @@ def test_live_surface_observation():
     assert obs["station"] == "KGFK"
     assert abs(obs["offset_min"]) <= 60
     assert "FZDZ" in obs["wxcodes"]
+
+
+@pytest.mark.parametrize(("station", "found"), [("OUN", "OUN"), ("oun", "OUN"), ("KGFK", "KGFK")])
+def test_find_station_matches_the_id_exactly(station, found):
+    """BUFKIT IDs are used as typed: no 'K' is added or dropped (the files are named by the listed ID)."""
+    import pandas as pd
+    ids = pd.Series(["OUN", "KGFK ", "DTX"])
+    assert ids[utils.find_station(ids, station)].strip() == found
+
+
+@pytest.mark.parametrize(("station", "suggestion"), [("KOUN", "'OUN'"), ("GFK", "'KGFK'")])
+def test_find_station_suggests_the_listed_form(station, suggestion):
+    import pandas as pd
+    ids = pd.Series(["OUN", "KGFK", "DTX"])
+    with pytest.raises(ValueError, match=f"Did you mean .*{suggestion}"):
+        utils.find_station(ids, station)
+
+
+# --- NCEP-FNL file lookup: the known path, then NCAR's catalog ---------------------------------------------------
+
+class _FakeNCSS:
+    """Stands in for siphon's NCSS: has variables only at the URLs in `served`."""
+    served = set()
+
+    def __init__(self, url):
+        self.url = url
+        self.variables = {"Temperature_isobaric"} if url in self.served else set()
+
+
+class _Ref:
+    def __init__(self, catalog):
+        self.catalog = catalog
+
+    def follow(self):
+        return self.catalog
+
+
+class _Catalog:
+    def __init__(self, refs=None, datasets=None):
+        self.catalog_refs = {name: _Ref(cat) for name, cat in (refs or {}).items()}
+        self.datasets = datasets or {}
+
+
+class _Dataset:
+    def __init__(self, url):
+        self.access_urls = {"NetcdfSubset": url}
+
+
+def fake_ncar(monkeypatch, served, file_names=("gdas1.fnl0p25.2024052100.f00.grib2",), title="d083003 NCEP GDAS/FNL 0.25 Degree"):
+    """NCAR's server with a top catalog holding one FNL dataset, whose files sit under a new 'moved' path."""
+    from sounderpy.data import model_data
+    _FakeNCSS.served = set(served)
+    moved = "https://thredds.rda.ucar.edu/thredds/ncss/grid/moved/d083003/2024/202405/"
+    month = _Catalog(datasets={name: _Dataset(moved + name) for name in file_names})
+    files = _Catalog(refs={"2024": _Catalog(refs={"202405": month})})
+    top = _Catalog(refs={title: _Catalog(refs={"d083003 Files": files}), "d010083 Alaska": _Catalog()})
+    opened = []
+    monkeypatch.setattr(model_data, "NCSS", _FakeNCSS)
+    monkeypatch.setattr(model_data, "TDSCatalog", lambda url: opened.append(url) or top)
+    return model_data, moved, opened
+
+
+def test_ncep_fnl_uses_the_known_path_without_the_catalog(monkeypatch):
+    known = "https://thredds.rda.ucar.edu/thredds/ncss/grid/files/d083003/2024/202405/gdas1.fnl0p25.2024052100.f00.grib2"
+    model_data, _, opened = fake_ncar(monkeypatch, {known})
+    assert model_data._ncep_fnl_ncss("2024", "05", "21", "00").url == known
+    assert opened == []
+
+
+def test_ncep_fnl_finds_moved_files_through_the_catalog(monkeypatch, capsys):
+    model_data, moved, opened = fake_ncar(monkeypatch, set())
+    _FakeNCSS.served = {moved + "gdas1.fnl0p25.2024052100.f00.grib2"}
+    assert model_data._ncep_fnl_ncss("2024", "05", "21", "00").url == moved + "gdas1.fnl0p25.2024052100.f00.grib2"
+    assert opened == ["https://thredds.rda.ucar.edu/thredds/catalog/catalog.xml"]
+    assert "searching NCAR's catalog" in capsys.readouterr().out
+
+
+@pytest.mark.parametrize(("args", "message"), [
+    (("2023", "05", "21", "00"), "no NCEP-FNL data for 2023"),
+    (("2024", "06", "21", "00"), "no NCEP-FNL data for 2024-06"),
+    (("2024", "05", "21", "01"), "no NCEP-FNL analysis for 2024-05-21 01Z"),
+])
+def test_ncep_fnl_says_what_the_catalog_is_missing(monkeypatch, args, message):
+    model_data, _, _ = fake_ncar(monkeypatch, set())
+    with pytest.raises(ValueError, match=message):
+        model_data._ncep_fnl_ncss(*args)
+
+
+def test_ncep_fnl_errors_when_the_dataset_is_gone(monkeypatch):
+    model_data, _, _ = fake_ncar(monkeypatch, set(), title="d083002 NCEP FNL Operational 1 Degree")
+    with pytest.raises(ValueError, match="no longer lists a 'GDAS/FNL 0.25' dataset"):
+        model_data._ncep_fnl_ncss("2024", "05", "21", "00")
+
+
+def test_ncep_fnl_errors_when_the_listed_file_is_empty(monkeypatch):
+    model_data, _, _ = fake_ncar(monkeypatch, set())
+    with pytest.raises(ValueError, match="its subset service returned nothing"):
+        model_data._ncep_fnl_ncss("2024", "05", "21", "00")
+
+
+def test_get_model_data_ncep_reports_why_it_failed(monkeypatch):
+    fake_ncar(monkeypatch, set())
+    with pytest.raises(ValueError, match="NCEP-FNL data access failed: NCAR's catalog has no NCEP-FNL analysis for 2024-05-21 01Z"):
+        spy.get_model_data("ncep", [35.2, -97.4], "2024", "05", "21", "01", hush=True)

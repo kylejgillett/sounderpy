@@ -52,22 +52,10 @@ Three things to know:
 * **Pass** ``transform=ccrs.PlateCarree()``. The map is a cartopy map, and this
   tells it your data's x and y are longitude and latitude.
 * **Use** ``zorder`` **to stack your data with the map.** Your layers are drawn
-  after the radar and before the profile's location marker:
-
-  ======================  ==========
-  Map part                zorder
-  ======================  ==========
-  Satellite image         1
-  State shading           2
-  Radar                   4
-  County lines            5
-  State lines             6
-  Location marker         9.9 - 11
-  ======================  ==========
-
-  ``zorder=3`` puts a filled field above the satellite image and under the
-  radar and the county and state lines; ``zorder=7`` or ``8`` puts lines,
-  points, and text on top of the borders.
+  after the radar and before the profile's location marker; each map part's
+  ``zorder``, and which values put your data under or over the borders, are listed in
+  :ref:`custom_map_data`. The examples below use ``zorder=3`` for filled fields, and
+  ``7`` or ``8`` for lines, points, and text.
 * **Use** ``radar=None`` to show only your data. Radar can stay on too; its time
   stays in the box at the bottom of the map.
 

@@ -29,7 +29,7 @@
 
       .. code-block:: bash
 
-         conda install sounderpy
+         conda install conda-forge::sounderpy
 
    .. container:: home-hero-figure
 
@@ -142,7 +142,7 @@ One Workflow, Many Data Sources, Several Plotting Options
 
       **Observations**
 
-      RAOB, IRGAv2, ACARS
+      RAOB, IGRAv2, ACARS
 
    .. container:: source-pill
 
@@ -160,7 +160,7 @@ One Workflow, Many Data Sources, Several Plotting Options
 
       **Modeling Systems**
 
-      CM1, WRF, MPAS
+      CM1, WRF
 
    .. container:: source-pill
 
@@ -195,30 +195,65 @@ What's New in SounderPy 3.3.0
 
 .. container:: release-panel
 
-   **SounderPy 3.3.0 rebuilds the plotting module and makes every figure easier
-   to customize.**
+   **SounderPy 3.3.0 rebuilds the plotting module, adds winter and publication figures, and makes every
+   figure easier to customize.**
 
-   * 📈 SounderPy's plot module is fully rebuilt and refactored allowing for increased figure customization and generation speed. Most figures are roughly 50% faster.
-   * 🎨 The new figure kwarg ``theme`` lets you set your own colors while credit text and logo can be changed with ``spy.set_watermark()``.
-   * 🔍 Full sounding and composite figures now include a ``ylim`` kwarg, allowing you to adjust the Skew-T's y-axis (pressure) limits.
-   * 🧩 Composite soundings have been completely rebuilt. Composites include a table of various parameters, normalized kwarg names, and support for custom data sources.
-   * 🗺️ VAD hodographs now include the map, radar, hodograph boundary, and DPI options of the other figures.
-   * ❄️ New winter sounding: ``build_sounding(mode='winter')`` draws a sounding built around precipitation type, snow growth, and winter hazards. ``mode='auto'`` picks the winter sounding when the surface wet-bulb is below 35 degrees F, and ``show_obs=True`` adds the latest surface observation. See :doc:`/tutorials/winter_soundings`.
-   * 🧮 ``spy.winter_params(clean_data).calc()`` returns every ``sounding_params`` value plus the winter values behind the winter sounding.
-   * 💻 The command line tool adds ``--mode {severe,winter,auto}`` and ``--obs`` for sounding plots.
-   * ✈️ ACARS profiles now use the airport elevation in meters (it was read in feet), which corrects the surface label and surface pressure.
-   * 🧵 RAP/RUC reanalysis GRIB parsing is now thread safe. ``get_model_data('rap-ruc', ...)`` can run from several threads at once (for example, to fetch composite profiles in parallel); downloads still run in parallel while GRIB decoding takes turns.
-   * 🌦️ The NAM and NAMNEST (NAM3km) BUFKIT forecasts are archive only after their NCEP decommissioning on Nov. 2nd, 2026.
-   * 📚 Refactored and redesigned documentation to match new SounderPy web app: sounderpy.app
+   .. rubric:: 📈 Figure Updates
+
+   * **Rebuilt plot module**: most figures are about 50% faster, with custom colors (``theme``), a custom watermark (``spy.set_watermark()``), and a ``ylim`` to zoom the skew-T.
+   * **New** ``build_sounding()`` **kwargs**: ``max_levels`` (reduce the number of vertical levels of a profile), ``ylim`` (zoom the skew-T into a particular layer), ``theme`` (custom figure colors), ``sr_hodo`` (storm-relative hodograph), ``mode`` (``'severe'``, ``'winter'``, or ``'auto'``), ``show_obs`` (the nearest surface observation for ``mode='winter'`` figures), ``map_layers`` and ``map_label`` (adding your own data to the map inset), and ``return_fig`` (return the figure and its panels for customization). Many of these also work on ``build_hodograph()``, ``build_composite()``, and ``build_vad_hodograph()``. See :doc:`/reference/plottingdata`.
+   * **Publication figures (experimental)**: ``spy.build_publication_sounding()`` draws journal-sized figures for AMS and AGU journals, and every ``build_*`` function takes ``return_fig=True`` to hand back its figure (see :doc:`/tutorials/custom_figures`).
+   * **Your own data on the map inset** with ``map_layers`` and ``map_label`` (see :doc:`/tutorials/custom_map_data`).
+   * **Rebuilt composite soundings** with figure improvements and parameter read-outs, and rebuilt VAD hodographs with map, radar, and boundary options.
+   * **New parameter readouts** on the full sounding: composite indices in the thermodynamics box, EIL depth and heights, 0-10 km bulk shear and theta-e difference, PBL height and transport wind, improved layout for ML/MU parcel heights, updated watermark, new data source attribution line, and numerous other small improvements to the plot layout.
+
+   .. rubric:: ❄️ NEW Winter Soundings
+
+   * ``build_sounding(mode='winter')`` draws a winter-focused sounding built around precipitation type, snow growth, and winter hazards. Setting ``mode='auto'`` will generate a winter figure when the surface wet-bulb is below 35°F, and a new ``show_obs=True`` kwarg adds the latest (nearest) surface observation to the figure (see the :doc:`winter soundings tutorial </tutorials/winter_soundings>`!).
+   * ``spy.winter_params(clean_data).calc()`` returns the dictionary of winter parameters.
+
+   .. rubric:: 🧮 Calculations
+
+   * NEW severe parameters: 0-10 km bulk shear and the low-to-midlevel theta-e difference (for MCSs; Cohen et al. 2007), PBL depth and transport wind (for air quality), EIL bottom height, top height, and depth, SHIP, MLBRN, TT, KI, and 700-500 hPa lapse rate.
+   * UPDATED/CORRECTED parameters: Streamwise vorticity bug counted antistreamwise layers as streamwise; STP/SCP used EIL shear in kts (now m/s).
+   * Every parameter, its units, and its source are listed on the :doc:`Parameters & References </reference/references>` documentation page.
+   * Settings: ``modify_sfc`` adds ``'mix'``, ``'blend'``, and ``'replace'`` methods (see :ref:`modify_sfc`), and the NEW ``spy.modify_surface()`` returns the modified profile itself, to compare or save (see the :doc:`CM1 surface heating case study </case_studies/cm1_surface_heating>`); ``spy.smooth_profile()`` adds a Savitzky-Golay filter.
+
+   .. rubric:: 🌦️ Data Sources
+
+   * BUFKIT now serves the RRFS; NAM, NAMNEST, SREF, and HIRESW are no longer available as "latest runs" (discontinued; but NAM and NAMNEST are available as archived runs).
+   * RRFS, HRRR, and RAP may now fall back to NOMADS NCEP's BUFR dataset when Penn State is behind or an archived run is missing.
+   * NEW Station list: observed soundings use a packaged WMO/ICAO/IGRAv2 station list, with an ICAO fallback for the Wyoming archive. This list is a best-guess combination of 5 data sources to limit incorrect site names, IDs, and locations.
+   * Dewpoints are now calculated (when possible) for older IGRA v2 soundings that don't ship dewpoint.
+   * Thread-safe RAP/RUC GRIB parsing.
+
+   .. rubric:: 💻 Command Line Interface Updates
+
+   * NEW ``file`` command: read a local SHARPpy-format sounding (``--latlon LAT LON`` adds its location for the map).
+   * NEW ``--params``: print key calculated parameters (CAPE, SRH, shear, and precip type with ``--mode winter``).
+   * NEW ``--mode {severe,winter,auto}`` and ``--obs``: winter soundings and the nearest surface observation.
+   * NEW ``--storm-motion``: ``right_moving``, ``left_moving``, ``mean_wind``, or a direction and speed such as ``270 25``.
+   * NEW ``--modify-sfc``: change the surface, e.g. ``T=30 Td=21`` or ``T=-6 method=blend depth=300``.
+   * NEW ``--radar {mosaic,single,none}`` and ``--radar-time {sounding,now}``: the map's radar.
+   * NEW ``--parcels`` and ``--background-parcels``: custom parcel codes.
+   * Options now match the Python functions, with clearer warnings. See :doc:`/reference/cli`.
+
+   .. rubric:: 🐞 Bug Fixes
+
+   * ACARS airport elevations corrected, CIN doesn't accumulate above the LFC, HGZ identification, extra moist adiabats on thin zoomed skew-Ts, and figures now close after ``save=True`` to preserve memory.
+
+   .. rubric:: 📚 NEW HOME for Documentation!
+
+   * Freshly redesigned docs now live at `sounderpy.app/docs <https://sounderpy.app/docs/>`_, with new :doc:`/reference/plotsettings`, :doc:`/reference/publicationfigures`, and :doc:`/reference/references` pages.
+   * Also, each source module now includes a text header with its docs and references.
 
    .. important::
-      ``sounding_params(...).calc()`` and ``vad_params(...).calc()`` now return a dictionary
-      instead of a tuple, and ``build_composite()``'s ``colors_to_use``, ``ls_to_use``,
-      ``alphas_to_use``, and ``lw_to_use`` are renamed to ``colors``, ``linestyles``,
-      ``alphas``, and ``linewidths``. The old names still work in 3.3.0 but show a
-      ``FutureWarning``, and will be removed in a later release. The data retrieval and file modules
-      (such as ``sounderpy.bufkit_data``) moved into ``sounderpy.data`` (``sounderpy.data.bufkit_data``);
-      ``spy.*`` functions are unchanged, and the old module paths still work with a ``FutureWarning``.
+      **Changes to note:**
+
+      * ``sounding_params(...).calc()`` and ``vad_params(...).calc()`` return a dictionary instead of a tuple.
+      * Renamed, with the old names still working (with a ``FutureWarning``) until a later release: ``build_composite()``'s ``colors_to_use``, ``ls_to_use``, ``alphas_to_use``, and ``lw_to_use`` (now ``colors``, ``linestyles``, ``alphas``, and ``linewidths``), ``make_cm1_profile()`` / ``make_wrf_profile()`` (now ``spy.from_cm1()`` / ``spy.from_wrf()``), and the data modules (now in ``sounderpy.data``).
+      * ``spy.smooth_profile()`` defaults to the Savitzky-Golay filter (passing ``sigma`` alone still uses the Gaussian filter).
+
       See :doc:`/reference/helpertools` and :doc:`/reference/plottingdata`.
 
    :doc:`See the plotting reference → </reference/plottingdata>`
@@ -238,7 +273,7 @@ profile retrieval, analysis, and visualization.
    `Operational SounderPy Site <https://sounderpy.app/>`_
 
 
-☕ SounderPy is a open-source package developed on my own time. Would you like to support continued SounderPy development? Consider "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"! ☕
+☕ SounderPy is an open-source package developed on my own time. Would you like to support continued SounderPy development? Consider "`Buying me a coffee <https://www.buymeacoffee.com/kylejgillett>`_"! ☕
 
 Directory
 ==================
@@ -260,17 +295,25 @@ Directory
    reference/customdatasources
    reference/clean_data_scheme
    reference/plottingdata
+   reference/plotsettings
+   reference/publicationfigures
    reference/helpertools
    reference/cli
    reference/references
 
 .. toctree::
    :maxdepth: 5
-   :caption: Tutorials:  
+   :caption: Tutorials:
 
    tutorials/beginners_sounderpy_cookbook
-   gallery/examplegallery
    tutorials/index
+
+.. toctree::
+   :maxdepth: 5
+   :caption: Examples:
+
+   gallery/examplegallery
    case_studies/mound_city_20240828
+   case_studies/cm1_surface_heating
 
 * :ref:`genindex`

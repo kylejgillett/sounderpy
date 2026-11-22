@@ -316,7 +316,8 @@ CM1 input sounding:
        metadata,
    )
 
-WRF output can similarly be converted with ``spy.from_wrf(...)``.
+WRF output can similarly be converted with ``spy.from_wrf(...)``. To change a CM1 base state and compare the runs,
+see the :doc:`CM1 surface heating case study </case_studies/cm1_surface_heating>`.
 
 Once converted, these profiles use the same SounderPy analysis and plotting
 functions as retrieved profiles.

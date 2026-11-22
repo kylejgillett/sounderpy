@@ -8,7 +8,7 @@
     radar valid time, and the reflectivity colormap.
 
     Docs:
-        map insets & radar:     https://sounderpy.app/docs/reference/plottingdata.html#radar-logic
+        map insets & radar:     https://sounderpy.app/docs/reference/plotsettings.html#map-radar
         maps & radar tutorial:  https://sounderpy.app/docs/tutorials/maps_radar.html
 
     References:
@@ -237,11 +237,11 @@ def get_radar_mosaic(clean_data, map_zoom, radar_time):
     '''
     GET RADAR MOSAIC DATA FOR SOUNDING PLOT
 
-    - gets data from NCEI for 'sounding time' or now
+    - gets data from Unidata's THREDDS server for 'sounding time' or now
     - data only goes back 1 month from current time
     '''
 
-    # search the NCEI database for the file closest to
+    # search the THREDDS catalog for the file closest to
     # the requested radar date/time
     def find_file(target_time, file_names):
         closest_index = None
@@ -276,7 +276,7 @@ def get_radar_mosaic(clean_data, map_zoom, radar_time):
     # GET RADAR DATA ----------------------------------------------------------------------------------
     composite_url = 'https://thredds.ucar.edu/thredds/catalog/nexrad/composite/gini/dhr/1km/' + datestr +'/catalog.xml'
     try:
-        # try accessing the NCEI TDS database
+        # try accessing the Unidata THREDDS catalog
         composite_catalog = TDSCatalog(composite_url).datasets
         closest = find_file(time, composite_catalog)
     except Exception:

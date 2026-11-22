@@ -11,9 +11,9 @@
 
     Docs:
         sounding parameters:   https://sounderpy.app/docs/reference/helpertools.html#returning-a-dictionary-of-profile-parameters
-        storm motions:         https://sounderpy.app/docs/reference/plottingdata.html#storm-motion-logic
-        parcels:               https://sounderpy.app/docs/reference/plottingdata.html#parcel-logic
-        surface modification:  https://sounderpy.app/docs/reference/plottingdata.html#surface-modification-logic
+        storm motions:         https://sounderpy.app/docs/reference/plotsettings.html#storm-motions
+        parcels:               https://sounderpy.app/docs/reference/plotsettings.html#parcels
+        surface modification:  https://sounderpy.app/docs/reference/plotsettings.html#surface-modification
 
     References:
         Blumberg, W. G., K. T. Halbert, T. A. Supinie, P. T. Marsh, R. L. Thompson, and J. A. Hart, 2017:
@@ -115,13 +115,12 @@ except ImportError:
 import numpy as np
 import numpy.ma as ma
 import warnings
-import copy
 import metpy.calc as mpcalc
 from metpy.units import units
 from ecape_parcel.ecape_calc import calc_ecape
 
 # sounderpy modules
-from .utils import modify_surface, find_nearest, mag, mag_round
+from .utils import modify_surface, find_nearest
 
 
 # STORM MOTION NAMES
@@ -674,7 +673,7 @@ class sounding_params:
         ####################################################################
         ### KINEMATIC VALUES ###
         ####################################################################
-        #--- LAPSE RATES ---#
+        #--- EFFECTIVE INFLOW LAYER ---#
         # ---------------------------------------------------------------   
         kinem['eil'] = effective_inflow_layer(prof, ecape=100, ecinh=-150)
         kinem['eil_z'] = [to_agl(prof, hght(prof, kinem['eil'][0])), to_agl(prof, hght(prof, kinem['eil'][1]))]
@@ -757,7 +756,7 @@ class sounding_params:
 
 
 
-        #--- CORFIDI MSC MOTION ---#
+        #--- CORFIDI MCS MOTION ---#
         #----------------------------------------------------------------
         kinem['mcs'] = corfidi_mcs_motion(prof)
 
@@ -1302,7 +1301,7 @@ class vad_params:
           
         
         
-        #--- CORFIDI MSC MOTION ---#
+        #--- CORFIDI MCS MOTION ---#
         #----------------------------------------------------------------
         kinem['mcs'] = calc_corfidi(intrp['uINTRP'],intrp['vINTRP'],intrp['zINTRP'],
                                     calc_meanwind(intrp['uINTRP'],intrp['vINTRP'],intrp['zINTRP'], 6000)[0],

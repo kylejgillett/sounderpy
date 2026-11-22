@@ -32,7 +32,6 @@ import warnings
 import zlib
 from datetime import datetime, timezone
 
-import pandas as pd
 import requests
 import numpy as np
 
@@ -241,9 +240,6 @@ def _site_info(row, site_id, year, month, day, hour, archive):
 
 def fetch_obs(station, year, month, day, hour, hush, clean_it):
 
-    # record process time
-    st = time.time()
-
     r"""
        Return a ``dict`` of 'cleaned up' observed profile data
     
@@ -262,6 +258,9 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
        :return: clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information
        :rtype: dict
     """
+
+    # record process time
+    st = time.time()
 
     print(f'> OBSERVED DATA ACCESS FUNCTION\n  -----------------------------------')
 
@@ -339,7 +338,7 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
                 print(f'    > PROFILE FOUND: {station} on {month}/{day}/{year} at {hour}z | From UW (ID: {request_id})')
                 break
 
-        # search through RAOB sites list with provided RAOB ID, first try ICAO ID, then WMO ID
+        # search through RAOB sites list with provided RAOB ID, first try WMO ID, then ICAO ID
         if got_data:
             if clean_it:
                 # begin loading data
@@ -528,9 +527,10 @@ def fetch_obs(station, year, month, day, hour, hush, clean_it):
                 f"    > SUMMARY: {clean_data['site_info']['valid-time'][3]}Z Launch for {clean_data['site_info']['site-id']}, {clean_data['site_info']['site-name']} at {clean_data['site_info']['valid-time'][1]}"
                 f"-{clean_data['site_info']['valid-time'][2]}-{clean_data['site_info']['valid-time'][0]}-{clean_data['site_info']['valid-time'][3]}Z")
 
-            warnings.filterwarnings("ignore")
-
-            sounding_params(clean_data).print_vals()
+            # hide the calculation warnings for this printout only
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                sounding_params(clean_data).print_vals()
 
         return clean_data
 

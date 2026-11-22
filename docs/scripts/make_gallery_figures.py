@@ -77,6 +77,37 @@ BASE_OBS = {
     "hour": "18",
 }
 
+# the gallery's custom theme example: a light parchment theme to sit beside the docs' warm, dark palette,
+# drawn on the Mound City case (HRRR F03 for Ashley, ND, 21Z 28 August 2024)
+PASTORAL_THEME = {
+    "background": "#f5edda",        # parchment
+    "text": "#241c15",              # dark-brown ink
+    "border": "#3b2f24",
+    "marker": "#241c15",
+    "barb": "#241c15",
+    "skew_line": "#3b2f24",
+    "shade": "#a08858",             # isotherm shading
+    "shade_alpha": 0.09,
+    "adiabat": "#8a7348",
+    "isotherm": "#5c4a30",
+    "temperature": "#a3241a",       # brick
+    "dewpoint": "#3c6a1c",          # olive
+    "virtual": "#6b1a12",
+    "wetbulb": "#2a6595",           # slate blue
+    "parcel": {"sb": "#a3241a", "ml": "#cc620c", "mu": "#5a2a73"},
+    "hodo_layers": ((0, 1000, "#5a2a73"), (1000, 3000, "#a3241a"), (3000, 6000, "#cc620c"),
+                    (6000, 9000, "#c4950f"), (9000, 12000, "#d8b84a")),
+    "warm": "#a3241a", "cool": "#2a6595", "eil": "#1f7a72", "dgz": "#2a5596", "hgz": "#3c6a1c",
+    "pbl": "#5c4a30", "lapse_max": "#a3241a", "lapse": "#6a3214", "ncape": "#7a3418",
+    "moisture": "#3c6a1c", "moisture_strong": "#2a4f0e",
+    "kinematics": "#2a6595", "kinematics_strong": "#1a4a70",
+    "kinematics_layers": ("#1f7a72", "#22708a", "#2a6595", "#3a5891", "#4a4b88"),
+    "composite_index": "#a3241a", "ehi": "#c24e12", "cape": "#cc620c", "cin": "#1f7a72",
+    "streamwise": "#cc620c", "theta": "#5a2a73", "low_fill": "#2a6595",
+    "u_wind": "#3c6a1c", "v_wind": "#2a6595", "mcs": "#cc620c", "dtm": "#6a3214",
+    "watermark": "#7a6440",
+}
+
 # Known RAP/RUC retrieval case.
 RAP_EXAMPLE = {
     "model": "rap-ruc",
@@ -365,6 +396,17 @@ def make_theme_examples(data: dict, out: Path, strict: bool) -> None:
         ),
         strict=strict,
     )
+
+    def custom_theme_example() -> None:
+        kasy = spy.get_bufkit_data("hrrr", "kasy", 3, "2024", "08", "28", "21", hush=True)
+        save_sounding(
+            kasy,
+            out / "themes" / "sounding_custom_theme.png",
+            theme=PASTORAL_THEME,
+            radar=None,
+        )
+
+    run_example("Custom-theme sounding", custom_theme_example, strict=strict)
 
 
 # =============================================================================
@@ -754,6 +796,71 @@ def make_composite_examples(out: Path, strict: bool) -> None:
 
 
 # =============================================================================
+# PROFILE TOOLS & SURFACE MODIFICATION
+# =============================================================================
+
+def make_profile_tool_examples(data: dict, out: Path, strict: bool) -> None:
+    banner("PROFILE TOOLS & SURFACE MODIFICATION EXAMPLES")
+
+    # 1. a zoomed skew-t
+    run_example(
+        "Zoomed skew-t (ylim)",
+        lambda: save_sounding(data, out / "profile_tools" / "zoom_ylim.png", ylim=(1000, 500), radar=None, map_zoom=0),
+        strict=strict,
+    )
+
+    # 2-3. smoothing, with each filter
+    import copy
+
+    run_example(
+        "Savitzky-Golay smoothing",
+        lambda: save_sounding(spy.smooth_profile(copy.deepcopy(data), method="savgol", window_length=15),
+                              out / "profile_tools" / "smooth_savgol.png", radar=None, map_zoom=0),
+        strict=strict,
+    )
+    run_example(
+        "Gaussian smoothing",
+        lambda: save_sounding(spy.smooth_profile(copy.deepcopy(data), sigma=3),
+                              out / "profile_tools" / "smooth_gaussian.png", radar=None, map_zoom=0),
+        strict=strict,
+    )
+
+    # 4. two soundings merged, 60/40
+    def merged_example() -> None:
+        later = spy.get_obs_data("OAX", "2014", "06", "17", "00", hush=True)
+        merged = spy.merge_profiles(data, later, weight_a=0.6)
+        merged["site_info"] = dict(data["site_info"], source="MERGED RAOB PROFILES")
+        merged["titles"] = {"top_title": "MERGED VERTICAL PROFILE",
+                            "left_title": "60% 18Z OAX 06/16/2014 | 40% 00Z OAX 06/17/2014",
+                            "right_title": data["titles"]["right_title"]}
+        save_sounding(merged, out / "profile_tools" / "merged.png", radar=None, map_zoom=0)
+
+    run_example("Merged profiles", merged_example, strict=strict)
+
+    # 5. fewer levels
+    run_example(
+        "Thinned profile (max_levels)",
+        lambda: save_sounding(data, out / "profile_tools" / "max_levels.png", max_levels=30, radar=None, map_zoom=0),
+        strict=strict,
+    )
+
+    # 6-9. each surface modification method on the 12Z sounding's surface inversion,
+    # warmed to the 18Z surface observation and zoomed to the lower atmosphere
+    morning = spy.get_obs_data("OAX", "2014", "06", "16", "12", hush=True)
+    for name, modify_sfc in (("none", None),
+                             ("mix", {"T": 28, "Td": 24}),
+                             ("blend", {"T": 28, "Td": 24, "method": "blend"}),
+                             ("replace", {"T": 28, "Td": 24, "method": "replace"})):
+        run_example(
+            f"Surface modification: {name}",
+            lambda name=name, modify_sfc=modify_sfc: save_sounding(
+                morning, out / "surface_modification" / f"sfc_{name}.png",
+                modify_sfc=modify_sfc, ylim=(1000, 600), radar=None, map_zoom=0),
+            strict=strict,
+        )
+
+
+# =============================================================================
 # TUTORIAL — CUSTOM MAP DATA
 # =============================================================================
 
@@ -844,6 +951,112 @@ def make_custom_map_examples(out: Path, strict: bool) -> None:
 
 
 # =============================================================================
+# PUBLICATION & CUSTOM FIGURES
+# =============================================================================
+
+# HRRR and RAP 3-hour forecasts for Aberdeen, SD, valid at the custom map case's time (00Z 29 August 2024)
+CUSTOM_FIGURES_RUN = ("kabr", 3, "2024", "08", "28", "21")
+
+
+def make_custom_figure_examples(out: Path, strict: bool) -> None:
+    banner("PUBLICATION & CUSTOM FIGURE EXAMPLES")
+
+    import cartopy.crs as ccrs
+
+    folder = out / "custom_figures"
+    folder.mkdir(parents=True, exist_ok=True)
+    hrrr = spy.get_bufkit_data("hrrr", *CUSTOM_FIGURES_RUN, hush=True)
+    rap = spy.get_bufkit_data("rap", *CUSTOM_FIGURES_RUN, hush=True)
+    both = dict(profiles=[hrrr, rap], labels=["HRRR F03", "RAP F03"])
+    # the observed Aberdeen sounding and the HRRR forecast for Ashley, ND: two places on the map
+    raob = spy.get_obs_data(CUSTOM_MAP_CASE["station"], CUSTOM_MAP_CASE["year"], CUSTOM_MAP_CASE["month"],
+                            CUSTOM_MAP_CASE["day"], CUSTOM_MAP_CASE["hour"], hush=True)
+    ashley = spy.get_bufkit_data("hrrr", "kasy", *CUSTOM_FIGURES_RUN[1:], hush=True)
+
+    def publication(name: str, **kwargs) -> Callable[[], None]:
+        def example() -> None:
+            kwargs.setdefault("profiles", hrrr)
+            fig, _ = spy.build_publication_sounding(kwargs.pop("profiles"), dpi=DPI, **kwargs)
+            fig.savefig(folder / name)
+            close_figures()
+        return example
+
+    # the same calls as the tutorial (tutorials/custom_figures.rst)
+    examples = {
+        "publication_quickstart.png": dict(profiles=[raob, ashley], labels=["00Z ABR RAOB", "HRRR F03 Ashley, ND"],
+                                           panels=("skewt", "hodograph", "map", "parameters"),
+                                           parameters=("mllcl", "mlcape", "mlcin", "mucape", "srh01", "srh03", "bwd06", "stp"),
+                                           map_radar="single"),
+        "publication_default.png": dict(),
+        "publication_pair.png": dict(panels=("skewt", "hodograph")),
+        "publication_zoom_parameters.png": dict(**both, panels=("skewt", "parameters"), ylim=(1000, 500), parcel="sb",
+                                                parameters=("sbcape", "mlcin", ("0–3 km SBCAPE", "thermo", "sb3cape", 1, r"J kg$^{-1}$", 0), "mllcl")),
+        "publication_hodograph.png": dict(wind_units="kt", hodo_heights=(0, 500, 1000, 3000, 6000, 9000), hodo_max_height=9000,
+                                          sr_vector_heights=(500, 1000, 3000), parameters=("srh01", "srh03", "bwd06", "scp")),
+        "publication_style.png": dict(**both, colors=["black", "darkorange"], show_adiabats=True, parcel="mu", sr_vector_heights=(1000,),
+                                      style={"font_family": "serif", "fontsize": 9, "linewidth": 1.4, "hodograph_rings": False,
+                                             "sr_vector_color": "purple"}),
+        "publication_radar.png": dict(**both, panels=("skewt", "hodograph", "map"), map_radar="single"),
+    }
+    for name, kwargs in examples.items():
+        run_example(name, publication(name, **kwargs), strict=strict)
+
+    def annotated_example() -> None:
+        fig, axes = spy.build_publication_sounding([hrrr, rap], labels=["HRRR F03", "RAP F03"],
+                                                   panels=("skewt", "hodograph", "map"), map_zoom=2, dpi=DPI)
+        axes["skewt"].ax.axhspan(850, 700, color="gold", alpha=0.25, zorder=0)
+        axes["skewt"].ax.text(-35, 775, "EML", fontsize=8, va="center")
+        axes["hodograph"].annotate("0–3 km SRH\n342 m$^2$ s$^{-2}$", xy=(18, -6), fontsize=6, ha="center", va="top", style="italic")
+        axes["map"].plot(-100.07, 45.73, marker="*", color="black", markersize=7, transform=ccrs.PlateCarree(), zorder=11)
+        axes["map"].text(-99.9, 45.73, "Mound City", fontsize=6, va="center", transform=ccrs.PlateCarree(), zorder=11)
+        fig.savefig(folder / "publication_annotated.png")
+        close_figures()
+
+    def layouts_example() -> None:
+        # every set of panels, drawn small and side by side, each titled with the panels that make it
+        from io import BytesIO
+        from sounderpy.plot.publication import PUBLICATION_LAYOUTS
+
+        images = []
+        for panels in PUBLICATION_LAYOUTS:
+            fig, _ = spy.build_publication_sounding([hrrr, rap], labels=["HRRR F03", "RAP F03"], panels=panels, dpi=120)
+            image = BytesIO()
+            fig.savefig(image, format="png")
+            plt.close(fig)
+            image.seek(0)
+            images.append((panels, plt.imread(image)))
+
+        # every figure is 6.5 in wide, so rows as tall as their tallest figure draw them all at the same scale
+        heights = [max(images[i][1].shape[0], images[i + 1][1].shape[0]) for i in range(0, len(images), 2)]
+        sheet, cells = plt.subplots(len(heights), 2, figsize=(10, 5 * sum(heights) / images[0][1].shape[1] + 2), dpi=DPI,
+                                    gridspec_kw={"height_ratios": heights, "hspace": 0.12, "wspace": 0.04})
+        for cell, (panels, image) in zip(cells.flat, images):
+            cell.imshow(image, extent=(0, image.shape[1], image.shape[0], 0))
+            cell.set_xlim(0, image.shape[1])
+            cell.set_ylim(heights[list(cells.flat).index(cell) // 2], 0)   # anchored to the top of its row
+            cell.set_title(f"panels={panels}", fontsize=9, family="monospace")
+            cell.set_axis_off()
+        sheet.savefig(folder / "publication_layouts.png", bbox_inches="tight", facecolor="white")
+        close_figures()
+
+    def return_fig_example() -> None:
+        fig, axes = spy.build_sounding(hrrr, return_fig=True, dpi=100)
+        axes["skewt"].ax.axhspan(850, 700, color="gold", alpha=0.2, zorder=0)
+        axes["skewt"].ax.text(-28, 775, "EML", fontsize=16, weight="bold", va="center")
+        fig.savefig(folder / "return_fig_sounding.png", bbox_inches="tight")
+        close_figures()
+
+    def operational_example() -> None:
+        spy.build_sounding(hrrr, save=True, filename=str(folder / "operational_sounding.png"), dpi=100)
+        close_figures()
+
+    run_example("operational_sounding.png", operational_example, strict=strict)
+    run_example("publication_annotated.png", annotated_example, strict=strict)
+    run_example("publication_layouts.png", layouts_example, strict=strict)
+    run_example("return_fig_sounding.png", return_fig_example, strict=strict)
+
+
+# =============================================================================
 # MAIN
 # =============================================================================
 
@@ -856,6 +1069,8 @@ VALID_SECTIONS = (
     "data-sources",
     "composites",
     "custom-map",
+    "custom-figures",
+    "profile-tools",
 )
 
 
@@ -951,6 +1166,12 @@ def main() -> int:
 
     if "custom-map" in args.sections:
         make_custom_map_examples(out, args.strict)
+
+    if "profile-tools" in args.sections:
+        make_profile_tool_examples(get_base_obs(), out, args.strict)
+
+    if "custom-figures" in args.sections:
+        make_custom_figure_examples(out, args.strict)
 
     banner("GALLERY GENERATION FINISHED")
     print(f"Images written beneath: {out.resolve()}")

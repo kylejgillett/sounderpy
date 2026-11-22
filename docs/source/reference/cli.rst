@@ -554,7 +554,7 @@ combined with ``--map-zoom 0``.
 
 **Special Parcels**
 
-``--parcels`` draws special parcels from the ``ecape_parcel`` library on a severe sounding, by code
+``--parcels`` draws special parcels from the ``ecape-parcels`` library on a severe sounding, by code
 (``mu``, ``ml``, or ``sb``; ``ps`` pseudoadiabatic or ``ia`` irreversible adiabatic; ``cape`` or
 ``ecape``), and ``--background-parcels`` draws more of them faded behind. ``--parcels simple`` draws
 only the standard parcels and skips the default MUECAPE trace, which is faster. See

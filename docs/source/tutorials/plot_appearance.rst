@@ -350,5 +350,6 @@ and radar display.
 See also:
 
 * :doc:`Plotting Data </reference/plottingdata>`
+* :doc:`Plot Settings </reference/plotsettings>`
 * :doc:`Plot Gallery </gallery/examplegallery>`
 * :doc:`Command Line Tool </reference/cli>`

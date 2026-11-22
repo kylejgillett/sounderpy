@@ -116,6 +116,55 @@ def test_build_composite_rejects_unknown_style(clean_profile):
 
 
 # -----------------------------------------------------------------------------
+# RETURNING AND CLOSING FIGURES
+# -----------------------------------------------------------------------------
+
+@pytest.mark.slow
+@pytest.mark.parametrize(("name", "panels"), [
+    ("sounding", {"skewt", "hodograph"}),
+    ("winter", {"skewt", "hodograph"}),
+    ("hodograph", {"hodograph"}),
+    ("vad", {"hodograph"}),
+    ("composite", {"skewt", "hodograph"}),
+    ("composite_hodograph", {"hodograph"}),
+])
+def test_return_fig_gives_the_figure_and_its_panels(name, panels, clean_profile, second_clean_profile, vad_profile):
+    from matplotlib.figure import Figure
+    from metpy.plots import Hodograph, SkewT
+    import matplotlib.pyplot as plt
+
+    calls = {"sounding": (spy.build_sounding, clean_profile, {"special_parcels": "simple", "map_zoom": 0, "dpi": 50}),
+             "winter": (spy.build_sounding, make_winter_profile(next(iter(WINTER_CASES))), {"mode": "winter", "map_zoom": 0, "dpi": 50}),
+             "hodograph": (spy.build_hodograph, clean_profile, {"map_zoom": 0, "dpi": 50}),
+             "vad": (spy.build_vad_hodograph, vad_profile, {"map_zoom": 0}),
+             "composite": (spy.build_composite, [clean_profile, second_clean_profile], {}),
+             "composite_hodograph": (spy.build_composite, [clean_profile, second_clean_profile], {"style": "hodograph"})}
+    function, data, kwargs = calls[name]
+    fig, axes = function(data, return_fig=True, **kwargs)
+    try:
+        assert isinstance(fig, Figure)
+        assert set(axes) == panels
+        assert plt.fignum_exists(fig.number)   # a returned figure stays open for the user
+        if "skewt" in axes:
+            assert isinstance(axes["skewt"], SkewT)
+        assert isinstance(axes["hodograph"], Hodograph)
+    finally:
+        plt.close(fig)
+
+
+@pytest.mark.slow
+def test_saved_figures_are_closed_unless_returned(clean_profile, tmp_path):
+    import matplotlib.pyplot as plt
+
+    plt.close("all")
+    build(spy.build_hodograph, clean_profile, tmp_path / "closed.png")
+    assert plt.get_fignums() == []   # saved and not returned: closed
+    fig, axes = build(spy.build_hodograph, clean_profile, tmp_path / "kept.png", return_fig=True)
+    assert plt.get_fignums() == [fig.number]   # saved and returned: still open
+    plt.close(fig)
+
+
+# -----------------------------------------------------------------------------
 # MODE (severe or winter)
 # -----------------------------------------------------------------------------
 
@@ -250,3 +299,53 @@ def test_build_sounding_keeps_its_size_with_a_stratospheric_profile(bad_hgz, mon
     width, height = png_size(path)
     # 22 x 13 in at the test's 50 dpi; the tight bbox normally saves ~1227 x 766 px
     assert width <= 22 * 50 * 1.25 and height <= 13 * 50 * 1.25, (width, height)
+
+
+# -----------------------------------------------------------------------------
+# MAP INSET: map_layers AND map_label
+# -----------------------------------------------------------------------------
+
+@pytest.fixture
+def offline_map(monkeypatch):
+    """Draw the map inset without its satellite image and outlines, which need the network."""
+    import functools
+    setup = operational._setup_map_inset
+    monkeypatch.setattr(operational, "_setup_map_inset",
+                        functools.partial(setup, show_satellite=False, show_states=False, show_counties=False))
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize("name", ["sounding", "winter", "hodograph", "vad"])
+def test_map_layers_draw_on_each_figures_map(name, offline_map, clean_profile, vad_profile):
+    import cartopy.crs as ccrs
+    import matplotlib.pyplot as plt
+    from cartopy.mpl.geoaxes import GeoAxes
+
+    seen = []
+
+    def layer(ax):
+        seen.append(ax)
+        ax.scatter([-97.0], [47.9], transform=ccrs.PlateCarree(), zorder=8)
+
+    calls = {"sounding": (spy.build_sounding, clean_profile, {"special_parcels": "simple", "dpi": 50}),
+             "winter": (spy.build_sounding, make_winter_profile(next(iter(WINTER_CASES))), {"mode": "winter", "dpi": 50}),
+             "hodograph": (spy.build_hodograph, clean_profile, {"dpi": 50}),
+             "vad": (spy.build_vad_hodograph, vad_profile, {})}
+    function, data, kwargs = calls[name]
+    fig, axes = function(data, radar=None, map_zoom=2, map_layers=[layer], map_label="MY DATA", return_fig=True, **kwargs)
+    try:
+        assert len(seen) == 1 and isinstance(seen[0], GeoAxes)
+        assert seen[0] in fig.axes
+        assert "MY DATA" in [t.get_text() for t in seen[0].texts]
+    finally:
+        plt.close(fig)
+
+
+@pytest.mark.slow
+def test_map_layers_are_skipped_with_a_warning_when_the_map_is_off(clean_profile, tmp_path):
+    from sounderpy.utils import SounderPyWarning
+    seen = []
+    with pytest.warns(SounderPyWarning, match="map_zoom=0 hides"):
+        build(spy.build_sounding, clean_profile, tmp_path / "no_map.png", special_parcels="simple",
+              map_layers=lambda ax: seen.append(ax), map_label="MY DATA")
+    assert seen == []

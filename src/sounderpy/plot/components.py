@@ -10,7 +10,7 @@
     Docs:
         soundings:           https://sounderpy.app/docs/reference/plottingdata.html#building-soundings
         hodographs:          https://sounderpy.app/docs/reference/plottingdata.html#building-hodographs
-        map insets & radar:  https://sounderpy.app/docs/reference/plottingdata.html#radar-logic
+        map insets & radar:  https://sounderpy.app/docs/reference/plotsettings.html#map-radar
         custom map data:     https://sounderpy.app/docs/tutorials/custom_map_data.html
 
     References:
@@ -89,7 +89,7 @@ from .style import (FONT_SIZES,
                     WATERMARK_TEXT)
 
 # SOUNDERPY MODULES
-from ..utils import SounderPyWarning, modify_surface, find_nearest, mag, mag_round, wind_to_dir
+from ..utils import SounderPyWarning, modify_surface, find_nearest, mag, wind_to_dir
 from ..calc import storm_motion_type
 from ..data.radar_utils import *
 

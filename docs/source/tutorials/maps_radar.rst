@@ -146,12 +146,17 @@ Single-site radar availability depends on the radar site and requested time.
 Radar Mosaic
 ============
 
-Set ``radar="mosaic"`` to use the supported CONUS reflectivity mosaic:
+Set ``radar="mosaic"`` to use the supported CONUS reflectivity mosaic. The mosaic
+covers only about the last 30 days, so this example uses a recent sounding instead
+of the 2014 case:
 
 .. code-block:: python
 
+   # any 00Z or 12Z sounding from the last ~30 days
+   recent_data = spy.get_obs_data("OAX", "YYYY", "MM", "DD", "00", hush=True)
+
    spy.build_sounding(
-       data,
+       recent_data,
        radar="mosaic",
        radar_time="sounding",
        map_zoom=2,
@@ -240,8 +245,17 @@ Map disabled:
        --plot sounding \
        --map-zoom 0
 
-The current CLI exposes map zoom directly. More specialized radar selection is
-available through the Python plotting API.
+Nearest-site radar at the sounding's time:
+
+.. code-block:: bash
+
+   sounderpy obs OAX 2014-06-16 18 \
+       --plot sounding \
+       --radar single \
+       --radar-time sounding
+
+``--radar`` takes ``mosaic`` (default), ``single``, or ``none``, and ``--radar-time``
+takes ``sounding`` (default) or ``now``.
 
 
 ***************************************************************
@@ -273,4 +287,5 @@ traces displayed on a sounding.
 See also:
 
 * :doc:`Plotting Data </reference/plottingdata>`
+* :doc:`Plot Settings </reference/plotsettings>`
 * :doc:`Troubleshooting </user_guide/troubleshooting>`

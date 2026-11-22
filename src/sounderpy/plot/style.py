@@ -8,9 +8,9 @@
     winter sounding).
 
     Docs:
-        figure colors & themes:  https://sounderpy.app/docs/reference/plottingdata.html#figure-colors
-        theme settings:          https://sounderpy.app/docs/reference/plottingdata.html#theme-settings
-        watermark:               https://sounderpy.app/docs/reference/plottingdata.html#watermark
+        figure colors & themes:  https://sounderpy.app/docs/reference/plotsettings.html#figure-colors
+        theme settings:          https://sounderpy.app/docs/reference/plotsettings.html#theme-settings
+        watermark:               https://sounderpy.app/docs/reference/plotsettings.html#watermark
         plot appearance:         https://sounderpy.app/docs/tutorials/plot_appearance.html
 
     (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2026
@@ -161,7 +161,7 @@ def _apply_theme_overrides(theme, overrides):
 ############################# FONT SIZES ################################
 #########################################################################
 
-# the size of each kind of text. use font_scale to resize a whole figure
+# the size of each kind of text
 FONT_SIZES = {"fine": 7,
               "tiny": 8,
               "small": 10,
@@ -583,7 +583,8 @@ except PackageNotFoundError:
 
 # default watermark text for each figure style
 WATERMARK_TEXT = {"full": ("SOUNDERPY VERTICAL PROFILE ANALYSIS TOOL",
-                           " · ".join(part for part in (f"Built with {SOUNDERPY_VERSION}", "Make your own at sounderpy.app", "(Gillett, 2024)") if part)),
+                           " · ".join(part for part in (f"Built with {SOUNDERPY_VERSION}" if SOUNDERPY_VERSION else None,
+                                                        "Make your own at sounderpy.app", "(Gillett, 2025)") if part)),
                   "compact": ("SOUNDERPY", "sounderpy.app")}
 
 # a title or subtitle of None uses the default text for that figure's style

@@ -339,7 +339,6 @@ def try_ncei(dt,tempdir,dataset=None):
 # USER-FACING FUNCTION 
 #########################################################################
 def get_rapruc_data(latlon, year, month, day, hour, dataset, box_avg_size, hush, clean_it=True):
-    st = time.time()
     """
     Retrieve RAP/RUC analysis data and return a SounderPy clean_dict.
 
@@ -359,10 +358,23 @@ def get_rapruc_data(latlon, year, month, day, hour, dataset, box_avg_size, hush,
     All downloaded GRIB files are stored only inside a TemporaryDirectory
     and are automatically deleted before this function returns.
 
+    Parameters
+    ----------
+    latlon : [lat, lon] of the profile
+    year, month, day, hour : str, the analysis time
+    dataset : str or None, an NCEI archive family to use instead of searching
+    box_avg_size : float, width in degrees of the box averaged around the location
+    hush : bool, whether to skip the parameter printout
+    clean_it : bool, return a clean_dict (True) or the raw GRIB data (False)
+
     Example
     -------
-    clean_dict = get_rapruc_data("2024", "08", "28", "18", [44.58, -100.82])
+    clean_dict = get_rapruc_data([44.58, -100.82], "2024", "08", "28", "18", None, 0.1, False)
+
+    Most users call spy.get_model_data('rap-ruc', [44.58, -100.82], "2024", "08", "28", "18") instead.
     """
+
+    st = time.time()
 
     dt = pd.Timestamp(year=int(year),month=int(month),day=int(day),hour=int(hour),)
 
@@ -451,12 +463,13 @@ def get_rapruc_data(latlon, year, month, day, hour, dataset, box_avg_size, hush,
 
         if not hush:
             print(
-                f"    > SUMMARY: {clean_data['site_info']['run-time'][3]}Z {clean_data['site_info']['model']} {clean_data['site_info']['fcst-hour']} for"
+                f"    > SUMMARY: {clean_data['site_info']['run-time'][3]}Z {clean_data['site_info']['model']} {clean_data['site_info']['fcst-hour']} for "
                 f"{clean_data['site_info']['site-latlon']} at {clean_data['site_info']['valid-time'][1]}-{clean_data['site_info']['valid-time'][2]}-{clean_data['site_info']['valid-time'][0]}-{clean_data['site_info']['valid-time'][3]}Z")
 
-            warnings.filterwarnings("ignore")
-
-            sounding_params(clean_data).print_vals()
+            # hide the calculation warnings for this printout only
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                sounding_params(clean_data).print_vals()
 
         return clean_data
 
@@ -464,6 +477,6 @@ def get_rapruc_data(latlon, year, month, day, hour, dataset, box_avg_size, hush,
 
 if __name__ == "__main__":
 
-    data = get_rapruc_data("2024","08","28","18",[44.58, -100.82])
+    data = get_rapruc_data([44.58, -100.82], "2024", "08", "28", "18", None, 0.1, False)
 
     print(data["site_info"])

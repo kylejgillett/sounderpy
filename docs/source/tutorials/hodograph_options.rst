@@ -266,3 +266,4 @@ different profile sources feed the same SounderPy plotting workflow.
 See also:
 
 * :doc:`Plotting Data </reference/plottingdata>`
+* :doc:`Plot Settings </reference/plotsettings>`

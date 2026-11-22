@@ -49,7 +49,7 @@ The Fix: saving the plot to a file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Add the ``save=True`` kwarg to your plot function (``build_sounding()``, ``build_hodograph()``, ``build_composite()``). 
 
-You can optionally add the ``filename`` kwarg that allows you to set a specific filename. By default, this filename is *'sounderpy_sounding.png'*.
+You can optionally add the ``filename`` kwarg that allows you to set a specific filename. By default, the filename is *'sounderpy_sounding'*, *'sounderpy_hodograph'*, *'sounderpy_composite'*, or *'vad_hodograph'*, depending on the function.
 
 
 
@@ -102,7 +102,7 @@ Follow the instructions on the CDSAPI "how to" documentation -- See: https://cds
 RAP data won't load
 -------------------
 
-Sometimes, this just happens. The NCEP server (THREDDS) is prone to high latency or even simply being down. Therefore, data access may take several minutes or data access is not possible.
+RAP/RUC data comes from NOAA's RAP archive on AWS (2021 on) and NCEI's RAP/RUC archive (older dates). Either can be slow or down at times, so data access may take several minutes or not be possible.
 
 Sometimes these issues are resolved within hours, other times possibly a few days. Trying again at a later time is generally the best fix.
 
@@ -116,7 +116,7 @@ Sometimes these issues are resolved within hours, other times possibly a few day
 SounderPy can't find a RAOB sounding you know exists
 ----------------------------------------------------
 
-Ah, this one is fun. Different databases store RAOB data differently. As such, you may find that a sounding that you believe was launched at '18z' is actually stored as '19z' or '17z'. Its annoying.
+Ah, this one is fun. Different databases store RAOB data differently. As such, you may find that a sounding that you believe was launched at '18z' is actually stored as '19z' or '17z'. It's annoying.
 
 This will cause the ``get_obs_data()`` to "not find" the sounding you want because the database it's searching through has it listed under a different time.
 

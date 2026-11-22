@@ -81,7 +81,7 @@ We can use the simple ``spy.get_model_data()`` function:
 
    Return a ``dict`` of 'cleaned up' model reanalysis data from a given model, for a given location, date, and time
 
-   :param model: the requested model to use ("rap-ruc", "era5", "ncep")
+   :param model: the requested model to use ("rap-ruc", "era5", "ncep", "rap-now"); see :ref:`model key names <reanalysiskeys>`
    :type model: str, required
    :param latlon: the latitude & longitude pair for sounding ([44.92, -84.72])
    :type latlon: list, required
@@ -95,7 +95,7 @@ We can use the simple ``spy.get_model_data()`` function:
    :type hour: str, required
    :param dataset: target a specific dataset instead of searching for the first one with data ("rap-ruc" only).
    :type dataset: str, optional, default is ``None``
-   :param box_avg_size: Width, in degrees, of the geographic box used to spatially average gridded model data around the requested location.
+   :param box_avg_size: Width, in degrees, of the geographic box used to spatially average gridded model data around the requested location. ERA5 and NCEP-FNL are on a 0.25-degree grid, so a smaller box uses 0.25 instead, with a warning.
    :type box_avg_size: float, optional, default is ``0.10``
    :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting data.
    :type hush: bool, optional, default is ``False``
@@ -110,7 +110,7 @@ We can use the simple ``spy.get_model_data()`` function:
 
 Model key names 
 ^^^^^^^^^^^^^^^
-- ``'era5'``: ECMWF renalysis v5 (ERA5), reanalysis
+- ``'era5'``: ECMWF reanalysis v5 (ERA5), reanalysis
 
 - ``'rap'``, or ``'rap-ruc'``: NCEP Rapid Refresh model (RAP) / Rapid Update Cycle model (RUC), reanalysis
 
@@ -188,6 +188,10 @@ For example:
    Follow the official CDS API setup instructions:
    https://cds.climate.copernicus.eu/how-to-api
 
+   ERA5 data is downloaded to two files, ``presLvls-output.nc`` and ``singleLvls-output.nc``, in your current
+   working folder. They are overwritten by the next ERA5 request and are not removed, so delete them when you no longer
+   need them, and run ERA5 requests made at the same time from different folders.
+
 
 .. tip::
    **Is data access taking forever?** Sometimes the NCEP (RAP-RUC, NCEP-FNL) & ECMWF CDS (ERA5) servers are down and not able to be accessed. Sometimes these issues are resolved within hours, other times possibly a few days. 
@@ -234,7 +238,7 @@ vertical profiles from BUFKIT sites.
 
    :param model: the model :ref:`'key' <forecastkeys>` name to request data from 
    :type model: str, required
-   :param station: a 3-4 digit BUFKIT site identifier
+   :param station: a 3-4 character BUFKIT site identifier, used exactly as listed by BUFKIT: some have a 'K' in front (such as 'KGFK'), others don't (such as 'OUN'); any case
    :type station: str, required
    :param fcst_hour: the forecast hour; the profile is valid at the model run time plus this many hours
    :type fcst_hour: int, required
@@ -283,8 +287,6 @@ Available Models:
 - RAP
 - HRRR
 - RRFS
-- SREF
-- HIRESW
 
 
 **Archived model runs**: Archived runs are retrieved through the Iowa State BUFKIT archive.

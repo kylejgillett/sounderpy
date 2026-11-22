@@ -183,9 +183,14 @@ def from_wrf(ds, latlon, model_name='WRF-ARW', run_name='CONTROL RUN', box_avg_s
         params
             > ds: an opened wrfout file, e.g. netCDF4.Dataset('wrfout_d01_...'); a dataset, not a file path
             > latlon: list of latitude and longitude `[45.56, -100.89]`
-            > run_name: str, name of the run for title plotting 'CONTROL'
-            > box_avg_size: float, width of the box-average domain in degrees
+            > model_name: str, name of the model for plot titles, default 'WRF-ARW'
+            > run_name: str, name of the run for plot titles, default 'CONTROL RUN'
+            > box_avg_size: float, width of the box-average domain in degrees; a box smaller than one grid cell uses
+              the nearest grid point
             > time_idx: int, index of the output time to use, for files with several times
+
+        returns
+            > clean_data dict of p, z, T, Td, u, v, site_info, and titles
     '''
     t = time_idx
 

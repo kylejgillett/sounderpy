@@ -129,7 +129,7 @@ Saving data to a file
    :type file_type: str, required
    :param clean_data: 'cleaned' SounderPy data ``dict``
    :type clean_data: dict, required
-   :param filename: output filename. If omitted, SounderPy uses its defaultoutput filename.
+   :param filename: output filename. If omitted, SounderPy uses its default output filename.
    :type filename: str, optional, default is ``None``
    :param convert_to_AGL: whether or not to convert height values to "above ground level" when saving to a file. Useful for CM1.
    :type convert_to_AGL: bool, optional, default is ``True``
@@ -156,12 +156,51 @@ See :ref:`tutorial-exporting-data` for complete export examples.
 ***************************************************************
 
 
+.. _modify_surface:
+
+Modifying a profile's surface
+-----------------------------
+
+Return a copy of a profile with new surface values: the same changes ``modify_sfc`` makes inside a figure or
+``sounding_params``, as a profile of its own. The original profile is left as it is, so the modified copy can be
+plotted, calculated, saved with ``spy.to_file()``, or compared with the original, such as on one publication
+figure. How each ``method`` changes the profile is explained in :ref:`modify_sfc`.
+
+.. py:function:: spy.modify_surface(clean_data, modify_sfc)
+
+   :param clean_data: a SounderPy ``clean_data`` dictionary.
+   :type clean_data: dict, required
+   :param modify_sfc: the new surface values: ``T`` and ``Td`` (°C), ``ws`` (knots), ``wd`` (degrees), ``method`` (``'mix'``, the default, ``'replace'``, or ``'blend'``), and ``depth`` (m AGL, ``'blend'`` only). Leave out any value to keep it as it is.
+   :type modify_sfc: dict, required
+   :return: the modified profile, a new ``clean_data`` dictionary.
+   :rtype: dict
+
+
+Example:
+
+.. code-block:: python
+
+    clean_data = spy.get_obs_data("OAX", "2014", "06", "16", "18")
+
+    # the afternoon surface 3 °C warmer, mixed up its dry adiabat
+    T_sfc = clean_data["T"][0].m
+    heated = spy.modify_surface(clean_data, {"T": T_sfc + 3, "method": "mix"})
+
+    fig, axes = spy.build_publication_sounding([clean_data, heated], labels=["observed", "+3 °C"],
+                                               panels=("skewt", "parameters"))
+
+See the :doc:`CM1 surface heating case study </case_studies/cm1_surface_heating>` for a full example: a CM1 base state, heated at the surface, compared on one
+figure, and saved as new CM1 input soundings.
+
+***************************************************************
+
+
 Merging two profiles via weighted averaging
 --------------------------------------------
 
 Merge two profiles together using weighted averaging of values along a common height axis to return a single profile.
 
-.. py:function:: spy.merge_profiles(profile_a, profile_b, weight_a)
+.. py:function:: spy.merge_profiles(profile_a, profile_b, weight_a=0.5)
 
    :param profile_a: a SounderPy ``clean_data`` dictionary containing variable arrays for profile_a.
    :type profile_a: dict, required
@@ -197,7 +236,7 @@ Example:
                               'valid-time': 'none',
                               'box_area': 'none'}
     merged_profile['titles'] =  {'top_title':   'COMPOSITE VERTICAL PROFILE',
-                              'left_title':  'Profile-a (60%): 18z OAX 06/16/2014 | Profile-b (40%): 00z OAX 06/16/2014',
+                              'left_title':  'Profile-a (60%): 18z OAX 06/16/2014 | Profile-b (40%): 00z OAX 06/17/2014',
                               'right_title': 'KOAX, OMAHA VALLEY, NE | 41.32, -96.37    '}
 
     # build a sounding

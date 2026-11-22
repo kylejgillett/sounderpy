@@ -493,3 +493,71 @@ def test_thin_sounding_keeps_the_lowest_wind_when_the_surface_has_none(clean_pro
     assert len(thinned["p"]) == 11
     assert thinned["p"][1] == data["p"][3]
     assert np.isfinite(thinned["u"].m[1])
+
+
+# -----------------------------------------------------------------------------
+# MAP INSET: map_layers AND map_label
+# -----------------------------------------------------------------------------
+
+def bare_map(latlon=(41.32, -96.37), map_zoom=2):
+    """A map inset with no satellite image or outlines, so it draws offline."""
+    import cartopy.crs as ccrs
+    fig = plt.figure(figsize=(3, 3))
+    ax = fig.add_axes((0.1, 0.1, 0.8, 0.8), projection=ccrs.PlateCarree())
+    c._setup_map_inset(ax, latlon, THEME, map_zoom=map_zoom, show_satellite=False, show_states=False, show_counties=False)
+    return fig, ax
+
+
+def test_map_layers_run_in_order_on_the_map_axes():
+    fig, ax = bare_map()
+    calls = []
+    first = lambda map_ax: calls.append(("first", map_ax))
+    second = lambda map_ax: calls.append(("second", map_ax))
+    c._plot_map_layers(ax, [first, second], None, THEME)
+    assert [name for name, _ in calls] == ["first", "second"]
+    assert all(map_ax is ax for _, map_ax in calls)
+
+
+def test_map_layers_take_a_single_function():
+    fig, ax = bare_map()
+    calls = []
+    c._plot_map_layers(ax, lambda map_ax: calls.append(map_ax), None, THEME)
+    assert calls == [ax]
+
+
+def test_map_layers_reject_anything_but_functions():
+    fig, ax = bare_map()
+    with pytest.raises(TypeError, match="map_layers takes a function"):
+        c._plot_map_layers(ax, ["not a function"], None, THEME)
+
+
+def test_map_label_sits_at_the_top_of_the_map():
+    fig, ax = bare_map()
+    c._plot_map_layers(ax, None, "MY DATA", THEME)
+    label = next(t for t in ax.texts if t.get_text() == "MY DATA")
+    assert label.get_position()[1] == pytest.approx(0.97)
+    assert label.get_va() == "top"
+
+
+def test_map_extent_is_square_before_the_figure_is_drawn():
+    """A map_layers function can trust ax.get_extent(): it is the extent shown, not one trimmed later at draw time."""
+    import cartopy.crs as ccrs
+    fig, ax = bare_map(map_zoom=3)
+    before = ax.get_extent(ccrs.PlateCarree())
+    west, east, south, north = before
+    assert east - west == pytest.approx(north - south)
+    fig.canvas.draw()
+    assert ax.get_extent(ccrs.PlateCarree()) == pytest.approx(before)
+
+
+def test_map_layers_and_label_warn_when_the_map_is_off():
+    from sounderpy.utils import SounderPyWarning
+    with pytest.warns(SounderPyWarning, match="map_layers and map_label need the map"):
+        c._warn_unused_map_layers(0, lambda ax: None, "LABEL")
+    with pytest.warns(SounderPyWarning, match="map_layers needs the map"):
+        c._warn_unused_map_layers(0, lambda ax: None, None)
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        c._warn_unused_map_layers(2, lambda ax: None, "LABEL")   # map on: no warning
+        c._warn_unused_map_layers(0, None, None)                 # nothing asked for: no warning

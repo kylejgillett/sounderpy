@@ -11,7 +11,7 @@ Create publication-ready soundings and hodographs.
 [![PyPI](https://img.shields.io/pypi/v/sounderpy.svg)](https://pypi.org/project/sounderpy/)
 [![Python](https://img.shields.io/pypi/pyversions/sounderpy.svg)](https://pypi.org/project/sounderpy/)
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/sounderpy.svg)](https://anaconda.org/conda-forge/sounderpy)
-[![License](https://img.shields.io/pypi/l/sounderpy.svg)](https://github.com/kylejgillett/sounderpy/blob/main/LICENSE)
+[![License](https://img.shields.io/pypi/l/sounderpy.svg)](https://github.com/kylejgillett/sounderpy/blob/main/LICENSES)
 [![JOSS](https://joss.theoj.org/papers/10.21105/joss.08087/status.svg)](https://doi.org/10.21105/joss.08087)
 
 **[Documentation](https://sounderpy.app/docs/)** ·
@@ -44,7 +44,6 @@ durable functionality, such as NumPy, Matplotlib, xarray, Metpy, and SHARPpy. So
 available through GitHub and PyPi and is distributed under an MIT license. 
 
 SounderPy has been used by several institutions. For example, this tool has been implemented by the Des Moines, Columbia, and Grand Rapids National Weather Service Offices, the State University of New York at Albany, Mississippi State University, the University of North Dakota, and others. Many students at various universities have used SounderPy in projects, posters, and papers, such as students at The University of Oklahoma, Ohio State University, Central Michigan University, Iowa State University, & Rizal Technological University.
-hodograph visualizations.
 
 ## Why SounderPy?
 
@@ -188,21 +187,82 @@ Start here: **[SounderPy Tutorials →](https://sounderpy.app/docs/tutorials/ind
 <br>
 <br>
 
-## SounderPy 3.2
+## What's New in SounderPy 3.3
 
-Version 3.2 expands both SounderPy's data-access workflow and the ways it can be
-used.
+Version 3.3 rebuilds the plotting module, adds winter and publication figures, and makes every
+figure easier to customize.
 
-Major changes include:
+### 📈 Figure Updates
 
-- **new command line interface** for retrieval, plotting, JSON, and file export;
-- **modernized RAP/RUC retrieval**, including GRIB2-based archive access;
-- expanded automated testing and packaging infrastructure;
-- substantially expanded documentation, tutorials, and visual examples.
+- **Rebuilt plot module**: most figures are about 50% faster, with custom colors (`theme`), a custom
+  watermark (`spy.set_watermark()`), and a `ylim` to zoom the skew-T.
+- **New `build_sounding()` kwargs**: `max_levels` (reduce the number of vertical levels of a profile), `ylim` (zoom the skew-T into a particular layer), `theme` (custom figure colors), `sr_hodo` (storm-relative hodograph), `mode` (`'severe'`, `'winter'`, or `'auto'`), `show_obs` (the nearest surface observation for `mode='winter'` figures), `map_layers` and `map_label` (adding your own data to the map inset), and `return_fig` (return the figure and its panels for customization). Many of these also work on `build_hodograph()`, `build_composite()`, and `build_vad_hodograph()`.
+- **Publication figures (experimental)**: `spy.build_publication_sounding()` draws journal-sized figures
+  for AMS and AGU journals, and every `build_*` function takes `return_fig=True` to hand back its figure
+  ([custom figures tutorial](https://sounderpy.app/docs/tutorials/custom_figures.html)).
+- **Your own data on the map inset** with `map_layers` and `map_label`
+  ([custom map data tutorial](https://sounderpy.app/docs/tutorials/custom_map_data.html)).
+- **Rebuilt composite soundings** with figure improvements and parameter read-outs, and rebuilt VAD hodographs with map, radar, and boundary options.
+- **New parameter readouts** on the full sounding: composite indices in the thermodynamics box, EIL depth and
+  heights, 0-10 km bulk shear and theta-e difference, PBL height and transport wind, improved layout for ML/MU parcel heights, updated watermark, new data source attribution line, and numerous other small improvements to the plot layout.
 
-See the repository's
-**[release history](https://github.com/kylejgillett/sounderpy/releases)**
-for version-specific details.
+### ❄️ NEW Winter Soundings
+
+- `build_sounding(mode='winter')` draws a winter-focused sounding built around precipitation type, snow growth, and
+  winter hazards. Setting `mode='auto'` will generate a winter figure when the surface wet-bulb is below 35°F, and a new `show_obs=True` kwarg adds the latest (nearest) surface observation to the figure ([See the winter soundings tutorial!](https://sounderpy.app/docs/tutorials/winter_soundings.html)).
+- `spy.winter_params(clean_data).calc()` returns the dictionary of winter parameters.
+
+### 🧮 Calculations
+
+- NEW severe parameters: 0-10 km bulk shear and the low-to-midlevel theta-e difference (for MCSs; Cohen et al. 2007), PBL depth and transport wind (for air quality), EIL bottom height, top height, and depth, SHIP, MLBRN, TT, KI, and 700-500 hPa lapse rate.
+- UPDATED/CORRECTED parameters: Streamwise vorticity bug counted antistreamwise layers as streamwise; STP/SCP used EIL shear in kts (now m/s).
+- Every parameter, its units, and its source are listed on the
+  [Parameters & References](https://sounderpy.app/docs/reference/references.html) documentation page.
+- Settings: `modify_sfc` adds `'mix'`, `'blend'`, and `'replace'` methods, and the NEW `spy.modify_surface()` returns the modified profile itself, to compare or save; `spy.smooth_profile()` adds a Savitzky-Golay filter.
+ 
+### 🌦️ Data Sources
+
+- BUFKIT now serves the RRFS; NAM, NAMNEST, SREF, and HIRESW are no longer available as "latest runs" (discontinued; but NAM and NAMNEST are available as archived runs)
+- RRFS, HRRR, and RAP may now fall back to NOMADS NCEP's BUFR dataset when Penn State is behind or an archived run is missing.
+- NEW Station list: observed soundings use a packaged WMO/ICAO/IGRAv2 station list, with an ICAO fallback for the
+  Wyoming archive. This list is a best-guess combination of 5 data sources to limit incorrect site names, IDs, and locations.
+- Dewpoints are now calculated (when possible) for older IGRA v2 soundings that don't ship dewpoint.
+- Thread-safe RAP/RUC GRIB parsing.
+
+
+### 💻 Command Line Interface Updates
+
+- NEW `file` command: read a local SHARPpy-format sounding (`--latlon LAT LON` adds its location for the map).
+- NEW options:
+  - `--params`: print key calculated parameters (CAPE, SRH, shear, and precip type with `--mode winter`);
+  - `--mode {severe,winter,auto}` and `--obs`: winter soundings and the nearest surface observation;
+  - `--storm-motion`: `right_moving`, `left_moving`, `mean_wind`, or a direction and speed such as `270 25`;
+  - `--modify-sfc`: change the surface, e.g. `T=30 Td=21` or `T=-6 method=blend depth=300`;
+  - `--radar {mosaic,single,none}` and `--radar-time {sounding,now}`: the map's radar;
+  - `--parcels` and `--background-parcels`: custom parcel codes.
+- Options now match the Python functions, with clearer warnings.
+
+### 🐞 Bug Fixes
+
+- ACARS airport elevations corrected, CIN doesn't accumulate above the LFC, HGZ identification, extra moist adiabats on thin zoomed skew-Ts, and figures now close after `save=True` to preserve memory.
+
+### 📚 NEW HOME for Documentation!
+
+- Freshly redesigned docs now live at [sounderpy.app/docs](https://sounderpy.app/docs/), with new Plot Settings, Publication Figures, and Parameters & References pages.
+- Also, each source module now includes a text header with its docs and references.
+
+### ⚠️ Changes to Note
+
+- `sounding_params(...).calc()` and `vad_params(...).calc()` return a dictionary instead of a tuple.
+- Renamed, with the old names still working (with a `FutureWarning`) until a later release:
+  `build_composite()`'s `colors_to_use`, `ls_to_use`, `alphas_to_use`, and `lw_to_use` (now `colors`,
+  `linestyles`, `alphas`, and `linewidths`), `make_cm1_profile()` / `make_wrf_profile()` (now
+  `spy.from_cm1()` / `spy.from_wrf()`), and the data modules (now in `sounderpy.data`).
+- `spy.smooth_profile()` defaults to the Savitzky-Golay filter (passing `sigma` alone still uses the
+  Gaussian filter).
+
+See the full [What's New](https://sounderpy.app/docs/) on the docs landing page and the repository's
+**[release history](https://github.com/kylejgillett/sounderpy/releases)**.
 
 ---
 
@@ -281,7 +341,7 @@ Additional contributors are recognized through the repository history.
 ## License
 
 SounderPy is distributed under the
-**[MIT License](https://github.com/kylejgillett/sounderpy/blob/main/LICENSE)**.
+**[MIT License](https://github.com/kylejgillett/sounderpy/blob/main/LICENSES)**.
 
 ---
 

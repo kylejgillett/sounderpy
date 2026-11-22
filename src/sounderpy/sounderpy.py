@@ -33,7 +33,9 @@
 #########################################################################################################
 # SOUNDERPY
 import warnings
-from typing import List, Tuple, Optional
+from typing import Optional
+
+import matplotlib.pyplot as plt
 
 from .plot import __full_sounding, __winter_sounding, _resolve_sounding_mode, __full_hodograph, __composite_sounding, __vad_hodograph
 from .plot.components import _warn_unused_map_layers
@@ -59,6 +61,21 @@ citation_text = f"""
 
 #########################################################################################################
 
+
+
+
+# save, show, or return a finished figure for the build_* functions. A saved figure is closed (unless it's returned),
+# so building figures in a loop doesn't fill up memory
+def _finish_figure(fig, axes, save, filename, return_fig):
+    if save:
+        fig.savefig(filename, bbox_inches='tight')
+    if return_fig:
+        return fig, axes
+    if save:
+        plt.close(fig)
+    else:
+        plt.show()
+    return None
 
 
 
@@ -91,8 +108,9 @@ def get_model_data(model: str, latlon: list, year: str, month: str, day: str, ho
        :type hour: str, required
        :param dataset: optional, target a specific dataset instead of searching for the first one with data.
        :type dataset: str, optional
-       :param box_avg_size: optional, determine an area-averaged box size in degrees, default is 0.10 degrees.
-       :type box_avg_size: int, optional
+       :param box_avg_size: optional, the width in degrees of the box averaged around the location, default is 0.10 degrees. ERA5 and NCEP-FNL
+            are on a 0.25 degree grid, so a smaller box uses 0.25 instead, with a warning.
+       :type box_avg_size: float, optional
        :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting a data.
        :type hush: bool, optional, default is `False`
        :param clean_it: whether to return the raw_data object or a clean_data dict. With ``False``, RAP/RUC returns a dict of xarray datasets ('pressure', '2m', '10m', 'surface') cut to the box-average domain, ERA5 returns an xarray dataset, and NCEP-FNL and RAP-NOW return a netCDF4 dataset.
@@ -130,6 +148,8 @@ def get_obs_data(station, year, month, day, hour, hush=False, clean_it=True):
        :type day: str, required
        :param hour: launch hour
        :type hour: str, required
+       :param hush: whether to 'hush' a read-out of thermodynamic and kinematic parameters when getting data.
+       :type hush: bool, optional, default is `False`
        :param clean_it: whether to return the raw_data object or a clean_data dict.
        :type clean_it: bool, optional, default is `True`
        :return: clean_data, a dict of ready-to-use vertical profile data including pressure, height, temperature, dewpoint, u-wind, v-wind, & model information
@@ -153,7 +173,7 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
 
        :param model: the requested model to use (such as hrrr, rap, gfs, etc)
        :type model: str, required
-       :param station: a 3-4 digit BUFKIT site identifier
+       :param station: a 3-4 character BUFKIT site identifier, used exactly as listed by BUFKIT: some have a 'K' in front (such as 'KGFK'), others don't (such as 'OUN'); any case
        :type station: str, required
        :param fcst_hour: the forecast hour; the profile is valid at the model run time plus this many hours
        :type fcst_hour: int, required
@@ -196,10 +216,10 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
 def build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion='right_moving',
                    special_parcels=None, radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None,
                    show_theta=False, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_sounding', max_levels=250, ylim=None, theme=None,
-                   sr_hodo=False, mode='severe', show_obs=False, map_layers=None, map_label=None):
+                   sr_hodo=False, mode='severe', show_obs=False, map_layers=None, map_label=None, return_fig=False):
     
     '''
-    Return a full sounding plot of SounderPy data, ``plt``
+    Build a full sounding figure of SounderPy data
 
     :param clean_data: the dictionary of data to be plotted (see :doc:`gettingdata`)
     :type clean_data: dict, required
@@ -211,7 +231,7 @@ def build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion=
     :type storm_motion: str or list of floats, optional
     :param special_parcels: a nested list of special parcels from the ``ecape_parcels`` library. The nested list should be a list of two lists (`[[a, b], [c, d]]`) where the first list should include 'highlight parcels' and second list should include 'background parcels'. For more details, see the :ref:`parcels_logic` section.
     :type special_parcels: nested `list` of two `lists`, optional
-    :param radar: type of radar data to retrieve for radar inset, ``mosaic`` will plot a CONUS reflectivity mosaic (data only available within one month of current time), ``single`` will plot reflectivity from the nearest NEXRAD WRS-88D radar site (data availability depends on site). Default is ``mosaic``.
+    :param radar: type of radar data to retrieve for radar inset, ``mosaic`` will plot a CONUS reflectivity mosaic (data only available within one month of current time), ``single`` (or ``single-site``) will plot reflectivity from the nearest NEXRAD WSR-88D radar site (data availability depends on site), and ``None`` shows no radar. Default is ``mosaic``.
     :type radar: str, optional
     :param radar_time: radar mosaic data valid time. May be ``sounding`` (uses the valid time of the sounding data), or ``now`` (current time/date). **Note: radar mosaic data only goes back 1 month from current date**
     :type radar_time: str, optional, Default is ``sounding``.
@@ -245,8 +265,10 @@ def build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion=
     :type map_layers: function or list of functions, optional
     :param map_label: a label for the map, such as ``'HRRR MLCAPE (J/kg)'``, shown in a box at the top of the map. Default is ``None``.
     :type map_label: str, optional
-    :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
-    :rtype: plt
+    :param return_fig: whether to return the figure instead of showing it, so you can draw on it or save it yourself. A figure that's saved and not returned is closed. Default is ``False``.
+    :type return_fig: bool, optional
+    :return: ``None``, or with ``return_fig=True``, ``(fig, axes)``: the Matplotlib figure, and a dict of its panels: ``'skewt'`` (a MetPy ``SkewT``), ``'hodograph'`` (a MetPy ``Hodograph``), and ``'map'`` (a cartopy ``GeoAxes``, when the map is drawn)
+    :rtype: None or tuple
     '''
     
     print(f'> SOUNDING PLOTTER FUNCTION\n  ---------------------------------')
@@ -265,19 +287,16 @@ def build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion=
             warnings.warn(f"The winter sounding doesn't use {', '.join(ignored)}; ignoring {'it' if len(ignored) == 1 else 'them'}.", Warning)
 
         # build winter plot
-        plt = __winter_sounding(clean_data, color_blind, dark_mode, storm_motion, radar, radar_time, map_zoom, modify_sfc, dpi, max_levels, ylim, theme, show_obs,
+        fig, axes = __winter_sounding(clean_data, color_blind, dark_mode, storm_motion, radar, radar_time, map_zoom, modify_sfc, dpi, max_levels, ylim, theme, show_obs,
                                 map_layers, map_label)
     else:
         if show_obs:
             # print warning for show_obs kwarg on a normal sounding
             warnings.warn("show_obs is only used by the winter sounding (mode='winter'); ignoring it.", Warning)
         # build normal severe sounding figure
-        plt = __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, radar, radar_time, map_zoom, modify_sfc, show_theta, hodo_boundary, dpi, max_levels, ylim, theme, sr_hodo,
+        fig, axes = __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, radar, radar_time, map_zoom, modify_sfc, show_theta, hodo_boundary, dpi, max_levels, ylim, theme, sr_hodo,
                               map_layers, map_label)
-    if save:
-        plt.savefig(filename, bbox_inches='tight')
-    else:
-        plt.show()
+    return _finish_figure(fig, axes, save, filename, return_fig)
 
 
 
@@ -289,10 +308,10 @@ def build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion=
 #########################################################################
 def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr_hodo=False, modify_sfc=None,
                     radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_hodograph', max_levels=250, theme=None,
-                    map_layers=None, map_label=None):
+                    map_layers=None, map_label=None, return_fig=False):
 
     '''
-       Return a hodograph plot of SounderPy data, ``plt`` 
+       Build a hodograph figure of SounderPy data
 
        :param clean_data: the dictionary of data to be plotted (see :doc:`gettingdata`)
        :type clean_data: dict, required
@@ -302,7 +321,7 @@ def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr
        :type storm_motion: str or list of floats, optional
        :param sr_hodo: transform the hodograph from ground relative to storm relative 
        :type sr_hodo: bool, optional, default is ``False``
-       :param radar: type of radar data to retrieve for radar inset, ``mosaic`` will plot a CONUS reflectivity mosaic (data only available within one month of current time), ``single`` will plot reflectivity from the nearest NEXRAD WRS-88D radar site (data availability depends on site). Default is ``mosaic``.
+       :param radar: type of radar data to retrieve for radar inset, ``mosaic`` will plot a CONUS reflectivity mosaic (data only available within one month of current time), ``single`` (or ``single-site``) will plot reflectivity from the nearest NEXRAD WSR-88D radar site (data availability depends on site), and ``None`` shows no radar. Default is ``mosaic``.
        :type radar: str, optional
        :param radar_time: radar mosaic data valid time. May be ``sounding`` (uses the valid time of the sounding data), or ``now`` (current time/date). **Note: radar mosaic data only goes back 1 month from current date**
        :type radar_time: str, optional, Default is ``sounding``.
@@ -326,8 +345,10 @@ def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr
        :type map_layers: function or list of functions, optional
        :param map_label: a label for the map, such as ``'HRRR MLCAPE (J/kg)'``, shown in a box at the top of the map. Default is ``None``.
        :type map_label: str, optional
-       :return: plt, a SounderPy hodograph built with Matplotlib, MetPy, SharpPy, & SounderPy.
-       :rtype: plt
+       :param return_fig: whether to return the figure instead of showing it, so you can draw on it or save it yourself. A figure that's saved and not returned is closed. Default is ``False``.
+       :type return_fig: bool, optional
+       :return: ``None``, or with ``return_fig=True``, ``(fig, axes)``: the Matplotlib figure, and a dict of its panels: ``'hodograph'`` (a MetPy ``Hodograph``) and ``'map'`` (a cartopy ``GeoAxes``, when the map is drawn)
+       :rtype: None or tuple
     '''
 
 
@@ -336,12 +357,9 @@ def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr
     # map_layers & map_label need the map
     _warn_unused_map_layers(map_zoom, map_layers, map_label)
 
-    plt = __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc, radar, radar_time, map_zoom, hodo_boundary, dpi, max_levels, theme,
+    fig, axes = __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc, radar, radar_time, map_zoom, hodo_boundary, dpi, max_levels, theme,
                            map_layers, map_label)
-    if save:
-        plt.savefig(filename, bbox_inches='tight')
-    else:
-        plt.show()
+    return _finish_figure(fig, axes, save, filename, return_fig)
 
 
 
@@ -352,10 +370,10 @@ def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr
 def build_composite(data_list, shade_between=True, cmap='viridis', colors=None, linestyles=None, alphas=None,
                     linewidths=None, dark_mode=False, save=False, filename='sounderpy_composite',
                     show_params=True, storm_motion='right_moving', max_levels=250, dpi=100, ylim=None,
-                    colors_to_use=None, ls_to_use=None, alphas_to_use=None, lw_to_use=None, theme=None, style='full', sr_hodo=False):
+                    colors_to_use=None, ls_to_use=None, alphas_to_use=None, lw_to_use=None, theme=None, style='full', sr_hodo=False, return_fig=False):
 
     '''
-    Return a composite sounding plot of multiple profiles, ``plt``
+    Build a composite sounding figure of multiple profiles
 
     :param data_list: a list of data dictionaries for each profile to be plotted. Profiles may come from any mix of sources, such as observed, model, BUFKIT, ACARS, and custom data.
     :type data_list: list of dicts, required
@@ -363,19 +381,19 @@ def build_composite(data_list, shade_between=True, cmap='viridis', colors=None, 
     :type shade_between: bool, optional
     :param cmap: a linear colormap, may be any custom or matplotlib cmap. Default is 'viridis', using only the part of it that stands out from the figure's background. If `colors` kwarg is provided, `colors` will be used instead.
     :type cmap: `matplotlib.colors.LinearSegmentedColormap` or `str` representing the name of a matplotlib cmap, optional
-    :param colors: A list of custom matplotlib color name stings. List length must match the number of profiles listed in ``data_list``. Default is 'none'.
+    :param colors: A list of custom matplotlib color name stings. List length must match the number of profiles listed in ``data_list``. Default is ``None``.
     :type colors: list of strings, optional
-    :param alphas: A list of custom alphas (0.0-1.0). List length must match the number of profiles listed in ``data_list``. Default is 'none'. Default alpha is 1.
+    :param alphas: A list of custom alphas (0.0-1.0). List length must match the number of profiles listed in ``data_list``. Default is ``None``. Default alpha is 1.
     :type alphas: list of floats, optional
-    :param linestyles: A list of custom matplotlib line styles. List length must match the number of profiles listed in ``data_list``. Default is 'none'. Default line style is '-'.
+    :param linestyles: A list of custom matplotlib line styles. List length must match the number of profiles listed in ``data_list``. Default is ``None``. Default line style is '-'.
     :type linestyles: list of stings, optional
-    :param linewidths: A list of custom line widths. List length must match the number of profiles listed in ``data_list``. Default is 'none'. Default line width is 3.
+    :param linewidths: A list of custom line widths. List length must match the number of profiles listed in ``data_list``. Default is ``None``. Default line width is 3.
     :type linewidths: list of floats, optional
     :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding. Default is ``False``.
     :type dark_mode: bool, optional
     :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
     :type save: bool, optional
-    :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
+    :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_composite`.
     :type filename: str, optional
     :param show_params: whether to compute each profile's parameters and show them in the table. Setting this to ``False`` is faster. Default is ``True``.
     :type show_params: bool, optional
@@ -397,8 +415,10 @@ def build_composite(data_list, shade_between=True, cmap='viridis', colors=None, 
     :type style: str, optional
     :param sr_hodo: draw the hodograph storm relative, shifting each profile's winds by its own storm motion from ``storm_motion``. Not used with ``style='sounding'``. If any profile has no storm motion, the hodograph stays ground relative. Default is ``False``.
     :type sr_hodo: bool, optional
-    :return: plt, a SounderPy composite sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
-    :rtype: plt
+    :param return_fig: whether to return the figure instead of showing it, so you can draw on it or save it yourself. A figure that's saved and not returned is closed. Default is ``False``.
+    :type return_fig: bool, optional
+    :return: ``None``, or with ``return_fig=True``, ``(fig, axes)``: the Matplotlib figure, and a dict of its panels: ``'skewt'`` (a MetPy ``SkewT``) and ``'hodograph'`` (a MetPy ``Hodograph``), each when drawn
+    :rtype: None or tuple
     '''
     
     print(f'> COMPOSITE SOUNDING FUNCTION\n  -------------------------------')
@@ -416,12 +436,9 @@ def build_composite(data_list, shade_between=True, cmap='viridis', colors=None, 
     alphas = _use_new_name('alphas_to_use', alphas_to_use, 'alphas', alphas)
     linewidths = _use_new_name('lw_to_use', lw_to_use, 'linewidths', linewidths)
 
-    plt =  __composite_sounding(data_list, shade_between, cmap, colors,
+    fig, axes = __composite_sounding(data_list, shade_between, cmap, colors,
             linestyles, alphas, linewidths, dark_mode, show_params, storm_motion, max_levels, dpi, ylim, theme, style, sr_hodo)
-    if save:
-        plt.savefig(filename, bbox_inches='tight')
-    else:
-        plt.show()
+    return _finish_figure(fig, axes, save, filename, return_fig)
 
 
 
@@ -439,15 +456,15 @@ def build_composite(data_list, shade_between=True, cmap='viridis', colors=None, 
 #########################################################################
 def build_vad_hodograph(vad_data, save=False, dark_mode=False, storm_motion='right_moving', sr_hodo=False,
                         filename='vad_hodograph', radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, theme=None,
-                        map_layers=None, map_label=None):
+                        map_layers=None, map_label=None, return_fig=False):
     '''
-       Return a VAD hodograph plot of SounderPy VAD data, ``plt``
+       Build a VAD hodograph figure of SounderPy VAD data
 
        :param vad_data: the dictionary of VAD data to be plotted
        :type vad_data: dict, required
        :param save: whether to show the plot inline or save to a file. Default is ``False`` which displays the file inline.
        :type save: bool, optional
-       :param filename: the filename by which a file should be saved to if ``save = True``. Default is `sounderpy_sounding`.
+       :param filename: the filename by which a file should be saved to if ``save = True``. Default is `vad_hodograph`.
        :type filename: str, optional
        :param dark_mode: ``True`` will invert the color scheme for a 'dark-mode' sounding. Default is ``False``.
        :type dark_mode: bool, optional
@@ -455,7 +472,7 @@ def build_vad_hodograph(vad_data, save=False, dark_mode=False, storm_motion='rig
        :type storm_motion: str or list of floats, optional
        :param sr_hodo: transform the hodograph from ground relative to storm relative
        :type sr_hodo: bool, optional, default is ``False``
-       :param radar: the type of radar on the map: ``'mosaic'``, ``'single-site'``, or ``None``. Default is ``'mosaic'``.
+       :param radar: the type of radar on the map: ``'mosaic'``, ``'single'`` (or ``'single-site'``), or ``None``. Default is ``'mosaic'``.
        :type radar: str or None, optional
        :param radar_time: the time of radar to show: ``'sounding'`` for the data's valid time, or ``'now'``. Default is ``'sounding'``.
        :type radar_time: str, optional
@@ -471,8 +488,10 @@ def build_vad_hodograph(vad_data, save=False, dark_mode=False, storm_motion='rig
        :type map_layers: function or list of functions, optional
        :param map_label: a label for the map, such as ``'HRRR MLCAPE (J/kg)'``, shown in a box at the top of the map. Default is ``None``.
        :type map_label: str, optional
-       :return: plt, a SounderPy sounding built with Matplotlib, MetPy, SharpPy, & SounderPy.
-       :rtype: plt
+       :param return_fig: whether to return the figure instead of showing it, so you can draw on it or save it yourself. A figure that's saved and not returned is closed. Default is ``False``.
+       :type return_fig: bool, optional
+       :return: ``None``, or with ``return_fig=True``, ``(fig, axes)``: the Matplotlib figure, and a dict of its panels: ``'hodograph'`` (a MetPy ``Hodograph``) and ``'map'`` (a cartopy ``GeoAxes``, when the map is drawn)
+       :rtype: None or tuple
     '''
 
     print(f'> VAD HODOGRAPH PLOTTER FUNCTION --\n------------------------------------')
@@ -480,12 +499,9 @@ def build_vad_hodograph(vad_data, save=False, dark_mode=False, storm_motion='rig
     # map_layers & map_label need the map
     _warn_unused_map_layers(map_zoom, map_layers, map_label)
 
-    plt =  __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo, radar, radar_time, map_zoom, hodo_boundary, dpi, theme,
+    fig, axes = __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo, radar, radar_time, map_zoom, hodo_boundary, dpi, theme,
                            map_layers, map_label)
-    if save:
-        plt.savefig(filename, bbox_inches='tight')
-    else:
-        plt.show()
+    return _finish_figure(fig, axes, save, filename, return_fig)
 
 
 
@@ -502,6 +518,14 @@ def build_vad_hodograph(vad_data, save=False, dark_mode=False, storm_motion='rig
 # PRINT DATA TO CONSOLE
 #########################################################################
 def print_variables(clean_data):
+    r"""Print a profile's thermodynamic and kinematic parameters to the console
+
+       The same read-out the data functions print when ``hush=False``, using the Bunkers right-moving storm motion.
+
+       :param clean_data: a ``clean_data`` dict from any SounderPy data function
+       :type clean_data: dict, required
+       :return: None
+    """
     sounding_params(clean_data, storm_motion='right_moving', modify_sfc=None).print_vals()
 
 

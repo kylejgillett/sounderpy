@@ -98,6 +98,15 @@
     text-decoration: none;
 }
 
+/* a figure at the top of a card fills its width */
+.home-card img {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-bottom: 0.6rem;
+    border-radius: 0.35rem;
+}
+
 .home-code-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

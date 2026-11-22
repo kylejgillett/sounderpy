@@ -95,7 +95,7 @@ Thermodynamic values (``thermo``)
      - Lifted condensation level, level of free convection, equilibrium level, and maximum parcel level
      - hPa, m AGL, °C
      - :ref:`Blumberg et al. 2017 (SHARPpy) <ref-sharppy>`
-   * - ``sbT_trace, sbP_trace, sbZ_trace (and ml, mu)``
+   * - ``sbT_trace, sbP_trace (and ml, mu); sbZ_trace, muZ_trace``
      - Parcel temperature trace
      - °C, hPa, m
      - :ref:`Blumberg et al. 2017 (SHARPpy) <ref-sharppy>`

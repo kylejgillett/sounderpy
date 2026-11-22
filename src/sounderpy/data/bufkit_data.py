@@ -58,15 +58,12 @@ def _bufkit_run_time(buf_file):
 def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_hour,
                    hush, clean_it, all_fcst_hours=False):
 
-    # record process time
-    st = time.time()
-
     r"""Get BUFKIT forecast model vertical profile data
        Return a ``dict`` of 'cleaned up' model forecast data from a given model, for a given BUFKIT site identifier, forecast hour, & model-run-date
 
        :param model: the requested model to use (such as hrrr, rap, gfs, etc)
        :type model: str, required
-       :param station: a 3-4 digit BUFKIT site identifier
+       :param station: a 3-4 character BUFKIT site identifier, used exactly as listed by BUFKIT: some have a 'K' in front (such as 'KGFK'), others don't (such as 'OUN'); any case
        :type station: str, required
        :param fcst_hour: the forecast hour; the profile is valid at the model run time plus this many hours
        :type fcst_hour: int, required
@@ -86,14 +83,17 @@ def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_ho
        :rtype: dict or list of dicts
     """
 
+    # record process time
+    st = time.time()
+
     print(f'> BUFKIT DATA ACCESS FUNCTION\n   ---------------------------------')
 
     # make sure variables are in the correct case
     model = str.lower(model)
     station = str.upper(station)
 
-    # discontinued models: Penn State's 'latest' files stopped updating (2026-11-03), so there is no latest run.
-    # Iowa State keeps archived NAM and NAM Nest runs, but not SREF or HiResW
+    # NAM, NAMNEST/NAM3KM, SREF, and HIRESW are no longer available as latest model from PSU, but
+    # Iowa State keeps archived NAM and NAMNEST (but not SREF or HiResW)
     if model in ['nam', 'namnest'] and run_year is None:
         raise ValueError(f"{model.upper()} has been discontinued, so there is no latest run. Archived {model.upper()} runs are "
                          f"still available: give the run date and hour (run_year, run_month, run_day, run_hour; --run YYYY-MM-DD HH in the CLI). "
@@ -106,9 +106,10 @@ def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_ho
     BUFKIT_STATIONS = pd.read_csv(
         f'https://raw.githubusercontent.com/kylejgillett/sounderpy/main/src/BUFKIT-STATIONS-MASTER.txt',
         skiprows=7, skipinitialspace=True)
-    # FIND THE STATION (the listed ID, so 'gfk' becomes 'KGFK' in the file URL too)
-    station = BUFKIT_STATIONS['ID'][find_station(BUFKIT_STATIONS['ID'], station, k_prefix=True,
-        hint="A map of valid BUFKIT stations can be found here from Penn State: http://www.meteo.psu.edu/bufkit/CONUS_RAP_00.html")]
+    # FIND THE STATION (exactly as requested: BUFKIT files use the listed ID, e.g. 'OUN' and 'KGFK')
+    station = BUFKIT_STATIONS['ID'][find_station(BUFKIT_STATIONS['ID'], station,
+        hint="BUFKIT IDs are used exactly as listed: some have a 'K' in front, such as 'KGFK', others don't, such as 'OUN'.\n"
+             "A map of valid BUFKIT stations can be found here from Penn State: http://www.meteo.psu.edu/bufkit/CONUS_RAP_00.html")]
 
     # remove '#' for URL
     url_station = station.strip().replace('#', '%23')
@@ -387,7 +388,7 @@ def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_ho
                 'site-elv': BUFKIT_STATIONS[BUFKIT_STATIONS['ID'] == station]['EL(m)'].values[0],
                 'source': 'BUFKIT FORECAST PROFILE',
                 'model': str.upper(model),
-                'fcst-hour': f'F0{fcst_hour}',
+                'fcst-hour': f'F{int(fcst_hour):02d}',
                 'run-time': [run_dt.strftime("%Y"), run_dt.strftime("%m"), run_dt.strftime("%d"), run_dt.strftime("%H")],
                 'valid-time': [fct_dt.strftime("%Y"), fct_dt.strftime("%m"), fct_dt.strftime("%d"), fct_dt.strftime("%H")],
                 'data-source': data_source
@@ -431,7 +432,7 @@ def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_ho
 
         if hr_deltas[model][1] < fcst_hour:
             raise ValueError(
-                f'Invalid forecast hour -- BUFKIT only stores up to F0{hr_deltas[model][1]} for the {str.upper(model)}')
+                f'Invalid forecast hour -- BUFKIT only stores up to F{hr_deltas[model][1]:02d} for the {str.upper(model)}')
 
         clean_data = parse_hour(fcst_hour)
 
@@ -444,12 +445,13 @@ def fetch_bufkit(model, station, fcst_hour, run_year, run_month, run_day, run_ho
 
         if not hush:
             print(
-                f"    > SUMMARY: SUMMARY: {clean_data['site_info']['run-time'][3]}Z {clean_data['site_info']['model']} {clean_data['site_info']['fcst-hour']} for {clean_data['site_info']['site-id']},"
+                f"    > SUMMARY: {clean_data['site_info']['run-time'][3]}Z {clean_data['site_info']['model']} {clean_data['site_info']['fcst-hour']} for {clean_data['site_info']['site-id']}, "
                 f"{clean_data['site_info']['site-name']} at {clean_data['site_info']['valid-time'][1]}-{clean_data['site_info']['valid-time'][2]}-{clean_data['site_info']['valid-time'][0]}-{clean_data['site_info']['valid-time'][3]}Z")
 
-            warnings.filterwarnings("ignore")
-
-            sounding_params(clean_data).print_vals()
+            # hide the calculation warnings for this printout only
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                sounding_params(clean_data).print_vals()
 
 
         return clean_data

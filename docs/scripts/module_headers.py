@@ -39,9 +39,9 @@ the PBL, bulk shear, storm-relative helicity and winds, streamwise vorticity, st
 the effective inflow layer, and composite indices. `sounding_params(clean_data).calc()` returns
 them in a dict; `vad_params(vad_data).calc()` does the same for VAD wind profiles.""",
     docs=[("sounding parameters", D + "reference/helpertools.html#returning-a-dictionary-of-profile-parameters"),
-          ("storm motions", D + "reference/plottingdata.html#storm-motion-logic"),
-          ("parcels", D + "reference/plottingdata.html#parcel-logic"),
-          ("surface modification", D + "reference/plottingdata.html#surface-modification-logic")],
+          ("storm motions", D + "reference/plotsettings.html#storm-motions"),
+          ("parcels", D + "reference/plotsettings.html#parcels"),
+          ("surface modification", D + "reference/plotsettings.html#surface-modification")],
     refs=["sharppy", "metpy", "doswell_rasmussen1994", "blanchard1998", "peters2023", "emanuel1994", "market_dcape",
           "gilmore_wicker1998", "bunkers2000", "bunkers2014", "corfidi2003", "nixon_allen2021", "davies_jones1984",
           "davies_jones1990", "brandt2022", "thompson2004", "thompson2007", "thompson2012", "hart_korotky1991",
@@ -105,12 +105,12 @@ Operational site: https://sounderpy.app/""",
     years="2023, 2024, 2025, 2026"),
 "utils.py": dict(
     title="SOUNDERPY UTILITIES",
-    purpose="""Helper functions for working with vertical profile data: surface modification (`modify_surface`),
-interpolation, nearest values, surface-based profiles, station lookups for the RAOB and BUFKIT
-station lists, readout formatting, and SounderPy's warning classes. Some are called by other
-modules, and some are meant to be called by the user.""",
+    purpose="""Helper functions for working with vertical profile data: surface modification
+(spy.modify_surface()), interpolation, nearest values, surface-based profiles, station lookups for
+the RAOB and BUFKIT station lists, readout formatting, and SounderPy's warning classes. Some are
+called by other modules, and some are meant to be called by the user.""",
     docs=[("helper tools", D + "reference/helpertools.html"),
-          ("surface modification", D + "reference/plottingdata.html#surface-modification-logic"),
+          ("surface modification", D + "reference/plotsettings.html#surface-modification"),
           ("station identifiers", D + "reference/gettingdata.html#station-identifiers")],
     refs=["holzworth1964", "betts1973", "carson1973", "tennekes1973", "metpy"],
     years="2024, 2026"),
@@ -175,8 +175,9 @@ GRAW, iMet, and Windsond radiosonde files into SounderPy `clean_data` dictionari
     years="2026"),
 "data/model_data.py": dict(
     title="SOUNDERPY MODEL REANALYSIS DATA",
-    purpose="""Load and parse ERA5, RAP/RUC, and NCEP-FNL reanalysis profiles into SounderPy `clean_data`
-dictionaries: ERA5 from the Copernicus Climate Data Store, and RAP/RUC and NCEP-FNL through THREDDS.
+    purpose="""Load and parse ERA5, NCEP-FNL, and latest RAP analysis profiles into SounderPy `clean_data`
+dictionaries: ERA5 from the Copernicus Climate Data Store, and NCEP-FNL and the latest RAP analysis ('rap-now')
+through THREDDS. RAP/RUC reanalysis ('rap-ruc') comes from rapruc_grib_retriever.
 Called by spy.get_model_data().""",
     docs=[("reanalysis data", D + "reference/gettingdata.html#model-reanalysis-data-rap-ruc-era5-ncep"),
           ("model keys", D + "reference/gettingdata.html#model-key-names"),
@@ -209,7 +210,7 @@ SounderPy's packaged station list to match WMO, ICAO, and IGRA IDs. Called by sp
     purpose="""Radar data for the map inset: the nearest NEXRAD site's lowest-tilt reflectivity from the Unidata
 NEXRAD Level II archive on AWS, the CONUS reflectivity mosaic from Unidata's THREDDS server, the
 radar valid time, and the reflectivity colormap.""",
-    docs=[("map insets & radar", D + "reference/plottingdata.html#radar-logic"),
+    docs=[("map insets & radar", D + "reference/plotsettings.html#map-radar"),
           ("maps & radar tutorial", D + "tutorials/maps_radar.html")],
     refs=["pyart", "nexrad_aws", ("siphon", "THREDDS radar mosaic")],
     years="2025, 2026"),
@@ -263,7 +264,8 @@ other profile.""",
 style.py             : themes, colors, units, layouts, and watermark settings
 components.py        : reusable pieces that figures are built from
 components_winter.py : the winter sounding's own pieces
-operational.py       : full (severe and winter) sounding, hodograph, composite, and VAD figures""",
+operational.py       : full (severe and winter) sounding, hodograph, composite, and VAD figures
+publication.py       : journal-style publication figures""",
     docs=[("plotting data", D + "reference/plottingdata.html")],
     refs=[],
     years="2026"),
@@ -274,7 +276,7 @@ hodograph, side panels, parameter tables, map insets with radar and custom map l
 text. Figures are put together in operational.py.""",
     docs=[("soundings", D + "reference/plottingdata.html#building-soundings"),
           ("hodographs", D + "reference/plottingdata.html#building-hodographs"),
-          ("map insets & radar", D + "reference/plottingdata.html#radar-logic"),
+          ("map insets & radar", D + "reference/plotsettings.html#map-radar"),
           ("custom map data", D + "tutorials/custom_map_data.html")],
     refs=["matplotlib", ("metpy", "skew-T and hodograph"), "cartopy", ("peters2023", "ECAPE parcel traces"), "cohen2007"],
     years="2024, 2026"),
@@ -300,18 +302,29 @@ spy.build_composite(), and spy.build_vad_hodograph().""",
           ("composites", D + "reference/plottingdata.html#building-composite-soundings"),
           ("VAD hodographs", D + "reference/plottingdata.html#building-vad-hodographs"),
           ("winter soundings", D + "tutorials/winter_soundings.html"),
-          ("map insets & radar", D + "reference/plottingdata.html#radar-logic"),
+          ("map insets & radar", D + "reference/plotsettings.html#map-radar"),
           ("custom map data", D + "tutorials/custom_map_data.html")],
     refs=["matplotlib", ("metpy", "skew-T and hodograph"), "cartopy"],
     years="2024, 2026"),
+"plot/publication.py": dict(
+    title="SOUNDERPY PUBLICATION FIGURES",
+    purpose="""Clean, journal-style figures of one or more profiles: a skew-t, and optionally a hodograph, a
+location map, and a table of parameters, sized for AMS and AGU journals. The settings at the top
+set every part of the look, and the figure and its panels are returned for annotating. Called by
+spy.build_publication_sounding() (experimental in 3.3.0).""",
+    docs=[("publication figures", D + "reference/publicationfigures.html"),
+          ("tutorial", D + "tutorials/custom_figures.html"),
+          ("map insets & radar", D + "reference/plotsettings.html#map-radar")],
+    refs=["matplotlib", ("metpy", "skew-T"), "cartopy"],
+    years="2026"),
 "plot/style.py": dict(
     title="SOUNDERPY PLOT STYLE",
     purpose="""The look of SounderPy figures in one place: themes, font sizes, units, layouts, winter settings,
 and watermark settings. Drawing tools are in components.py (and components_winter.py for the
 winter sounding).""",
-    docs=[("figure colors & themes", D + "reference/plottingdata.html#figure-colors"),
-          ("theme settings", D + "reference/plottingdata.html#theme-settings"),
-          ("watermark", D + "reference/plottingdata.html#watermark"),
+    docs=[("figure colors & themes", D + "reference/plotsettings.html#figure-colors"),
+          ("theme settings", D + "reference/plotsettings.html#theme-settings"),
+          ("watermark", D + "reference/plotsettings.html#watermark"),
           ("plot appearance", D + "tutorials/plot_appearance.html")],
     refs=[],
     years="2026"),

@@ -31,3 +31,13 @@
 .gallery-table p {
     margin-top: 0.45rem;
 }
+
+/* The Read the Docs theme centers table cells and keeps their text on one line
+   (.rst-content table.docutils td, .wy-table-responsive table td), which outranks the rules above:
+   in the gallery, every card starts at the top of its cell and its caption wraps */
+.rst-content table.docutils.gallery-table td,
+.wy-table-responsive table.gallery-table td {
+    vertical-align: top !important;
+    white-space: normal !important;
+    overflow-wrap: break-word;
+}

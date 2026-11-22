@@ -580,8 +580,10 @@ def to_file(file_type, clean_data, filename=None, convert_to_AGL=True):
    :type file_type: str, required
    :param clean_data: 'cleaned' SounderPy data `dict`
    :type clean_data: dict, required
-   :param filename: the name you'd like to give the file
-   :type filename: str, required
+   :param filename: the name you'd like to give the file. Default is ``'sounderpy_data'``
+   :type filename: str, optional
+   :param convert_to_AGL: whether to convert heights to above ground level ('cm1' files only). Default is ``True``
+   :type convert_to_AGL: bool, optional
    :return: a file of SounderPy data.
     '''
 

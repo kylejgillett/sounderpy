@@ -175,8 +175,8 @@ Using the Mobridge, SD (``KMBG``) BUFKIT site:
 
 .. note::
 
-   BUFKIT archive availability can vary by model, station, and cycle. The
-   companion script uses KMBG because HRRR BUFKIT data are available for that
+   BUFKIT archive availability can vary by model, station, and cycle. This
+   case study uses KMBG because HRRR BUFKIT data are available for that
    station in the archive.
 
 *********************************************************
@@ -242,7 +242,7 @@ SounderPy can place all four profiles on the same thermodynamic diagram:
 
    profiles = [abr_12z, hrrr_f13, abr_00z, rap_01z]
 
-   spy.build_composite(profiles, shade_between=False, dark_mode='True',
+   spy.build_composite(profiles, shade_between=False, dark_mode=True,
        colors=[ "tab:blue", "tab:orange", "tab:green", "tab:red"],
        linewidths=[2, 2, 3, 3],
        save=True,

@@ -97,7 +97,7 @@ SFC_WIND_MAX_AGL = 30   # m: how high to look for a surface wind when the lowest
 #########################################################################
 
 # saturation vapor pressure (hPa) over water and over ice
-# Alduchov & Eskridge (1996, J. Appl. Meteor.) [peer-reviewed]
+# Alduchov & Eskridge (1996, J. Appl. Meteor.)
 def es_water(T):
     return 6.1094 * np.exp(17.625 * T / (T + 243.04))
 
@@ -134,10 +134,10 @@ def true_runs(mask):
     return list(zip(np.where(edges == 1)[0], np.where(edges == -1)[0] - 1))
 
 
-# the dendritic growth zone (-12 to -17 °C) that makes the snow: of every layer in that range (deeper than
+# the dendritic growth zone (-12 to -17C) that makes the snow: of every layer in that range (deeper than
 # 50 m), the one with the most cloud in it; with no cloud in any, the lowest (SHARPpy's dgz() choice). On a
-# 10 m grid. Returns (bottom, top) heights and pressures, or None. A surface colder than -12 °C, or a
-# warm layer aloft, can give several such layers, and SHARPpy's dgz() (first -12 and first -17 °C levels)
+# 10 m grid. Returns (bottom, top) heights and pressures, or None. A surface colder than -12C, or a
+# warm layer aloft, can give several such layers, and SHARPpy's dgz() (first -12 and first -17C levels)
 # can then give an inverted or cloud-free one
 def dendritic_growth_zone(z, T, p, cloud_z, cloud_rh_ice, z_top=12000):
     z_f = np.arange(0, min(np.nanmax(z), z_top), 10.0)
@@ -163,9 +163,9 @@ def find_layers(mask, z, p, min_depth=200):
 ########################## PRECIPITATION TYPE ###########################
 #########################################################################
 
-# split the profile below `top` into melting (> 0 °C) and refreezing (< 0 °C) layers, top first, each with its
-# energy: g * integral((T - T0) / T0) dz (J/kg), the area between the profile and 0 °C. Bourgouin (2000, Wea.
-# Forecasting) [peer-reviewed]. SHARPpy's posneg_temperature() lumps every layer below the first warm layer
+# split the profile below `top` into melting (> 0C) and refreezing (< 0C) layers, top first, each with its
+# energy: g * integral((T - T0) / T0) dz (J/kg), the area between the profile and 0C. Bourgouin (2000, Wea.
+# Forecasting). SHARPpy's posneg_temperature() lumps every layer below the first warm layer
 # together, so the layers are found here one by one
 def melting_refreezing_layers(z, T, top):
     sel = np.isfinite(T) & (z <= top)

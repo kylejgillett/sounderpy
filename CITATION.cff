@@ -3,7 +3,7 @@ authors:
 - family-names: Gillett
   given-names: Kyle J.
   orcid: "https://orcid.org/0009-0001-5528-5037"
-doi: 10.5281/zenodo.16921742
+doi: 10.5281/zenodo.10011851
 message: If you use this software, please cite SounderPy's article in the
   Journal of Open Source Software.
 preferred-citation:
@@ -26,3 +26,5 @@ preferred-citation:
   volume: 10
 title: "SounderPy: An atmospheric sounding visualization and analysis
   tool for Python"
+version: "3.3.0"
+date-released: 2026-11-22

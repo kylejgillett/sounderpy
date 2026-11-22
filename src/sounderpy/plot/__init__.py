@@ -9,6 +9,7 @@
     components.py        : reusable pieces that figures are built from
     components_winter.py : the winter sounding's own pieces
     operational.py       : full (severe and winter) sounding, hodograph, composite, and VAD figures
+    publication.py       : journal-style publication figures
 
     Docs:
         plotting data:  https://sounderpy.app/docs/reference/plottingdata.html

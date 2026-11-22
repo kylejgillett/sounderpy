@@ -41,7 +41,7 @@ Ingesting WRF Output Data
 .. code-block:: python
 
    import sounderpy as spy
-   import netcdf4
+   import netCDF4
 
    # open your `wrfout*.nc` file as a netCDF4 dataset
    wrf_ds = netCDF4.Dataset(filename_of_wrf_data)
@@ -105,7 +105,7 @@ Ingesting SHARPPY Files
 .. py:function:: spy.from_sharppy(filepath)
 
 
-   Return a ``dict`` of 'cleaned up' WRF output profile data for a given location
+   Return a ``dict`` of 'cleaned up' profile data from a SHARPpy-format sounding file
 
    :param filepath: filepath to your SHARPPY data file
    :type filepath: str, required
@@ -129,20 +129,20 @@ Ingesting SHARPPY Files
    clean_data = spy.from_sharppy(file_path)
 
    # manually set profile meta-data
-   data['site_info'] = {'site-id': 'KGFK',
-                        'site-name': 'GRAND FORKS INTL',
-                        'site-lctn': 'ND',
-                        'site-latlon': [47.95, -97.18],
-                        'site-elv': 257,
-                        'source': 'BUFKIT FORECAST PROFILE',
-                        'model': 'RAP',
-                        'fcst-hour': 'F00',
-                        'run-time': ['2024', '09', '28', '04'],
-                        'valid-time': ['2024', '09', '28', '04']}
+   clean_data['site_info'] = {'site-id': 'KGFK',
+                              'site-name': 'GRAND FORKS INTL',
+                              'site-lctn': 'ND',
+                              'site-latlon': [47.95, -97.18],
+                              'site-elv': 257,
+                              'source': 'BUFKIT FORECAST PROFILE',
+                              'model': 'RAP',
+                              'fcst-hour': 'F00',
+                              'run-time': ['2024', '09', '28', '04'],
+                              'valid-time': ['2024', '09', '28', '04']}
 
-   data['titles'] = {'top_title': 'BUFKIT MODEL FORECAST PROFILE | 04Z RAP F00',
-                     'left_title': ' RUN: 09/28/2024 04Z  |  VALID: 09/28/2024 04Z',
-                     'right_title': 'KGFK - GRAND FORKS INTL, ND | 47.95, -97.18    '}
+   clean_data['titles'] = {'top_title': 'BUFKIT MODEL FORECAST PROFILE | 04Z RAP F00',
+                           'left_title': ' RUN: 09/28/2024 04Z  |  VALID: 09/28/2024 04Z',
+                           'right_title': 'KGFK - GRAND FORKS INTL, ND | 47.95, -97.18    '}
 
    # Now, pass the 'clean_data' dictionary into the SounderPy `build_sounding` function
    spy.build_sounding(clean_data)
@@ -151,6 +151,10 @@ Ingesting SHARPPY Files
 ***************************************************************
 
 
+
+.. rst-class:: coming-soon
+
+Coming soon
 
 Ingesting GRAW, iMet, and Windsond Radiosonde Files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -295,11 +299,11 @@ Before passing custom data into SounderPy, verify that:
   # declare some profile metadata
   clean_data['site_info'] = {
               'site-id'     : 'UND',                              # could be a station ID, site ID, launch ID, mission ID, etc
-              'site-name'   : 'GRAND FORKS'                       # a location's "name", usually the city or town
+              'site-name'   : 'GRAND FORKS',                      # a location's "name", usually the city or town
               'site-lctn'   : 'ND',                               # could be another name, or the state
-              'site-latlon' : [47.9213, -97.087]                  # location lat/lon, list of floats
+              'site-latlon' : [47.9213, -97.087],                 # location lat/lon, list of floats
               'site-elv'    : 257,                                # the profile's elevation in meters (int or float) (easily found on google)
-              'source'      : 'UND AEROSPACE'                     # the 'source' which will be the main title component of the plot
+              'source'      : 'UND AEROSPACE',                    # the 'source' which will be the main title component of the plot
               'model'       : 'none',                             # model name if a model was involved
               'fcst-hour'   : f'none',                            # forecast hour if a model was involved
               'run-time'    : ['none', 'none', 'none', 'none'],   # model run date if a model was involved

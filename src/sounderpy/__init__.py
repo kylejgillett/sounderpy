@@ -18,6 +18,7 @@ from .sounderpy import from_cm1
 from .sounderpy import from_wrf
 from .sounderpy import make_cm1_profile
 from .sounderpy import make_wrf_profile
+from .utils import modify_surface
 from .utils import interp_data
 from .utils import find_nearest
 from .utils import get_sfc_index
@@ -35,6 +36,7 @@ from .calc import sounding_params
 from .calc import vad_params
 from .calc_winter import winter_params
 from .plot.style import set_watermark
+from .plot.publication import build_publication_sounding
 from .data.rapruc_grib_parser import parse_rapruc_grib
 from .data.rapruc_grib_retriever import get_rapruc_data
 

@@ -3,8 +3,9 @@
 
     Purpose of module:
 
-    Load and parse ERA5, RAP/RUC, and NCEP-FNL reanalysis profiles into SounderPy `clean_data`
-    dictionaries: ERA5 from the Copernicus Climate Data Store, and RAP/RUC and NCEP-FNL through THREDDS.
+    Load and parse ERA5, NCEP-FNL, and latest RAP analysis profiles into SounderPy `clean_data`
+    dictionaries: ERA5 from the Copernicus Climate Data Store, and NCEP-FNL and the latest RAP analysis ('rap-now')
+    through THREDDS. RAP/RUC reanalysis ('rap-ruc') comes from rapruc_grib_retriever.
     Called by spy.get_model_data().
 
     Docs:
@@ -40,7 +41,6 @@ import xarray as xr
 import numpy as np
 import numpy.ma as ma
 
-from urllib.request import urlopen
 import cdsapi
 from siphon.ncss import NCSS
 import netCDF4
@@ -50,7 +50,64 @@ from scipy import interpolate
 import metpy.calc as mpcalc
 from metpy.units import units
 
+from ..utils import SounderPyWarning
 from ..calc import *
+
+
+#######################
+# NCEP-FNL FILE LOOKUP
+#########################################################################
+# NCAR's THREDDS server for NCEP-FNL; the files were last found under NCEP_FNL_PATH. If they move again (as they did
+# from 'files/g/d083003'), the file is found through NCAR's catalog instead, by the dataset's title
+NCEP_FNL_SERVER = "https://thredds.rda.ucar.edu/thredds"
+NCEP_FNL_PATH = "files/d083003"
+NCEP_FNL_TITLE = "GDAS/FNL 0.25"
+
+
+def _open_ncss(url):
+    # an NCSS object for the URL, or None if the server has nothing there (a moved path returns an empty page)
+    try:
+        ncss = NCSS(url)
+        return ncss if ncss.variables else None
+    except Exception:
+        return None
+
+
+def _ncep_fnl_ncss(year, month, day, hour):
+    # the NCSS object for an NCEP-FNL 0.25 degree analysis: the known path first (one request), then NCAR's catalog:
+    # the top catalog -> the dataset (found by its title) -> its files -> the year -> the month -> the file
+    name = f"gdas1.fnl0p25.{year}{month}{day}{hour}.f00.grib2"
+    ncss = _open_ncss(f"{NCEP_FNL_SERVER}/ncss/grid/{NCEP_FNL_PATH}/{year}/{year}{month}/{name}")
+    if ncss is not None:
+        return ncss
+
+    print("    > NCEP-FNL: not found at the usual path; searching NCAR's catalog")
+    top = TDSCatalog(f"{NCEP_FNL_SERVER}/catalog/catalog.xml")
+    datasets = [title for title in top.catalog_refs if NCEP_FNL_TITLE in title]
+    if not datasets:
+        raise ValueError(f"NCAR's THREDDS server no longer lists a '{NCEP_FNL_TITLE}' dataset")
+    dataset = top.catalog_refs[datasets[0]].follow()
+    files = [title for title in dataset.catalog_refs if title.endswith("Files")]
+    if not files:
+        raise ValueError(f"the '{datasets[0]}' dataset on NCAR's THREDDS server has no file listing")
+    files = dataset.catalog_refs[files[0]].follow()
+    if year not in files.catalog_refs:
+        raise ValueError(f"NCAR's catalog has no NCEP-FNL data for {year}")
+    months = files.catalog_refs[year].follow()
+    if f"{year}{month}" not in months.catalog_refs:
+        raise ValueError(f"NCAR's catalog has no NCEP-FNL data for {year}-{month}")
+    times = months.catalog_refs[f"{year}{month}"].follow()
+    if name not in times.datasets:
+        raise ValueError(f"NCAR's catalog has no NCEP-FNL analysis for {year}-{month}-{day} {hour}Z")
+
+    url = times.datasets[name].access_urls["NetcdfSubset"]
+    ncss = _open_ncss(url)
+    if ncss is None:
+        raise ValueError(f"NCAR's catalog lists {name}, but its subset service returned nothing ({url})")
+    print(f"    > NCEP-FNL: found at {url}")
+    return ncss
+
+
 
 
 #######################
@@ -58,9 +115,6 @@ from ..calc import *
 #########################################################################
 
 def fetch_model(model, latlon, year, month, day, hour, dataset, box_avg_size, hush, clean_it):
-
-    # record process time
-    st = time.time()
 
     r"""Get model reanalysis vertical profile data
 
@@ -91,16 +145,30 @@ def fetch_model(model, latlon, year, month, day, hour, dataset, box_avg_size, hu
 
     """
 
+    # record process time
+    st = time.time()
+
 
     # send error message if given model is invalid
-    if model.casefold() not in ['era', 'era5', 'rap', 'ruc', 'rap-ruc', 'rap-now', 'ncep-fnl', 'ncep']:
+    if model.casefold() not in ['era', 'era5', 'rap-now', 'ncep-fnl', 'ncep']:
         raise ValueError(
-            f"The model you requested, '{model}', is not a valid model. Valid models for this function include ['rap-ruc', 'era5', 'ncep']")
+            f"The model you requested, '{model}', is not a valid model. Valid models for this function include ['era5', 'ncep', 'rap-now']; "
+            f"RAP/RUC ('rap-ruc') goes through spy.get_model_data()")
     model = model.casefold()
 
-    # create list of lat-lon points for box-average domain
-    #                    + lat                   # - lat                   # - lon                   # + lon
-    latlons = [latlon[0] + box_avg_size, latlon[0] - box_avg_size, latlon[1] - box_avg_size, latlon[1] + box_avg_size]
+    # create list of lat-lon points for box-average domain.
+    # changed in v3.3.0: for ERA5 and NCEP-FNL, box_avg_size is the box's full width (as for RAP/RUC and WRF), so the
+    # box reaches half of it each way. Both are on a 0.25 degree grid, so a smaller box would hold no grid points
+    if model in ['era', 'era5', 'ncep-fnl', 'ncep']:
+        if box_avg_size < 0.25:
+            warnings.warn(f"{model.upper()} is on a 0.25 degree grid, so box_avg_size={box_avg_size} is too small to hold a grid "
+                          f"point; using box_avg_size=0.25 instead.", SounderPyWarning)
+            box_avg_size = 0.25
+        reach = box_avg_size / 2
+    else:
+        reach = box_avg_size
+    #                    + lat              # - lat              # - lon              # + lon
+    latlons = [latlon[0] + reach, latlon[0] - reach, latlon[1] - reach, latlon[1] + reach]
 
 
 
@@ -195,141 +263,6 @@ def fetch_model(model, latlon, year, month, day, hour, dataset, box_avg_size, hu
 
 
 
-    ### RAP REANALYSIS ###
-    #########################################################################################################
-    '''
-    Get RAP reanalysis data from NCEI THREDDS Server, return a netcdf4 dataset
-    '''
-    if model in ['rap', 'ruc', 'rap-ruc']:
-
-        dtype = 'reanalysis'
-
-        print(f'> RAP REANALYSIS DATA ACCESS FUNCTION\n  -----------------------------------------')
-
-        # rearrange latlon list for my sanity
-        latlon_list = [latlons[2], latlons[3], latlons[1], latlons[0]]
-
-        # create dict of RAP-data urls for the different datasets of RAP and RUC from NCEI
-        urls = {
-            'RAP_25km': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-rap252/' + str(year) + str(month) + '/' + str(
-                year) + str(month) + str(day) + '/rap_252_' + str(year) + str(month) + str(day) + '_' + str(
-                hour) + '00_000.grb2',
-            'RAP_25km_old': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-rap252-old/' + str(year) + str(
-                month) + '/' + str(year) + str(month) + str(day) + '/rap_252_' + str(year) + str(month) + str(
-                day) + '_' + str(hour) + '00_000.grb2',
-
-            'RAP_25km_anl': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-rap252anl/' + str(year) + str(
-                month) + '/' + str(year) + str(month) + str(day) + '/rap_252_' + str(year) + str(month) + str(
-                day) + '_' + str(hour) + '00_000.grb2',
-            'RAP_25km_anl_old': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-rap252anl-old/' + str(year) + str(
-                month) + '/' + str(year) + str(month) + str(day) + '/rap_252_' + str(year) + str(month) + str(
-                day) + '_' + str(hour) + '00_000.grb2',
-
-            'RAP_13km': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-rap130/' + str(year) + str(month) + '/' + str(
-                year) + str(month) + str(day) + '/rap_130_' + str(year) + str(month) + str(day) + '_' + str(
-                hour) + '00_000.grb2',
-            'RAP_13km_old': 'https://www.ncdc.noaa.gov/thredds/ncss/grid/model-rap130-old/' + str(year) + str(
-                month) + '/' + str(year) + str(month) + str(day) + '/rap_130_' + str(year) + str(month) + str(
-                day) + '_' + str(hour) + '00_000.grb2',
-
-            'RAP_13km_anl': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-rap130anl/' + str(year) + str(
-                month) + '/' + str(year) + str(month) + str(day) + '/rap_130_' + str(year) + str(month) + str(
-                day) + '_' + str(hour) + '00_000.grb2',
-            'RAP_13km_anl_old': 'https://www.ncdc.noaa.gov/thredds/ncss/grid/model-rap130anl-old/' + str(year) + str(
-                month) + '/' + str(year) + str(month) + str(day) + '/rap_130_' + str(year) + str(month) + str(
-                day) + '_' + str(hour) + '00_000.grb2',
-
-            'RUC_13km': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-ruc130anl/' + str(year) + str(month) + '/' + str(
-                year) + str(month) + str(day) + '/ruc2anl_130_' + str(year) + str(month) + str(day) + '_' + str(
-                hour) + '00_000.grb2',
-            'RUC_13km_old': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-ruc130anl-old/' + str(year) + str(
-                month) + '/' + str(year) + str(month) + str(day) + '/ruc2anl_130_' + str(year) + str(month) + str(
-                day) + '_' + str(hour) + '00_000.grb2',
-
-            'RUC_25km': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-ruc252anl/' + str(year) + str(month) + '/' + str(
-                year) + str(month) + str(day) + '/ruc2anl_252_' + str(year) + str(month) + str(day) + '_' + str(
-                hour) + '00_000.grb',
-            'RUC_25km_old': 'https://www.ncei.noaa.gov/thredds/ncss/grid/model-ruc252anl-old/' + str(year) + str(
-                month) + '/' + str(year) + str(month) + str(day) + '/ruc2anl_252_' + str(year) + str(month) + str(
-                day) + '_' + str(hour) + '00_000.grb'
-        }
-
-        # if a user defined a target dataset, try it.
-        tries = 0
-        if dataset is not None:
-            try:
-                print(f'    > SEARCHING FOR {dataset}...')
-                url = NCSS(urls[dataset])
-                print(f'    > DATASET FOUND: {dataset}')
-                url_to_use = urls[dataset]
-                source = str(dataset)[0:3]
-                data = NCSS(url_to_use)
-            except:
-                raise ValueError(
-                    f'NCSS Connection failed -- the date and dataset you requested is invalid. Ensure you have the correct dates, model, & dataset name\n' +
-                    f'Note: data may not be available for every date/time. This catalog experiences periodic outages and may host missing data.\n' +
-                    f'The date you entered is: {year}-{month}-{day}-{hour}z. An example of a valid date is: 2014-06-16-18z')
-
-        # else, create a simple test for each URL, use the first one that works
-        # and return its data
-        else:
-
-            tries = 0
-            for url, key in zip(urls.values(), urls.keys()):
-                try:
-                    NCSS(url)
-                    print(f'    > DATASET USED: {key}')
-                    url_to_use = url
-                    source = str(key)[0:3]
-                    break
-                except:
-                    tries += 1
-                    pass
-
-            if tries == 12:
-                raise ValueError(
-                    f'NCSS Connection failed -- ensure you have the correct dates and corresponding model\n' +
-                    f'Note: data may not be available for every date/time. This catalog experiences periodic outages and may host missing data.\n' +
-                    f'The date you entered is: {year}-{month}-{day}-{hour}z. An example of a valid date is: 2014-06-16-18z')
-            else:
-                data = NCSS(url_to_use)
-
-        # set up TDS query
-        query = data.query()
-
-        # subset data by variable names for RAP & RUC (of course they have to be different)
-        if source in ['rap', 'RAP']:
-            query.variables('Pressure_surface',
-                            'Geopotential_height_isobaric', 'Geopotential_height_surface',
-                            'Temperature_isobaric', 'Temperature_height_above_ground',
-                            'Relative_humidity_isobaric', 'Dewpoint_temperature_height_above_ground',
-                            'Relative_humidity_height_above_ground', 'Vertical_velocity_pressure_isobaric',
-                            'u-component_of_wind_height_above_ground', 'v-component_of_wind_height_above_ground',
-                            'u-component_of_wind_isobaric', 'v-component_of_wind_isobaric').add_lonlat()
-        else:
-            query.variables('Pressure_surface',
-                            'Geopotential_height_isobaric', 'Geopotential_height_surface',
-                            'Temperature_isobaric', 'Temperature_height_above_ground',
-                            'Relative_humidity_isobaric', 'Dewpoint_temperature_height_above_ground',
-                            'Relative_humidity_height_above_ground', 'Vertical_velocity_pressure_isobaric',
-                            'u-component_of_wind_height_above_ground', 'v-component_of_wind_height_above_ground',
-                            'u-component_of_wind_isobaric', 'v-component_of_wind_isobaric').add_lonlat()
-
-        # subset data by requested domain
-        query.lonlat_box(latlon_list[0], latlon_list[1], latlon_list[2], latlon_list[3])
-
-        # load the data from TDS
-        raw_data = data.get_data(query)
-
-    #########################################################################################################
-
-
-
-
-
-
-
-
     ### NCEP FNL REANALYSIS ###
     #########################################################################################################
     '''
@@ -345,14 +278,13 @@ def fetch_model(model, latlon, year, month, day, hour, dataset, box_avg_size, hu
 
         latlon_list = [latlons[0], latlons[2], latlons[1], latlons[3]]
 
-        # access ncss thredds server, if access failed, exit function and return an error
+        # find the file on NCAR's THREDDS server; if that fails, exit function and return an error
         try:
-            data = NCSS(
-                f"https://thredds.rda.ucar.edu/thredds/ncss/grid/files/g/d083003/{year}/{year}{month}/gdas1.fnl0p25.{year}{month}{day}{hour}.f00.grib2")
+            data = _ncep_fnl_ncss(year, month, day, hour)
             worked = True
-        except:
+        except Exception as e:
             worked = False
-            pass
+            reason = str(e)
 
         if worked:
             # set up TDS query
@@ -373,7 +305,7 @@ def fetch_model(model, latlon, year, month, day, hour, dataset, box_avg_size, hu
             raw_data = data.get_data(query)
 
         else:
-            raise ValueError(f'NCSS Connection failed -- ensure you have the correct dates and corresponding model\n' +
+            raise ValueError(f'NCEP-FNL data access failed: {reason}\n' +
                              f'Note: data may not be available for every date/time. This catalog experiences periodic outages and may host missing data.\n' +
                              f'The date you entered is: {year}-{month}-{day}-{hour}z. An example of a valid date is: 2014-06-16-18z')
     #########################################################################################################
@@ -747,12 +679,13 @@ def fetch_model(model, latlon, year, month, day, hour, dataset, box_avg_size, hu
 
         if not hush:
             print(
-                f"    > SUMMARY: {clean_data['site_info']['run-time'][3]}Z {clean_data['site_info']['model']} {clean_data['site_info']['fcst-hour']} for"
+                f"    > SUMMARY: {clean_data['site_info']['run-time'][3]}Z {clean_data['site_info']['model']} {clean_data['site_info']['fcst-hour']} for "
                 f"{clean_data['site_info']['site-latlon']} at {clean_data['site_info']['valid-time'][1]}-{clean_data['site_info']['valid-time'][2]}-{clean_data['site_info']['valid-time'][0]}-{clean_data['site_info']['valid-time'][3]}Z")
 
-            warnings.filterwarnings("ignore")
-
-            sounding_params(clean_data).print_vals()
+            # hide the calculation warnings for this printout only
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                sounding_params(clean_data).print_vals()
 
         return clean_data
 

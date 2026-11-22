@@ -19,6 +19,7 @@ and workflow tutorials.
    plot_appearance
    maps_radar
    custom_map_data
+   custom_figures
    winter_soundings
    parcel_settings
    hodograph_options
@@ -50,6 +51,12 @@ mosaics, and radar timing.
 
 Draw your own data on the map inset with ``map_layers``: METAR observations from
 the Iowa Environmental Mesonet and a RAP model field from NOAA's archive on AWS.
+
+📝 Publication & Custom Figures
+-------------------------------
+
+Draw on SounderPy's figures with ``return_fig``, and build clean, journal-sized
+figures of one or more profiles with ``build_publication_sounding()``.
 
 🧪 Parcel Settings
 ------------------

@@ -684,3 +684,18 @@ div.nbsphinx-gallery > a:hover {
         grid-template-columns: minmax(0, 1fr);
     }
 }
+
+/* "Coming soon" eyebrow above a section that isn't released yet (`.. rst-class:: coming-soon`) */
+.rst-content p.coming-soon {
+    display: inline-block;
+    margin: 0 0 0.35rem 0;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    background: var(--color-brand-primary);
+    color: var(--color-on-brand);
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}

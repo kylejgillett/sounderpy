@@ -5,6 +5,7 @@ Submitting Issues, Ideas, & Suggestions
 ----------------------------------------
 
 *Have an issue? Seeking Support?*
+
 - `Open a GitHub Issue <https://github.com/kylejgillett/sounderpy/issues>`_
 - Shoot me an email! (kyle.gillett@und.edu)
 - Shoot me a DM on X (@wxkylegillett)

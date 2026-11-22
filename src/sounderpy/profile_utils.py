@@ -36,6 +36,24 @@ from metpy.units import units as mpunits
 # 'sigma': the gaussian kernel's standard deviation (passing it alone picks 'gaussian', as before 3.3.0);
 # 'window_length' & 'polyorder': the Savitzky-Golay window (levels, odd) and polynomial order
 def smooth_profile(clean_data, sigma=None, method=None, window_length=5, polyorder=2):
+    r"""Smooth a profile's data arrays
+
+       Every array with units in ``clean_data`` (p, z, T, Td, u, v, and omega when present) is smoothed; metadata
+       is left as is. The smoothed arrays replace the ones in ``clean_data``, which is also returned.
+
+       :param clean_data: a SounderPy ``clean_data`` dictionary
+       :type clean_data: dict, required
+       :param sigma: standard deviation of the gaussian kernel; larger values smooth more. Passing ``sigma`` without a ``method`` uses the gaussian smoother, as before SounderPy 3.3.0. Default is ``0.5``
+       :type sigma: float, optional
+       :param method: ``'savgol'`` (or ``'sg'``, a Savitzky-Golay filter, which keeps peaks and inversions sharper) or ``'gaussian'``. Default is ``'savgol'`` (``'gaussian'`` when only ``sigma`` is given)
+       :type method: str, optional
+       :param window_length: the number of levels in the Savitzky-Golay window (odd); larger values smooth more. Default is ``5``
+       :type window_length: int, optional
+       :param polyorder: the order of the polynomial fit in each Savitzky-Golay window; lower values smooth more. Default is ``2``
+       :type polyorder: int, optional
+       :return: the smoothed ``clean_data`` dictionary
+       :rtype: dict
+    """
     if method is None:
         method = 'gaussian' if sigma is not None else 'savgol'
     if method not in ('savgol', 'sg', 'gaussian'):

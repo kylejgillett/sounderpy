@@ -92,6 +92,15 @@ def test_modify_surface_keeps_the_input_and_its_units(clean_profile):
     np.testing.assert_allclose(clean_profile["T"].m, original["T"].m)
 
 
+def test_modify_surface_is_public_and_returns_a_profile_to_compare(clean_profile):
+    import sounderpy as spy
+    heated = spy.modify_surface(clean_profile, {"T": clean_profile["T"][0].to("degC").m + 3})
+    assert heated is not clean_profile and heated["site_info"] == clean_profile["site_info"]
+    assert set(heated) == set(clean_profile)                      # every key kept, so it works like any profile
+    assert heated["T"][0].to("degC").m == pytest.approx(clean_profile["T"][0].to("degC").m + 3)
+    assert sounding_params(heated).calc()["thermo"]["ml_lcl_z"] > sounding_params(clean_profile).calc()["thermo"]["ml_lcl_z"]
+
+
 @pytest.mark.parametrize(("modify_sfc", "message"), [
     ({"T": 30, "method": "mixed"}, "'method' must be 'mix', 'replace' or 'blend'"),
     ({"T": 30, "method": "blend", "depth": 0}, "'depth' must be a height in m above 0"),

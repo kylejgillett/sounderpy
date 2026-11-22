@@ -49,7 +49,18 @@ def check_latlon(meta_data_dict):
 def from_cm1(filename, meta_data_dict):
 
     '''
-        process a cm1 input_sounding file for sounderpy
+        make a SounderPy clean_data profile from a CM1 input_sounding file
+
+        params
+            > filename: str, path to a CM1 input_sounding file (heights AGL)
+            > meta_data_dict: dict of metadata for the profile:
+                'latlon'      [lat, lon] of the profile, required
+                'elev'        surface elevation in m, which turns the AGL heights into MSL; without it the
+                              surface is placed at 0 m, with a warning
+                'top_title', 'left_title', 'right_title'   plot titles, optional
+
+        returns
+            > clean_data dict of p, z, T, Td, u, v, site_info, and titles
     '''
 
 

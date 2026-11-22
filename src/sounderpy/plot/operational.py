@@ -14,7 +14,7 @@
         composites:          https://sounderpy.app/docs/reference/plottingdata.html#building-composite-soundings
         VAD hodographs:      https://sounderpy.app/docs/reference/plottingdata.html#building-vad-hodographs
         winter soundings:    https://sounderpy.app/docs/tutorials/winter_soundings.html
-        map insets & radar:  https://sounderpy.app/docs/reference/plottingdata.html#radar-logic
+        map insets & radar:  https://sounderpy.app/docs/reference/plotsettings.html#map-radar
         custom map data:     https://sounderpy.app/docs/tutorials/custom_map_data.html
 
     References:
@@ -226,7 +226,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     '''
     SounderPy 'Special Parcels Logic' using Amelia Urquhart's ecape_parcels library: https://github.com/a-urq/ecape-parcel-py
     
-    Docs: https://sounderpy.app/docs/reference/plottingdata.html#parcel-logic
+    Docs: https://sounderpy.app/docs/reference/plotsettings.html#parcel-logic
     '''
 
     # user-requested special parcels
@@ -410,7 +410,9 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     elapsed_time = time.time() - st
     print('    > RUNTIME:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
     
-    return plt
+    # the figure, and its panels for drawing on: a MetPy SkewT, a MetPy Hodograph, and the map's cartopy axes
+    axes = {"skewt": skew, "hodograph": hodo, **({"map": map_ax} if map_zoom > 0 else {})}
+    return fig, axes
 #########################################################################
 
 
@@ -629,7 +631,9 @@ def __winter_sounding(clean_data, color_blind, dark_mode, storm_motion='right_mo
     print('    > COMPLETE --------')
     print('    > RUNTIME:', time.strftime("%H:%M:%S", time.gmtime(time.time() - st)))
 
-    return plt
+    # the figure, and its panels for drawing on: a MetPy SkewT, a MetPy Hodograph, and the map's cartopy axes
+    axes = {"skewt": skew, "hodograph": hodo, **({"map": map_ax} if map_zoom > 0 else {})}
+    return fig, axes
 #########################################################################
 
 
@@ -752,7 +756,9 @@ def _build_hodograph_figure(snd_params, site_data, titles, dark_mode, storm_moti
     elapsed_time = time.time() - st
     print('    > RUNTIME:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
 
-    return plt
+    # the figure, and its panels for drawing on: a MetPy Hodograph, and the map's cartopy axes
+    axes = {"hodograph": hodo, **({"map": map_ax} if has_map else {})}
+    return fig, axes
 
 
 
@@ -920,7 +926,9 @@ def __composite_sounding(data_list, shade_between, cmap, colors, linestyles, alp
     elapsed_time = time.time() - st
     print('    > RUNTIME:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
 
-    return plt
+    # the figure, and its panels for drawing on: a MetPy SkewT and a MetPy Hodograph (each only when drawn)
+    axes = {**({"skewt": skew} if show_skewt else {}), **({"hodograph": hodo} if show_hodograph else {})}
+    return fig, axes
 
 
 
