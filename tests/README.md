@@ -20,6 +20,7 @@ Everything runs offline on synthetic profiles unless you ask for live data.
 | `test_publication.py` | `build_publication_sounding`: panels, layouts, widths, options and their errors, the parameter table, map and radar, and the saved size |
 | `test_retrieval.py` | routing of the `get_*` functions, the RAOB/IGRA station list and lookup, surface observations, and live retrieval (`network`) |
 | `test_file_io.py` | SHARPpy and CSV files |
+| `test_readout.py` | web readout files (checked against the saved PNG's pixels), `apply_profile_edits`, and the EDITED PROFILE note |
 | `test_cli.py` | the command-line interface |
 
 Markers: `slow` renders a full figure; `network` contacts a live service and is skipped without `--network`.

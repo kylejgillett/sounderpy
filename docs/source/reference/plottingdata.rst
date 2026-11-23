@@ -72,7 +72,7 @@ Building Soundings
 
 While this function may appear complicated at first glance, there is actually only *one* required argument for this function (your sounding data: `clean_data`). The other arguments are simply optional settings for the plot!
 
-.. py:function:: spy.build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion='right_moving', special_parcels=None, radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None, show_theta=False, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_sounding', max_levels=250, ylim=None, theme=None, sr_hodo=False, mode='severe', show_obs=False, map_layers=None, map_label=None, return_fig=False)
+.. py:function:: spy.build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion='right_moving', special_parcels=None, radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None, show_theta=False, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_sounding', max_levels=250, ylim=None, theme=None, sr_hodo=False, mode='severe', show_obs=False, map_layers=None, map_label=None, return_fig=False, readout=False)
 
 
    Build a full sounding figure of SounderPy data
@@ -123,6 +123,8 @@ While this function may appear complicated at first glance, there is actually on
    :type map_label: str, optional, Default is ``None``.
    :param return_fig: return the figure instead of showing it, so you can draw on it or save it yourself. A figure that's saved and not returned is closed.
    :type return_fig: bool, optional, Default is ``False``.
+   :param readout: with ``save=True``, also write a readout file next to the figure (``kokc.png`` -> ``kokc.readout.json``) for hover readouts and profile editing on a web page. See :doc:`/reference/webreadouts`.
+   :type readout: bool, optional, Default is ``False``.
    :return: ``None``, or with ``return_fig=True``, ``(fig, axes)``: the Matplotlib figure, and a dict of its panels: ``'skewt'`` (a MetPy ``SkewT``), ``'hodograph'`` (a MetPy ``Hodograph``), and ``'map'`` (a cartopy ``GeoAxes``, when the map is drawn).
    :rtype: None or tuple
 
@@ -207,7 +209,7 @@ Building Hodographs
 
 Very similarly to soundings, we can use the simple ``spy.build_hodograph()`` function:
 
-.. py:function:: spy.build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr_hodo=False, modify_sfc=None, radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_hodograph', max_levels=250, theme=None, map_layers=None, map_label=None, return_fig=False)
+.. py:function:: spy.build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr_hodo=False, modify_sfc=None, radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_hodograph', max_levels=250, theme=None, map_layers=None, map_label=None, return_fig=False, readout=False)
 
 
    Build a hodograph figure of SounderPy data
@@ -246,6 +248,8 @@ Very similarly to soundings, we can use the simple ``spy.build_hodograph()`` fun
    :type map_label: str, optional, Default is ``None``.
    :param return_fig: return the figure instead of showing it, so you can draw on it or save it yourself. A figure that's saved and not returned is closed.
    :type return_fig: bool, optional, Default is ``False``.
+   :param readout: with ``save=True``, also write a readout file next to the figure (``kokc.png`` -> ``kokc.readout.json``) for hover readouts and profile editing on a web page. See :doc:`/reference/webreadouts`.
+   :type readout: bool, optional, Default is ``False``.
    :return: ``None``, or with ``return_fig=True``, ``(fig, axes)``: the Matplotlib figure, and a dict of its panels: ``'hodograph'`` (a MetPy ``Hodograph``) and ``'map'`` (a cartopy ``GeoAxes``, when the map is drawn).
    :rtype: None or tuple
 

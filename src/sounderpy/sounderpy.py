@@ -39,6 +39,7 @@ import matplotlib.pyplot as plt
 
 from .plot import __full_sounding, __winter_sounding, _resolve_sounding_mode, __full_hodograph, __composite_sounding, __vad_hodograph
 from .plot.components import _warn_unused_map_layers
+from .readout import readout_data, save_bbox, save_readout, saved_image_size
 from .calc import sounding_params
 from .data.model_data import fetch_model
 from .data.bufkit_data import fetch_bufkit
@@ -66,8 +67,16 @@ citation_text = f"""
 
 # save, show, or return a finished figure for the build_* functions. A saved figure is closed (unless it's returned),
 # so building figures in a loop doesn't fill up memory
-def _finish_figure(fig, axes, save, filename, return_fig):
-    if save:
+def _finish_figure(fig, axes, save, filename, return_fig, readout_source=None):
+    if readout_source is not None and not save:
+        warnings.warn("readout=True writes its file next to a saved figure; use save=True to get one.", Warning)
+    if save and readout_source is not None:
+        # the same image as bbox_inches='tight', with the region known so the readout can line up with it
+        bbox = save_bbox(fig)
+        fig.savefig(filename, bbox_inches=bbox)
+        path = save_readout(readout_data(fig, axes, readout_source, bbox, size=saved_image_size(filename)), filename)
+        print(f'    > READOUT SAVED: {path}')
+    elif save:
         fig.savefig(filename, bbox_inches='tight')
     if return_fig:
         return fig, axes
@@ -216,7 +225,7 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
 def build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion='right_moving',
                    special_parcels=None, radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None,
                    show_theta=False, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_sounding', max_levels=250, ylim=None, theme=None,
-                   sr_hodo=False, mode='severe', show_obs=False, map_layers=None, map_label=None, return_fig=False):
+                   sr_hodo=False, mode='severe', show_obs=False, map_layers=None, map_label=None, return_fig=False, readout=False):
     
     '''
     Build a full sounding figure of SounderPy data
@@ -267,6 +276,8 @@ def build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion=
     :type map_label: str, optional
     :param return_fig: whether to return the figure instead of showing it, so you can draw on it or save it yourself. A figure that's saved and not returned is closed. Default is ``False``.
     :type return_fig: bool, optional
+    :param readout: with ``save=True``, also write a readout file next to the figure (``kokc.png`` -> ``kokc.readout.json``) for interactive readouts and profile editing on a web page. See :doc:`webreadouts`. Default is ``False``.
+    :type readout: bool, optional
     :return: ``None``, or with ``return_fig=True``, ``(fig, axes)``: the Matplotlib figure, and a dict of its panels: ``'skewt'`` (a MetPy ``SkewT``), ``'hodograph'`` (a MetPy ``Hodograph``), and ``'map'`` (a cartopy ``GeoAxes``, when the map is drawn)
     :rtype: None or tuple
     '''
@@ -287,16 +298,16 @@ def build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion=
             warnings.warn(f"The winter sounding doesn't use {', '.join(ignored)}; ignoring {'it' if len(ignored) == 1 else 'them'}.", Warning)
 
         # build winter plot
-        fig, axes = __winter_sounding(clean_data, color_blind, dark_mode, storm_motion, radar, radar_time, map_zoom, modify_sfc, dpi, max_levels, ylim, theme, show_obs,
+        fig, axes, source = __winter_sounding(clean_data, color_blind, dark_mode, storm_motion, radar, radar_time, map_zoom, modify_sfc, dpi, max_levels, ylim, theme, show_obs,
                                 map_layers, map_label)
     else:
         if show_obs:
             # print warning for show_obs kwarg on a normal sounding
             warnings.warn("show_obs is only used by the winter sounding (mode='winter'); ignoring it.", Warning)
         # build normal severe sounding figure
-        fig, axes = __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, radar, radar_time, map_zoom, modify_sfc, show_theta, hodo_boundary, dpi, max_levels, ylim, theme, sr_hodo,
+        fig, axes, source = __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels, radar, radar_time, map_zoom, modify_sfc, show_theta, hodo_boundary, dpi, max_levels, ylim, theme, sr_hodo,
                               map_layers, map_label)
-    return _finish_figure(fig, axes, save, filename, return_fig)
+    return _finish_figure(fig, axes, save, filename, return_fig, source if readout else None)
 
 
 
@@ -308,7 +319,7 @@ def build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion=
 #########################################################################
 def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr_hodo=False, modify_sfc=None,
                     radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_hodograph', max_levels=250, theme=None,
-                    map_layers=None, map_label=None, return_fig=False):
+                    map_layers=None, map_label=None, return_fig=False, readout=False):
 
     '''
        Build a hodograph figure of SounderPy data
@@ -347,6 +358,8 @@ def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr
        :type map_label: str, optional
        :param return_fig: whether to return the figure instead of showing it, so you can draw on it or save it yourself. A figure that's saved and not returned is closed. Default is ``False``.
        :type return_fig: bool, optional
+       :param readout: with ``save=True``, also write a readout file next to the figure (``kokc.png`` -> ``kokc.readout.json``) for interactive readouts and profile editing on a web page. See :doc:`webreadouts`. Default is ``False``.
+       :type readout: bool, optional
        :return: ``None``, or with ``return_fig=True``, ``(fig, axes)``: the Matplotlib figure, and a dict of its panels: ``'hodograph'`` (a MetPy ``Hodograph``) and ``'map'`` (a cartopy ``GeoAxes``, when the map is drawn)
        :rtype: None or tuple
     '''
@@ -357,9 +370,9 @@ def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr
     # map_layers & map_label need the map
     _warn_unused_map_layers(map_zoom, map_layers, map_label)
 
-    fig, axes = __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc, radar, radar_time, map_zoom, hodo_boundary, dpi, max_levels, theme,
+    fig, axes, source = __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc, radar, radar_time, map_zoom, hodo_boundary, dpi, max_levels, theme,
                            map_layers, map_label)
-    return _finish_figure(fig, axes, save, filename, return_fig)
+    return _finish_figure(fig, axes, save, filename, return_fig, source if readout else None)
 
 
 

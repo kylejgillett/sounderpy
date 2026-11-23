@@ -278,7 +278,8 @@ def test_freezing_drizzle_checks_include_lift_only_with_omega(winter_params_for)
     data = make_winter_profile("fzdz")
     data.pop("omega")
     without_omega = w._fzdz_lines(winter_params(data).calc()["winter"])
-    assert with_omega[0] == ("title", "FREEZING DRIZZLE", "HIGH")
+    # the title's last item is its readout tag
+    assert with_omega[0][:3] == ("title", "FREEZING DRIZZLE", "HIGH")
     assert [line[2] for line in with_omega if line[0] == "check"][-1] == "Lift in cloud"
     assert sum(line[0] == "check" for line in with_omega) == 5
     assert sum(line[0] == "check" for line in without_omega) == 4
@@ -286,7 +287,7 @@ def test_freezing_drizzle_checks_include_lift_only_with_omega(winter_params_for)
 
 def test_freezing_fog_checks(winter_params_for):
     lines = w._fzfg_lines(winter_params_for("fzra")["winter"])
-    assert lines[0] == ("title", "FREEZING FOG", "MOD")
+    assert lines[0][:3] == ("title", "FREEZING FOG", "MOD")
     assert [line[2] for line in lines if line[0] == "check"] == ["Sfc T < 0°C", "Sfc RH ≥ 95%", "10 m wind ≤ 6 kt", "Sfc inversion"]
 
 

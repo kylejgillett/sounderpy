@@ -81,6 +81,7 @@ exclude = [
     "rs_reflectivity.txt",
     "nexrad_locations.txt",
     "RAOB-STATIONS-MASTER.csv",
+    "web/sounderpy-readout.js",
 ]
 
 "sounderpy.plot" = [

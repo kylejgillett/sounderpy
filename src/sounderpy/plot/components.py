@@ -432,11 +432,21 @@ def _plot_skewt_surface_annotations(skew, data, theme, modify_sfc=None, original
                           fontsize=FONT_SIZES["annotation_large"], color=color, weight="bold", alpha=0.9, ha="center", zorder=10,
                           bbox=dict(facecolor=theme["background"], edgecolor="none", alpha=0.6, pad=1.5))
     # what the user changed, in a box at the top middle of the skew-t
+    notes = []
     if modify_sfc:
-        skew.ax.text(0.5, 0.985, f"* MODIFIED SURFACE\n{_describe_surface_modification(original, modify_sfc)}",
-                     transform=skew.ax.transAxes, ha="center", va="top", fontsize=FONT_SIZES["note"], color=theme["text"],
-                     weight="bold", linespacing=1.3, zorder=12,
-                     bbox=dict(facecolor=theme["background"], edgecolor=theme["text"], linewidth=0.8, alpha=0.85, boxstyle="round,pad=0.4"))
+        notes.append(f"* MODIFIED SURFACE\n{_describe_surface_modification(original, modify_sfc)}")
+    edited = data.get("site_info", {}).get("edited")
+    if edited:
+        notes.append(f"EDITED PROFILE\n{edited}")
+    if notes:
+        _plot_edit_note(skew.ax, "\n".join(notes), theme)
+
+
+def _plot_edit_note(ax, text, theme, x=0.5, y=0.985):
+    """A boxed note at the top middle of a panel saying how the user changed the profile."""
+    ax.text(x, y, text, transform=ax.transAxes, ha="center", va="top", fontsize=FONT_SIZES["note"], color=theme["text"],
+            weight="bold", linespacing=1.3, zorder=12,
+            bbox=dict(facecolor=theme["background"], edgecolor=theme["text"], linewidth=0.8, alpha=0.85, boxstyle="round,pad=0.4"))
 
 
 
@@ -1318,6 +1328,14 @@ def _setup_height_panel(ax, theme, x_limits, x_ticks, x_tick_labels, z_limits=(0
     return ax
 
 
+def _tag_height_panel(ax, title, z, series):
+    """Record what a height panel shows, so a readout file can read it at any height.
+
+    ``series`` is a list of ``(label, unit, values)``, each with one value per height in ``z`` (m AGL).
+    """
+    ax.sounderpy_panel = {"title": " ".join(title.split()), "z": z, "series": series}
+
+
 def _add_panel_title(ax, title, theme, fontsize=FONT_SIZES["label"]):
     """Add a title at the top of a panel."""
     ax.text(0.5, 0.98, title, transform=ax.transAxes, ha="center", va="top", weight="bold", color=theme["text"], fontsize=fontsize, alpha=0.9)
@@ -1359,6 +1377,7 @@ def _plot_streamwiseness_panel(ax, snd_params, theme,
 
     _plot_low_level_trace(ax, kinem["swv_perc"], snd_params["intrp"]["zINTRP"], theme)
     _shade_eil(ax, snd_params, theme)
+    _tag_height_panel(ax, "Streamwiseness of ω", snd_params["intrp"]["zINTRP"], [("Streamwiseness", "%", kinem["swv_perc"])])
 
     return ax
 
@@ -1387,6 +1406,7 @@ def _plot_vorticity_panel(ax, snd_params, theme):
     ax.fill_betweenx(z, total, where=total > streamwise, color=theme["text"], linewidth=0, alpha=0.1)
     ax.fill_betweenx(z, streamwise, color=streamwise_color, linewidth=0, alpha=0.2)
     _shade_eil(ax, snd_params, theme)
+    _tag_height_panel(ax, "Total & streamwise ω", z, [("Total ω", "/s", total), ("Streamwise ω", "/s", streamwise)])
 
     return ax
 
@@ -1412,6 +1432,7 @@ def _plot_sr_wind_panel(ax, snd_params, theme, label_x=35):
 
     _plot_low_level_trace(ax, kinem["srw"], snd_params["intrp"]["zINTRP"], theme, alpha=0.8)
     _shade_eil(ax, snd_params, theme)
+    _tag_height_panel(ax, "Storm-relative wind", snd_params["intrp"]["zINTRP"], [("SR wind", "kt", kinem["srw"])])
 
     return ax
 
@@ -1435,6 +1456,7 @@ def _plot_theta_panel(ax, snd_params, theme):
     ax.plot(theta, z, color=theme["theta"], linewidth=3.5, alpha=0.5)
     ax.plot(theta_e, z, color=theme["theta"], linewidth=3.5, alpha=0.8)
     _shade_eil(ax, snd_params, theme)
+    _tag_height_panel(ax, "θ & θe", z, [("θ", "K", theta), ("θe", "K", theta_e)])
 
     return ax
 
@@ -1454,6 +1476,7 @@ def _plot_wind_component_panel(ax, snd_params, theme):
 
     ax.plot(intrp["uINTRP"], z, color=theme["u_wind"], linewidth=3.5, alpha=0.5)
     ax.plot(intrp["vINTRP"], z, color=theme["v_wind"], linewidth=3.5, alpha=0.8)
+    _tag_height_panel(ax, "Wind components", z, [("U", "kt", intrp["uINTRP"]), ("V", "kt", intrp["vINTRP"])])
 
     return ax
 
@@ -1478,6 +1501,7 @@ def _plot_cape_cin_panel(ax, snd_params, theme):
     cape_ax.fill_betweenx(z, intrp["cape_profileINTRP"], color=theme["cape"], linewidth=0, alpha=0.8)
     # title sits on the top axis so the fills can't cover it
     _add_panel_title(cape_ax, "Stepwise\n CIN & CAPE\n (J/kg)", theme)
+    _tag_height_panel(ax, "Stepwise CIN & CAPE", z, [("CAPE", "J/kg", intrp["cape_profileINTRP"]), ("CIN", "J/kg", intrp["cin_profileINTRP"])])
 
     return ax
 
@@ -1502,9 +1526,16 @@ def _setup_text_box(ax, theme):
     return ax
 
 
-def _draw_text(ax, x, y, text, color, fontsize=FONT_SIZES["table"], alpha=1, ha="left"):
-    """Draw bold text at a position in a text box."""
-    ax.text(x, y, text, color=color, fontsize=fontsize, alpha=alpha, ha=ha, weight="bold")
+def _draw_text(ax, x, y, text, color, fontsize=FONT_SIZES["table"], alpha=1, ha="left", param=None):
+    """Draw bold text at a position in a text box.
+
+    ``param`` names the parameter a value shows, such as ``'thermo.mlcape'`` (group.key in sounding_params), so a
+    readout file can describe it.
+    """
+    artist = ax.text(x, y, text, color=color, fontsize=fontsize, alpha=alpha, ha=ha, weight="bold")
+    if param is not None:
+        artist.sounderpy_param = param
+    return artist
 
 
 def _fit_text(text, target, max_width):
@@ -1532,8 +1563,9 @@ def _draw_table(ax, table, layout, theme, fontsize=FONT_SIZES["table"]):
 
     for y, row in zip(layout["rows_y"], table["rows"]):
         _draw_text(ax, layout["label_x"], y, row["label"], theme["text"], fontsize, layout.get("label_alpha", 1))
-        for x, value in zip(layout["columns"], row["values"]):
-            _draw_text(ax, x, y, value, row["color"], fontsize, row.get("alpha", 1))
+        params = row.get("params", [None] * len(row["values"]))
+        for x, value, param in zip(layout["columns"], row["values"], params):
+            _draw_text(ax, x, y, value, row["color"], fontsize, row.get("alpha", 1), param=param)
 
 
 
@@ -1553,7 +1585,9 @@ def _get_parcel_table(snd_params, theme, energy_units=True):
                 _format_value(thermo[f'{key}6cape'], jkg),
                 _format_value(thermo[f'{key}3cape'], jkg),
                 _format_value(thermo[f'{key}cin'], f" {UNIT_JKG}"),
-                _format_value(thermo[f'{key}_lcl_z'], f" {UNIT_M}")]}
+                _format_value(thermo[f'{key}_lcl_z'], f" {UNIT_M}")],
+             "params": [f"thermo.{key}_ecape", f"thermo.{key}cape", f"thermo.{key}6cape", f"thermo.{key}3cape",
+                        f"thermo.{key}cin", f"thermo.{key}_lcl_z"]}
             for label, key in parcels]
 
     return {"headers": ["SR-ECAPE", "CAPE", "6CAPE", "3CAPE", "CIN", "LCL"], "rows": rows}
@@ -1569,7 +1603,8 @@ def _get_moisture_table(snd_params, theme):
 
     rows = [{"label": label, "color": theme["moisture"], "alpha": alpha, "values": [
                 _format_value(general[f'rh_{key}'], "%"),
-                _format_value(general[f'w_{key}'], UNIT_GKG, decimals=1)]}
+                _format_value(general[f'w_{key}'], UNIT_GKG, decimals=1)],
+             "params": [f"general.rh_{key}", f"general.w_{key}"]}
             for label, key, alpha in layers]
 
     return {"headers": ["RelHum", "MixRto"], "rows": rows}
@@ -1593,7 +1628,8 @@ def _get_kinematics_table(snd_params, theme, include_eil=True, layer_colors=Fals
                 _format_value(kinem[f'srh_{key}'], UNIT_M2S2),
                 _format_value(kinem[f'srw_{key}'], UNIT_KT),
                 _format_value(kinem[f'swv_perc_{key}'], "%"),
-                _format_value(kinem[f'swv_{key}'], UNIT_PER_S, decimals=3)]}
+                _format_value(kinem[f'swv_{key}'], UNIT_PER_S, decimals=3)],
+             "params": [f"kinem.shear_{key}", f"kinem.srh_{key}", f"kinem.srw_{key}", f"kinem.swv_perc_{key}", f"kinem.swv_{key}"]}
             for (label, key), color in zip(layers, colors)]
 
     return {"headers": ["BWD", "SRH", "SRW", "SWω%", "SWω"], "rows": rows}
@@ -1615,24 +1651,24 @@ def _plot_thermo_table(ax, snd_params, theme):
     # bottom: DCIN  | 0-3 km, 3-6 km, & 700-500 hPa lapse rates
     top, bottom = 0.310, 0.175
     _draw_text(ax, 0.015, top, "DCAPE:", text)
-    _draw_text(ax, 0.126, top, _format_value(thermo['dcape'], f" {UNIT_JKG}"), theme["cool"], alpha=0.7)
+    _draw_text(ax, 0.126, top, _format_value(thermo['dcape'], f" {UNIT_JKG}"), theme["cool"], alpha=0.7, param="thermo.dcape")
     _draw_text(ax, 0.015, bottom, "DCIN:", text)
-    _draw_text(ax, 0.126, bottom, _format_value(thermo['dcin'], f" {UNIT_JKG}"), theme["cool"], alpha=0.7)
+    _draw_text(ax, 0.126, bottom, _format_value(thermo['dcin'], f" {UNIT_JKG}"), theme["cool"], alpha=0.7, param="thermo.dcin")
 
     _draw_text(ax, 0.300, top, "MUNCAPE:", text)
-    _draw_text(ax, 0.450, top, _format_value(thermo['mu_ncape'], decimals=1), theme["ncape"], alpha=0.7)
+    _draw_text(ax, 0.450, top, _format_value(thermo['mu_ncape'], decimals=1), theme["ncape"], alpha=0.7, param="thermo.mu_ncape")
     _draw_text(ax, 0.510, top, "EIL:", text)
-    _draw_text(ax, 0.575, top, _format_value(snd_params["kinem"]['eil_depth'], f" {UNIT_M}"), theme["eil"])
+    _draw_text(ax, 0.575, top, _format_value(snd_params["kinem"]['eil_depth'], f" {UNIT_M}"), theme["eil"], param="kinem.eil_depth")
     for x, label, key in ((0.720, "KI:", 'k_index'), (0.855, "TT:", 't_totals')):
         value_text = _format_value(thermo[key], decimals=0)
         _draw_text(ax, x, top, label, text)
-        _draw_text(ax, x + 0.060, top, value_text.removesuffix(".0"), theme["ncape"], alpha=0.7)
+        _draw_text(ax, x + 0.060, top, value_text.removesuffix(".0"), theme["ncape"], alpha=0.7, param=f"thermo.{key}")
 
     for x, value_x, label, key in ((0.300, 0.380, "Γ₀₋₃:", 'lr_03km'),
                                    (0.510, 0.590, "Γ₃₋₆:", 'lr_36km'),
                                    (0.720, 0.855, "Γ₇₀₀₋₅₀₀:", 'lr_75')):
         _draw_text(ax, x, bottom, label, text, fontsize=FONT_SIZES["table_large"])
-        _draw_text(ax, value_x, bottom, _format_value(thermo[key], f" {UNIT_LAPSE}", decimals=1), theme["lapse"])
+        _draw_text(ax, value_x, bottom, _format_value(thermo[key], f" {UNIT_LAPSE}", decimals=1), theme["lapse"], param=f"thermo.{key}")
 
     # composite indices, set off below a divider
     ax.axhline(0.125, xmin=0.012, xmax=0.988, color=text, alpha=0.45, linewidth=1.2)
@@ -1650,21 +1686,21 @@ def _draw_composite_row(ax, snd_params, theme, y, x0, width, columns=6, row_gap=
     """
 
     thermo, kinem = snd_params["thermo"], snd_params["kinem"]
-    composites = (("SCP", kinem['eil_scp'], 1, theme["composite_index"]),
-                  ("STP", kinem['eil_stp'], 1, theme["composite_index"]),
-                  ("EHI₀₋₁", kinem['ehi_0_to_1000'], 1, theme["ehi"]),
-                  ("EHI₀₋₃", kinem['ehi_0_to_3000'], 1, theme["ehi"]),
-                  ("SHIP", thermo['ship'], 1, theme["composite_index"]),
-                  ("MLBRN", thermo['ml_brn'], 0, theme["composite_index"]))
+    composites = (("SCP", kinem['eil_scp'], 1, theme["composite_index"], "kinem.eil_scp"),
+                  ("STP", kinem['eil_stp'], 1, theme["composite_index"], "kinem.eil_stp"),
+                  ("EHI₀₋₁", kinem['ehi_0_to_1000'], 1, theme["ehi"], "kinem.ehi_0_to_1000"),
+                  ("EHI₀₋₃", kinem['ehi_0_to_3000'], 1, theme["ehi"], "kinem.ehi_0_to_3000"),
+                  ("SHIP", thermo['ship'], 1, theme["composite_index"], "thermo.ship"),
+                  ("MLBRN", thermo['ml_brn'], 0, theme["composite_index"], "thermo.ml_brn"))
     # each label/value pair is centered in one of six equal slots
     slot = width / columns
-    for i, (label, value, decimals, color) in enumerate(composites):
+    for i, (label, value, decimals, color, param) in enumerate(composites):
         row, col = divmod(i, columns)
         x, row_y = x0 + (col + 0.5) * slot, y - row * row_gap
         value_text = _format_value(value, decimals=decimals)
         _draw_text(ax, x + label_gap, row_y, label, theme["text"], fontsize=fontsize, ha="right")
         _draw_text(ax, x + value_gap, row_y, value_text.removesuffix(".0") if decimals == 0 else value_text, color,
-                   fontsize=fontsize)
+                   fontsize=fontsize, param=param)
 
 
 
@@ -1684,13 +1720,13 @@ def _plot_moisture_table(ax, snd_params, theme):
 
     # single-level values
     _draw_text(ax, 0.067, 0.122, "PWAT:", text, fontsize=FONT_SIZES["label"])
-    _draw_text(ax, 0.400, 0.122, _format_value(general['pwat'], "in", decimals=3), theme["moisture_strong"], fontsize=FONT_SIZES["label"], ha="center")
+    _draw_text(ax, 0.400, 0.122, _format_value(general['pwat'], "in", decimals=3), theme["moisture_strong"], fontsize=FONT_SIZES["label"], ha="center", param="general.pwat")
     _draw_text(ax, 0.633, 0.122, "WB:", text, fontsize=FONT_SIZES["label"], ha="center")
-    _draw_text(ax, 0.833, 0.122, _format_value(general['wet_bulb'][0], UNIT_DEGC), theme["moisture_strong"], fontsize=FONT_SIZES["label"], ha="center")
+    _draw_text(ax, 0.833, 0.122, _format_value(general['wet_bulb'][0], UNIT_DEGC), theme["moisture_strong"], fontsize=FONT_SIZES["label"], ha="center", param="general.wet_bulb[0]")
     _draw_text(ax, 0.067, 0.035, "FRZ:", text, fontsize=FONT_SIZES["label"])
-    _draw_text(ax, 0.400, 0.035, _format_value(general['frz_pt_z'], "m"), theme["cool"], fontsize=FONT_SIZES["label"], ha="center")
+    _draw_text(ax, 0.400, 0.035, _format_value(general['frz_pt_z'], "m"), theme["cool"], fontsize=FONT_SIZES["label"], ha="center", param="general.frz_pt_z")
     _draw_text(ax, 0.633, 0.035, "WB0:", text, fontsize=FONT_SIZES["label"], ha="center")
-    _draw_text(ax, 0.840, 0.035, _format_value(general['wb_frz_pt_z'], "m"), theme["cool"], fontsize=FONT_SIZES["label"], ha="center")
+    _draw_text(ax, 0.840, 0.035, _format_value(general['wb_frz_pt_z'], "m"), theme["cool"], fontsize=FONT_SIZES["label"], ha="center", param="general.wb_frz_pt_z")
 
     return ax
 
@@ -1714,27 +1750,27 @@ def _plot_indices_box(ax, snd_params, theme):
     text = theme["text"]
     _setup_text_box(ax, theme)
 
-    def _draw_stat(x, y_label, y_value, label, value, color):
+    def _draw_stat(x, y_label, y_value, label, value, color, param=None):
         """Draw a centered label with its value below it."""
         _draw_text(ax, x, y_label, label, text, fontsize=FONT_SIZES["tick"], alpha=0.9, ha="center")
-        _draw_text(ax, x, y_value, value, color, fontsize=FONT_SIZES["tick"], alpha=0.9, ha="center")
+        _draw_text(ax, x, y_value, value, color, fontsize=FONT_SIZES["tick"], alpha=0.9, ha="center", param=param)
 
     # SRH and bulk shear (composite indices are in the thermo table)
-    _draw_stat(0.30, 0.885, 0.780, "  0-3ₖₘ SRH,", _format_value(kinem['srh_0_to_3000'], UNIT_M2S2), theme["kinematics_strong"])
-    _draw_stat(0.73, 0.885, 0.780, "BWD", _format_value(kinem['shear_0_to_3000'], UNIT_KT), theme["kinematics_strong"])
-    _draw_stat(0.30, 0.664, 0.559, "  0-6ₖₘ SRH,", _format_value(kinem['srh_0_to_6000'], UNIT_M2S2), theme["kinematics_strong"])
-    _draw_stat(0.73, 0.664, 0.559, "BWD", _format_value(kinem['shear_0_to_6000'], UNIT_KT), theme["kinematics_strong"])
+    _draw_stat(0.30, 0.885, 0.780, "  0-3ₖₘ SRH,", _format_value(kinem['srh_0_to_3000'], UNIT_M2S2), theme["kinematics_strong"], param="kinem.srh_0_to_3000")
+    _draw_stat(0.73, 0.885, 0.780, "BWD", _format_value(kinem['shear_0_to_3000'], UNIT_KT), theme["kinematics_strong"], param="kinem.shear_0_to_3000")
+    _draw_stat(0.30, 0.664, 0.559, "  0-6ₖₘ SRH,", _format_value(kinem['srh_0_to_6000'], UNIT_M2S2), theme["kinematics_strong"], param="kinem.srh_0_to_6000")
+    _draw_stat(0.73, 0.664, 0.559, "BWD", _format_value(kinem['shear_0_to_6000'], UNIT_KT), theme["kinematics_strong"], param="kinem.shear_0_to_6000")
 
     # MCS wind potential: 0-10 km bulk shear and the low-to-midlevel theta-e difference (Cohen et al. 2007)
-    _draw_stat(0.30, 0.443, 0.338, "  0-10ₖₘ BWD,", _format_value(kinem['shear_0_to_10000'], UNIT_KT), theme["kinematics_strong"])
-    _draw_stat(0.73, 0.443, 0.338, "Δθₑ", _format_value(thermo['thetae_diff'], " K"), theme["cool"])
+    _draw_stat(0.30, 0.443, 0.338, "  0-10ₖₘ BWD,", _format_value(kinem['shear_0_to_10000'], UNIT_KT), theme["kinematics_strong"], param="kinem.shear_0_to_10000")
+    _draw_stat(0.73, 0.443, 0.338, "Δθₑ", _format_value(thermo['thetae_diff'], " K"), theme["cool"], param="thermo.thetae_diff")
 
     # the PBL depth and mean (transport) wind, named for the direction it blows from
     pbl_u, pbl_v = kinem['mean_wind_pbl']
     pbl_wind = (MISSING_VALUE if ma.is_masked(pbl_u) or ma.is_masked(pbl_v) or not np.isfinite([pbl_u, pbl_v]).all()
                 else f"{wind_to_dir(-pbl_u, -pbl_v)} {mag(np.hypot(pbl_u, pbl_v))}kt")
-    _draw_stat(0.30, 0.222, 0.117, "  PBL depth,", _format_value(thermo['pbl_depth'], "m"), theme["lapse"])
-    _draw_stat(0.73, 0.222, 0.117, "wind", pbl_wind, theme["kinematics_strong"])
+    _draw_stat(0.30, 0.222, 0.117, "  PBL depth,", _format_value(thermo['pbl_depth'], "m"), theme["lapse"], param="thermo.pbl_depth")
+    _draw_stat(0.73, 0.222, 0.117, "wind", pbl_wind, theme["kinematics_strong"], param="kinem.mean_wind_pbl")
 
     return ax
 
@@ -1769,7 +1805,7 @@ def _plot_hodograph_parameter_box(ax, snd_params, theme):
                                    (0.345, 0.451, "Γ₃₋₆:", 'lr_36km'),
                                    (0.640, 0.830, "Γ₇₀₀₋₅₀₀:", 'lr_75')):
         _draw_text(ax, x, 0.180, label, text, fontsize=FONT_SIZES["table_large"])
-        _draw_text(ax, value_x, 0.180, _format_value(thermo[key], f" {UNIT_LAPSE}", decimals=1), theme["lapse"])
+        _draw_text(ax, value_x, 0.180, _format_value(thermo[key], f" {UNIT_LAPSE}", decimals=1), theme["lapse"], param=f"thermo.{key}")
 
     # composite indices, set off below a divider, in two rows of three
     ax.axhline(0.150, xmin=0.020, xmax=0.980, color=text, alpha=0.45, linewidth=1.2)

@@ -56,7 +56,7 @@ from ..utils import wind_to_dir
 from .style import (FONT_SIZES, HAZARD_LEVEL_COLORS, HAZARDS_LAYOUT, LAYER_TABLE_LAYOUT, PANEL_TOP,
                     PARCEL_TABLE_LAYOUT, PTYPE_COLORS, PTYPE_HEADER_LAYOUT, PTYPE_NAMES, SHARPPY_TO_CODE,
                     SKEWT_COLUMNS, SKY_COVER_CODES, SNOW_GROWTH_LAYOUT, STATION_BOX, UNIT_JKG, WINDS_BOX_LAYOUT)
-from .components import _add_skewt_layer_line, _draw_text, _format_value, _setup_height_panel, _setup_text_box
+from .components import _add_skewt_layer_line, _draw_text, _format_value, _setup_height_panel, _setup_text_box, _tag_height_panel
 
 
 
@@ -90,6 +90,24 @@ def _wind_text(u, v):
     if ma.is_masked(u) or ma.is_masked(v) or not np.isfinite([float(u), float(v)]).all():
         return "NA"
     return f"{wind_to_dir(-float(u), -float(v))} @ {np.hypot(u, v):.0f} kt"
+
+
+# the layer table's short names, spelled out for readouts
+LAYER_NAMES = {"Melt": "Melting layer", "Sfc melt": "Surface melting layer", "Refreeze": "Refreezing layer",
+               "Sfc refrz": "Surface refreezing layer", "Cold aloft": "Cold layer aloft", "Sfc cold": "Surface cold layer"}
+
+
+def _param(key, **info):
+    """A readout tag for a value in a table: its key (``winter.*`` keys are in winter_params), plus what a readout
+    file can't look up from the key alone, such as a value, its layer, or a name."""
+    return {"key": key, **info} if info else key
+
+
+def _z_layer(bottom, top):
+    """A layer (m AGL) for a readout tag, or None when either end is missing."""
+    if ma.is_masked(bottom) or ma.is_masked(top) or not np.isfinite([bottom, top]).all():
+        return None
+    return {"z": [float(bottom), float(top)]}
 
 
 def _slr_text(winter):
@@ -324,16 +342,18 @@ def _plot_winds_box(ax, winter, theme):
     layout = WINDS_BOX_LAYOUT
     _setup_text_box(ax, theme)
     _section_title(ax, "WINDS", theme, layout["label_x"], layout["title_y"])
-    rows = [("10 m:", _wind_text(*winter["sfc_wind_uv"])),
-            ("PBL mean:", _wind_text(*winter["mean_wind_pbl"])),
-            ("DGZ mean:", _wind_text(*winter["mean_wind_dgz"])),
-            ("Max 0-2 km:", f"{_fmt(winter['max_wind_0_to_2000'])} kt")]
+    rows = [("10 m:", _wind_text(*winter["sfc_wind_uv"]), "winter.sfc_wind_uv"),
+            ("PBL mean:", _wind_text(*winter["mean_wind_pbl"]), "winter.mean_wind_pbl"),
+            ("DGZ mean:", _wind_text(*winter["mean_wind_dgz"]), "winter.mean_wind_dgz"),
+            ("Max 0-2 km:", f"{_fmt(winter['max_wind_0_to_2000'])} kt", "winter.max_wind_0_to_2000")]
     # round(...) + 0 keeps a -0.4 °C from printing as "-0"
-    rows += [(f"{level} hPa:", f"{_wind_text(w['u'], w['v'])}, {round(w['T']) + 0:.0f}°C")
+    rows += [(f"{level} hPa:", f"{_wind_text(w['u'], w['v'])}, {round(w['T']) + 0:.0f}°C",
+              _param("winter.level_winds", name=f"{level} hPa wind", value=(w["u"], w["v"]), layer={"p": [float(level), float(level)]},
+                     extra=[["Temp", f"{w['T']:+.1f} °C"]]))
              for level, w in winter["level_winds"].items()]
-    for y, (label, value) in zip(np.linspace(layout["rows_top"], layout["rows_bottom"], len(rows)), rows):
+    for y, (label, value, param) in zip(np.linspace(layout["rows_top"], layout["rows_bottom"], len(rows)), rows):
         _draw_text(ax, layout["label_x"], y, label, theme["text"], fontsize=FONT_SIZES["label"], alpha=0.9)
-        _draw_text(ax, layout["value_x"], y, value, theme["kinematics_strong"], fontsize=FONT_SIZES["label"], ha="right")
+        _draw_text(ax, layout["value_x"], y, value, theme["kinematics_strong"], fontsize=FONT_SIZES["label"], ha="right", param=param)
     return ax
 
 
@@ -435,6 +455,7 @@ def _plot_temperature_panel(ax, winter, theme):
     ax.plot(T, z, color=theme["temperature"], linewidth=3)
     ax.plot(Tw, z, color=theme["wetbulb"], linewidth=2.5)
     _shade_dgz(ax, winter, theme)
+    _tag_height_panel(ax, "T & Tw", z, [("T", "°C", T), ("Tw", "°C", Tw)])
 
 
 def _plot_rh_panel(ax, winter, theme):
@@ -448,6 +469,7 @@ def _plot_rh_panel(ax, winter, theme):
     ax.plot(winter["rh"][sel], winter["z"][sel], color=theme["moisture"], linewidth=1.8, linestyle="--", alpha=0.8, zorder=3)
     ax.plot(np.clip(winter["rh_ice"][sel], 0, 125), winter["z"][sel], color=theme["rh_ice"], linewidth=3, zorder=4)
     _shade_dgz(ax, winter, theme)
+    _tag_height_panel(ax, "RHi & RH", winter["z"][sel], [("RH (ice)", "%", winter["rh_ice"][sel]), ("RH", "%", winter["rh"][sel])])
 
 
 def _plot_wind_panel(ax, winter, theme):
@@ -467,6 +489,7 @@ def _plot_wind_panel(ax, winter, theme):
     ax.barbs(np.full(levels.size, high * 0.83), levels, np.interp(levels, z, u), np.interp(levels, z, v),
              color=theme["text"], length=5.5, linewidth=1, zorder=4, clip_on=False)
     _shade_dgz(ax, winter, theme)
+    _tag_height_panel(ax, "Wind", z, [("Speed", "kt", speed)])
 
 
 def _plot_thetae_panel(ax, winter, theme):
@@ -477,6 +500,7 @@ def _plot_thetae_panel(ax, winter, theme):
     _setup_winter_panel(ax, theme, (low, high), np.linspace(low, high, 4)[1:-1].round(), "θe\n(K)")
     ax.plot(thetae, winter["z"][sel], color=theme["theta"], linewidth=2.5)
     _shade_dgz(ax, winter, theme)
+    _tag_height_panel(ax, "θe", winter["z"][sel], [("θe", "K", thetae)])
 
 
 
@@ -514,6 +538,12 @@ def _plot_ptype_header(ax, winter, theme):
                                             ha="center", va="baseline", transform=ax.transAxes), ax, max_width))
     # the two precip types (Bourgouin, SPC) share one size: the smaller of the two after fitting
     bourgouin, spc = texts[2], texts[4]
+    bourgouin.sounderpy_param = _param("winter.ptype", value=PTYPE_NAMES.get(winter["ptype"], winter["ptype"]).strip(),
+                                       extra=[["Why", str(winter.get("ptype_why", ""))]] if winter.get("ptype_why") else [])
+    spc.sounderpy_param = _param("winter.sharppy_ptype", value=sharppy.upper().strip())
+    if not ma.is_masked(winter["source_p"]):
+        texts[7].sounderpy_param = _param("winter.source_p", layer={"z_at": float(winter["source_z"])},
+                                          extra=[["Height", f"{winter['source_z']:.0f} m AGL"], ["Temp", f"{winter['source_T']:+.1f} °C"]])
     size = min(bourgouin.get_fontsize(), spc.get_fontsize())
     bourgouin.set_fontsize(size)
     spc.set_fontsize(size)
@@ -546,8 +576,14 @@ def _plot_layer_table(ax, winter, theme):
             name, color = ("Sfc refrz" if lyr["surface"] else "Refreeze"), theme["refreeze"]
         values = [name, f"{lyr['bottom']:.0f} m", f"{lyr['top']:.0f} m", f"{lyr['depth']:.0f} m",
                   f"{lyr['extreme']:+.1f}°C", f"{lyr['energy']:+.0f} J/kg"]
-        for x, value in zip(layout["columns"], values):
-            _draw_text(ax, x, y, value, color, fontsize=small)
+        layer = _z_layer(lyr["bottom"], lyr["top"])
+        name = LAYER_NAMES.get(name, name)
+        params = [_param("winter.layer.kind", name=name, value=f"{lyr['bottom']:.0f}-{lyr['top']:.0f} m AGL", layer=layer)]
+        params += [_param(f"winter.layer.{column}", name=f"{name}: {title}", value=lyr[column], layer=layer)
+                   for column, title in (("bottom", "base"), ("top", "top"), ("depth", "depth"),
+                                         ("extreme", "max/min Tw"), ("energy", "energy"))]
+        for x, value, param in zip(layout["columns"], values, params):
+            _draw_text(ax, x, y, value, color, fontsize=small, param=param)
 
 
 def _plot_parcel_table(ax, snd, theme):
@@ -564,9 +600,14 @@ def _plot_parcel_table(ax, snd, theme):
                   _format_value(thermo[f"{key}_lcl_z"], " m"),
                   _format_value(thermo[f"{key}_lfc_z"], " m") if has_cape else "NA",
                   _format_value(thermo[f"{key}_el_z"], " m") if has_cape else "NA"]
+        # without CAPE there's no LFC or EL (the table says NA)
+        no_level = dict(value=None, layer=None)
+        params = [f"thermo.{key}cape", f"thermo.{key}cin", f"thermo.{key}_lcl_z",
+                  f"thermo.{key}_lfc_z" if has_cape else _param(f"thermo.{key}_lfc_z", **no_level),
+                  f"thermo.{key}_el_z" if has_cape else _param(f"thermo.{key}_el_z", **no_level)]
         _draw_text(ax, layout["label_x"], y, f"{key.upper()}:", theme["text"])
-        for x, value in zip(layout["columns"], values):
-            _draw_text(ax, x, y, value, theme["parcel"][key])
+        for x, value, param in zip(layout["columns"], values, params):
+            _draw_text(ax, x, y, value, theme["parcel"][key], param=param)
 
 
 def _plot_precip_table(ax, winter, snd, theme):
@@ -584,23 +625,29 @@ def _plot_snow_growth_table(ax, winter, snd, theme):
     _setup_text_box(ax, theme)
     _section_title(ax, "SNOW GROWTH (DGZ)", theme, layout["label_x"], layout["title_y"])
     has_dgz = not ma.is_masked(winter["dgz_depth"])
-    rows = [("DGZ:", f"{winter['dgz_z'][0] / 1000:.1f}-{winter['dgz_z'][1] / 1000:.1f} km" if has_dgz else "NA", theme["dgz"]),
-            ("Depth:", _fmt(winter["dgz_depth"], " m"), theme["dgz"]),
-            ("RH / RHᵢ:", f"{winter['dgz_rh']:.0f} / {winter['dgz_rh_ice']:.0f}%" if not ma.is_masked(winter["dgz_rh"]) else "NA", theme["rh_ice"]),
-            ("Omega:", _fmt_signed(winter["dgz_omega"], " μb/s"), theme["ascent"]),
-            ("OPRH:", _fmt(winter["oprh"], decimals=2), theme["composite_index"]),
-            ("Kuchera SLR:", _slr_text(winter), PTYPE_COLORS["SN"]),
-            ("PWAT:", _format_value(snd["general"]["pwat"], " in", decimals=2), theme["moisture_strong"])]
-    for y, (label, value, color) in zip(np.linspace(layout["rows_top"], layout["rows_bottom"], len(rows)), rows):
+    dgz = _z_layer(*winter["dgz_z"]) if has_dgz else None
+    has_rh = not ma.is_masked(winter["dgz_rh"])
+    rows = [("DGZ:", f"{winter['dgz_z'][0] / 1000:.1f}-{winter['dgz_z'][1] / 1000:.1f} km" if has_dgz else "NA", theme["dgz"],
+             _param("winter.dgz_z", value=f"{winter['dgz_z'][0]:.0f}-{winter['dgz_z'][1]:.0f} m AGL" if has_dgz else None, layer=dgz)),
+            ("Depth:", _fmt(winter["dgz_depth"], " m"), theme["dgz"], _param("winter.dgz_depth", layer=dgz)),
+            ("RH / RHᵢ:", f"{winter['dgz_rh']:.0f} / {winter['dgz_rh_ice']:.0f}%" if has_rh else "NA", theme["rh_ice"],
+             _param("winter.dgz_rh_ice", value=f"RH {winter['dgz_rh']:.0f}% · RHi {winter['dgz_rh_ice']:.0f}%" if has_rh else None, layer=dgz)),
+            ("Omega:", _fmt_signed(winter["dgz_omega"], " μb/s"), theme["ascent"], _param("winter.dgz_omega", layer=dgz)),
+            ("OPRH:", _fmt(winter["oprh"], decimals=2), theme["composite_index"], _param("winter.oprh", layer=dgz)),
+            ("Kuchera SLR:", _slr_text(winter), PTYPE_COLORS["SN"], "winter.slr"),
+            ("PWAT:", _format_value(snd["general"]["pwat"], " in", decimals=2), theme["moisture_strong"], "general.pwat")]
+    for y, (label, value, color, param) in zip(np.linspace(layout["rows_top"], layout["rows_bottom"], len(rows)), rows):
         _draw_text(ax, layout["label_x"], y, label, theme["text"], fontsize=FONT_SIZES["annotation"], alpha=0.9)
-        _draw_text(ax, layout["value_x"], y, value, color, fontsize=FONT_SIZES["annotation"], ha="right")
+        _draw_text(ax, layout["value_x"], y, value, color, fontsize=FONT_SIZES["annotation"], ha="right", param=param)
 
     ax.axhline(layout["divider_y"], xmin=0.03, xmax=0.97, color=theme["text"], alpha=0.25, linewidth=1)
     for y, label, key, color in zip(layout["levels_y"], ("FRZ:", "WB0:"), ("frz_pts_z", "wb_frz_pts_z"), (theme["frz"], theme["wb_frz"])):
         _draw_text(ax, layout["label_x"], y, label, theme["text"], fontsize=FONT_SIZES["annotation"], alpha=0.9)
         levels = ", ".join(f"{height:.0f} m" for height in winter[key]) or "NA"
-        _fit_width(ax.text(layout["value_x"], y, levels, color=color, fontsize=FONT_SIZES["annotation"], weight="bold",
-                           ha="right", transform=ax.transAxes), ax, layout["levels_width"])
+        text = _fit_width(ax.text(layout["value_x"], y, levels, color=color, fontsize=FONT_SIZES["annotation"], weight="bold",
+                                  ha="right", transform=ax.transAxes), ax, layout["levels_width"])
+        if len(winter[key]):
+            text.sounderpy_param = _param(f"winter.{key}", value=f"{levels} AGL", layer={"z_at": [float(h) for h in winter[key]]})
     return ax
 
 
@@ -621,14 +668,19 @@ def _draw_even_column(ax, lines, theme, x_left, x_right):
         if kind == "title":
             _section_title(ax, line[0], theme, x_left, y)
             if line[1]:
-                _draw_text(ax, x_right, y, line[1], HAZARD_LEVEL_COLORS[line[1]], fontsize=FONT_SIZES["label"], ha="right")
+                _draw_text(ax, x_right, y, line[1], HAZARD_LEVEL_COLORS[line[1]], fontsize=FONT_SIZES["label"], ha="right",
+                           param=line[2] if len(line) > 2 else None)
         elif kind == "row":
             _draw_text(ax, x_left, y, line[0], theme["text"], fontsize=FONT_SIZES["label"], alpha=0.9)
-            _draw_text(ax, x_right, y, line[1], line[2], fontsize=FONT_SIZES["label"], ha="right")
+            _draw_text(ax, x_right, y, line[1], line[2], fontsize=FONT_SIZES["label"], ha="right", param=line[3] if len(line) > 3 else None)
         elif kind == "check":
-            met, label, value = line
+            met, label, value = line[:3]
+            param = line[3] if len(line) > 3 else None
+            if isinstance(param, dict):
+                param = {**param, "name": param.get("name", label),
+                         "extra": [*param.get("extra", []), ["Check", f"{label}: {'met' if met else 'not met'}"]]}
             _draw_text(ax, x_left, y, label, theme["text"], fontsize=small, alpha=0.85)
-            _draw_text(ax, x_right - 0.04, y, value, theme["text"], fontsize=small, alpha=0.85, ha="right")
+            _draw_text(ax, x_right - 0.04, y, value, theme["text"], fontsize=small, alpha=0.85, ha="right", param=param)
             _draw_text(ax, x_right, y, "✓" if met else "✗", theme["moisture"] if met else theme["warm"],
                        fontsize=FONT_SIZES["label"], ha="right")
         elif kind == "note":
@@ -644,12 +696,15 @@ def _fzfg_lines(winter):
     """Freezing fog hazard lines: its level, four checks, and the source of its criteria."""
     fzfg = winter["fzfg"]
     ok, values = fzfg["ok"], fzfg["values"]
-    return [("title", "FREEZING FOG", fzfg["level"]),
-            ("check", ok["cold"], "Sfc T < 0°C", f"{values['cold']:+.1f}°C"),
-            ("check", ok["sat"], "Sfc RH ≥ 95%", _fmt(values['sat'], "%")),
-            ("check", ok["calm"], "10 m wind ≤ 6 kt", _fmt(values['calm'], " kt")),
+    check = lambda name, value, units, **info: _param("winter.fzfg_check", name=f"Freezing fog: {name}", value=value, units=units, **info)
+    return [("title", "FREEZING FOG", fzfg["level"], _param("winter.fzfg", value=fzfg["level"])),
+            ("check", ok["cold"], "Sfc T < 0°C", f"{values['cold']:+.1f}°C", check("surface temperature", values["cold"], "°C")),
+            ("check", ok["sat"], "Sfc RH ≥ 95%", _fmt(values['sat'], "%"), check("surface RH", values["sat"], "%")),
+            ("check", ok["calm"], "10 m wind ≤ 6 kt", _fmt(values['calm'], " kt"), check("10 m wind speed", values["calm"], "kt")),
             ("check", ok["inv"], "Sfc inversion",
-             f"{_fmt_signed(values['inv'], '°C', 0)} / {winter['sfc_inv_depth'] / 1000:.1f} km" if values["inv"] > 0 else "none"),
+             f"{_fmt_signed(values['inv'], '°C', 0)} / {winter['sfc_inv_depth'] / 1000:.1f} km" if values["inv"] > 0 else "none",
+             check("surface inversion strength", values["inv"], "°C",
+                   layer=_z_layer(0, winter["sfc_inv_depth"]) if values["inv"] > 0 else None)),
             ("note", "Based on Gultepe et al. 2007", 1)]
 
 
@@ -658,13 +713,20 @@ def _fzdz_lines(winter):
     fzdz = winter["fzdz"]
     ok, cloud = fzdz["ok"], fzdz["cloud"]
     missing = "none" if cloud is None else "NA"
-    lines = [("title", "FREEZING DRIZZLE", fzdz["level"]),
-             ("check", ok["sfc"], "Sfc Tw ≤ 0°C", f"{winter['sfc_Tw']:+.1f}°C"),
-             ("check", ok["top"], "Cloud top > −10°C", f"{cloud['top_T']:+.0f}°C" if cloud else missing),
-             ("check", ok["dry"], "Dry 1 km above", f"RHᵢ {fzdz['rh_above']:.0f}%" if np.isfinite(fzdz["rh_above"]) else missing),
-             ("check", ok["deep"], "Cloud ≥ 500 m deep", f"{fzdz['depth']:.0f} m" if np.isfinite(fzdz["depth"]) else missing)]
+    cloud_layer = _z_layer(cloud["bottom"], cloud["top"]) if cloud else None
+    above_layer = _z_layer(cloud["top"], cloud["top"] + 1000) if cloud else None
+    check = lambda name, value, units, layer=None: _param("winter.fzdz_check", name=f"Freezing drizzle: {name}", value=value, units=units, layer=layer)
+    lines = [("title", "FREEZING DRIZZLE", fzdz["level"], _param("winter.fzdz", value=fzdz["level"], layer=cloud_layer)),
+             ("check", ok["sfc"], "Sfc Tw ≤ 0°C", f"{winter['sfc_Tw']:+.1f}°C", check("surface wet-bulb", winter["sfc_Tw"], "°C")),
+             ("check", ok["top"], "Cloud top > −10°C", f"{cloud['top_T']:+.0f}°C" if cloud else missing,
+              check("cloud-top temperature", cloud["top_T"] if cloud else None, "°C", cloud_layer)),
+             ("check", ok["dry"], "Dry 1 km above", f"RHᵢ {fzdz['rh_above']:.0f}%" if np.isfinite(fzdz["rh_above"]) else missing,
+              check("RH over ice in the 1 km above the cloud", fzdz["rh_above"], "%", above_layer)),
+             ("check", ok["deep"], "Cloud ≥ 500 m deep", f"{fzdz['depth']:.0f} m" if np.isfinite(fzdz["depth"]) else missing,
+              check("cloud depth", fzdz["depth"], "m", cloud_layer))]
     if fzdz["lift"] is not None:
-        lines.append(("check", fzdz["lift"], "Lift in cloud", f"ω {fzdz['omega']:+.1f}" if np.isfinite(fzdz["omega"]) else missing))
+        lines.append(("check", fzdz["lift"], "Lift in cloud", f"ω {fzdz['omega']:+.1f}" if np.isfinite(fzdz["omega"]) else missing,
+                      check("mean omega in the cloud", fzdz["omega"], "µb/s", cloud_layer)))
     lines.append(("note", "Based on Huffman & Norman 1988,\nRauber et al. 2000 & McDonough et al. 2004", 2))
     return lines
 
@@ -675,17 +737,17 @@ def _plot_hazards_table(ax, winter, theme):
     _setup_text_box(ax, theme)
 
     left = [("title", "COLD", None),
-            ("row", "Sfc T:", _fmt(winter["sfc_T_F"], "°F"), theme["temperature"]),
-            ("row", "Wind chill:", _fmt(winter["wind_chill"], "°F"), theme["cool"]),
-            ("row", "10 m wind:", _wind_text(*winter["sfc_wind_uv"]), theme["kinematics_strong"]),
+            ("row", "Sfc T:", _fmt(winter["sfc_T_F"], "°F"), theme["temperature"], "winter.sfc_T_F"),
+            ("row", "Wind chill:", _fmt(winter["wind_chill"], "°F"), theme["cool"], "winter.wind_chill"),
+            ("row", "10 m wind:", _wind_text(*winter["sfc_wind_uv"]), theme["kinematics_strong"], "winter.sfc_wind_uv"),
             ("title", "BLOWING SNOW", None),
-            ("row", "PBL gust:", f"{_fmt(winter['gust_potential'])} kt", theme["kinematics_strong"]),
-            ("row", "PBL mean:", _wind_text(*winter["mean_wind_pbl"]), theme["kinematics_strong"]),
-            ("row", "PBL depth:", _fmt(winter["pbl_depth"], " m"), theme["lapse"]),
-            ("row", "PBL LR:", _fmt(winter["pbl_lapse_rate"], "°C/km", 1), theme["lapse"]),
+            ("row", "PBL gust:", f"{_fmt(winter['gust_potential'])} kt", theme["kinematics_strong"], "winter.gust_potential"),
+            ("row", "PBL mean:", _wind_text(*winter["mean_wind_pbl"]), theme["kinematics_strong"], "winter.mean_wind_pbl"),
+            ("row", "PBL depth:", _fmt(winter["pbl_depth"], " m"), theme["lapse"], "winter.pbl_depth"),
+            ("row", "PBL LR:", _fmt(winter["pbl_lapse_rate"], "°C/km", 1), theme["lapse"], "winter.pbl_lapse_rate"),
             ("note", "Based on Sczepanski et al. 2026", 1),
             ("title", "OTHER", None),
-            ("row", "Snow squall:", _fmt(winter["snsq"], decimals=1), theme["composite_index"])]
+            ("row", "Snow squall:", _fmt(winter["snsq"], decimals=1), theme["composite_index"], "winter.snsq")]
     _draw_even_column(ax, left, theme, *layout["left"])
     ax.plot([layout["divider_x"]] * 2, [0.03, 0.97], color=theme["text"], alpha=0.25, linewidth=1, transform=ax.transAxes)
     _draw_even_column(ax, _fzfg_lines(winter) + [("gap",)] + _fzdz_lines(winter), theme, *layout["right"])

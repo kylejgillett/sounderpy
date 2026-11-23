@@ -32,6 +32,8 @@ from .data.file_io import from_imet
 from .data.file_io import from_windsond
 from .profile_utils import merge_profiles
 from .profile_utils import smooth_profile
+from .readout import apply_profile_edits
+from .readout import readout_js_path
 from .calc import sounding_params
 from .calc import vad_params
 from .calc_winter import winter_params

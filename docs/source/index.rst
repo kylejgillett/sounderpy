@@ -300,6 +300,7 @@ Directory
    reference/plottingdata
    reference/plotsettings
    reference/publicationfigures
+   reference/webreadouts
    reference/helpertools
    reference/cli
    reference/references

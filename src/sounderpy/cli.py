@@ -134,7 +134,7 @@ def _nonnegative_int(value: str) -> int:
 
 # plotting options, and the defaults of those left as None in the parser so the CLI can tell whether they were given
 PLOT_OPTIONS = ("plot_file", "dark_mode", "map_zoom", "dpi", "color_blind", "show_theta", "storm_relative", "obs",
-                "radar", "radar_time", "parcels", "background_parcels")
+                "radar", "radar_time", "parcels", "background_parcels", "readout")
 SOUNDING_ONLY_OPTIONS = ("color_blind", "show_theta", "obs", "parcels", "background_parcels")
 # severe sounding options the winter sounding doesn't use
 SEVERE_ONLY_OPTIONS = ("show_theta", "storm_relative", "parcels", "background_parcels")
@@ -293,6 +293,8 @@ def _validate_options(args: argparse.Namespace) -> None:
             raise CLIError("--obs only applies to winter soundings; add --mode winter or --mode auto")
         if args.map_zoom == 0 and (_given(args, "radar") or _given(args, "radar_time")):
             raise CLIError(f"{_flag('radar' if _given(args, 'radar') else 'radar_time')} needs the map, which --map-zoom 0 hides")
+        if args.readout and not args.plot_file:
+            raise CLIError("--readout writes its file next to the saved plot; add --plot-file")
         if args.plot_file:
             args.plot_file = _plot_path(args.plot_file)
         elif args.json:
@@ -528,6 +530,7 @@ def _plot_profile(data: dict[str, Any], args: argparse.Namespace) -> None:
         "modify_sfc": args.modify_sfc,
         "radar": args.radar,
         "radar_time": args.radar_time,
+        "readout": args.readout,
     }
 
     if args.plot == "sounding":
@@ -713,6 +716,11 @@ def _add_profile_output_options(parser: argparse.ArgumentParser) -> None:
         "--dpi",
         type=_positive_int,
         help="Plot resolution in dots per inch. Default: 100.",
+    )
+    plot.add_argument(
+        "--readout",
+        action="store_true",
+        help="Also write a readout file next to --plot-file (NAME.readout.json) for hover readouts and profile editing on a web page.",
     )
     plot.add_argument(
         "--color-blind",

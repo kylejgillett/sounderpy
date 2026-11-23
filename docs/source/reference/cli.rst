@@ -489,6 +489,18 @@ The output resolution can be changed with ``--dpi``:
        --dpi 200 \
        --plot-file dtx_sounding.png
 
+**Web Readouts**
+
+``--readout`` also writes a readout file next to the plot (``dtx_sounding.readout.json``) for hover readouts and
+profile editing on a web page. See :doc:`/reference/webreadouts`.
+
+.. code-block:: bash
+
+   sounderpy obs DTX 2024-05-21 00 \
+       --plot sounding \
+       --plot-file dtx_sounding.png \
+       --readout
+
 **Winter Sounding**
 
 ``--mode`` chooses the sounding plot: ``severe`` (the default), ``winter``, or

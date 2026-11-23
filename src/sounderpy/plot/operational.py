@@ -127,6 +127,7 @@ from .components import (_clip_skewt_text,
                          _plot_wind_component_panel,
                          _plot_wind_parameter_box,
                          _prepare_hodograph_data,
+                         _plot_edit_note,
                          _prepare_sounding_data,
                          _setup_hodograph,
                          _setup_map_inset,
@@ -411,7 +412,10 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
     
     # the figure, and its panels for drawing on: a MetPy SkewT, a MetPy Hodograph, and the map's cartopy axes
     axes = {"skewt": skew, "hodograph": hodo, **({"map": map_ax} if map_zoom > 0 else {})}
-    return fig, axes
+    # what was plotted, for a readout file
+    hodo_offset = (snd_params["kinem"]["sm_u"], snd_params["kinem"]["sm_v"]) if sr_hodo else (0.0, 0.0)
+    source = {"kind": "sounding", "data": sounding_data, "params": snd_params, "hodo_offset": hodo_offset}
+    return fig, axes, source
 #########################################################################
 
 
@@ -632,7 +636,9 @@ def __winter_sounding(clean_data, color_blind, dark_mode, storm_motion='right_mo
 
     # the figure, and its panels for drawing on: a MetPy SkewT, a MetPy Hodograph, and the map's cartopy axes
     axes = {"skewt": skew, "hodograph": hodo, **({"map": map_ax} if map_zoom > 0 else {})}
-    return fig, axes
+    # what was plotted, for a readout file
+    source = {"kind": "winter", "data": sounding_data, "params": snd_params, "hodo_offset": (0.0, 0.0)}
+    return fig, axes, source
 #########################################################################
 
 
@@ -692,6 +698,10 @@ def _build_hodograph_figure(snd_params, site_data, titles, dark_mode, storm_moti
         _plot_hodograph_sm_vector(hodo, hodo_params, theme)
     _plot_hodograph_motion_readout(hodo, snd_params, storm_motion, theme, x=0.015, y=0.985, fontsize=FONT_SIZES["note"])
     _plot_hodograph_srh(hodo, hodo_params, theme, layer="auto")
+    # a profile edited in the browser says so
+    edited = site_data.get("site_info", {}).get("edited")
+    if edited:
+        _plot_edit_note(hodo.ax, f"EDITED PROFILE\n{edited}", theme)
 
     if hodo_boundary is not None:
         _plot_hodograph_boundary(hodo, hodo_boundary, hodo_params, theme, show_mw_vector=True, show_lm_vector=True)
@@ -757,7 +767,9 @@ def _build_hodograph_figure(snd_params, site_data, titles, dark_mode, storm_moti
 
     # the figure, and its panels for drawing on: a MetPy Hodograph, and the map's cartopy axes
     axes = {"hodograph": hodo, **({"map": map_ax} if has_map else {})}
-    return fig, axes
+    # the storm motion a storm-relative hodograph is shifted by, for a readout file
+    hodo_offset = (snd_params["kinem"]["sm_u"], snd_params["kinem"]["sm_v"]) if sr_hodo else (0.0, 0.0)
+    return fig, axes, hodo_offset
 
 
 
@@ -771,8 +783,11 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc,
     # calculate other sounding parameters using SounderPy Calc
     snd_params = sounding_params(sounding_data, storm_motion, include_all_parcels=True, parcel_depth=STABILITY_PANEL_DEPTH).calc()
 
-    return _build_hodograph_figure(snd_params, sounding_data, clean_data["titles"], dark_mode, storm_motion, sr_hodo,
-                                   radar, radar_time, map_zoom, hodo_boundary, dpi, theme_overrides, map_layers, map_label)
+    fig, axes, hodo_offset = _build_hodograph_figure(snd_params, sounding_data, clean_data["titles"], dark_mode, storm_motion, sr_hodo,
+                                                     radar, radar_time, map_zoom, hodo_boundary, dpi, theme_overrides, map_layers, map_label)
+    # what was plotted, for a readout file
+    source = {"kind": "hodograph", "data": sounding_data, "params": snd_params, "hodo_offset": hodo_offset}
+    return fig, axes, source
 
 
 
@@ -949,5 +964,6 @@ def __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo, radar='mosaic', 
               "left_title": f"VALID: {valid[1]}-{valid[2]}-{valid[0]} {valid[3]}Z",
               "right_title": f"{site['site-id']} - {site['site-name']} | {site['site-latlon'][0]}, {site['site-latlon'][1]}"}
 
-    return _build_hodograph_figure({"kinem": kinem, "intrp": intrp}, vad_data, titles, dark_mode, storm_motion, sr_hodo,
-                                   radar, radar_time, map_zoom, hodo_boundary, dpi, theme_overrides, map_layers, map_label)
+    fig, axes, _ = _build_hodograph_figure({"kinem": kinem, "intrp": intrp}, vad_data, titles, dark_mode, storm_motion, sr_hodo,
+                                           radar, radar_time, map_zoom, hodo_boundary, dpi, theme_overrides, map_layers, map_label)
+    return fig, axes
