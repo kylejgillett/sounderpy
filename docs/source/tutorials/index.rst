@@ -24,6 +24,7 @@ and workflow tutorials.
    parcel_settings
    hodograph_options
    data_sources
+   profile_tools
    composite_soundings
    exporting_data
    cli_workflows
@@ -76,6 +77,12 @@ custom storm motion, and hodograph boundary overlays.
 Retrieve RAOB, RAP/RUC, BUFKIT, and ACARS profiles and understand the common
 ``clean_data`` structure that allows the same plotting and analysis tools to
 work across different sources.
+
+🧰 Profile Tools & Parameters
+-----------------------------
+
+Calculate and look up sounding parameters, follow them through every hour of a
+forecast, and modify, smooth, or merge profiles.
 
 📚 Composite Soundings
 ----------------------

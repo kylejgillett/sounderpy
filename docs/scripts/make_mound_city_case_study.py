@@ -48,6 +48,9 @@ import numpy.ma as ma
 
 import sounderpy as spy
 
+# each profile is downloaded once per run, then copied for every figure that uses it
+from profile_cache import get_acars_profile, get_bufkit_data, get_model_data, get_obs_data, summary
+
 
 # Resolved from this file, so the script works from any directory.
 DOCS_DIR = Path(__file__).resolve().parent.parent
@@ -116,14 +119,14 @@ def get_profiles() -> dict[str, dict]:
     profiles: dict[str, dict] = {}
 
     banner("RETRIEVING 12Z ABR OBSERVATION")
-    profiles["abr_12z"] = spy.get_obs_data(
+    profiles["abr_12z"] = get_obs_data(
         "KABR",
         "2024", "08", "28", "12",
         hush=True,
     )
 
     banner("RETRIEVING 00Z ABR OBSERVATION")
-    profiles["abr_00z"] = spy.get_obs_data(
+    profiles["abr_00z"] = get_obs_data(
         "KABR",
         "2024", "08", "29", "00",
         hush=True,
@@ -131,7 +134,7 @@ def get_profiles() -> dict[str, dict]:
 
     banner("RETRIEVING 12Z HRRR F13 KMBG FORECAST")
     try:
-        profiles["hrrr_f13"] = spy.get_bufkit_data(
+        profiles["hrrr_f13"] = get_bufkit_data(
             "hrrr",
             "KMBG",
             13,
@@ -145,7 +148,7 @@ def get_profiles() -> dict[str, dict]:
         )
         print(f"             {type(exc).__name__}: {exc}")
 
-        profiles["hrrr_f13"] = spy.get_bufkit_data(
+        profiles["hrrr_f13"] = get_bufkit_data(
             "hrrr",
             "KABR",
             13,
@@ -154,7 +157,7 @@ def get_profiles() -> dict[str, dict]:
         )
 
     banner("RETRIEVING 01Z RAP ANALYSIS NEAR MOUND CITY")
-    profiles["rap_01z"] = spy.get_model_data(
+    profiles["rap_01z"] = get_model_data(
         "rap-ruc",
         EVENT_LATLON,
         "2024", "08", "29", "01",
@@ -426,6 +429,7 @@ def main() -> int:
     banner("CASE STUDY COMPLETE")
     print(out.resolve())
 
+    print(summary())
     return 0
 
 

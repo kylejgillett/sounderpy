@@ -272,7 +272,9 @@ The values on the figure are available as a dictionary with
    params['winter']['ptype']
    params['winter']['dgz_depth']
 
-See :doc:`/reference/helpertools` for details.
+Every ``winter`` value, with its units and source, is listed under
+:ref:`Winter parameters <params-winter>` on the Parameters & References page. See
+:doc:`/reference/helpertools` for the function itself.
 
 
 ***************************************************************

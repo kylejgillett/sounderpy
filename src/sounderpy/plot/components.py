@@ -40,10 +40,7 @@ from metpy.plots import SkewT, Hodograph, USCOUNTIES
 # MATPLOTLIB OPERATIONS
 import matplotlib.lines as mlines
 import matplotlib.pyplot as plt
-from matplotlib.patches import Patch, Rectangle
-from matplotlib.collections import Collection
-from matplotlib.lines import Line2D
-from matplotlib.text import Text
+from matplotlib.patches import Rectangle
 
 # NUMPY OPERATIONS
 import numpy as np
@@ -75,7 +72,6 @@ from .style import (FONT_SIZES,
                     KINEMATICS_TABLE_LAYOUT,
                     MISSING_VALUE,
                     MOISTURE_TABLE_LAYOUT,
-                    SKEWT_BOTTOM_PRESSURE,
                     THERMO_TABLE_LAYOUT,
                     UNIT_DEGC,
                     UNIT_GKG,
@@ -227,27 +223,6 @@ def _style_axis(ax, theme):
     ax.set_facecolor(theme["background"])
     for spine in ax.spines.values():
         spine.set_color(theme["border"])
-
-
-def _scale_figure(fig, font_scale=1, line_scale=1):
-    """Resize every font and line on a finished figure."""
-
-    if font_scale <= 0 or line_scale <= 0:
-        raise ValueError(f"'font_scale' and 'line_scale' must be above 0. Got: {font_scale}, {line_scale}")
-    if font_scale == 1 and line_scale == 1:
-        return
-
-    # ticks and legends are only complete once the figure has been laid out
-    fig.draw_without_rendering()
-
-    for artist in {id(artist): artist for artist in fig.findobj()}.values():
-        if isinstance(artist, Text):
-            artist.set_fontsize(artist.get_fontsize() * font_scale)
-        elif isinstance(artist, Line2D):
-            artist.set_linewidth(artist.get_linewidth() * line_scale)
-            artist.set_markersize(artist.get_markersize() * line_scale)
-        elif isinstance(artist, (Collection, Patch)):
-            artist.set_linewidth(np.asarray(artist.get_linewidth()) * line_scale)
 
 
 def _get_skewt_temperature_bounds(surface_temperature):
@@ -1908,15 +1883,6 @@ def _get_composite_titles(profiles, style="full", sr_hodo=False):
     return {"top_title": top_titles[style],
             "left_title": subtitle,
             "right_title": locations[0] if len(locations) == 1 else f"{len(locations)} LOCATIONS"}
-
-
-def _get_pressure_limits(ptop):
-    """A skew-t's (bottom, top) pressure range from its top pressure (hPa); the bottom is always the same."""
-    if ptop is None:
-        return None
-    if isinstance(ptop, bool) or not isinstance(ptop, (int, float, np.integer, np.floating)) or not 0 < ptop < SKEWT_BOTTOM_PRESSURE:
-        raise ValueError(f"'ptop' must be a pressure in hPa between 0 and {SKEWT_BOTTOM_PRESSURE}, such as 700. Got: {ptop}")
-    return (SKEWT_BOTTOM_PRESSURE, ptop)
 
 
 def _validate_pressure_limits(ylim):

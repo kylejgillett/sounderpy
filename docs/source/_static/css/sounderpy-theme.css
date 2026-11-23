@@ -699,3 +699,23 @@ div.nbsphinx-gallery > a:hover {
     letter-spacing: 0.08em;
     text-transform: uppercase;
 }
+
+/* Parameters & References tables: the Read the Docs theme keeps table text on one line
+   (.wy-table-responsive table td), so the Source column ran off the page. Here the text wraps to fit,
+   the key names break at their commas and underscores, and each row starts at the top */
+.rst-content table.docutils.param-table,
+.wy-table-responsive table.param-table {
+    width: 100%;
+    table-layout: fixed;
+}
+.rst-content table.docutils.param-table td,
+.rst-content table.docutils.param-table th,
+.wy-table-responsive table.param-table td,
+.wy-table-responsive table.param-table th {
+    vertical-align: top !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+}
+.rst-content table.docutils.param-table td code {
+    white-space: normal;
+}

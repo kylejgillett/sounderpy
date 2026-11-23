@@ -130,7 +130,7 @@ WSR-88D site:
        data,
        radar="single",
        radar_time="sounding",
-       map_zoom=2,
+       map_zoom=1,
    )
 
 .. image:: /_static/gallery/map_radar/radar_single.png

@@ -93,7 +93,7 @@ Calculate everything ``sounding_params`` does, plus a fifth dictionary, ``winter
 
    .. py:function:: .calc()
 
-      :return: A dictionary with the keys ``general``, ``thermo``, ``kinem``, ``intrp``, and ``winter``, each holding a dictionary of profile data.
+      :return: A dictionary with the keys ``general``, ``thermo``, ``kinem``, ``intrp``, and ``winter``, each holding a dictionary of profile data. The ``winter`` values are listed under :ref:`Winter parameters <params-winter>`.
       :rtype: dict
 
 Example:
@@ -216,6 +216,8 @@ Example:
 
 .. code-block:: python
 
+    from datetime import datetime
+
     # load in some sounding data
     profile_a = spy.get_obs_data("OAX", "2014", "06", "16", "18")
     profile_b = spy.get_obs_data("OAX", "2014", "06", "17", "00")
@@ -240,7 +242,9 @@ Example:
                               'right_title': 'KOAX, OMAHA VALLEY, NE | 41.32, -96.37    '}
 
     # build a sounding
-    spy.build_sounding(merged_profile, radar=None, special_parcels='simple')
+    # the merged profile has no valid time, so give the radar one (profile_a's)
+    spy.build_sounding(merged_profile, radar='single', radar_time=datetime(2014, 6, 16, 18), map_zoom=1,
+                       special_parcels='simple')
 
 .. image:: /_static/images/merged_profile_example.png
    :width: 500 px
@@ -288,7 +292,7 @@ Here is an (extreme) example:
 
     smoothed_profile = spy.smooth_profile(clean_data, 3)                             # gaussian, sigma = 3
     # smoothed_profile = spy.smooth_profile(clean_data, window_length=11, polyorder=2)  # Savitzky-Golay
-    spy.build_sounding(smoothed_profile, radar=None, special_parcels='simple')
+    spy.build_sounding(smoothed_profile, radar='single', map_zoom=1, special_parcels='simple')
 
 .. image:: /_static/images/smoothed_profile_example.png
    :width: 500 px

@@ -141,8 +141,9 @@ class acars_data:
 
         # SEPARATE DATA BETWEEN HEADER AND ACTUAL DATA
         try:
-            raw_data = loadtxt(urlopen(profile_url).readlines()[6:-1], dtype='str', comments="%", unpack=True)
-            header = loadtxt(urlopen(profile_url).readlines()[0:3], dtype='str', comments="%", unpack=True)
+            lines = urlopen(profile_url).readlines()
+            raw_data = loadtxt(lines[6:-1], dtype='str', comments="%", unpack=True)
+            header = loadtxt(lines[0:3], dtype='str', comments="%", unpack=True)
         except HTTPError as err:
             if err.code == 404:
                 raise ValueError(f'Invalid profile OR profile does not exist: {acars_profile}. Try again with a profile ID from list_profiles() for the same date and hour') from None

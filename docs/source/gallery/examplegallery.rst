@@ -104,6 +104,8 @@ trace turns from green to blue), and with a custom ``theme``.
           spy.build_sounding(
               data,
               theme=pastoral,
+              radar='single',
+              map_zoom=1,
           )
 
 
@@ -475,6 +477,7 @@ The map inset with or without radar, a wider map extent, and single-site or mosa
               data,
               radar="single",
               radar_time="sounding",
+              map_zoom=1,
           )
 
      - .. image:: /_static/gallery/map_radar/radar_mosaic.png
@@ -572,7 +575,8 @@ Draw your own data on the map inset with ``map_layers``, or take the figure back
        .. code-block:: python
 
           fig, axes = spy.build_sounding(
-              data, return_fig=True)
+              data, radar='single', map_zoom=1,
+              return_fig=True)
           axes['skewt'].ax.axhspan(850, 700,
               color='gold', alpha=0.2, zorder=0)
           axes['skewt'].ax.text(-28, 775, 'EML',
@@ -812,6 +816,7 @@ profiles, sized for AMS and AGU journals. See :doc:`/tutorials/custom_figures`.
               panels=('skewt', 'hodograph',
                       'map', 'parameters'),
               map_radar='single',
+              map_zoom=1,
           )
 
      - .. image:: /_static/gallery/custom_figures/publication_radar.png
@@ -830,6 +835,7 @@ profiles, sized for AMS and AGU journals. See :doc:`/tutorials/custom_figures`.
               panels=('skewt', 'hodograph',
                       'map'),
               map_radar='single',
+              map_zoom=1,
           )
 
    * - .. image:: /_static/gallery/custom_figures/publication_style.png

@@ -24,22 +24,24 @@ and the references below for the parameters and data you use.
 Parameters
 ==========
 
+.. _params-severe:
+
+Severe & general (``sounding_params``)
+--------------------------------------
+
 ``spy.sounding_params(clean_data).calc()`` returns these values in four dictionaries: ``general``,
 ``thermo``, ``kinem``, and ``intrp`` (the profile interpolated to 100 m levels). See
 the :doc:`helper tools </reference/helpertools>` page.
 
-``spy.winter_params(clean_data).calc()`` adds a ``winter`` dictionary; its parameters and their sources
-are described in the :doc:`winter soundings tutorial </tutorials/winter_soundings>`, and listed under
-:ref:`ref-winter` below.
-
 General values (``general``)
-----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Surface values and values at every level of the profile.
 
 .. list-table::
    :header-rows: 1
-   :widths: 30 44 12 14
+   :widths: 26 44 12 18
+   :class: param-table
 
    * - Key(s)
      - Parameter
@@ -71,13 +73,14 @@ Surface values and values at every level of the profile.
      - SounderPy
 
 Thermodynamic values (``thermo``)
----------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ``sb_``, ``ml_``, and ``mu_`` are the surface-based, mixed-layer (lowest 100 hPa), and most-unstable parcels.
 
 .. list-table::
    :header-rows: 1
-   :widths: 30 44 12 14
+   :widths: 26 44 12 18
+   :class: param-table
 
    * - Key(s)
      - Parameter
@@ -149,13 +152,14 @@ Thermodynamic values (``thermo``)
      - :ref:`Blumberg et al. 2017 (SHARPpy) <ref-sharppy>`
 
 Kinematic values (``kinem``)
-----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Layers are in m AGL (``0_to_500`` is 0-500 m); ``eil`` is the effective inflow layer. Wind vectors are (u, v) in kt.
 
 .. list-table::
    :header-rows: 1
-   :widths: 30 44 12 14
+   :widths: 26 44 12 18
+   :class: param-table
 
    * - Key(s)
      - Parameter
@@ -217,6 +221,190 @@ Layers are in m AGL (``0_to_500`` is 0-500 m); ``eil`` is the effective inflow l
      - Energy-helicity index (MUCAPE with 0-1 and 0-3 km SRH)
      - 
      - :ref:`Hart and Korotky 1991 <ref-hart_korotky1991>`, :ref:`Davies 1993 <ref-davies1993>`
+
+.. _params-winter:
+
+Winter (``winter_params``)
+--------------------------
+
+``spy.winter_params(clean_data).calc()`` returns everything ``sounding_params`` does, plus a ``winter``
+dictionary with these values. The :doc:`winter soundings tutorial </tutorials/winter_soundings>` explains
+how they're used on the winter sounding.
+
+Precipitation type
+^^^^^^^^^^^^^^^^^^
+
+From the precipitation source down to the ground. Phases: ``SN`` snow, ``RA`` rain, ``DZ`` drizzle, ``PL`` ice pellets, ``FZ`` freezing.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 26 44 12 18
+   :class: param-table
+
+   * - Key(s)
+     - Parameter
+     - Units
+     - Source
+   * - ``source_p, source_z, source_T``
+     - Precipitation source: the highest saturated (RH > 80 %) 50 hPa layer below 5 km AGL, in rising air when omega is available
+     - hPa, m AGL, °C
+     - :ref:`Blumberg et al. 2017 (SHARPpy) <ref-sharppy>`
+   * - ``ptype, ptype_why, phase_trace``
+     - Precipitation type at the surface (``SN``, ``RA``, ``DZ``, ``PL``, ``FZRA``, ``FZDZ``, or a mix such as ``RA/SN`` or ``FZRA/PL``), why it started as it did, and each phase change on the way down (``z``, ``phase``, ``p``)
+     - m AGL, hPa
+     - :ref:`Huffman and Norman 1988 <ref-huffman1988>`, :ref:`Rauber et al. 2000 <ref-rauber2000>`, :ref:`Bourgouin 2000 <ref-bourgouin2000>`, :ref:`Birk et al. 2021 <ref-birk2021>`
+   * - ``layers``
+     - Melting (``warm``) and refreezing (``cold``) layers below the source, from the wet-bulb profile, top first: ``kind``, ``bottom``, ``top``, ``depth``, ``energy``, ``extreme`` (warmest or coldest), and ``surface``
+     - m AGL, J/kg, °C
+     - :ref:`Bourgouin 2000 <ref-bourgouin2000>`, :ref:`Birk et al. 2021 <ref-birk2021>`
+   * - ``sharppy_ptype``
+     - SPC best-guess precipitation type
+     - 
+     - :ref:`Blumberg et al. 2017 (SHARPpy) <ref-sharppy>`
+   * - ``frz_pts_z, wb_frz_pts_z``
+     - Every 0 °C crossing of the temperature and wet-bulb profiles
+     - m AGL
+     - SounderPy
+   * - ``warm_nose_T, warm_nose_p``
+     - Warmest temperature in an elevated warm layer (the warm nose), and its pressure
+     - °C, hPa
+     - SounderPy
+   * - ``Tw_levels``
+     - Wet-bulb temperature at each data level
+     - °C
+     - :ref:`May et al. 2023 (MetPy) <ref-metpy>`
+
+Clouds and snow growth
+^^^^^^^^^^^^^^^^^^^^^^
+
+RH over ice is used below 0 °C.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 26 44 12 18
+   :class: param-table
+
+   * - Key(s)
+     - Parameter
+     - Units
+     - Source
+   * - ``clouds, source_cloud``
+     - Cloud layers (RH over ice ≥ 90 %, at least 200 m deep, below 8 km): ``bottom``, ``top``, ``bottom_p``, ``top_p``, and ``top_T``; and the cloud holding the precipitation source
+     - m AGL, hPa, °C
+     - :ref:`Alduchov and Eskridge 1996 <ref-alduchov1996>`
+   * - ``icing_layers``
+     - Aircraft icing layers: 0 to -15 °C with RH ≥ 90 %, below 8 km
+     - m AGL, hPa
+     - :ref:`Bernstein et al. 2005 <ref-bernstein2005>`, :ref:`McDonough et al. 2004 <ref-mcdonough2004>`
+   * - ``dgz_z, dgz_p, dgz_depth``
+     - Dendritic growth zone (-12 to -17 °C, the layer in cloud): bottom and top, and depth
+     - m AGL, hPa, m
+     - :ref:`Takahashi et al. 1991 <ref-takahashi1991>`, :ref:`Libbrecht 2005 <ref-libbrecht2005>`
+   * - ``dgz_rh, dgz_rh_ice, dgz_omega, dgz_pw``
+     - Mean RH (over water and over ice), mean omega, and precipitable water in the DGZ
+     - %, %, µb/s, in
+     - :ref:`Alduchov and Eskridge 1996 <ref-alduchov1996>`, :ref:`Blumberg et al. 2017 (SHARPpy) <ref-sharppy>`
+   * - ``oprh``
+     - Omega x precipitable water x RH in the DGZ; negative favors snow
+     - µb/s · in
+     - :ref:`Blumberg et al. 2017 (SHARPpy) <ref-sharppy>`
+   * - ``slr``
+     - Kuchera snow-to-liquid ratio, when snow reaches the surface
+     - x:1
+     - :ref:`NOAA VLab (Kuchera) <ref-kuchera>`
+
+Surface and winter hazards
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The freezing fog and drizzle potentials are ingredient checks, not forecasts: ``HIGH`` when every check is met, ``MOD`` when one is short, ``LOW`` otherwise.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 26 44 12 18
+   :class: param-table
+
+   * - Key(s)
+     - Parameter
+     - Units
+     - Source
+   * - ``sfc_T_F, sfc_Tw``
+     - Surface temperature and wet-bulb temperature
+     - °F, °C
+     - SounderPy
+   * - ``sfc_wind_uv, sfc_wind_kt, sfc_wind_z``
+     - Surface wind: the lowest level with a wind, within 30 m of the surface
+     - kt, kt, m AGL
+     - SounderPy
+   * - ``wind_chill``
+     - Wind chill, at or below 50 °F with at least 3 mph of wind
+     - °F
+     - :ref:`NWS 2001 <ref-nws_windchill>`, :ref:`Osczevski and Bluestein 2005 <ref-osczevski2005>`
+   * - ``pbl_depth, pbl_lapse_rate``
+     - Planetary boundary layer depth and lapse rate (as in ``thermo``), for blowing snow and mixing
+     - m, °C/km
+     - :ref:`Blumberg et al. 2017 (SHARPpy) <ref-sharppy>`, :ref:`Sczepanski et al. 2024 <ref-sczepanski2026>`
+   * - ``gust_potential, max_wind_0_to_2000``
+     - Strongest wind between the surface and the PBL top (what mixing could bring down), and in the lowest 2 km
+     - kt
+     - SounderPy
+   * - ``sfc_inv_depth, sfc_inv_strength``
+     - Surface-based inversion: height of the warmest point in the lowest 1.5 km, and how much warmer it is than the surface (0 without one)
+     - m AGL, °C
+     - SounderPy
+   * - ``snsq``
+     - Snow squall parameter
+     - 
+     - :ref:`Banacos et al. 2014 <ref-banacos2014>`
+   * - ``fzfg``
+     - Freezing fog potential: ``level`` (``NONE``, ``LOW``, ``MOD``, ``HIGH``), the ingredient checks ``ok`` (``cold``, ``sat``, ``calm``, ``inv``), and their ``values``
+     - 
+     - :ref:`Gultepe et al. 2007 <ref-gultepe2007>`
+   * - ``fzdz``
+     - Freezing drizzle potential on the lowest cloud (base below 2 km): ``level``, the checks ``ok`` (``sfc``, ``top``, ``dry``, ``deep``), the ``cloud``, ``rh_above`` it, its ``depth``, mean ``omega``, and ``lift``
+     - %, m, µb/s
+     - :ref:`Huffman and Norman 1988 <ref-huffman1988>`, :ref:`Rauber et al. 2000 <ref-rauber2000>`, :ref:`McDonough et al. 2004 <ref-mcdonough2004>`
+
+Winds
+^^^^^
+
+Wind vectors are (u, v) in kt.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 26 44 12 18
+   :class: param-table
+
+   * - Key(s)
+     - Parameter
+     - Units
+     - Source
+   * - ``mean_wind_pbl, mean_wind_dgz``
+     - Mean wind (u, v) in the PBL and in the DGZ
+     - kt
+     - :ref:`Blumberg et al. 2017 (SHARPpy) <ref-sharppy>`
+   * - ``level_winds``
+     - Temperature and wind (``T``, ``u``, ``v``) at 850, 700, and 500 hPa, for each level above the surface
+     - °C, kt
+     - SounderPy
+
+Profiles
+^^^^^^^^
+
+For drawing your own panels.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 26 44 12 18
+   :class: param-table
+
+   * - Key(s)
+     - Parameter
+     - Units
+     - Source
+   * - ``z, T, Tw, rh, rh_ice, thetae, u, v, omega, has_omega``
+     - The profile on the 100 m grid that the side panels draw (``omega`` is NaN and ``has_omega`` False without omega data)
+     - m AGL, °C, %, K, kt, µb/s
+     - :ref:`Alduchov and Eskridge 1996 <ref-alduchov1996>`
 
 ***************************************************************
 

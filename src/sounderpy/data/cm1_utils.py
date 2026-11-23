@@ -29,12 +29,6 @@ from metpy.units import units
 #########################
 # EXCEPTION CHECKS
 #########################################################################
-def check_sfc_hgt(full_z):
-    if full_z[1] <= full_z[0]:
-        raise ValueError(
-            f"Invalid Surface Height Value | Check or add an elevation value in `meta_data_dict`. Value should be in meters (m).\nYour current elevation is {full_z[0]}m which is larger than the next height value of {full_z[1]}m")
-
-
 def check_latlon(meta_data_dict):
     if len(meta_data_dict.get('latlon') or []) < 2:
         raise ValueError(
@@ -148,7 +142,6 @@ def from_cm1(filename, meta_data_dict):
         # compute dewpoint from vapor pressure
         full_Td[k] = mpcalc.dewpoint(full_vp[k] * units.Pa).m
 
-    #check_sfc_hgt(full_z)
     check_latlon(meta_data_dict)
 
     #############################################

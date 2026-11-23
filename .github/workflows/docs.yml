@@ -30,9 +30,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # The branch whose docs are live on sounderpy.app/docs/. It must match DOCS_REF in the web app's deploy.yml.
-  # TEMPORARY: `development` until the 3.3.0 docs are ready; set both back to main when 3.3.0 is released.
-  LIVE_DOCS_BRANCH: development
+  LIVE_DOCS_BRANCH: main
 
 jobs:
   build:

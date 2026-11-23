@@ -11,6 +11,7 @@ docs/.buildinfo*
 docs/.nojekyll
 docs/objects.inv
 docs/searchindex.js
+docs/scripts/cached_profiles/
 docs/source/*.html
 docs/source/objects.inv
 docs/source/searchindex.js
@@ -26,6 +27,7 @@ notes.txt
 test-file
 scrap_306.ipynb
 CHANGELOG.md
+COMMANDS.md
 /test_data/wrfout_d01_2024-08-29_01_00_00
 make_docs_figures.ipynb
 .venv/

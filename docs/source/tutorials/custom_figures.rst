@@ -79,7 +79,7 @@ model forecasts, BUFKIT, ACARS, or your own data.
    fig, axes = spy.build_publication_sounding([raob, ashley], labels=['00Z ABR RAOB', 'HRRR F03 Ashley, ND'],
                                               panels=('skewt', 'hodograph', 'map', 'parameters'),
                                               parameters=('mllcl', 'mlcape', 'mlcin', 'mucape', 'srh01', 'srh03', 'bwd06', 'stp'),
-                                              map_radar='single')
+                                              map_radar='single', map_zoom=1)
 
    fig.savefig('abr_kasy_20240829.pdf')
 
@@ -255,7 +255,8 @@ county and state lines and no satellite image. Each profile needs its location i
 .. code-block:: python
 
    fig, axes = spy.build_publication_sounding([hrrr, rap], labels=['HRRR F03', 'RAP F03'],
-                                              panels=('skewt', 'hodograph', 'map'), map_radar='single')
+                                              panels=('skewt', 'hodograph', 'map'), map_radar='single',
+                                              map_zoom=1)
 
 .. image:: /_static/gallery/custom_figures/publication_radar.png
    :width: 100%

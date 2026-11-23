@@ -209,7 +209,7 @@ What's New in SounderPy 3.3.0
 
    .. rubric:: ❄️ NEW Winter Soundings
 
-   * ``build_sounding(mode='winter')`` draws a winter-focused sounding built around precipitation type, snow growth, and winter hazards. Setting ``mode='auto'`` will generate a winter figure when the surface wet-bulb is below 35°F, and a new ``show_obs=True`` kwarg adds the latest (nearest) surface observation to the figure (see the :doc:`winter soundings tutorial </tutorials/winter_soundings>`!).
+   * ``build_sounding(mode='winter')`` draws a winter-focused sounding built around precipitation type, snow growth, and winter hazards. Setting ``mode='auto'`` will generate a winter figure when the surface wet-bulb is below 35°F, and a new ``show_obs=True`` kwarg adds the latest (nearest) surface observation to the figure (See the :doc:`winter soundings tutorial </tutorials/winter_soundings>`!).
    * ``spy.winter_params(clean_data).calc()`` returns the dictionary of winter parameters.
 
    .. rubric:: 🧮 Calculations
@@ -230,12 +230,15 @@ What's New in SounderPy 3.3.0
    .. rubric:: 💻 Command Line Interface Updates
 
    * NEW ``file`` command: read a local SHARPpy-format sounding (``--latlon LAT LON`` adds its location for the map).
-   * NEW ``--params``: print key calculated parameters (CAPE, SRH, shear, and precip type with ``--mode winter``).
-   * NEW ``--mode {severe,winter,auto}`` and ``--obs``: winter soundings and the nearest surface observation.
-   * NEW ``--storm-motion``: ``right_moving``, ``left_moving``, ``mean_wind``, or a direction and speed such as ``270 25``.
-   * NEW ``--modify-sfc``: change the surface, e.g. ``T=30 Td=21`` or ``T=-6 method=blend depth=300``.
-   * NEW ``--radar {mosaic,single,none}`` and ``--radar-time {sounding,now}``: the map's radar.
-   * NEW ``--parcels`` and ``--background-parcels``: custom parcel codes.
+   * NEW options:
+
+     * ``--params``: print key calculated parameters (CAPE, SRH, shear, and precip type with ``--mode winter``);
+     * ``--mode {severe,winter,auto}`` and ``--obs``: winter soundings and the nearest surface observation;
+     * ``--storm-motion``: ``right_moving``, ``left_moving``, ``mean_wind``, or a direction and speed such as ``270 25``;
+     * ``--modify-sfc``: change the surface, e.g. ``T=30 Td=21`` or ``T=-6 method=blend depth=300``;
+     * ``--radar {mosaic,single,none}`` and ``--radar-time {sounding,now}``: the map's radar;
+     * ``--parcels`` and ``--background-parcels``: custom parcel codes.
+
    * Options now match the Python functions, with clearer warnings. See :doc:`/reference/cli`.
 
    .. rubric:: 🐞 Bug Fixes

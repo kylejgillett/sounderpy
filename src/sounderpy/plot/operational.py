@@ -50,7 +50,6 @@ import cartopy.crs as ccrs
 # SOUNDERPY MODULES
 from ..calc import sounding_params, vad_params
 from ..calc_winter import winter_params
-from ..data.radar_utils import *
 from ..data.sfc_obs import sounding_obs
 
 from .style import (FONT_SIZES,

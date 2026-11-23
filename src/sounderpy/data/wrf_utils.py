@@ -31,21 +31,6 @@ from metpy.units import units
 
 
 #############################################
-# FIND NEAREST VALUE IN ARRAY
-#############################################
-
-def find_nearest(array, value):
-    """
-    search through an array to find the index of the value nearest to a given value
-    """
-    array = np.asarray(array)
-    nearest_idx = (np.abs(array - value)).argmin()
-    return nearest_idx
-
-
-
-
-#############################################
 # PARSE DATASET TIME OBJECT
 #############################################
 def parse_time(ds, time_idx=0):

@@ -145,7 +145,7 @@ Examples
          clean_data = spy.get_obs_data('OAX', '2014', '06', '16', '18')
 
          # build the sounding!
-         spy.build_sounding(clean_data)
+         spy.build_sounding(clean_data, color_blind=True, radar='single', map_zoom=1)
 
    .. container:: spy-compare-col
 
@@ -180,7 +180,7 @@ and ``build_vad_hodograph()``. See :ref:`returned_figures` for each function's p
 
    clean_data = spy.get_bufkit_data('hrrr', 'kabr', 3, '2024', '08', '28', '21')
 
-   fig, axes = spy.build_sounding(clean_data, return_fig=True)
+   fig, axes = spy.build_sounding(clean_data, radar='single', map_zoom=1, return_fig=True)
 
    # the skew-t is a MetPy SkewT: draw on its axes in pressure (hPa) and temperature (°C)
    axes['skewt'].ax.axhspan(850, 700, color='gold', alpha=0.2, zorder=0)
@@ -261,7 +261,7 @@ Example
    clean_data = spy.get_obs_data('OAX', '2014', '06', '16', '18')
 
    # build the hodograph! 
-   spy.build_hodograph(clean_data, radar='single')
+   spy.build_hodograph(clean_data, radar='single', map_zoom=1)
 
 .. image:: /_static/images/example-hodograph_light.png
    :width: 800 px

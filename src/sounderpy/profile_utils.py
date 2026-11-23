@@ -28,7 +28,6 @@ from scipy.interpolate import interp1d
 from metpy.units import units
 from scipy.ndimage import gaussian_filter
 from scipy.signal import savgol_filter
-from metpy.units import units as mpunits
 
 
 # PROFILE SMOOTHING SCHEME
@@ -71,7 +70,7 @@ def smooth_profile(clean_data, sigma=None, method=None, window_length=5, polyord
                 values = savgol_filter(values, window, min(polyorder, window - 1))
             else:
                 values = gaussian_filter(values, sigma)
-            clean_data[key] = values*mpunits(str(unit))
+            clean_data[key] = values*units(str(unit))
         except:
             pass
     return clean_data

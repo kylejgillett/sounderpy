@@ -29,6 +29,10 @@ Generate only radar/map examples:
 
     python docs/scripts/make_gallery_figures.py --sections map-radar
 
+Generate only the winter soundings:
+
+    python docs/scripts/make_gallery_figures.py --sections winter
+
 Use a specific ACARS profile:
 
     python docs/scripts/make_gallery_figures.py \
@@ -56,6 +60,9 @@ from typing import Callable
 import matplotlib.pyplot as plt
 
 import sounderpy as spy
+
+# each profile is downloaded once per run, then copied for every figure that uses it
+from profile_cache import get_acars_profile, get_bufkit_data, get_model_data, get_obs_data, summary
 
 
 # =============================================================================
@@ -224,7 +231,7 @@ def save_hodograph(
 
 def get_base_obs() -> dict:
     """Retrieve the common OAX/Pilger profile used by most tutorials."""
-    return spy.get_obs_data(
+    return get_obs_data(
         BASE_OBS["station"],
         BASE_OBS["year"],
         BASE_OBS["month"],
@@ -235,7 +242,7 @@ def get_base_obs() -> dict:
 
 
 def get_rap_example() -> dict:
-    return spy.get_model_data(
+    return get_model_data(
         RAP_EXAMPLE["model"],
         RAP_EXAMPLE["latlon"],
         RAP_EXAMPLE["year"],
@@ -248,7 +255,7 @@ def get_rap_example() -> dict:
 
 
 def get_bufkit_example() -> dict:
-    return spy.get_bufkit_data(
+    return get_bufkit_data(
         BUFKIT_EXAMPLE["model"],
         BUFKIT_EXAMPLE["station"],
         BUFKIT_EXAMPLE["fcst_hour"],
@@ -283,7 +290,8 @@ def get_acars_example(profile_id: str | None = None) -> tuple[dict, str]:
         profile_id = profiles[0]
         print(f"[gallery] Using ACARS profile: {profile_id}")
 
-    data = connection.get_profile(profile_id, hush=True)
+    data = get_acars_profile(ACARS_EXAMPLE["year"], ACARS_EXAMPLE["month"], ACARS_EXAMPLE["day"],
+                             ACARS_EXAMPLE["hour"], profile_id, hush=True)
     return data, profile_id
 
 
@@ -321,7 +329,7 @@ def recent_synoptic_obs(
                 station,
                 candidate.strftime("%Y-%m-%d %HZ"),
             )
-            return spy.get_obs_data(
+            return get_obs_data(
                 station,
                 candidate.strftime("%Y"),
                 candidate.strftime("%m"),
@@ -398,12 +406,13 @@ def make_theme_examples(data: dict, out: Path, strict: bool) -> None:
     )
 
     def custom_theme_example() -> None:
-        kasy = spy.get_bufkit_data("hrrr", "kasy", 3, "2024", "08", "28", "21", hush=True)
+        kasy = get_bufkit_data("hrrr", "kasy", 3, "2024", "08", "28", "21", hush=True)
         save_sounding(
             kasy,
             out / "themes" / "sounding_custom_theme.png",
             theme=PASTORAL_THEME,
-            radar=None,
+            radar="single",
+            map_zoom=1,
         )
 
     run_example("Custom-theme sounding", custom_theme_example, strict=strict)
@@ -480,7 +489,7 @@ def make_map_radar_examples(data: dict, out: Path, strict: bool) -> None:
             out / "map_radar" / "radar_single.png",
             radar="single",
             radar_time="sounding",
-            map_zoom=2,
+            map_zoom=1,
         ),
         strict=strict,
     )
@@ -719,6 +728,42 @@ def make_data_source_examples(
 
 
 # =============================================================================
+# WINTER SOUNDINGS
+# =============================================================================
+
+# the gallery's winter cases, each drawn with mode='winter', the nearest surface observation, and single-site
+# radar, as the code under each image shows: (output file, how to get the profile, extra build_sounding settings)
+WINTER_EXAMPLES = (
+    ("winter_bufkit_fzdz.png", "HRRR freezing drizzle at Grand Forks, ND",
+     lambda: get_bufkit_data("hrrr", "kgfk", 1, "2024", "01", "24", "12", hush=True), {}),
+    ("winter_raob_ice.png", "Detroit, MI RAOB ice storm",
+     lambda: get_obs_data("DTX", "2023", "02", "23", "00", hush=True), {}),
+    ("winter_raob_dark.png", "Omaha, NE RAOB blizzard (dark mode)",
+     lambda: get_obs_data("OAX", "2024", "01", "12", "12", hush=True), {"dark_mode": True}),
+    ("winter_acars.png", "Denver, CO ACARS profile",
+     lambda: get_acars_profile("2024", "01", "15", "14", "DEN_1420", hush=True), {}),
+)
+
+
+def make_winter_examples(out: Path, strict: bool) -> None:
+    banner("WINTER SOUNDING EXAMPLES")
+
+    for filename, label, get_data, settings in WINTER_EXAMPLES:
+        run_example(
+            f"Winter sounding: {label}",
+            lambda get_data=get_data, filename=filename, settings=settings: save_sounding(
+                get_data(),
+                out / "winter" / filename,
+                mode="winter",
+                show_obs=True,
+                radar="single-site",
+                **settings,
+            ),
+            strict=strict,
+        )
+
+
+# =============================================================================
 # TUTORIAL 7 — COMPOSITE SOUNDINGS
 # =============================================================================
 
@@ -733,7 +778,7 @@ def make_composite_examples(out: Path, strict: bool) -> None:
             ("2014", "06", "17", "00"),
         ]:
             profiles.append(
-                spy.get_obs_data("OAX", year, month, day, hour, hush=True)
+                get_obs_data("OAX", year, month, day, hour, hush=True)
             )
         return profiles
 
@@ -799,6 +844,45 @@ def make_composite_examples(out: Path, strict: bool) -> None:
 # PROFILE TOOLS & SURFACE MODIFICATION
 # =============================================================================
 
+# the profile tools tutorial's forecast example: the 12Z HRRR run for Mobridge, SD on the day of the Mound City
+# tornadoes (see the Mound City case study), through 00Z the next day
+PARAMS_TREND_CASE = ("hrrr", "KMBG", 0, "2024", "08", "28", "12")
+PARAMS_TREND_HOURS = 13
+
+
+def save_params_trend(output: Path) -> None:
+    """MLCAPE and 0-1 km SRH at each forecast hour, as two panels sharing the forecast-hour axis."""
+    forecast = get_bufkit_data(*PARAMS_TREND_CASE, hush=True, all_fcst_hours=True)[:PARAMS_TREND_HOURS]
+    hours, mlcape, srh = [], [], []
+    for profile in forecast:
+        params = spy.sounding_params(profile).calc()
+        hours.append(int(profile["site_info"]["fcst-hour"].lstrip("F")))
+        mlcape.append(params["thermo"]["mlcape"])
+        srh.append(params["kinem"]["srh_0_to_1000"])
+
+    ink, muted, grid, line = "#0b0b0b", "#52514e", "#e4e3df", "#2a78d6"
+    fig, axes = plt.subplots(2, 1, figsize=(8, 5.4), sharex=True, dpi=DPI, facecolor="white")
+    for ax, values, title, unit in ((axes[0], mlcape, "MLCAPE", "J/kg"),
+                                    (axes[1], srh, "0-1 km storm-relative helicity", "m²/s²")):
+        ax.plot(hours, values, color=line, linewidth=2, marker="o", markersize=6,
+                markeredgecolor="white", markeredgewidth=1.5, zorder=3)
+        ax.set_title(f"{title} ({unit})", loc="left", fontsize=11, color=ink, fontweight="bold")
+        ax.set_ylim(bottom=0)
+        ax.grid(axis="y", color=grid, linewidth=0.8)
+        ax.tick_params(colors=muted, labelsize=9, length=0)
+        for side in ("top", "right", "left"):
+            ax.spines[side].set_visible(False)
+        ax.spines["bottom"].set_color(muted)
+    axes[1].set_xticks(hours[::2])
+    axes[1].set_xticklabels([f"F{h:02d}\n{(12 + h) % 24:02d}Z" for h in hours[::2]])
+    axes[1].set_xlabel("forecast hour and valid time (UTC)", fontsize=9, color=muted)
+    fig.suptitle("HRRR at Mobridge, SD (KMBG) · run 12Z 28 Aug 2024", x=0.06, ha="left",
+                 fontsize=12, color=ink)
+    fig.tight_layout()
+    output.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(output, bbox_inches="tight")
+
+
 def make_profile_tool_examples(data: dict, out: Path, strict: bool) -> None:
     banner("PROFILE TOOLS & SURFACE MODIFICATION EXAMPLES")
 
@@ -827,7 +911,7 @@ def make_profile_tool_examples(data: dict, out: Path, strict: bool) -> None:
 
     # 4. two soundings merged, 60/40
     def merged_example() -> None:
-        later = spy.get_obs_data("OAX", "2014", "06", "17", "00", hush=True)
+        later = get_obs_data("OAX", "2014", "06", "17", "00", hush=True)
         merged = spy.merge_profiles(data, later, weight_a=0.6)
         merged["site_info"] = dict(data["site_info"], source="MERGED RAOB PROFILES")
         merged["titles"] = {"top_title": "MERGED VERTICAL PROFILE",
@@ -844,9 +928,13 @@ def make_profile_tool_examples(data: dict, out: Path, strict: bool) -> None:
         strict=strict,
     )
 
+    # parameters through a forecast: one BUFKIT download with every forecast hour, sounding_params at each
+    run_example("Parameters through a forecast", lambda: save_params_trend(out / "profile_tools" / "params_trend.png"),
+                strict=strict)
+
     # 6-9. each surface modification method on the 12Z sounding's surface inversion,
     # warmed to the 18Z surface observation and zoomed to the lower atmosphere
-    morning = spy.get_obs_data("OAX", "2014", "06", "16", "12", hush=True)
+    morning = get_obs_data("OAX", "2014", "06", "16", "12", hush=True)
     for name, modify_sfc in (("none", None),
                              ("mix", {"T": 28, "Td": 24}),
                              ("blend", {"T": 28, "Td": 24, "method": "blend"}),
@@ -881,7 +969,7 @@ def make_custom_map_examples(out: Path, strict: bool) -> None:
     from metpy.calc import reduce_point_density
 
     case = CUSTOM_MAP_CASE
-    data = spy.get_obs_data(case["station"], case["year"], case["month"], case["day"], case["hour"], hush=True)
+    data = get_obs_data(case["station"], case["year"], case["month"], case["day"], case["hour"], hush=True)
     # each example keeps its layers here so the last one can use them all
     layers = {}
 
@@ -965,13 +1053,13 @@ def make_custom_figure_examples(out: Path, strict: bool) -> None:
 
     folder = out / "custom_figures"
     folder.mkdir(parents=True, exist_ok=True)
-    hrrr = spy.get_bufkit_data("hrrr", *CUSTOM_FIGURES_RUN, hush=True)
-    rap = spy.get_bufkit_data("rap", *CUSTOM_FIGURES_RUN, hush=True)
+    hrrr = get_bufkit_data("hrrr", *CUSTOM_FIGURES_RUN, hush=True)
+    rap = get_bufkit_data("rap", *CUSTOM_FIGURES_RUN, hush=True)
     both = dict(profiles=[hrrr, rap], labels=["HRRR F03", "RAP F03"])
     # the observed Aberdeen sounding and the HRRR forecast for Ashley, ND: two places on the map
-    raob = spy.get_obs_data(CUSTOM_MAP_CASE["station"], CUSTOM_MAP_CASE["year"], CUSTOM_MAP_CASE["month"],
+    raob = get_obs_data(CUSTOM_MAP_CASE["station"], CUSTOM_MAP_CASE["year"], CUSTOM_MAP_CASE["month"],
                             CUSTOM_MAP_CASE["day"], CUSTOM_MAP_CASE["hour"], hush=True)
-    ashley = spy.get_bufkit_data("hrrr", "kasy", *CUSTOM_FIGURES_RUN[1:], hush=True)
+    ashley = get_bufkit_data("hrrr", "kasy", *CUSTOM_FIGURES_RUN[1:], hush=True)
 
     def publication(name: str, **kwargs) -> Callable[[], None]:
         def example() -> None:
@@ -986,7 +1074,7 @@ def make_custom_figure_examples(out: Path, strict: bool) -> None:
         "publication_quickstart.png": dict(profiles=[raob, ashley], labels=["00Z ABR RAOB", "HRRR F03 Ashley, ND"],
                                            panels=("skewt", "hodograph", "map", "parameters"),
                                            parameters=("mllcl", "mlcape", "mlcin", "mucape", "srh01", "srh03", "bwd06", "stp"),
-                                           map_radar="single"),
+                                           map_radar="single", map_zoom=1),
         "publication_default.png": dict(),
         "publication_pair.png": dict(panels=("skewt", "hodograph")),
         "publication_zoom_parameters.png": dict(**both, panels=("skewt", "parameters"), ylim=(1000, 500), parcel="sb",
@@ -996,7 +1084,7 @@ def make_custom_figure_examples(out: Path, strict: bool) -> None:
         "publication_style.png": dict(**both, colors=["black", "darkorange"], show_adiabats=True, parcel="mu", sr_vector_heights=(1000,),
                                       style={"font_family": "serif", "fontsize": 9, "linewidth": 1.4, "hodograph_rings": False,
                                              "sr_vector_color": "purple"}),
-        "publication_radar.png": dict(**both, panels=("skewt", "hodograph", "map"), map_radar="single"),
+        "publication_radar.png": dict(**both, panels=("skewt", "hodograph", "map"), map_radar="single", map_zoom=1),
     }
     for name, kwargs in examples.items():
         run_example(name, publication(name, **kwargs), strict=strict)
@@ -1019,7 +1107,8 @@ def make_custom_figure_examples(out: Path, strict: bool) -> None:
 
         images = []
         for panels in PUBLICATION_LAYOUTS:
-            fig, _ = spy.build_publication_sounding([hrrr, rap], labels=["HRRR F03", "RAP F03"], panels=panels, dpi=120)
+            fig, _ = spy.build_publication_sounding([hrrr, rap], labels=["HRRR F03", "RAP F03"], panels=panels,
+                                                    map_radar="single", map_zoom=1, dpi=120)
             image = BytesIO()
             fig.savefig(image, format="png")
             plt.close(fig)
@@ -1040,14 +1129,14 @@ def make_custom_figure_examples(out: Path, strict: bool) -> None:
         close_figures()
 
     def return_fig_example() -> None:
-        fig, axes = spy.build_sounding(hrrr, return_fig=True, dpi=100)
+        fig, axes = spy.build_sounding(hrrr, radar="single", map_zoom=1, return_fig=True, dpi=100)
         axes["skewt"].ax.axhspan(850, 700, color="gold", alpha=0.2, zorder=0)
         axes["skewt"].ax.text(-28, 775, "EML", fontsize=16, weight="bold", va="center")
         fig.savefig(folder / "return_fig_sounding.png", bbox_inches="tight")
         close_figures()
 
     def operational_example() -> None:
-        spy.build_sounding(hrrr, save=True, filename=str(folder / "operational_sounding.png"), dpi=100)
+        spy.build_sounding(hrrr, radar="single", map_zoom=1, save=True, filename=str(folder / "operational_sounding.png"), dpi=100)
         close_figures()
 
     run_example("operational_sounding.png", operational_example, strict=strict)
@@ -1067,6 +1156,7 @@ VALID_SECTIONS = (
     "parcels",
     "options",
     "data-sources",
+    "winter",
     "composites",
     "custom-map",
     "custom-figures",
@@ -1161,6 +1251,9 @@ def main() -> int:
             args.acars_profile,
         )
 
+    if "winter" in args.sections:
+        make_winter_examples(out, args.strict)
+
     if "composites" in args.sections:
         make_composite_examples(out, args.strict)
 
@@ -1176,6 +1269,7 @@ def main() -> int:
     banner("GALLERY GENERATION FINISHED")
     print(f"Images written beneath: {out.resolve()}")
 
+    print(summary())
     return 0
 
 

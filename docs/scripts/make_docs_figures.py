@@ -35,6 +35,7 @@ from __future__ import annotations
 import argparse
 import sys
 import traceback
+from datetime import datetime
 from pathlib import Path
 
 import matplotlib
@@ -45,6 +46,9 @@ import matplotlib.pyplot as plt
 
 import sounderpy as spy
 
+# each profile is downloaded once per run, then copied for every figure that uses it
+from profile_cache import get_acars_profile, get_bufkit_data, get_model_data, get_obs_data, summary
+
 
 # Resolved from this file, so the script works from any directory.
 DOCS_DIR = Path(__file__).resolve().parent.parent
@@ -53,34 +57,34 @@ DPI = 200
 
 
 def obs(*args):
-    return lambda: spy.get_obs_data(*args)
+    return lambda: get_obs_data(*args)
 
 
 def bufkit(*args):
-    return lambda: spy.get_bufkit_data(*args)
+    return lambda: get_bufkit_data(*args)
 
 
 def acars(date_args, profile):
-    return lambda: spy.acars_data(*date_args).get_profile(profile)
+    return lambda: get_acars_profile(*date_args, profile)
 
 
 def reanalysis(*args):
-    return lambda: spy.get_model_data(*args)
+    return lambda: get_model_data(*args)
 
 
 def composite_light():
-    return [spy.get_obs_data("oax", "2014", "06", day, hour) for day, hour in (("16", "12"), ("16", "18"), ("17", "00"))]
+    return [get_obs_data("oax", "2014", "06", day, hour) for day, hour in (("16", "12"), ("16", "18"), ("17", "00"))]
 
 
 def composite_dark():
-    return [spy.get_bufkit_data("hrrr", "dtx", 0, "2024", "02", "28", hour, hush=True)
+    return [get_bufkit_data("hrrr", "dtx", 0, "2024", "02", "28", hour, hush=True)
             for hour in ("00", "01", "02", "03", "04", "05", "06")]
 
 
 def merged_profile():
     # Mirrors the merge_profiles() example in reference/helpertools.rst.
-    profile_a = spy.get_obs_data("OAX", "2014", "06", "16", "18")
-    profile_b = spy.get_obs_data("OAX", "2014", "06", "17", "00")
+    profile_a = get_obs_data("OAX", "2014", "06", "16", "18")
+    profile_b = get_obs_data("OAX", "2014", "06", "17", "00")
     merged = spy.merge_profiles(profile_a, profile_b, weight_a=0.6)
     merged["site_info"] = {
         "site-id": "KOAX", "site-name": "OMAHA VALLEY", "site-lctn": "NE US",
@@ -89,7 +93,7 @@ def merged_profile():
     }
     merged["titles"] = {
         "top_title": "COMPOSITE VERTICAL PROFILE",
-        "left_title": "Profile-a (60%): 18z OAX 06/16/2014 | Profile-b (40%): 00z OAX 06/16/2014",
+        "left_title": "Profile-a (60%): 18z OAX 06/16/2014 | Profile-b (40%): 00z OAX 06/17/2014",
         "right_title": "KOAX, OMAHA VALLEY, NE | 41.32, -96.37    ",
     }
     return merged
@@ -97,7 +101,7 @@ def merged_profile():
 
 def smoothed_profile():
     # Mirrors the smooth_profile() example in reference/helpertools.rst.
-    return spy.smooth_profile(spy.get_obs_data("OAX", "2014", "06", "16", "18"), 3)
+    return spy.smooth_profile(get_obs_data("OAX", "2014", "06", "16", "18"), 3)
 
 
 # name: (plot function, data retriever, plot kwargs, shown in the documentation)
@@ -142,8 +146,9 @@ FIGURES = {
         {"dark_mode": True, "linewidths": [4] * 7}, True,
     ),
     "merged_profile_example": (
+        # the merged profile has no valid time, so the radar is the main (60%) sounding's time
         "sounding", merged_profile,
-        {"radar": None, "special_parcels": "simple"}, True,
+        {"radar_time": datetime(2014, 6, 16, 18), "special_parcels": "simple"}, True,
     ),
     "smoothed_profile_example": (
         "sounding", smoothed_profile,
@@ -159,6 +164,9 @@ FIGURES = {
     ),
 }
 
+# every figure with a map shows single-site radar (the cases are too old for the mosaic) at zoom level 1
+MAP_SETTINGS = {"radar": "single", "map_zoom": 1}
+
 BUILDERS = {
     "sounding": spy.build_sounding,
     "hodograph": spy.build_hodograph,
@@ -168,6 +176,8 @@ BUILDERS = {
 
 def make_figure(name: str, output: Path) -> None:
     kind, get_data, kwargs, _ = FIGURES[name]
+    if kind != "composite" and kwargs.get("map_zoom", 1) != 0:
+        kwargs = {**kwargs, **MAP_SETTINGS}
     BUILDERS[kind](get_data(), save=True, filename=str(output / f"{name}.png"), dpi=DPI, **kwargs)
     plt.close("all")
 
@@ -200,6 +210,7 @@ def main() -> int:
     print(f"{len(names) - len(failed)} of {len(names)} figures written to {args.output}")
     if failed:
         print("Failed:", ", ".join(failed))
+    print(summary())
     return 1 if failed else 0
 
 

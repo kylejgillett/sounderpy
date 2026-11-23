@@ -23,7 +23,7 @@ You can test your installation of SounderPy against this figure. To do so, run t
 
     data = spy.get_obs_data("kabr", "2024", "08", "29", "00")
 
-    spy.build_sounding(data, color_blind=True, radar='single')
+    spy.build_sounding(data, color_blind=True, radar='single', map_zoom=1)
 
 
 

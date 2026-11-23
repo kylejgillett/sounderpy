@@ -51,6 +51,14 @@ def test_csv_export_contains_expected_columns(clean_profile, tmp_path):
     assert first_line == "p,z,T,Td,u,v"
 
 
+@pytest.mark.parametrize(("year", "expected"), [("1999", 1999), ("2024", 2024)])
+def test_sharppy_valid_time_keeps_its_century(clean_profile, tmp_path, year, expected):
+    profile = dict(clean_profile, site_info=dict(clean_profile["site_info"], **{"valid-time": [year, "05", "03", "00"]}))
+    path = tmp_path / "century.snd"
+    spy.to_file("sharppy", profile, filename=str(path))
+    assert spy.from_sharppy(path)["site_info"]["valid-time"] == [expected, 5, 3, 0]
+
+
 def test_from_sharppy_rejects_empty_file(tmp_path):
     path = tmp_path / "empty.snd"
     path.write_text("", encoding="utf-8")

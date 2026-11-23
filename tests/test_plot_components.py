@@ -86,14 +86,6 @@ def test_validate_pressure_limits_rejects(ylim):
         c._validate_pressure_limits(ylim)
 
 
-def test_pressure_limits_from_ptop():
-    assert c._get_pressure_limits(None) is None
-    assert c._get_pressure_limits(700) == (1050, 700)
-    for ptop in (0, 1050, 1100, True, "700"):
-        with pytest.raises(ValueError, match="'ptop' must be"):
-            c._get_pressure_limits(ptop)
-
-
 @pytest.mark.parametrize(("ylim", "step"), [((1050, 100), 100), ((1000, 600), 50), ((1000, 900), 25), ((1000, 950), 10)])
 def test_pressure_ticks_suit_the_range(ylim, step):
     ticks = c._get_pressure_ticks(ylim)
@@ -386,15 +378,6 @@ def test_spread_label_pressures_keeps_labels_apart():
     ys = sorted(skew.ax.transData.transform((0, p))[1] for p in pressures)
     assert np.all(np.diff(ys) >= 20 - 1e-6)
     assert pressures[3] == pytest.approx(500.0)  # a label with room stays at its own pressure
-
-
-def test_scale_figure_scales_text_and_rejects_nonpositive():
-    fig = plt.figure()
-    text = fig.text(0.5, 0.5, "x", fontsize=10)
-    c._scale_figure(fig, font_scale=1.5)
-    assert text.get_fontsize() == pytest.approx(15)
-    with pytest.raises(ValueError, match="must be above 0"):
-        c._scale_figure(fig, font_scale=0)
 
 
 # -----------------------------------------------------------------------------

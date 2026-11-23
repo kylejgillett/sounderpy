@@ -78,25 +78,13 @@ def from_sharppy(filepath):
             parts = re.split(r"\s+", header_line)
             if parts:
                 site_info["site-id"] = parts[0]
+            # the valid time, as yymmdd/HHMM (years 69-99 are 1969-1999)
             if len(parts) >= 2:
-                stamp = parts[1]
-                if "/" in stamp and len(stamp) >= 9:
-                    try:
-                        yy = int(stamp[0:2])
-                        mm = int(stamp[2:4])
-                        dd = int(stamp[4:6])
-                        hh = int(stamp[7:9])
-                        year = 2000 + yy if yy < 100 else yy
-                        site_info["valid-time"] = [year, mm, dd, hh]
-                    except ValueError:
-                        pass
-
-    if site_info["valid-time"] is None:
-        try:
-            dt = datetime.strptime(lines[title_idx + 1].split()[1], "%y%m%d/%H%M")
-            site_info["valid-time"] = [dt.year, dt.month, dt.day, dt.hour]
-        except Exception:
-            pass
+                try:
+                    dt = datetime.strptime(parts[1], "%y%m%d/%H%M")
+                    site_info["valid-time"] = [dt.year, dt.month, dt.day, dt.hour]
+                except ValueError:
+                    pass
 
     rows = []
     for line in lines[raw_idx + 1:]:
