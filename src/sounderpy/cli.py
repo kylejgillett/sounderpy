@@ -720,7 +720,7 @@ def _add_profile_output_options(parser: argparse.ArgumentParser) -> None:
     plot.add_argument(
         "--readout",
         action="store_true",
-        help="Also write a readout file next to --plot-file (NAME.readout.json) for hover readouts and profile editing on a web page.",
+        help="Experimental: also write a readout file next to --plot-file (NAME.readout.json) for hover readouts and profile editing on a web page.",
     )
     plot.add_argument(
         "--color-blind",

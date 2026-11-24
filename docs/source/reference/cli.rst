@@ -491,8 +491,8 @@ The output resolution can be changed with ``--dpi``:
 
 **Web Readouts**
 
-``--readout`` also writes a readout file next to the plot (``dtx_sounding.readout.json``) for hover readouts and
-profile editing on a web page. See :doc:`/reference/webreadouts`.
+``--readout`` (experimental) also writes a readout file next to the plot (``dtx_sounding.readout.json``) for hover readouts and
+profile editing on a web page. See :doc:`/developers/interactive_figures`.
 
 .. code-block:: bash
 

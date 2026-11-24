@@ -300,10 +300,17 @@ Directory
    reference/plottingdata
    reference/plotsettings
    reference/publicationfigures
-   reference/webreadouts
    reference/helpertools
    reference/cli
    reference/references
+
+.. toctree::
+   :maxdepth: 5
+   :caption: Developers:
+
+   developers/interactive_figures
+   developers/readout_reference
+   developers/readout_file
 
 .. toctree::
    :maxdepth: 5

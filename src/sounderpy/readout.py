@@ -3,7 +3,7 @@
 
     Purpose of module:
 
-    Interactive readouts for SounderPy figures on the web. A figure saved with ``readout=True`` gets a JSON
+    EXPERIMENTAL: interactive readouts for SounderPy figures on the web. A figure saved with ``readout=True`` gets a JSON
     file next to its PNG that maps the image's pixels to the data: where the skew-t and hodograph sit in
     the image, how to turn a pixel into pressure and temperature (or u and v), and the plotted profile.
     The browser script ``web/sounderpy-readout.js`` reads that file to show hover readouts and to let
@@ -16,7 +16,7 @@
     readout_js_path()   : where the browser script is installed
 
     Docs:
-        web readouts:   https://sounderpy.app/docs/reference/webreadouts.html
+        web readouts:   https://sounderpy.app/docs/developers/interactive_figures.html
 
     (C) KYLE J GILLETT, UNIVERSITY OF NORTH DAKOTA, 2026
 """

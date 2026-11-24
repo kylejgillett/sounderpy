@@ -21,6 +21,7 @@ Everything runs offline on synthetic profiles unless you ask for live data.
 | `test_retrieval.py` | routing of the `get_*` functions, the RAOB/IGRA station list and lookup, surface observations, and live retrieval (`network`) |
 | `test_file_io.py` | SHARPpy and CSV files |
 | `test_readout.py` | web readout files (checked against the saved PNG's pixels), `apply_profile_edits`, and the EDITED PROFILE note |
+| `test_readout_js.py` + `js/test_readout.mjs`, `js/test_readout_winter.mjs` | the browser script, `sounderpy-readout.js`, run with Node's test runner on a readout file SounderPy just made: pixel mappings, interpolation, shear, SRH, storm-relative wind, storm motions, SB/ML/MU parcels, layer stats, snapping and thickness, arrow keys, edits, and units; and, for each idealized winter case, precipitation type, melting/refreezing layers, and cloud layers against `calc_winter` (`js/readout_view.mjs` is shared setup; skipped without Node.js 18+) |
 | `test_cli.py` | the command-line interface |
 
 Markers: `slow` renders a full figure; `network` contacts a live service and is skipped without `--network`.

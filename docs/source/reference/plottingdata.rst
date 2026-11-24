@@ -123,7 +123,7 @@ While this function may appear complicated at first glance, there is actually on
    :type map_label: str, optional, Default is ``None``.
    :param return_fig: return the figure instead of showing it, so you can draw on it or save it yourself. A figure that's saved and not returned is closed.
    :type return_fig: bool, optional, Default is ``False``.
-   :param readout: with ``save=True``, also write a readout file next to the figure (``kokc.png`` -> ``kokc.readout.json``) for hover readouts and profile editing on a web page. See :doc:`/reference/webreadouts`.
+   :param readout: EXPERIMENTAL: with ``save=True``, also write a readout file next to the figure (``kokc.png`` -> ``kokc.readout.json``) for hover readouts and profile editing on a web page. See :doc:`/developers/interactive_figures`.
    :type readout: bool, optional, Default is ``False``.
    :return: ``None``, or with ``return_fig=True``, ``(fig, axes)``: the Matplotlib figure, and a dict of its panels: ``'skewt'`` (a MetPy ``SkewT``), ``'hodograph'`` (a MetPy ``Hodograph``), and ``'map'`` (a cartopy ``GeoAxes``, when the map is drawn).
    :rtype: None or tuple
@@ -248,7 +248,7 @@ Very similarly to soundings, we can use the simple ``spy.build_hodograph()`` fun
    :type map_label: str, optional, Default is ``None``.
    :param return_fig: return the figure instead of showing it, so you can draw on it or save it yourself. A figure that's saved and not returned is closed.
    :type return_fig: bool, optional, Default is ``False``.
-   :param readout: with ``save=True``, also write a readout file next to the figure (``kokc.png`` -> ``kokc.readout.json``) for hover readouts and profile editing on a web page. See :doc:`/reference/webreadouts`.
+   :param readout: EXPERIMENTAL: with ``save=True``, also write a readout file next to the figure (``kokc.png`` -> ``kokc.readout.json``) for hover readouts and profile editing on a web page. See :doc:`/developers/interactive_figures`.
    :type readout: bool, optional, Default is ``False``.
    :return: ``None``, or with ``return_fig=True``, ``(fig, axes)``: the Matplotlib figure, and a dict of its panels: ``'hodograph'`` (a MetPy ``Hodograph``) and ``'map'`` (a cartopy ``GeoAxes``, when the map is drawn).
    :rtype: None or tuple

@@ -276,7 +276,7 @@ def build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion=
     :type map_label: str, optional
     :param return_fig: whether to return the figure instead of showing it, so you can draw on it or save it yourself. A figure that's saved and not returned is closed. Default is ``False``.
     :type return_fig: bool, optional
-    :param readout: with ``save=True``, also write a readout file next to the figure (``kokc.png`` -> ``kokc.readout.json``) for interactive readouts and profile editing on a web page. See :doc:`webreadouts`. Default is ``False``.
+    :param readout: EXPERIMENTAL: with ``save=True``, also write a readout file next to the figure (``kokc.png`` -> ``kokc.readout.json``) for interactive readouts and profile editing on a web page. See :doc:`/developers/interactive_figures`. Default is ``False``.
     :type readout: bool, optional
     :return: ``None``, or with ``return_fig=True``, ``(fig, axes)``: the Matplotlib figure, and a dict of its panels: ``'skewt'`` (a MetPy ``SkewT``), ``'hodograph'`` (a MetPy ``Hodograph``), and ``'map'`` (a cartopy ``GeoAxes``, when the map is drawn)
     :rtype: None or tuple
@@ -358,7 +358,7 @@ def build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr
        :type map_label: str, optional
        :param return_fig: whether to return the figure instead of showing it, so you can draw on it or save it yourself. A figure that's saved and not returned is closed. Default is ``False``.
        :type return_fig: bool, optional
-       :param readout: with ``save=True``, also write a readout file next to the figure (``kokc.png`` -> ``kokc.readout.json``) for interactive readouts and profile editing on a web page. See :doc:`webreadouts`. Default is ``False``.
+       :param readout: EXPERIMENTAL: with ``save=True``, also write a readout file next to the figure (``kokc.png`` -> ``kokc.readout.json``) for interactive readouts and profile editing on a web page. See :doc:`/developers/interactive_figures`. Default is ``False``.
        :type readout: bool, optional
        :return: ``None``, or with ``return_fig=True``, ``(fig, axes)``: the Matplotlib figure, and a dict of its panels: ``'hodograph'`` (a MetPy ``Hodograph``) and ``'map'`` (a cartopy ``GeoAxes``, when the map is drawn)
        :rtype: None or tuple
