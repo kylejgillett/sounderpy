@@ -16,6 +16,20 @@ dependencies) lays a layer over the ``<img>`` that reads it.
   sounding's melting layer, DGZ, and freezing levels).
 - **Edit** (optional): drag temperature and dewpoint points along their pressure level, or hodograph points anywhere,
   then send the edited profile to your server to redraw it with SounderPy.
+- **Layer**: drag a height range on the skew-t or a 0-3 km panel for its depth, lapse rate, mean RH and mixing ratio,
+  precipitable water, θe range, mean wind, bulk shear, and SRH.
+- **Measure**: drag between two points on the skew-t (ΔT, Δz, lapse rate, Δθ) or the hodograph (the wind difference).
+- **Storm motion**: hover (or drag) on the hodograph to try a storm motion, with live SRH and storm-relative wind
+  and the SRH area shaded; a click picks it, and your server can redraw with ``storm_motion=[direction, speed]``.
+- Hovering also shows the 0-to-that-height bulk shear and SRH, with the figure's storm motion.
+- **Parcel**: hover a level on the skew-t to lift a parcel from it: an approximate trace with CAPE and CIN shaded,
+  and CAPE, CIN, LCL, LFC, EL, and lifted index (within a few percent of SounderPy's parcels). Once a parcel is pinned,
+  hovering a height reads its CAPE from the LFC up to there, its share of the total, and the parcel's buoyancy.
+  ``liftParcel("sb" | "ml" | "mu")`` lifts SounderPy's surface-based, 100 hPa mixed-layer, or most-unstable (lowest
+  300 hPa) parcel.
+- **Draw**: pen, arrows, and text on the plot; ``exportImage()`` gives the figure with the drawings on it.
+- Optionally, a **panel** beside the image holds the full readout, tool results, and a standard levels table
+  (surface, 925, 850, 700, 500, 300, 250 hPa), with a short readout at the pointer.
 
 Works with ``build_sounding()`` (severe and winter) and ``build_hodograph()``, at any size the image is shown,
 with mouse or touch.
@@ -67,16 +81,26 @@ Options
 .. code-block:: javascript
 
    SounderPyReadout.attach(img, "kokc.readout.json", {
-     fields: ["p", "z_agl", "T", "Td", "Tw", "rh", "mr", "thetae", "wind", "omega"],  // rows, in order
+     fields: ["p", "z_agl", "T", "Td", "Tw", "rh", "mr", "thetae", "wind", "cumulative", "omega"],  // rows, in order
      temperature: "both",   // "C", "F", or "both"
      height: "m",           // "m" or "ft"
+     wind: "kt",            // "kt", "m/s", or "mph"
      theme: "auto",         // "auto" follows the figure's dark mode; or "light", "dark"
      editable: false,       // start in edit mode
-     tapReadout: true,      // touch screens: a tap shows the readout (false leaves taps to the page unless editing)
+     tool: "inspect",       // what dragging does: "inspect", "edit", "layer", "measure", "storm", "parcel", or "draw"
+     panel: null,           // an element for the full readout; the pointer then shows only tipFields
+     tipFields: ["p", "z_agl", "T", "Td", "wind"],
+     levels: [925, 850, 700, 500, 300, 250],  // the panel's levels table (after the surface), or false
+     tipFooter: "",         // a line at the bottom of the pointer readout, e.g. "Click for more"
+     cursor: true,          // add the temperature (skew-t) or wind (hodograph) under the pointer
+     tapReadout: true,      // touch screens: a tap shows the readout (false leaves taps to the page unless a tool is on)
      parts: ["skewt", "hodograph", "panels", "params"],  // what responds to the pointer
      onHover: (level) => {},       // the level under the pointer, or null
      onEdit: (profile) => {},      // while a point is dragged
      onEditEnd: (profile) => {},   // when a drag ends
+     onMark: (mark) => {},         // a layer or measurement's results (or null when cleared)
+     onStormMotion: ({u, v, direction, speed}) => {},  // a picked storm motion: direction it comes from (°), speed (kt)
+     onDraw: (drawings) => {},     // drawings added, undone, or cleared
    });
 
 Other ``fields``: ``z`` (height MSL), ``Tv``, and ``theta``. The tooltip's colors are CSS variables on
@@ -93,8 +117,22 @@ Methods
      - Does
    * - ``update(readout)``
      - Swaps in a new readout file (after a redraw); clears edits.
-   * - ``setEditing(on)``
-     - Turns editing on or off.
+   * - ``setTool(tool)``
+     - ``"inspect"``, ``"edit"``, ``"layer"``, ``"measure"``, ``"storm"``, ``"parcel"``, or ``"draw"`` (``setEditing(on)`` is the same as ``"edit"`` / ``"inspect"``).
+   * - ``setPanel(element)``
+     - Puts the full readout in an element beside the image (``null`` for the pointer only).
+   * - ``setUnits({temperature, height, wind})``
+     - Changes the readout's units (the figure keeps its own).
+   * - ``setDrawStyle({mode, color, width})``
+     - How the draw tool draws: ``"pen"``, ``"arrow"``, or ``"text"``, a color, and a line width (image pixels).
+   * - ``hasDrawing()``, ``undoDrawing()``, ``clearDrawing()``
+     - Whether anything is drawn; remove the last drawing; remove them all.
+   * - ``exportImage()``
+     - A Promise of the figure with its drawings as a PNG Blob, at full size (the image must be same-origin or CORS).
+   * - ``liftParcel(preset)``
+     - Lifts and pins a ``"sb"``, ``"ml"``, or ``"mu"`` parcel (switching to the parcel tool).
+   * - ``getMark()``, ``clearMark()``
+     - The current layer or measurement (its heights or points, and ``rows`` of results), or null; remove it.
    * - ``setEnabled(on)``
      - Shows or hides the layer (e.g. a readout mode that can be switched off).
    * - ``getProfile()``
@@ -123,7 +161,9 @@ While editing, the readout's values follow the edited lines. To recompute everyt
    edited = spy.apply_profile_edits(clean_data, profile)   # clean_data: the profile the figure was drawn from
    spy.build_sounding(edited, save=True, filename='kokc_edited.png', readout=True)
 
-Send the new image and readout file back, then call ``readout.update(newReadout)``. The redrawn figure says
+A picked storm motion works the same way: redraw with ``spy.build_sounding(clean_data, storm_motion=[direction, speed],
+...)``, where ``direction`` is where the storm moves from, as ``onStormMotion`` gives it. Send the new image and readout
+file back, then call ``readout.update(newReadout)``. The redrawn figure says
 **EDITED PROFILE** and lists what changed, so it can't pass as the original data.
 
 .. py:function:: spy.apply_profile_edits(clean_data, edits)
@@ -173,6 +213,7 @@ mapped in (x, height m AGL).
      "profile": {"p": [...], "z": [...], "z_agl": [...], "T": [...], "Td": [...], "Tw": [...], "Tv": [...], "rh": [...],
                  "mr": [...], "theta": [...], "thetae": [...], "u": [...], "v": [...], "wdir": [...], "wspd": [...], "omega": [...]},
      "hodograph_trace": {"z_agl": [...], "u": [...], "v": [...]},
+     "storm_motion": [u, v],                    // kt, ground relative; what the figure's SRH uses
      "params": [
        {"key": "kinem.srh_0_to_3000", "name": "0-3 km storm-relative helicity", "value": 104.5, "units": "m²/s²",
         "about": "...", "bbox": [x0, y0, x1, y1], "layer": {"z": [0, 3000]}}

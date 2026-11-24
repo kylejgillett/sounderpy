@@ -478,6 +478,11 @@ def readout_data(fig, axes, source, bbox, dpi=None, size=None):
     trace = _hodograph_trace(params)
     if trace is not None and "hodograph" in panels:
         readout["hodograph_trace"] = trace
+    # the storm motion (ground relative, kt) the figure's SRH and storm-relative values use
+    kinem = (params or {}).get("kinem", {})
+    storm_motion = [_finite(kinem.get("sm_u")), _finite(kinem.get("sm_v"))]
+    if None not in storm_motion:
+        readout["storm_motion"] = storm_motion
     if params:
         renderer = fig.canvas.get_renderer()
         readout["params"] = _table_params(fig, params, to_image, renderer)

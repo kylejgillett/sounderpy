@@ -86,6 +86,8 @@ def test_sounding_readout_lines_up_with_the_image(clean_profile, tmp_path):
     assert readout["dark"] is False
     assert readout["panels"]["hodograph"]["offset"] == [0.0, 0.0]
     assert readout["hodograph_trace"]["z_agl"][-1] <= 12000
+    # the storm motion the figure's SRH uses, ground relative
+    assert len(readout["storm_motion"]) == 2 and all(isinstance(v, float) for v in readout["storm_motion"])
 
 
 @pytest.mark.slow

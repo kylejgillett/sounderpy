@@ -6,6 +6,12 @@
  *   - hover the skew-t or hodograph to read the profile at that level, linked across both panels
  *   - optionally drag temperature, dewpoint, and wind points to edit the profile, then send
  *     getProfile() to a server that redraws it with sounderpy.apply_profile_edits()
+ *   - measure a layer (drag a height range: lapse rate, moisture, shear, SRH, ...) or the difference between two
+ *     points on the skew-t or hodograph
+ *   - try a storm motion on the hodograph with live SRH, then send it to a server to redraw with it
+ *   - lift a parcel from any level for an approximate trace, CAPE, CIN, LCL, LFC, and EL
+ *   - draw on the plot (pen, arrows, text) and export the annotated image
+ *   - optionally put the full readout in a panel beside the image, with a short one at the pointer
  *
  * No dependencies. Works with a responsive or scaled image, in light or dark mode, with mouse or touch.
  *
@@ -19,7 +25,12 @@
 const FORMAT = "sounderpy-readout";
 const VERSION = 1;
 
-const DEFAULT_FIELDS = ["p", "z_agl", "T", "Td", "Tw", "rh", "mr", "thetae", "wind", "omega"];
+const DEFAULT_FIELDS = ["p", "z_agl", "T", "Td", "Tw", "rh", "mr", "thetae", "wind", "cumulative", "omega"];
+const TOOLS = ["inspect", "edit", "layer", "measure", "storm", "parcel", "draw"];
+const LEVELS = [925, 850, 700, 500, 300, 250]; // the standard levels table, below the surface
+const TIP_FIELDS = ["p", "z_agl", "T", "Td", "wind"]; // the pointer readout when a panel has the rest
+const KT = 0.514444; // m/s per kt
+const MARK = "#0aa5a5"; // layer and measure marks
 
 const LABELS = {
   p: "Pressure", z_agl: "Height", z: "Height MSL", T: "Temp", Td: "Dewpoint", Tw: "Wet-bulb", Tv: "Virtual T",
@@ -27,16 +38,19 @@ const LABELS = {
 };
 
 const STYLE_ID = "spy-readout-style";
+// Pages can restyle the readouts with CSS variables on any parent: --spy-readout-font, --spy-readout-label (parameter
+// names), --spy-readout-value (values), and on .spy-readout-tip --spy-readout-bg, --spy-readout-text,
+// --spy-readout-muted, and --spy-readout-border.
 const STYLE = `
 .spy-readout-layer { position: absolute; z-index: 2; cursor: crosshair; touch-action: pan-y pinch-zoom; }
-.spy-readout-layer[data-editing] { touch-action: none; }
+.spy-readout-layer:is([data-editing], [data-marking]) { touch-action: none; }
 .spy-readout-tip {
   --spy-readout-bg: rgba(255, 255, 255, 0.96); --spy-readout-text: #111; --spy-readout-muted: #555;
   --spy-readout-border: rgba(0, 0, 0, 0.35); --spy-readout-edited: #c2187a;
   position: absolute; z-index: 3; display: none; pointer-events: none; box-sizing: border-box;
   min-width: min(190px, calc(100vw - 16px)); max-width: calc(100vw - 16px); padding: 6px 10px; border: 1px solid var(--spy-readout-border); border-radius: 6px;
   background: var(--spy-readout-bg); color: var(--spy-readout-text);
-  font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font: 12px/1.45 var(--spy-readout-font, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace); font-variant-numeric: tabular-nums;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25); text-align: left; white-space: nowrap;
 }
 .spy-readout-tip[data-dark] {
@@ -44,12 +58,33 @@ const STYLE = `
   --spy-readout-border: rgba(255, 255, 255, 0.3); --spy-readout-edited: #ff6ec7;
 }
 .spy-readout-tip div { display: flex; justify-content: space-between; gap: 14px; }
-.spy-readout-tip span { color: var(--spy-readout-muted); }
-.spy-readout-tip b { font-weight: 600; }
+.spy-readout-tip span { color: var(--spy-readout-label, var(--spy-readout-muted)); }
+.spy-readout-tip b { color: var(--spy-readout-value, inherit); font-weight: 600; }
 .spy-readout-tip .spy-readout-head { margin: 0 0 2px; color: var(--spy-readout-edited); font-weight: 600; }
 .spy-readout-tip .spy-readout-title { margin: 0 0 2px; font-weight: 700; }
-.spy-readout-tip .spy-readout-about { max-width: 280px; margin: 4px 0 0; color: var(--spy-readout-muted); white-space: normal; font-family: system-ui, sans-serif; }
+.spy-readout-tip .spy-readout-foot { margin: 5px 0 0; padding-top: 4px; border-top: 1px solid var(--spy-readout-border); color: var(--spy-readout-muted); font: 600 11.5px/1.4 var(--spy-readout-font, system-ui, sans-serif); white-space: normal; }
+.spy-readout-tip .spy-readout-about { max-width: 280px; margin: 4px 0 0; color: var(--spy-readout-muted); white-space: normal; font-family: var(--spy-readout-font, system-ui, sans-serif); }
 .spy-readout-tip hr { margin: 4px 0; border: 0; border-top: 1px solid var(--spy-readout-border); }
+.spy-readout-card { --spy-readout-edited: #0a8f8f; border-color: #0aa5a5; border-width: 2px; }
+.spy-readout-card[data-dark] { --spy-readout-edited: #3fd6d6; }
+.spy-readout-panel { font: 13px/1.5 var(--spy-readout-font, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace); font-variant-numeric: tabular-nums; }
+.spy-readout-panel div { display: flex; justify-content: space-between; gap: 12px; }
+.spy-readout-panel span { flex: none; color: var(--spy-readout-label, color-mix(in srgb, currentColor 70%, transparent)); white-space: nowrap; }
+.spy-readout-panel b { color: var(--spy-readout-value, inherit); font-weight: 600; text-align: right; }
+.spy-readout-panel section[hidden] { display: none; }
+.spy-readout-panel section:not([hidden]) ~ section { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(128, 128, 128, .4); }
+.spy-readout-panel p { margin: 0; }
+.spy-readout-panel .spy-readout-title { margin: 0 0 4px; font-weight: 700; }
+.spy-readout-panel .spy-readout-head { margin: 0 0 4px; color: #0aa5a5; font-weight: 600; }
+.spy-readout-panel .spy-readout-about { margin-top: 6px; opacity: .75; white-space: normal; font-family: var(--spy-readout-font, system-ui, sans-serif); }
+.spy-readout-panel .spy-readout-empty { opacity: .6; font-family: var(--spy-readout-font, system-ui, sans-serif); }
+.spy-readout-panel hr { margin: 6px 0; border: 0; border-top: 1px solid rgba(128, 128, 128, .4); }
+.spy-readout-panel table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
+.spy-readout-panel th { padding: 0 0 2px; color: var(--spy-readout-label, color-mix(in srgb, currentColor 70%, transparent)); font-weight: 600; text-align: right; }
+.spy-readout-panel td { padding: 1px 0; color: var(--spy-readout-value, inherit); text-align: right; }
+.spy-readout-panel :is(th, td):first-child { text-align: left; }
+.spy-readout-layer[data-readout-tool="draw"] { cursor: crosshair; }
+.spy-readout-text-input { position: absolute; z-index: 4; box-sizing: border-box; min-height: 30px; padding: 4px 6px; border: 2px solid #e11d48; border-radius: 4px; background: #fff; color: #111; font: 600 15px/1.3 system-ui, sans-serif; resize: none; overflow: hidden; white-space: pre-wrap; overflow-wrap: anywhere; }
 `;
 
 // ---------------------------------------------------------------------------------------------------
@@ -78,8 +113,21 @@ function thetaE(p, T, Td) {
 
 // a number for display, without a "-0"
 const num = (v, digits = 0) => v.toFixed(digits).replace(/^-(0(\.0+)?)$/, "$1");
+// parcels: an approximate surface-style lift (Bolton 1980 LCL, a dry adiabat, then a pseudoadiabat), in virtual
+// temperature, for a quick look; SounderPy computes the figure's parcels exactly
+const RD = 287.04, CP = 1005.7, LV = 2.501e6, EPS = 0.622, KAPPA = RD / CP;
+const satMixing = (p, T) => { const e = es(T); return (EPS * e) / (p - e); }; // kg/kg; p hPa, T °C
+const virtualK = (Tk, r) => (Tk * (1 + r / EPS)) / (1 + r);
+function moistLapse(p, Tk) {
+  // dT/dp on a pseudoadiabat (K/hPa)
+  const rs = satMixing(p, Tk - 273.15);
+  return ((RD * Tk + LV * rs) / (CP + (LV * LV * rs * EPS) / (RD * Tk * Tk))) / p;
+}
+
 const fmt = (v, digits = 0, unit = "") => (v == null || !Number.isFinite(v) ? "–" : num(v, digits) + unit);
 const windDir = (u, v) => ((Math.atan2(-u, -v) * 180) / Math.PI + 360) % 360;
+const COMPASS = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+const compass = (deg) => COMPASS[Math.round(deg / 22.5) % 16];
 
 export class SounderPyReadout {
   /**
@@ -104,8 +152,20 @@ export class SounderPyReadout {
    * @param {string[]} [options.fields] readout rows, from: p, z_agl, z, T, Td, Tw, Tv, rh, mr, theta, thetae, wind, omega
    * @param {"C"|"F"|"both"} [options.temperature="both"] temperature units
    * @param {"m"|"ft"} [options.height="m"] height units
+   * @param {"kt"|"m/s"|"mph"} [options.wind="kt"] wind speed units
    * @param {"auto"|"light"|"dark"} [options.theme="auto"] tooltip colors; auto follows the figure
-   * @param {boolean} [options.editable=false] start with editing on
+   * @param {boolean} [options.editable=false] start with editing on (the same as tool: "edit")
+   * @param {"inspect"|"edit"|"layer"|"measure"|"storm"} [options.tool="inspect"] what dragging does: nothing (inspect),
+   *   move profile points (edit), measure a height range (layer), measure between two points (measure), or pick a storm
+   *   motion on the hodograph (storm)
+   * @param {HTMLElement} [options.panel] an element beside the image for the full readout and tool results; the
+   *   pointer then shows only `tipFields`
+   * @param {string[]} [options.tipFields] the pointer readout's rows when there's a panel (p, height, T, Td, wind)
+   * @param {string} [options.panelHint] what the panel says before anything is hovered
+   * @param {string} [options.tipFooter] a line at the bottom of the pointer readout, e.g. "Click for more"
+   * @param {number[]|false} [options.levels] pressures (hPa) for the panel's standard levels table, after the surface;
+   *   false for none. Default is 925, 850, 700, 500, 300, and 250
+   * @param {(drawings: object[]) => void} [options.onDraw] called when drawings are added, undone, or cleared
    * @param {boolean} [options.tapReadout=true] on touch screens, a tap shows the readout; false leaves taps to the
    *   page (e.g. a link around the image) unless editing
    * @param {boolean} [options.cursor=true] add the temperature (skew-t) or wind (hodograph) under the pointer
@@ -114,13 +174,20 @@ export class SounderPyReadout {
    * @param {(level: object|null) => void} [options.onHover] called with the level under the pointer
    * @param {(profile: object) => void} [options.onEdit] called while a point is dragged
    * @param {(profile: object) => void} [options.onEditEnd] called when a drag finishes
+   * @param {(mark: object|null) => void} [options.onMark] called with a layer or measurement's results (see getMark)
+   * @param {(motion: {u: number, v: number, direction: number, speed: number}) => void} [options.onStormMotion] called
+   *   when a storm motion is picked: u and v in kt, and the direction it comes from (degrees) and speed (kt), as
+   *   SounderPy's storm_motion=[direction, speed] takes them
    */
   constructor(img, readout, options = {}) {
     if (!(img instanceof HTMLImageElement)) throw new TypeError("SounderPyReadout needs an <img> element.");
     this.img = img;
-    this.options = { fields: DEFAULT_FIELDS, temperature: "both", height: "m", theme: "auto", editable: false, tapReadout: true, cursor: true,
+    this.options = { fields: DEFAULT_FIELDS, temperature: "both", height: "m", wind: "kt", theme: "auto", editable: false, tapReadout: true, cursor: true, tipFields: TIP_FIELDS, panelHint: "Hover the plot to read it here.", levels: LEVELS,
       parts: ["skewt", "hodograph", "panels", "params"], ...options };
-    this.editing = false;
+    this.tool = "inspect";
+    this.mark = null;
+    this.drawings = [];
+    this.drawStyle = { mode: "pen", color: "#e11d48", width: 5 };
     this.hover = null;
     this.drag = null;
     this.history = [];
@@ -134,7 +201,11 @@ export class SounderPyReadout {
     this.tip = document.createElement("div");
     this.tip.className = "spy-readout-tip";
     this.tip.setAttribute("role", "status");
-    img.after(this.layer, this.tip);
+    // a layer or measurement's results, pinned beside it
+    this.card = document.createElement("div");
+    this.card.className = "spy-readout-tip spy-readout-card";
+    this.card.setAttribute("role", "status");
+    img.after(this.layer, this.tip, this.card);
     this.ctx = this.layer.getContext("2d");
 
     this._listeners = [];
@@ -144,8 +215,8 @@ export class SounderPyReadout {
     on(this.layer, "pointerup", (e) => this._onUp(e));
     on(this.layer, "pointercancel", (e) => this._onUp(e));
     on(this.layer, "pointerleave", (e) => { if (!this.drag && e.pointerType === "mouse") this._setHover(null); });
-    // while editing, clicks belong to the editor (not, say, a link or button around the image)
-    on(this.layer, "click", (e) => { if (this.editing) { e.preventDefault(); e.stopPropagation(); } });
+    // with a tool on, clicks belong to the tool (not, say, a link or button around the image)
+    on(this.layer, "click", (e) => { if (this.tool !== "inspect") { e.preventDefault(); e.stopPropagation(); } });
     on(img, "load", () => this._layout());
     this._resize = new ResizeObserver(() => this._layout());
     this._resize.observe(img);
@@ -154,7 +225,9 @@ export class SounderPyReadout {
     this._restyle.observe(img, { attributes: true, attributeFilter: ["style", "class"] });
 
     this.update(readout);
-    if (this.options.editable) this.setEditing(true);
+    if (this.options.panel) this.setPanel(this.options.panel);
+    if (this.options.editable) this.setTool("edit");
+    else if (this.options.tool) this.setTool(this.options.tool);
   }
 
   // ------------------------------------------------------------------------------------------------
@@ -175,14 +248,136 @@ export class SounderPyReadout {
     this.hover = null;
     const dark = this.options.theme === "dark" || (this.options.theme === "auto" && readout.dark);
     this.tip.toggleAttribute("data-dark", dark);
+    this.card.toggleAttribute("data-dark", dark);
+    this.mark = null;
+    // drawings stay on a redrawn figure of the same size (e.g. light to dark); a new layout clears them
+    if (this._size && (this._size[0] !== readout.image.width || this._size[1] !== readout.image.height)) this.drawings = [];
+    this._size = [readout.image.width, readout.image.height];
     this._layout();
+    this._renderLevels();
   }
 
-  /** Turn profile editing on or off. */
+  /** True while dragging edits the profile. */
+  get editing() { return this.tool === "edit"; }
+
+  /** Turn profile editing on or off (the same as setTool("edit") and setTool("inspect")). */
   setEditing(on) {
-    this.editing = Boolean(on);
-    this.layer.toggleAttribute("data-editing", this.editing);
+    this.setTool(on ? "edit" : "inspect");
+  }
+
+  /**
+   * What dragging does: "inspect" (nothing; hover reads the plot), "edit" (move profile points), "layer" (drag a
+   * height range on the skew-t or a 0-3 km panel for its stats), "measure" (drag between two points on the
+   * skew-t or hodograph), or "storm" (hover the hodograph to try a storm motion, click to pick it; see
+   * onStormMotion). Changing tools clears a layer, measurement, or storm motion.
+   */
+  setTool(tool) {
+    if (!TOOLS.includes(tool)) throw new Error(`Unknown tool "${tool}"; use one of ${TOOLS.join(", ")}.`);
+    this.tool = tool;
+    this.layer.toggleAttribute("data-editing", tool === "edit");
+    this.layer.toggleAttribute("data-marking", ["layer", "measure", "storm", "parcel", "draw"].includes(tool));
+    this.layer.dataset.readoutTool = tool;
+    this.clearMark();
+  }
+
+  /**
+   * The current layer or measurement and its results, or null. A layer has z (m AGL) and p (hPa) ranges and its
+   * stats; a measurement has its two points and their differences. Each has `rows`: [label, value] pairs.
+   */
+  getMark() {
+    return this.mark ? this._markResults(this.mark) : null;
+  }
+
+  /**
+   * Put the full readout and tool results in an element beside the image (or null to go back to the pointer only).
+   * The element's size and colors are the page's; the readout fills it with sections of rows.
+   */
+  setPanel(el) {
+    this.panel?.classList.remove("spy-readout-panel");
+    this.panel = el || null;
+    if (this.panel) {
+      this.panel.classList.add("spy-readout-panel");
+      this.panel.innerHTML = `<section data-readout-mark hidden></section><section data-readout-cursor><p class="spy-readout-empty"></p></section><section data-readout-levels hidden></section>`;
+      this.panel.querySelector(".spy-readout-empty").textContent = this.options.panelHint;
+      this.card.style.display = "none";
+    }
+    if (this.ro) { this._draw(); this._renderLevels(); }
+  }
+
+  // ------------------------------------------------------------------------------------------------
+  // drawing on the plot
+  // ------------------------------------------------------------------------------------------------
+
+  /** How the draw tool draws: { mode: "pen" | "arrow" | "text", color: "#rrggbb", width: image pixels }. */
+  setDrawStyle(style = {}) {
+    Object.assign(this.drawStyle, style);
+  }
+
+  /** True when there's something drawn on the plot. */
+  hasDrawing() { return this.drawings.length > 0; }
+
+  /** Remove the last drawing. */
+  undoDrawing() {
+    this.drawings.pop();
     this._draw();
+    this.options.onDraw?.(this.drawings);
+  }
+
+  /** Remove every drawing. */
+  clearDrawing() {
+    this.drawings = [];
+    this._draw();
+    this.options.onDraw?.(this.drawings);
+  }
+
+  /**
+   * The figure with the drawings on it, as an image Blob at the image's full size. The image must be same-origin
+   * (or served with CORS) for the browser to allow this.
+   */
+  async exportImage(type = "image/png") {
+    const img = this.img, w = img.naturalWidth || this.ro.image.width, h = img.naturalHeight || this.ro.image.height;
+    const canvas = document.createElement("canvas");
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, w, h);
+    ctx.scale(w / this.ro.image.width, h / this.ro.image.height);
+    this._drawDrawings(ctx);
+    return new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Couldn't export the image."))), type));
+  }
+
+  /**
+   * Lift and pin a preset parcel like SounderPy's: "sb" (surface-based), "ml" (lowest 100 hPa mixed), or "mu" (most
+   * unstable in the lowest 300 hPa). Switches to the parcel tool; returns the parcel's results (see getMark).
+   */
+  liftParcel(preset) {
+    if (!["sb", "ml", "mu"].includes(preset)) throw new Error(`Unknown parcel "${preset}"; use "sb", "ml", or "mu".`);
+    if (this.tool !== "parcel") this.setTool("parcel");
+    const S = this.ro.panels.skewt;
+    this.mark = { kind: "parcel", preset, i: 0, picked: true, end: [S.bbox[2] - 20, S.bbox[1] + 20] };
+    this._draw();
+    const res = this.getMark();
+    this.options.onMark?.(res);
+    return res;
+  }
+
+  /** Remove a layer or measurement. */
+  clearMark() {
+    this.mark = null;
+    this.card.style.display = "none";
+    const section = this.panel?.querySelector("[data-readout-mark]");
+    if (section) section.hidden = true;
+    this._draw();
+    this.options.onMark?.(null);
+  }
+
+  /**
+   * Change the readout's units: { temperature: "C" | "F" | "both", height: "m" | "ft", wind: "kt" | "m/s" | "mph" }.
+   * The figure keeps its own units; only the readouts change.
+   */
+  setUnits(units = {}) {
+    for (const key of ["temperature", "height", "wind"]) if (units[key]) this.options[key] = units[key];
+    if (this.ro) this._draw();
+    this._renderLevels();
   }
 
   /** True when the profile has been edited. */
@@ -206,6 +401,7 @@ export class SounderPyReadout {
     if (!this.history.length) return;
     this.edit = this.history.pop();
     this._draw();
+    this._renderLevels();
     this.options.onEditEnd?.(this.getProfile());
   }
 
@@ -214,6 +410,7 @@ export class SounderPyReadout {
     this.edit = structuredClone(this.original);
     this.history = [];
     this._draw();
+    this._renderLevels();
     this.options.onEditEnd?.(this.getProfile());
   }
 
@@ -225,7 +422,8 @@ export class SounderPyReadout {
   /** Show or hide the layer, e.g. for a readout mode that can be switched off. */
   setEnabled(on) {
     this.layer.hidden = !on;
-    if (!on) this._setHover(null);
+    if (!on) { this._setHover(null); this.card.style.display = "none"; }
+    else if (this.mark) this._draw();
   }
 
   /** Remove the layer and listeners. */
@@ -236,6 +434,7 @@ export class SounderPyReadout {
     for (const [target, type, fn, opts] of this._listeners) target.removeEventListener(type, fn, opts);
     this.layer.remove();
     this.tip.remove();
+    this.card.remove();
   }
 
   // ------------------------------------------------------------------------------------------------
@@ -294,6 +493,7 @@ export class SounderPyReadout {
 
   _followTransform() {
     this._copyTransform();
+    if (this.mark) this._placeCard();
     // sharpen once the zoom settles
     cancelAnimationFrame(this._frame);
     this._frame = requestAnimationFrame(() => {
@@ -368,8 +568,31 @@ export class SounderPyReadout {
   // ------------------------------------------------------------------------------------------------
   _onMove(e) {
     this._client = [e.clientX, e.clientY];
+    this._touch = e.pointerType !== "mouse";
     const [x, y] = this._eventPx(e);
     if (this.drag) { this._dragTo(x, y); return; }
+    if (this.marking) { this._markTo(x, y); return; }
+    if (this.drawing) { this._drawTo(x, y); return; }
+    // the parcel tool previews a parcel from the level under the pointer, until one is picked
+    // with a parcel pinned, the pointer's height on the skew-t reads its CAPE from the LFC up to there
+    if (this.tool === "parcel" && this.mark?.kind === "parcel" && this.mark.picked) {
+      const S = this.ro.panels.skewt, inside = S && this._in(S.bbox, x, y);
+      this.mark.cursor = inside ? this._inv(S.transform, x, y)[1] : null;
+      this._draw();
+      return;
+    }
+    if (this.tool === "parcel" && !this.mark?.picked) {
+      const S = this.ro.panels.skewt;
+      if (S && this._in(S.bbox, x, y)) { this.mark = this._markStart(x, y); this.hover = null; this._draw(); return; }
+      if (this.mark) { this.mark = null; this._draw(); }
+    }
+    if (this.tool === "draw") return;
+    // the storm tool previews a storm motion wherever the pointer is on the hodograph, until one is picked
+    if (this.tool === "storm" && !this.mark?.picked) {
+      const H = this.ro.panels.hodograph;
+      if (H && this._in(H.bbox, x, y)) { this.mark = this._markStart(x, y); this.hover = null; this._draw(); return; }
+      if (this.mark) { this.mark = null; this._draw(); }
+    }
     this._setHover(this._hoverAt(x, y));
     this.layer.style.cursor = this.editing && this._hit(x, y) ? "grab" : "crosshair";
   }
@@ -438,6 +661,7 @@ export class SounderPyReadout {
 
   _onDown(e) {
     this._client = [e.clientX, e.clientY];
+    this._touch = e.pointerType !== "mouse";
     const [x, y] = this._eventPx(e);
     if (this.editing) {
       const hit = this._hit(x, y);
@@ -452,11 +676,58 @@ export class SounderPyReadout {
         return;
       }
     }
+    if (this.tool === "draw") {
+      // drawing, not panning a zoomable view around the image
+      e.preventDefault();
+      e.stopPropagation();
+      this._drawStart(x, y, e);
+      return;
+    }
+    if (this.tool === "layer" || this.tool === "measure" || this.tool === "storm" || this.tool === "parcel") {
+      const start = this._markStart(x, y);
+      if (start) {
+        // the drag measures, not pans a zoomable view around the image
+        e.preventDefault();
+        e.stopPropagation();
+        this.mark = start;
+        this.hover = null;
+        this.marking = { x0: e.clientX, y0: e.clientY };
+        this.layer.setPointerCapture(e.pointerId);
+        this._draw();
+        return;
+      }
+    }
     // a tap shows the readout on touch screens
-    if (e.pointerType !== "mouse" && (this.options.tapReadout || this.editing)) this._setHover(this._hoverAt(x, y));
+    if (e.pointerType !== "mouse" && (this.options.tapReadout || this.tool !== "inspect")) this._setHover(this._hoverAt(x, y));
   }
 
   _onUp(e) {
+    if (this.drawing) { this._drawEnd(e); return; }
+    if (this.marking) {
+      const moved = Math.hypot(e.clientX - this.marking.x0, e.clientY - this.marking.y0);
+      this.marking = null;
+      if (this.layer.hasPointerCapture?.(e.pointerId)) this.layer.releasePointerCapture(e.pointerId);
+      if (this.mark?.kind === "parcel") {
+        // a click (or a drag that ends) on the skew-t pins the parcel
+        this.mark.picked = true;
+        this._draw();
+        this.options.onMark?.(this._markResults(this.mark));
+        return;
+      }
+      if (this.mark?.kind === "storm") {
+        // a click (or a drag that ends) on the hodograph picks the storm motion
+        this.mark.picked = true;
+        this._draw();
+        const res = this._markResults(this.mark);
+        this.options.onMark?.(res);
+        this.options.onStormMotion?.({ u: this.mark.u, v: this.mark.v, direction: Math.round(res.direction) % 360, speed: Math.round(res.speed) });
+        return;
+      }
+      // a click without a drag clears the mark
+      if (moved < 4) this.clearMark();
+      else { this._draw(); this.options.onMark?.(this.getMark()); }
+      return;
+    }
     if (!this.drag) return;
     this.drag = null;
     if (this.layer.hasPointerCapture?.(e.pointerId)) this.layer.releasePointerCapture(e.pointerId);
@@ -484,7 +755,622 @@ export class SounderPyReadout {
     }
     this.hover = { panel: field === "wind" ? "hodograph" : "skewt", lp: this.lp[i], x, y };
     this._draw();
+    this._renderLevels();
     this.options.onEdit?.(this.getProfile());
+  }
+
+  // ------------------------------------------------------------------------------------------------
+  // layer and measure tools
+  // ------------------------------------------------------------------------------------------------
+  // where a layer or measurement starts, or null when the pointer isn't on a panel the tool works on
+  _markStart(x, y) {
+    const S = this.ro.panels.skewt, H = this.ro.panels.hodograph;
+    if (this.tool === "layer") {
+      for (const hp of this.ro.height_panels || []) {
+        if (this._in(hp.bbox, x, y)) { const z = this._clampZ(this._panelZ(hp, x, y)); return { kind: "layer", panel: hp, z0: z, z1: z, end: [x, y] }; }
+      }
+      if (S && this._in(S.bbox, x, y)) {
+        const z = this._zFromSkew(x, y);
+        return z == null ? null : { kind: "layer", panel: "skewt", z0: z, z1: z, end: [x, y] };
+      }
+    } else if (this.tool === "measure") {
+      if (S && this._in(S.bbox, x, y)) return { kind: "measure", panel: "skewt", a: [x, y], b: [x, y], end: [x, y] };
+      if (H && this._in(H.bbox, x, y)) return { kind: "measure", panel: "hodograph", a: [x, y], b: [x, y], end: [x, y] };
+    } else if (this.tool === "storm") {
+      if (H && this._in(H.bbox, x, y)) { const [u, v] = this._snapMotion(...this._hodoUV(x, y)); return { kind: "storm", u, v, end: [x, y] }; }
+    } else if (this.tool === "parcel") {
+      if (S && this._in(S.bbox, x, y)) {
+        const i = this._levelNear(this._inv(S.transform, x, y)[1]);
+        return i == null ? null : { kind: "parcel", i, end: [x, y] };
+      }
+    }
+    return null;
+  }
+
+  _markTo(x, y) {
+    const m = this.mark;
+    if (m.kind === "layer") {
+      const z = m.panel === "skewt" ? this._zFromSkew(x, y) : this._clampZ(this._panelZ(m.panel, x, y));
+      if (z != null) m.z1 = z;
+    } else if (m.kind === "parcel") {
+      const i = this._levelNear(this._inv(this.ro.panels.skewt.transform, x, y)[1]);
+      if (i != null) m.i = i;
+    } else if (m.kind === "storm") {
+      const H = this.ro.panels.hodograph;
+      [m.u, m.v] = this._snapMotion(...this._hodoUV(Math.min(Math.max(x, H.bbox[0]), H.bbox[2]), Math.min(Math.max(y, H.bbox[1]), H.bbox[3])));
+    } else {
+      const bbox = this.ro.panels[m.panel].bbox;
+      m.b = [Math.min(Math.max(x, bbox[0]), bbox[2]), Math.min(Math.max(y, bbox[1]), bbox[3])];
+    }
+    m.end = [x, y];
+    this._draw();
+  }
+
+  // ---- the draw tool ----
+  _drawStart(x, y, e) {
+    const { mode, color, width } = this.drawStyle;
+    this.layer.setPointerCapture(e.pointerId);
+    this.drawing = { start: [e.clientX, e.clientY], item: mode === "pen" ? { type: "pen", color, width, pts: [[x, y]] }
+      : mode === "arrow" ? { type: "arrow", color, width, a: [x, y], b: [x, y] } : null, text: mode === "text" ? [x, y] : null };
+  }
+
+  _drawTo(x, y) {
+    const item = this.drawing.item;
+    if (item?.type === "pen") item.pts.push([x, y]);
+    else if (item?.type === "arrow") item.b = [x, y];
+    if (item && !this.drawings.includes(item)) this.drawings.push(item);
+    this._draw();
+  }
+
+  _drawEnd(e) {
+    const { item, text, start } = this.drawing;
+    this.drawing = null;
+    if (this.layer.hasPointerCapture?.(e.pointerId)) this.layer.releasePointerCapture(e.pointerId);
+    if (text) { this._textInput(text, [e.clientX, e.clientY]); return; }
+    const moved = Math.hypot(e.clientX - start[0], e.clientY - start[1]);
+    // a tap without a drag draws nothing
+    if (moved < 3 && item) this.drawings = this.drawings.filter((d) => d !== item);
+    this._draw();
+    this.options.onDraw?.(this.drawings);
+  }
+
+  // a small box to type a label where the plot was clicked: it wraps as you type, Enter adds the label (Shift+Enter
+  // starts a new line), and Escape cancels. It stays on screen and doesn't scroll the view under it.
+  _textInput(at, client) {
+    const input = document.createElement("textarea");
+    input.className = "spy-readout-text-input";
+    input.rows = 1;
+    input.placeholder = "Label, then Enter";
+    const parent = this.layer.offsetParent || this.img.parentElement, box = parent.getBoundingClientRect();
+    // inside the part of the image that's on screen, so the label stays on the figure
+    const img = this.img.getBoundingClientRect();
+    const area = { left: Math.max(box.left, img.left), right: Math.min(box.right, img.right), top: Math.max(box.top, img.top), bottom: Math.min(box.bottom, img.bottom) };
+    const width = Math.max(120, Math.min(260, area.right - area.left - 16));
+    const left = Math.min(Math.max(client[0], area.left + 8), area.right - width - 8) - box.left;
+    const top = Math.min(Math.max(client[1] - 14, area.top + 8), area.bottom - 60) - box.top;
+    // the label's size on the plot, so what's typed looks like what's drawn
+    // at least 12 px on screen while typing; drawn at that size too, so the label matches the box
+    const screenSize = Math.max(12, Math.max(24, this.drawStyle.width * 6) * this._screenScale);
+    const size = screenSize / Math.max(this._screenScale, 0.05);
+    Object.assign(input.style, { left: `${left}px`, top: `${top}px`, width: `${width}px`, borderColor: this.drawStyle.color,
+      fontSize: `${screenSize}px`, lineHeight: "1.2", color: this.drawStyle.color });
+    parent.append(input);
+    input.focus({ preventScroll: true });
+    const grow = () => { input.style.height = "auto"; input.style.height = `${input.scrollHeight + 2}px`; };
+    input.addEventListener("input", grow);
+    let done = false;
+    const finish = (keep) => {
+      if (done) return;
+      done = true;
+      const text = input.value.trim();
+      // drawn where the box is (it may have moved to stay on screen), wrapped at the box's width, in image pixels
+      const scale = Math.max(this._screenScale, 0.05), box = input.getBoundingClientRect(), img = this.img.getBoundingClientRect();
+      const maxWidth = (input.clientWidth - 12) / scale;
+      const x = ((box.left + 8 - img.left) / img.width) * this.ro.image.width;
+      const y = ((box.top + 6 - img.top) / img.height) * this.ro.image.height + size * 0.9;
+      input.remove();
+      if (keep && text) {
+        this.drawings.push({ type: "text", color: this.drawStyle.color, size, at: [x, y], text, lines: this._wrapText(text, size, maxWidth) });
+        this._draw();
+        this.options.onDraw?.(this.drawings);
+      }
+    };
+    input.addEventListener("keydown", (ev) => {
+      ev.stopPropagation(); // typing doesn't zoom or pan a viewer
+      if (ev.key === "Enter" && !ev.shiftKey) { ev.preventDefault(); finish(true); }
+      if (ev.key === "Escape") { ev.preventDefault(); finish(false); }
+    });
+    input.addEventListener("blur", () => finish(true));
+  }
+
+  // lines of text that fit maxWidth (image pixels) at a font size, keeping the typed line breaks
+  _wrapText(text, size, maxWidth) {
+    this.ctx.save();
+    this.ctx.font = `bold ${size}px system-ui, sans-serif`;
+    const lines = [];
+    for (const paragraph of text.split("\n")) {
+      let line = "";
+      for (const word of paragraph.split(/\s+/)) {
+        const next = line ? `${line} ${word}` : word;
+        if (line && this.ctx.measureText(next).width > maxWidth) { lines.push(line); line = word; } else line = next;
+      }
+      lines.push(line);
+    }
+    this.ctx.restore();
+    return lines;
+  }
+
+  _drawDrawings(ctx) {
+    for (const d of this.drawings) {
+      ctx.save();
+      ctx.strokeStyle = d.color; ctx.fillStyle = d.color; ctx.lineWidth = d.width ?? 5; ctx.lineCap = "round"; ctx.lineJoin = "round";
+      if (d.type === "pen" && d.pts.length > 1) {
+        ctx.beginPath(); ctx.moveTo(...d.pts[0]); d.pts.slice(1).forEach((pt) => ctx.lineTo(...pt)); ctx.stroke();
+      } else if (d.type === "arrow") {
+        const [ax, ay] = d.a, [bx, by] = d.b, ang = Math.atan2(by - ay, bx - ax), head = 10 + d.width * 3;
+        ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx - Math.cos(ang) * head * 0.6, by - Math.sin(ang) * head * 0.6); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(bx, by);
+        ctx.lineTo(bx - head * Math.cos(ang - 0.45), by - head * Math.sin(ang - 0.45));
+        ctx.lineTo(bx - head * Math.cos(ang + 0.45), by - head * Math.sin(ang + 0.45));
+        ctx.closePath(); ctx.fill();
+      } else if (d.type === "text") {
+        // a light halo keeps labels readable on any part of the figure
+        ctx.font = `bold ${d.size}px system-ui, sans-serif`;
+        ctx.lineWidth = d.size / 5; ctx.strokeStyle = "rgba(255,255,255,0.9)";
+        (d.lines ?? [d.text]).forEach((line, k) => {
+          const y = d.at[1] + k * d.size * 1.2;
+          ctx.strokeText(line, d.at[0], y); ctx.fillText(line, d.at[0], y);
+        });
+      }
+      ctx.restore();
+    }
+  }
+
+  // ---- the panel's standard levels table: the surface and LEVELS, in the readout's units ----
+  _renderLevels() {
+    const section = this.panel?.querySelector("[data-readout-levels]");
+    if (!section) return;
+    const levels = this.options.levels;
+    if (!levels || !this.ro) { section.hidden = true; return; }
+    const psfc = this.ro.profile.p[0], ptop = this.ro.profile.p[this.n - 1];
+    const tempUnit = this.options.temperature === "F" ? "°F" : "°C", ft = this.options.height === "ft";
+    const t = (c) => (c == null ? "–" : num(this.options.temperature === "F" ? (c * 9) / 5 + 32 : c, this.options.temperature === "F" ? 0 : 1));
+    const spd = (kt) => (this.options.wind === "m/s" ? kt * KT : this.options.wind === "mph" ? kt * 1.150779 : kt);
+    const rows = [["SFC", this.lp[0]], ...levels.filter((p) => p < psfc && p >= ptop).map((p) => [String(p), Math.log10(p)])].map(([label, lp]) => {
+      const l = this._level(lp);
+      if (!l) return "";
+      const z = l.z_agl == null ? "–" : num(ft ? l.z_agl * 3.28084 : l.z_agl);
+      const wind = l.u == null ? "–" : Math.hypot(l.u, l.v) < 0.5 ? "calm" : `${num(windDir(l.u, l.v) / 5) * 5}/${num(spd(Math.hypot(l.u, l.v)))}`;
+      return `<tr><td>${label}</td><td>${z}</td><td>${t(l.T)}</td><td>${t(l.Td)}</td><td>${wind}</td></tr>`;
+    }).join("");
+    section.innerHTML = `<p class="spy-readout-title">Levels</p><table><thead><tr><th>hPa</th><th>${ft ? "ft" : "m"} AGL</th>`
+      + `<th>T ${tempUnit}</th><th>Td</th><th>Wind ${this.options.wind}</th></tr></thead><tbody>${rows}</tbody></table>`;
+    section.hidden = false;
+  }
+
+  // the profile level nearest log10(p), among levels with a temperature and dewpoint
+  _levelNear(lp) {
+    let best = null, bd = Infinity;
+    for (let i = 0; i < this.n; i++) {
+      if (this.edit.T[i] == null || this.edit.Td[i] == null) continue;
+      const d = Math.abs(this.lp[i] - lp);
+      if (d < bd) { bd = d; best = i; }
+    }
+    return best;
+  }
+
+  // the environment's virtual temperature (K) at log10(p), from the (edited) temperature and dewpoint
+  _envTv(lp) {
+    const T = this._interp(this.edit.T, lp), Td = this._interp(this.edit.Td, lp);
+    if (T == null) return null;
+    const p = 10 ** lp;
+    return virtualK(T + 273.15, Td == null ? 0 : satMixing(p, Td));
+  }
+
+  // a parcel mark's parcel, recomputed only when its source or the profile changes
+  _parcelFor(m) {
+    const key = `${m.preset ?? m.i}:${JSON.stringify(this.edit.T)}:${JSON.stringify(this.edit.Td)}`;
+    if (this._parcelCache?.key !== key) this._parcelCache = { key, r: this._parcel(this._parcelSource(m)) };
+    return this._parcelCache.r;
+  }
+
+  // where a parcel starts: a level, or a preset like SounderPy's parcels
+  //   sb: the surface; ml: the lowest 100 hPa mixed (mean potential temperature and mixing ratio, by pressure),
+  //   from the surface; mu: the highest theta-e in the lowest 300 hPa
+  _parcelSource(m) {
+    const P = this.ro.profile.p, ok = (k) => this.edit.T[k] != null && this.edit.Td[k] != null;
+    const sfc = P.findIndex((_, k) => ok(k));
+    const at = (k, label) => ({ p0: P[k], T0: this.edit.T[k], Td0: Math.min(this.edit.Td[k], this.edit.T[k]), label });
+    if (m.preset === "sb") return at(sfc, "Surface-based");
+    if (m.preset === "mu") {
+      let best = sfc, top = -Infinity;
+      for (let k = sfc; k < this.n && P[k] >= P[sfc] - 300; k++) {
+        if (!ok(k)) continue;
+        const te = thetaE(P[k], this.edit.T[k], this.edit.Td[k]);
+        if (te > top) { top = te; best = k; }
+      }
+      return at(best, "Most unstable");
+    }
+    if (m.preset === "ml") {
+      // pressure-weighted means every 1 hPa through the lowest 100 hPa
+      const p0 = P[sfc];
+      let theta = 0, r = 0, weight = 0;
+      for (let p = p0; p >= p0 - 100; p -= 1) {
+        const lp = Math.log10(p), T = this._interp(this.edit.T, lp), Td = this._interp(this.edit.Td, lp);
+        if (T == null || Td == null) continue;
+        theta += (T + 273.15) * Math.pow(1000 / p, KAPPA); r += satMixing(p, Td); weight += 1;
+      }
+      theta /= weight; r /= weight;
+      const T0 = theta * Math.pow(p0 / 1000, KAPPA) - 273.15;
+      const e = (r * p0) / (EPS + r), x = Math.log(e / 6.112);
+      return { p0, T0, Td0: Math.min((243.5 * x) / (17.67 - x), T0), label: "Mixed layer (100 hPa)" };
+    }
+    return at(m.i, null);
+  }
+
+  // CAPE and CIN of a parcel from the start up to log10(p) = lpTop (CAPE counts from the LFC), and its buoyancy there
+  _parcelTo(r, lpTop) {
+    const pts = r.trace, lo = pts[pts.length - 1].lp;
+    const top = Math.max(Math.min(lpTop, pts[0].lp), lo);
+    let cape = 0, cin = 0, b = pts[0].b;
+    for (let k = 0; k < pts.length - 1; k++) {
+      const a = pts[k];
+      if (a.lp <= top) break;
+      let c = pts[k + 1];
+      // the last step ends at the cursor
+      if (c.lp < top) { const f = (a.lp - top) / (a.lp - c.lp); c = { lp: top, p: 10 ** top, b: a.b + f * (c.b - a.b) }; }
+      const area = RD * ((a.b + c.b) / 2) * Math.log(a.p / c.p);
+      if (r.lfc != null && c.lp <= r.lfc && (r.el == null || a.lp >= r.el) && area > 0) cape += area;
+      if (r.lfc != null && a.lp > r.lfc && area < 0) cin += area;
+      b = c.b;
+    }
+    return { lp: top, cape, cin, b };
+  }
+
+  // a parcel lifted from level i: its trace and CAPE, CIN, LCL, LFC, EL, and lifted index
+  _parcel({ p0, T0, Td0 }) {
+    const tk0 = T0 + 273.15, tdk0 = Td0 + 273.15, r0 = satMixing(p0, Td0);
+    const tlcl = 1 / (1 / (tdk0 - 56) + Math.log(tk0 / tdk0) / 800) + 56;
+    const plcl = p0 * Math.pow(tlcl / tk0, 1 / KAPPA);
+    const ptop = Math.min(...this.ro.profile.p.filter((v, k) => this.edit.T[k] != null));
+    // pressures every 2 hPa from the start to the profile's top, with the LCL exactly
+    const ps = [];
+    for (let q = p0; q > ptop; q -= 2) ps.push(q);
+    ps.push(ptop);
+    if (plcl < p0 && plcl > ptop) { ps.push(plcl); ps.sort((a, b) => b - a); }
+    // dry adiabat (constant mixing ratio) to the LCL, then RK4 steps along the pseudoadiabat
+    const trace = [];
+    let Tk = tk0;
+    for (let k = 0; k < ps.length; k++) {
+      const p = ps[k];
+      let Tv;
+      if (p >= plcl) {
+        Tk = tk0 * Math.pow(p / p0, KAPPA);
+        Tv = virtualK(Tk, r0);
+      } else {
+        const prev = ps[k - 1], h = p - prev;
+        const k1 = moistLapse(prev, Tk), k2 = moistLapse(prev + h / 2, Tk + (h / 2) * k1);
+        const k3 = moistLapse(prev + h / 2, Tk + (h / 2) * k2), k4 = moistLapse(p, Tk + h * k3);
+        Tk += (h / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
+        Tv = virtualK(Tk, satMixing(p, Tk - 273.15));
+      }
+      trace.push({ p, lp: Math.log10(p), Tv });
+    }
+    // buoyancy (parcel minus environment virtual temperature) through the trace
+    for (const t of trace) { const env = this._envTv(t.lp); t.env = env; t.b = env == null ? null : t.Tv - env; }
+    const pts = trace.filter((t) => t.b != null);
+    const cross = (a, b) => a.lp + (0 - a.b) * (b.lp - a.lp) / (b.b - a.b);
+    let lfc = null, el = null, cape = 0, cin = 0;
+    for (let k = 0; k < pts.length - 1; k++) {
+      const a = pts[k], b = pts[k + 1];
+      if (a.p > plcl + 1e-6 && b.p > plcl + 1e-6) continue; // the LFC is at or above the LCL
+      if (lfc == null && a.b <= 0 && b.b > 0) lfc = cross(a, b);
+      if (lfc == null && k === 0 && a.b > 0 && a.p <= plcl) lfc = a.lp;
+      if (a.b > 0 && b.b <= 0) el = cross(a, b);
+    }
+    if (lfc == null && pts.some((t) => t.p <= plcl && t.b > 0)) lfc = pts.find((t) => t.p <= plcl && t.b > 0).lp;
+    for (let k = 0; k < pts.length - 1; k++) {
+      const a = pts[k], b = pts[k + 1], dlnp = Math.log(a.p / b.p), area = RD * ((a.b + b.b) / 2) * dlnp;
+      if (lfc != null && b.lp <= lfc && (el == null || a.lp >= el) && area > 0) cape += area;
+      if (lfc != null && a.lp > lfc && area < 0) cin += area;
+    }
+    if (lfc == null) cin = 0;
+    const at500 = pts.find((t) => t.p <= 500);
+    const li = at500 && at500.env != null ? at500.env - at500.Tv : null;
+    return { p0, T0, Td0, trace: pts, lcl: { p: plcl, lp: Math.log10(plcl) }, lfc, el, cape, cin, li };
+  }
+
+  // a storm motion at a whole degree and knot, so what's previewed is what a redraw uses
+  _snapMotion(u, v) {
+    const dir = Math.round(windDir(u, v)) % 360, speed = Math.round(Math.hypot(u, v));
+    const rad = (dir * Math.PI) / 180;
+    return [-speed * Math.sin(rad), -speed * Math.cos(rad)];
+  }
+
+  _clampZ(z) {
+    const Z = this.ro.profile.z_agl;
+    return Math.min(Math.max(z, 0), Z[this.n - 1]);
+  }
+
+  // the height (m AGL) of the skew-t row at y, kept within the profile
+  _zFromSkew(x, y) {
+    const lp = this._inv(this.ro.panels.skewt.transform, x, y)[1];
+    const lo = Math.min(this.lp[0], this.lp[this.n - 1]), hi = Math.max(this.lp[0], this.lp[this.n - 1]);
+    return this._zAtLp(Math.min(Math.max(lp, lo), hi));
+  }
+
+  // the wind (kt) at a height: from the 100 m hodograph trace, or the (edited) profile levels
+  _windAt(z) {
+    const tr = this.ro.hodograph_trace;
+    if (tr && !this.isEdited() && z <= tr.z_agl[tr.z_agl.length - 1]) {
+      const Z = tr.z_agl;
+      for (let i = 0; i < Z.length - 1; i++) {
+        if (Z[i] <= z && z <= Z[i + 1]) {
+          const t = (z - Z[i]) / (Z[i + 1] - Z[i] || 1);
+          return [tr.u[i] + t * (tr.u[i + 1] - tr.u[i]), tr.v[i] + t * (tr.v[i + 1] - tr.v[i])];
+        }
+      }
+    }
+    const lp = this._lpAtHeight(z);
+    if (lp == null) return null;
+    const u = this._interp(this.edit.u, lp), v = this._interp(this.edit.v, lp);
+    return u == null || v == null ? null : [u, v];
+  }
+
+  // heights every 100 m from z0 to z1 (with both ends), the hodograph trace's spacing
+  _heights(z0, z1, step = 100) {
+    const out = [z0];
+    for (let z = Math.floor(z0 / step) * step + step; z < z1; z += step) out.push(z);
+    out.push(z1);
+    return out;
+  }
+
+  // bulk shear (kt) and storm-relative helicity (m²/s², with the figure's storm motion) from z0 to z1
+  _kinematics(z0, z1, sm = this.ro.storm_motion) {
+    const winds = this._heights(z0, z1).map((z) => this._windAt(z));
+    if (winds.some((w) => !w)) return null;
+    const [a, b] = [winds[0], winds[winds.length - 1]];
+    const out = { shear: Math.hypot(b[0] - a[0], b[1] - a[1]) };
+    out.mean = [winds.reduce((s, w) => s + w[0], 0) / winds.length, winds.reduce((s, w) => s + w[1], 0) / winds.length];
+    if (sm) {
+      // storm-relative wind speed: the mean of the layer's bottom and top, as SounderPy's tables give it
+      out.srw = (Math.hypot(a[0] - sm[0], a[1] - sm[1]) + Math.hypot(b[0] - sm[0], b[1] - sm[1])) / 2;
+      let srh = 0;
+      for (let i = 0; i < winds.length - 1; i++) {
+        const [u1, v1] = winds[i], [u2, v2] = winds[i + 1];
+        srh += ((u2 - sm[0]) * (v1 - sm[1]) - (u1 - sm[0]) * (v2 - sm[1])) * KT * KT;
+      }
+      out.srh = srh;
+    }
+    return out;
+  }
+
+  _markResults(m) {
+    if (m.kind === "parcel") {
+      const r = this._parcelFor(m), source = this._parcelSource(m);
+      const z = (lp) => (lp == null ? null : this._zAtLp(Math.min(Math.max(lp, Math.min(...this.lp)), Math.max(...this.lp))));
+      const level = (lp) => (lp == null ? "–" : `${fmt(10 ** lp, 0)} hPa · ${this._height(z(lp), " AGL")}`);
+      return {
+        kind: "parcel", i: m.i, preset: m.preset ?? null, picked: Boolean(m.picked), cape: r.cape, cin: r.cin, trace: r.trace,
+        lcl: 10 ** r.lcl.lp, lfc: r.lfc == null ? null : 10 ** r.lfc, el: r.el == null ? null : 10 ** r.el,
+        rows: [
+          ...(source.label ? [["Parcel", source.label], ["Starts at", level(Math.log10(source.p0))]] : [["Lifted from", level(Math.log10(source.p0))]]),
+          ["Parcel T / Td", `${this._temp(r.T0)} / ${this._temp(r.Td0)}`],
+          ["CAPE", fmt(r.cape, 0, " J/kg")],
+          ["CIN", fmt(r.cin, 0, " J/kg")],
+          ["LCL", level(r.lcl.lp)],
+          ["LFC", level(r.lfc)],
+          ["EL", level(r.el)],
+          ["Lifted index", r.li == null ? "–" : fmt(r.li, 1, " °C")],
+          // the pointer's height: CAPE from the LFC up to it
+          ...(m.picked && m.cursor != null ? (() => {
+            const c = this._parcelTo(r, m.cursor);
+            const below = r.lfc == null || c.lp > r.lfc;
+            return [
+              ["At cursor", level(c.lp)],
+              ["CAPE to cursor", below ? "0 J/kg (below LFC)" : fmt(c.cape, 0, " J/kg")],
+              ["Share of CAPE", r.cape > 0 ? fmt((100 * c.cape) / r.cape, 0, "%") : "–"],
+              ["Buoyancy (Tv)", fmt(c.b, 1, " °C")],
+            ];
+          })() : []),
+        ],
+      };
+    }
+    if (m.kind === "storm") {
+      // storm motions read like the figure's: the direction the storm moves toward
+      const motion = ([u, v]) => {
+        const toward = (windDir(u, v) + 180) % 360;
+        return `${compass(toward)} (${fmt(toward, 0, "°")}) @ ${this._speed(Math.hypot(u, v))}`;
+      };
+      const sm = [m.u, m.v];
+      const srh = (z0, z1) => { const k = this._kinematics(z0, z1, sm); return k?.srh == null ? "–" : fmt(k.srh, 0, " m²/s²"); };
+      const srw = (z0, z1) => { const k = this._kinematics(z0, z1, sm); return k?.srw == null ? "–" : this._speed(k.srw); };
+      const rows = [["Moving toward", motion(sm)], ["0–500 m SRH", srh(0, 500)], ["0–1 km SRH", srh(0, 1000)], ["0–3 km SRH", srh(0, 3000)]];
+      const eil = (this.ro.params || []).find((q) => q.key === "kinem.srh_eil")?.layer?.z;
+      if (eil) rows.push(["Effective SRH", srh(eil[0], eil[1])]);
+      rows.push(["0–1 km SR wind", srw(0, 1000)], ["4–6 km SR wind", srw(4000, 6000)]);
+      if (this.ro.storm_motion) rows.push(["Figure's motion", motion(this.ro.storm_motion)]);
+      return { kind: "storm", u: m.u, v: m.v, direction: windDir(m.u, m.v), speed: Math.hypot(m.u, m.v), picked: Boolean(m.picked), rows };
+    }
+    if (m.kind === "layer") {
+      const z0 = Math.min(m.z0, m.z1), z1 = Math.max(m.z0, m.z1);
+      const lp0 = this._lpAtHeight(z0), lp1 = this._lpAtHeight(z1);
+      if (lp0 == null || lp1 == null) return null;
+      const bottom = this._level(lp0), top = this._level(lp1);
+      const depth = z1 - z0;
+      // values every ~1% of the layer for means and extremes
+      const samples = Array.from({ length: 41 }, (_, i) => this._level(this._lpAtHeight(z0 + (depth * i) / 40))).filter(Boolean);
+      const mean = (k) => { const v = samples.map((l) => l[k]).filter((x) => x != null && Number.isFinite(x)); return v.length ? v.reduce((s, x) => s + x, 0) / v.length : null; };
+      const thetae = samples.map((l) => l.thetae).filter((x) => x != null && Number.isFinite(x));
+      // precipitable water in the layer: sum of q dp / g, in inches
+      let pw = 0;
+      for (let i = 0; i < samples.length - 1; i++) {
+        const q = (l) => (l.mr ?? 0) / 1000 / (1 + (l.mr ?? 0) / 1000);
+        pw += ((q(samples[i]) + q(samples[i + 1])) / 2) * (samples[i].p - samples[i + 1].p) * 100 / 9.81;
+      }
+      const kin = depth > 0 ? this._kinematics(z0, z1) : null;
+      const rows = [
+        ["Height", this._heightRange(z0, z1, " AGL")],
+        ["Pressure", `${fmt(bottom.p, 0)}–${fmt(top.p, 0)} hPa`],
+        ["Depth", this._height(depth)],
+        ["Lapse rate", depth > 0 ? fmt(-(top.T - bottom.T) / (depth / 1000), 1, " °C/km") : "–"],
+        ["ΔT", fmt(top.T - bottom.T, 1, " °C")],
+        ["Mean RH", fmt(mean("rh"), 0, "%")],
+        ["Mean mix ratio", fmt(mean("mr"), 1, " g/kg")],
+        ["PW in layer", fmt(pw / 25.4, 2, " in")],
+        ["θe min / max", thetae.length ? `${fmt(Math.min(...thetae), 1)} / ${fmt(Math.max(...thetae), 1)} K` : "–"],
+      ];
+      if (kin) {
+        rows.push(["Mean wind", this._windText(...kin.mean)]);
+        rows.push(["Bulk shear", this._speed(kin.shear)]);
+        if (kin.srh != null) rows.push(["SRH", fmt(kin.srh, 0, " m²/s²")]);
+      }
+      return { kind: "layer", z: [z0, z1], p: [bottom.p, top.p], rows };
+    }
+    if (m.panel === "skewt") {
+      const S = this.ro.panels.skewt;
+      const pt = ([x, y]) => {
+        const [T, lp] = this._inv(S.transform, x, y), p = 10 ** lp;
+        return { T, p, z: this._zAtLp(lp), theta: (T + 273.15) * Math.pow(1000 / p, 0.2854) - 273.15 };
+      };
+      const a = pt(m.a), b = pt(m.b);
+      const dz = a.z != null && b.z != null ? b.z - a.z : null;
+      const rows = [
+        ["A", `${fmt(a.p, 0)} hPa, ${this._temp(a.T)}`],
+        ["B", `${fmt(b.p, 0)} hPa, ${this._temp(b.T)}`],
+        ["ΔT", fmt(b.T - a.T, 1, " °C")],
+        ["Δz", dz == null ? "–" : this._height(dz)],
+        ["Lapse rate", dz ? fmt(-(b.T - a.T) / (dz / 1000), 1, " °C/km") : "–"],
+        ["Δθ", fmt(b.theta - a.theta, 1, " K")],
+        ["Δp", fmt(b.p - a.p, 0, " hPa")],
+      ];
+      return { kind: "measure", panel: "skewt", a, b, rows };
+    }
+    const a = this._hodoUV(...m.a), b = this._hodoUV(...m.b);
+    const d = [b[0] - a[0], b[1] - a[1]];
+    const wind = ([u, v]) => this._windText(u, v);
+    return {
+      kind: "measure", panel: "hodograph", a, b,
+      rows: [["A", wind(a)], ["B", wind(b)], ["Difference", this._speed(Math.hypot(...d))],
+             ["Toward", `${fmt((Math.atan2(d[0], d[1]) * 180 / Math.PI + 360) % 360, 0, "°")}`]],
+    };
+  }
+
+  _drawMark(ctx) {
+    const m = this.mark;
+    if (m.kind === "parcel") {
+      const S = this.ro.panels.skewt, r = this._parcelFor(m);
+      const px = (Tv, lp) => this._fwd(S.transform, Tv - 273.15, lp);
+      const cursor = m.picked && m.cursor != null ? Math.max(m.cursor, r.trace[r.trace.length - 1].lp) : null;
+      this._clip(ctx, S.bbox, () => {
+        // CAPE (warm) and CIN (cool) between the parcel and the environment
+        for (let k = 0; k < r.trace.length - 1; k++) {
+          const a = r.trace[k], b = r.trace[k + 1];
+          if (a.env == null || b.env == null) continue;
+          const sign = (a.b + b.b) / 2;
+          if (Math.abs(sign) < 0.02) continue;
+          // CAPE between the LFC and EL, CIN below the LFC (nothing to shade without an LFC)
+          if (r.lfc == null) continue;
+          if (sign > 0 && (b.lp > r.lfc || (r.el != null && a.lp < r.el))) continue;
+          if (sign < 0 && a.lp <= r.lfc) continue;
+          // CAPE from the LFC up to the pointer is darker
+          const upTo = sign > 0 && cursor != null && a.lp >= cursor;
+          ctx.fillStyle = sign > 0 ? (upTo ? "rgba(230, 80, 40, 0.55)" : "rgba(230, 80, 40, 0.28)") : "rgba(40, 110, 230, 0.22)";
+          ctx.beginPath(); ctx.moveTo(...px(a.Tv, a.lp)); ctx.lineTo(...px(b.Tv, b.lp)); ctx.lineTo(...px(b.env, b.lp)); ctx.lineTo(...px(a.env, a.lp)); ctx.closePath(); ctx.fill();
+        }
+        this._line(ctx, r.trace.map((t) => px(t.Tv, t.lp)), "#8b3fd9", [10, 6], 3.5);
+        if (cursor != null) {
+          const y = this._fwd(S.transform, 0, cursor)[1];
+          ctx.strokeStyle = this.ro.dark ? "rgba(255,255,255,0.8)" : "rgba(0,0,0,0.7)"; ctx.lineWidth = 1.5; ctx.setLineDash([8, 6]);
+          ctx.beginPath(); ctx.moveTo(S.bbox[0], y); ctx.lineTo(S.bbox[2], y); ctx.stroke(); ctx.setLineDash([]);
+        }
+        this._dot(ctx, px(r.trace[0].Tv, r.trace[0].lp), "#8b3fd9", 8);
+        // LCL, LFC, and EL ticks with labels
+        ctx.font = "bold 22px system-ui, sans-serif"; ctx.fillStyle = "#8b3fd9"; ctx.strokeStyle = "#8b3fd9"; ctx.lineWidth = 3;
+        for (const [lp, label] of [[r.lcl.lp, "LCL"], [r.lfc, "LFC"], [r.el, "EL"]]) {
+          if (lp == null) continue;
+          const t = r.trace.reduce((best, q) => (Math.abs(q.lp - lp) < Math.abs(best.lp - lp) ? q : best), r.trace[0]);
+          const [x, y] = px(t.Tv, lp);
+          ctx.beginPath(); ctx.moveTo(x + 6, y); ctx.lineTo(x + 26, y); ctx.stroke();
+          ctx.fillText(label, x + 30, y + 7);
+        }
+      });
+      this._placeCard();
+      return;
+    }
+    if (m.kind === "storm") {
+      const H = this.ro.panels.hodograph, tr = this.ro.hodograph_trace;
+      this._clip(ctx, H.bbox, () => {
+        const c = this._hodoPx(m.u, m.v);
+        // the 0-3 km SRH area: swept between the storm motion and the hodograph
+        if (tr) {
+          const pts = [];
+          for (let i = 0; i < tr.z_agl.length && tr.z_agl[i] <= 3000; i++) pts.push(this._hodoPx(tr.u[i], tr.v[i]));
+          if (pts.length > 1) {
+            ctx.fillStyle = this.ro.dark ? "rgba(63, 214, 214, 0.25)" : "rgba(10, 165, 165, 0.2)";
+            ctx.beginPath(); ctx.moveTo(...c); pts.forEach((pt) => ctx.lineTo(...pt)); ctx.closePath(); ctx.fill();
+            ctx.strokeStyle = MARK; ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
+            for (const pt of [pts[0], pts[pts.length - 1]]) { ctx.beginPath(); ctx.moveTo(...c); ctx.lineTo(...pt); ctx.stroke(); }
+            ctx.setLineDash([]);
+          }
+        }
+        // the figure's storm motion, for comparison
+        if (this.ro.storm_motion) {
+          const f = this._hodoPx(...this.ro.storm_motion);
+          ctx.strokeStyle = this.ro.dark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)"; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(...f, 8, 0, 2 * Math.PI); ctx.stroke();
+        }
+        // the storm motion being tried: a ring with a cross, filled once picked
+        ctx.strokeStyle = MARK; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(...c, 11, 0, 2 * Math.PI); ctx.stroke();
+        if (m.picked) { ctx.fillStyle = MARK; ctx.fill(); }
+        ctx.beginPath(); ctx.moveTo(c[0] - 18, c[1]); ctx.lineTo(c[0] + 18, c[1]); ctx.moveTo(c[0], c[1] - 18); ctx.lineTo(c[0], c[1] + 18); ctx.stroke();
+      });
+      this._placeCard();
+      return;
+    }
+    if (m.kind === "layer") {
+      const z0 = Math.min(m.z0, m.z1), z1 = Math.max(m.z0, m.z1);
+      if (z1 - z0 < 1) return;
+      this._drawLayer(ctx, { z: [z0, z1] }, MARK);
+    } else {
+      const bbox = this.ro.panels[m.panel].bbox;
+      this._clip(ctx, bbox, () => {
+        ctx.strokeStyle = MARK; ctx.lineWidth = 3; ctx.setLineDash([]);
+        ctx.beginPath(); ctx.moveTo(...m.a); ctx.lineTo(...m.b); ctx.stroke();
+        for (const [pt, label] of [[m.a, "A"], [m.b, "B"]]) {
+          this._dot(ctx, pt, MARK, 7);
+          ctx.fillStyle = MARK; ctx.font = "bold 22px system-ui, sans-serif";
+          ctx.fillText(label, pt[0] + 10, pt[1] - 10);
+        }
+      });
+    }
+    this._placeCard();
+  }
+
+  _placeCard() {
+    const res = this.mark && this._markResults(this.mark);
+    if (!res) { this.card.style.display = "none"; return; }
+    const title = res.kind === "layer" ? "Layer" : res.kind === "storm" ? "Storm motion"
+      : res.kind === "parcel" ? `${res.preset ? `${res.preset.toUpperCase()} parcel` : "Parcel"} (approximate)`
+      : res.panel === "skewt" ? "Measure (skew-T)" : "Measure (hodograph)";
+    const head = res.kind === "storm" ? (res.picked ? "Picked" : `${this._touch ? "Let go" : "Click"} to use this storm motion`)
+      : res.kind === "parcel" ? (res.picked ? "Pinned" : `${this._touch ? "Let go" : "Click"} to pin this parcel`)
+      : this.isEdited() && res.kind === "layer" ? "Edited profile" : "";
+    const html = `<p class="spy-readout-title">${title}</p>${head ? `<p class="spy-readout-head">${head}</p>` : ""}`
+      + res.rows.map(([k, v]) => `<div><span>${k}</span><b>${v}</b></div>`).join("");
+    if (this.panel) {
+      const section = this.panel.querySelector("[data-readout-mark]");
+      section.innerHTML = html;
+      section.hidden = false;
+      this.card.style.display = "none";
+      return;
+    }
+    this.card.innerHTML = html;
+    // beside where the drag ended
+    const rect = this.img.getBoundingClientRect();
+    const [x, y] = this.mark.end;
+    this._place(this.card, [rect.left + (x * rect.width) / this.ro.image.width, rect.top + (y * rect.height) / this.ro.image.height]);
   }
 
   _setHover(hover) {
@@ -505,6 +1391,10 @@ export class SounderPyReadout {
     ctx.setTransform(s, 0, 0, s, 0, 0);
 
     if (this.editing || this.isEdited()) this._drawEdits(ctx);
+    if (this.mark) this._drawMark(ctx);
+    this._drawDrawings(ctx);
+    // with a layer or measurement showing, its card is the readout
+    if (this.marking || this.tool === "draw" || (this.mark && ["layer", "measure", "storm", "parcel"].includes(this.tool))) { this.tip.style.display = "none"; return; }
 
     if (this.hover?.panel === "param") { this._drawParam(ctx, this.hover.param); return; }
 
@@ -561,21 +1451,24 @@ export class SounderPyReadout {
     const v = param.value;
     if (v == null) return "–";
     if (param.kind === "text") return String(v);
-    if (param.kind === "wind") {
-      const [u, w] = v;
-      return `${fmt(windDir(u, w), 0, "°")} @ ${fmt(Math.hypot(u, w), 0, " kt")}`;
-    }
+    if (param.kind === "wind") return this._windText(v[0], v[1]);
+    // speeds, heights, and temperatures in the readout's units
+    if (param.units === "kt") return this._speed(v, Math.abs(v) >= 10 ? 0 : 1);
+    if (param.units === "m") return this._height(v);
+    if (param.units === "°C") return this._temp(v);
+    if (param.units === "°F") return this._temp(((v - 32) * 5) / 9);
     const a = Math.abs(v);
     const digits = param.units === "/s" ? 4 : a >= 100 ? 0 : a >= 10 ? 1 : 2;
     return fmt(v, digits, param.units ? ` ${param.units}` : "");
   }
 
   // a parameter's layer, shaded on the skew-t, hodograph, and height panels
-  _drawLayer(ctx, layer) {
+  _drawLayer(ctx, layer, color = "#e08a00") {
     // several single heights, such as every freezing level
-    if (Array.isArray(layer.z_at)) { for (const z_at of layer.z_at) this._drawLayer(ctx, { z_at }); return; }
+    if (Array.isArray(layer.z_at)) { for (const z_at of layer.z_at) this._drawLayer(ctx, { z_at }, color); return; }
     const S = this.ro.panels.skewt, H = this.ro.panels.hodograph;
-    const band = this.ro.dark ? "rgba(255, 214, 102, 0.22)" : "rgba(255, 170, 0, 0.18)";
+    const band = color === "#e08a00" ? (this.ro.dark ? "rgba(255, 214, 102, 0.22)" : "rgba(255, 170, 0, 0.18)")
+      : (this.ro.dark ? "rgba(63, 214, 214, 0.22)" : "rgba(10, 165, 165, 0.16)");
     let zs = null, lps = null;
     if (layer.z) { zs = layer.z; lps = zs.map((z) => this._lpAtHeight(z)); }
     else if (layer.p) { lps = layer.p.map((p) => Math.log10(p)); zs = lps.map((lp) => this._zAtLp(lp)); }
@@ -583,9 +1476,14 @@ export class SounderPyReadout {
     if (!zs) return;
     const line = zs[0] === zs[1];
     const shade = (bbox, y0, y1) => this._clip(ctx, bbox, () => {
-      ctx.fillStyle = band; ctx.strokeStyle = "#e08a00"; ctx.lineWidth = 3;
+      ctx.fillStyle = band; ctx.strokeStyle = color; ctx.lineWidth = 3;
       if (line) { ctx.beginPath(); ctx.moveTo(bbox[0], y0); ctx.lineTo(bbox[2], y0); ctx.stroke(); }
-      else ctx.fillRect(bbox[0], Math.min(y0, y1), bbox[2] - bbox[0], Math.abs(y1 - y0));
+      else {
+        ctx.fillRect(bbox[0], Math.min(y0, y1), bbox[2] - bbox[0], Math.abs(y1 - y0));
+        // edges, so a thin layer still shows
+        ctx.lineWidth = 1.5;
+        for (const yy of [y0, y1]) { ctx.beginPath(); ctx.moveTo(bbox[0], yy); ctx.lineTo(bbox[2], yy); ctx.stroke(); }
+      }
     });
     if (S && lps[0] != null && lps[1] != null) shade(S.bbox, ...lps.map((lp) => this._fwd(S.transform, 0, lp)[1]));
     const tr = this.ro.hodograph_trace;
@@ -593,8 +1491,8 @@ export class SounderPyReadout {
       const pts = [];
       for (let i = 0; i < tr.z_agl.length; i++) if (tr.z_agl[i] >= zs[0] - 1 && tr.z_agl[i] <= zs[1] + 1) pts.push(this._hodoPx(tr.u[i], tr.v[i]));
       this._clip(ctx, H.bbox, () => {
-        if (pts.length > 1) { ctx.globalAlpha = 0.4; this._line(ctx, pts, "#e08a00", [], 16); ctx.globalAlpha = 1; }
-        else if (pts.length === 1) this._dot(ctx, pts[0], "#e08a00", 8);
+        if (pts.length > 1) { ctx.globalAlpha = 0.4; this._line(ctx, pts, color, [], 16); ctx.globalAlpha = 1; }
+        else if (pts.length === 1) this._dot(ctx, pts[0], color, 8);
       });
     }
     for (const hp of this.ro.height_panels || []) {
@@ -613,19 +1511,19 @@ export class SounderPyReadout {
     const L = param.layer;
     // a layer, or one level ("At 700 hPa")
     const span = (a, b, unit) => (Math.round(a) === Math.round(b) ? `${fmt(a, 0)} ${unit}` : `${fmt(a, 0)}–${fmt(b, 0)} ${unit}`);
-    const where = L?.z ? span(L.z[0], L.z[1], "m AGL") : L?.p ? span(L.p[0], L.p[1], "hPa") : "";
+    const where = L?.z ? (Math.round(L.z[0]) === Math.round(L.z[1]) ? this._height(L.z[0], " AGL") : this._heightRange(L.z[0], L.z[1], " AGL"))
+      : L?.p ? span(L.p[0], L.p[1], "hPa") : "";
     const whereLabel = (L?.z && Math.round(L.z[0]) === Math.round(L.z[1])) || (L?.p && Math.round(L.p[0]) === Math.round(L.p[1])) ? "At" : "Layer";
-    this.tip.innerHTML = stale + `<p class="spy-readout-title">${esc(param.name)}</p>`
-      + `<div><span>Value</span><b>${esc(this._paramValue(param))}</b></div>`
+    const title = `<p class="spy-readout-title">${esc(param.name)}</p>`, value = `<div><span>Value</span><b>${esc(this._paramValue(param))}</b></div>`;
+    const full = stale + title + value
       + (where ? `<div><span>${whereLabel}</span><b>${where}</b></div>` : "")
       + (param.extra || []).map(([k, v]) => `<div><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join("")
       + (param.about ? `<p class="spy-readout-about">${esc(param.about)}</p>` : "");
-    this._placeTip();
+    this._show(full, title + value);
   }
 
   _showHeightOnlyTip() {
-    this.tip.innerHTML = this._heightRows();
-    this._placeTip();
+    this._show(this._heightRows(), this._heightRows());
   }
 
   // the hovered height panel's values, above the level readout
@@ -699,14 +1597,41 @@ export class SounderPyReadout {
     return `${num(c, 1)} °C (${num(f)} °F)`;
   }
 
+  // a wind speed (given in kt) in the readout's units
+  _speed(kt, digits = 0) {
+    if (kt == null || !Number.isFinite(kt)) return "–";
+    if (this.options.wind === "m/s") return `${num(kt * KT, digits)} m/s`;
+    if (this.options.wind === "mph") return `${num(kt * 1.150779, digits)} mph`;
+    return `${num(kt, digits)} kt`;
+  }
+
+  // a wind (u, v in kt): the direction it comes from, and its speed
+  _windText(u, v) {
+    if (u == null || v == null) return "–";
+    return Math.hypot(u, v) < 0.5 ? "calm" : `${fmt(windDir(u, v), 0, "°")} @ ${this._speed(Math.hypot(u, v))}`;
+  }
+
+  // a height range (m) in one unit, e.g. "0–3000 m AGL"
+  _heightRange(a, b, suffix = "") {
+    if (a == null || b == null) return "–";
+    const ft = this.options.height === "ft", f = ft ? 3.28084 : 1;
+    return `${num(a * f)}–${num(b * f)} ${ft ? "ft" : "m"}${suffix}`;
+  }
+
+  // "0–2.7 km" (or kft) for cumulative rows
+  _depthLabel(z) {
+    return this.options.height === "ft" ? `0–${num((z * 3.28084) / 1000, 1)} kft` : `0–${num(z / 1000, 1)} km`;
+  }
+
   _height(m, suffix = "") {
     if (m == null || !Number.isFinite(m)) return "–";
     return this.options.height === "ft" ? `${num(m * 3.28084)} ft${suffix}` : `${num(m)} m${suffix}`;
   }
 
-  _showTip(l) {
+  // [label, value] rows for a level, for the given fields
+  _levelRows(l, fields, cursor) {
     const rows = [];
-    for (const key of this.options.fields) {
+    for (const key of fields) {
       let value;
       if (key === "p") value = fmt(l.p, 0, " hPa");
       else if (key === "z_agl") value = this._height(l.z_agl, " AGL");
@@ -715,41 +1640,77 @@ export class SounderPyReadout {
       else if (key === "rh") value = fmt(l.rh, 0, "%");
       else if (key === "mr") value = fmt(l.mr, 1, " g/kg");
       else if (key === "theta" || key === "thetae") value = fmt(l[key], 1, " K");
-      else if (key === "wind") value = l.u == null ? "–" : `${fmt(l.wdir, 0, "°")} @ ${fmt(l.wspd, 0, " kt")}`;
+      else if (key === "wind") value = l.u == null ? "–" : this._windText(l.u, l.v);
       else if (key === "omega") { if (l.omega == null) continue; value = fmt(l.omega, 2, " Pa/s"); }
+      else if (key === "cumulative") {
+        // shear and SRH from the surface up to this level, within the hodograph's height
+        const top = this.ro.panels.hodograph?.max_height ?? 12000;
+        if (l.z_agl == null || l.z_agl < 50 || l.z_agl > top) continue;
+        const kin = this._kinematics(0, l.z_agl);
+        if (!kin) continue;
+        const depth = this._depthLabel(l.z_agl);
+        rows.push([`${depth} shear`, this._speed(kin.shear)]);
+        if (kin.srh != null) rows.push([`${depth} SRH`, fmt(kin.srh, 0, " m²/s²")]);
+        continue;
+      }
       else continue;
       rows.push([LABELS[key] ?? key, value]);
     }
-    if (this.options.cursor && this.hover.cursorT != null) rows.push(["Cursor T", this._temp(this.hover.cursorT)]);
-    if (this.options.cursor && this.hover.cursorUV) {
+    if (cursor && this.hover.cursorT != null) rows.push(["Cursor T", this._temp(this.hover.cursorT)]);
+    if (cursor && this.hover.cursorUV) {
       const [u, v] = this.hover.cursorUV;
-      rows.push(["Cursor", `${fmt(windDir(u, v), 0, "°")} @ ${fmt(Math.hypot(u, v), 0, " kt")}`]);
+      rows.push(["Cursor", this._windText(u, v)]);
     }
+    return rows.map(([k, v]) => `<div><span>${k}</span><b>${v}</b></div>`).join("");
+  }
+
+  // the full readout to the panel (if there is one) and a short one at the pointer, or the full one at the pointer
+  _show(full, short) {
+    const footer = this._footer();
+    const section = this.panel?.querySelector("[data-readout-cursor]");
+    if (!section) { this.tip.innerHTML = full + footer; this._placeTip(); return; }
+    section.innerHTML = full;
+    if (short) { this.tip.innerHTML = short + footer; this._placeTip(); } else this.tip.style.display = "none";
+  }
+
+  _footer() {
+    const text = this.options.tipFooter;
+    if (!text) return "";
+    const p = document.createElement("p");
+    p.className = "spy-readout-foot";
+    p.textContent = text;
+    return p.outerHTML;
+  }
+
+  _showTip(l) {
     const head = l.edited ? `<p class="spy-readout-head">Edited profile</p>` : "";
-    this.tip.innerHTML = head + this._heightRows() + rows.map(([k, v]) => `<div><span>${k}</span><b>${v}</b></div>`).join("");
-    this._placeTip();
+    const full = head + this._heightRows() + this._levelRows(l, this.options.fields, this.options.cursor);
+    this._show(full, this.panel ? this._levelRows(l, this.options.tipFields, false) : null);
   }
 
   _placeTip() {
-    const tip = this.tip;
-    tip.style.display = "block";
-    // beside the pointer, inside the part of the image's container that's on screen, with a margin
-    const parent = tip.offsetParent || this.img.parentElement;
-    const box = parent.getBoundingClientRect(), margin = 8, gap = 16;
+    this._place(this.tip, this._client);
+  }
+
+  // beside a screen point, inside the part of the image's container that's on screen, with a margin
+  _place(box, client) {
+    box.style.display = "block";
+    const parent = box.offsetParent || this.img.parentElement;
+    const rect = parent.getBoundingClientRect(), margin = 8, gap = 16;
     const area = {
-      left: Math.max(box.left, 0) + margin, top: Math.max(box.top, 0) + margin,
-      right: Math.min(box.right, window.innerWidth) - margin, bottom: Math.min(box.bottom, window.innerHeight) - margin,
+      left: Math.max(rect.left, 0) + margin, top: Math.max(rect.top, 0) + margin,
+      right: Math.min(rect.right, window.innerWidth) - margin, bottom: Math.min(rect.bottom, window.innerHeight) - margin,
     };
-    const [cx, cy] = this._client ?? [area.left, area.top];
-    const w = tip.offsetWidth, h = tip.offsetHeight;
-    // right of and below the pointer, or flipped to the left and above when it won't fit
+    const [cx, cy] = client ?? [area.left, area.top];
+    const w = box.offsetWidth, h = box.offsetHeight;
+    // right of and below the point, or flipped to the left and above when it won't fit
     let x = cx + gap, y = cy + gap;
     if (x + w > area.right) x = cx - gap - w;
     if (x < area.left) x = Math.min(Math.max(area.left, cx - w / 2), area.right - w);
     if (y + h > area.bottom) y = cy - gap - h;
     if (y < area.top) y = Math.min(Math.max(area.top, area.bottom - h), cy + gap);
-    tip.style.left = `${Math.max(area.left, x) - box.left - parent.clientLeft}px`;
-    tip.style.top = `${Math.max(area.top, y) - box.top - parent.clientTop}px`;
+    box.style.left = `${Math.max(area.left, x) - rect.left - parent.clientLeft}px`;
+    box.style.top = `${Math.max(area.top, y) - rect.top - parent.clientTop}px`;
   }
 }
 
