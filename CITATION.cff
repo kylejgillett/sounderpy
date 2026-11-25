@@ -26,5 +26,5 @@ preferred-citation:
   volume: 10
 title: "SounderPy: An atmospheric sounding visualization and analysis
   tool for Python"
-version: "3.3.0"
+version: "3.3.1"
 date-released: 2026-11-23

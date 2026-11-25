@@ -102,7 +102,8 @@
 from .SHARPPYMAIN.sharppy.sharptab.profile import create_profile
 from .SHARPPYMAIN.sharppy.sharptab.interp import *
 from .SHARPPYMAIN.sharppy.sharptab.winds import *
-from .SHARPPYMAIN.sharppy.sharptab.utils import comp2vec, KTS2MS
+from .SHARPPYMAIN.sharppy.sharptab.utils import comp2vec, KTS2MS, QC
+from .SHARPPYMAIN.sharppy.sharptab.constants import G
 from .SHARPPYMAIN.sharppy.sharptab.params import *
 from .SHARPPYMAIN.sharppy.sharptab import thermo as sharp_thermo, interp as sharp_interp
 
@@ -116,6 +117,7 @@ import numpy as np
 import numpy.ma as ma
 import warnings
 import metpy.calc as mpcalc
+import metpy.constants as mpconsts
 from metpy.units import units
 from ecape_parcel.ecape_calc import calc_ecape
 
@@ -146,6 +148,33 @@ def storm_motion_type(storm_motion):
 # DCAPE/DCIN calculation inherited from MetPy
 # https://unidata.github.io/MetPy/latest/api/generated/metpy.calc.downdraft_cape.html
 # Based on work by Emanuel, K. A., 1994 & Market et al 2017
+# Wet-bulb temperature at every level of a profile (Normand's rule), the same method as MetPy's
+# wet_bulb_temperature(): lift each level to its LCL, then follow the moist adiabat (MetPy's moist_lapse()
+# equation) back down to the level. All levels are integrated at once with a fixed-step RK4 in ln(p),
+# which matches MetPy to within 0.0001 C and is much faster on profiles with many levels
+def wet_bulb_profile(pressure, temperature, dewpoint, steps=10):
+    lcl_p, lcl_t = mpcalc.lcl(pressure, temperature, dewpoint)
+    rd, lv, cp, eps = mpconsts.nounit.Rd, mpconsts.nounit.Lv, mpconsts.nounit.Cp_d, mpconsts.nounit.epsilon
+
+    def dt_dlnp(lnp, t):
+        p = np.exp(lnp)
+        rs = mpcalc.saturation_mixing_ratio(p * units.Pa, t * units.K).m_as('dimensionless')
+        return (rd * t + lv * rs) / (cp + lv * lv * rs * eps / (rd * t ** 2))
+
+    lnp = np.log(lcl_p.m_as('Pa'))
+    h = (np.log(pressure.m_as('Pa')) - lnp) / steps
+    t = lcl_t.m_as('K')
+    for _ in range(steps):
+        k1 = dt_dlnp(lnp, t)
+        k2 = dt_dlnp(lnp + h / 2, t + h / 2 * k1)
+        k3 = dt_dlnp(lnp + h / 2, t + h / 2 * k2)
+        k4 = dt_dlnp(lnp + h, t + h * k3)
+        t = t + h / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
+        lnp = lnp + h
+    return (t * units.K).to(temperature.units)
+
+
+
 # DCAPE edits and DCIN addition by Kyle Gillett, 2024
 def dcape_calc(pressure, temperature, dewpoint):
     # Get layer between 500 and 700 hPa
@@ -290,6 +319,122 @@ def lift_parcel(prof, flag, name, pres, tmpc, dwpc):
 
 
 
+# CAPE, CIN and 0-3 km CAPE (J/kg) of a parcel lifted from (pres, tmpc, dwpc), for the stepwise CAPE/CIN
+# profiles. These are the same values as SHARPpy's parcelx() `bplus`, `bminus` and `b3km`, but without the
+# levels and indices parcelx() also finds (LFC, EL, MPL, lifted indices, cap strength, BRN, and the
+# freezing-level CAPEs), so lifting a parcel from every level is about 2-5x faster. Values it can't
+# compute are nan
+def stepwise_parcel(prof, pres, tmpc, dwpc, dp=-1):
+    if prof.pres.compressed().shape[0] < 1:
+        return np.nan, np.nan, np.nan
+    pbot = prof.pres[prof.sfc]
+    ptop = prof.pres[prof.pres.shape[0]-1]
+    if pbot > pres:
+        pbot = pres
+
+    # dry ascent to the LCL
+    pe2, tp2 = sharp_thermo.drylift(pres, tmpc, dwpc)
+    if type(pe2) == type(ma.masked) or np.isnan(pe2):
+        return np.nan, np.nan, np.nan
+    lcl_hght = sharp_interp.to_agl(prof, sharp_interp.hght(prof, pe2))
+    theta_parcel = sharp_thermo.theta(pe2, tp2, 1000.)
+    mixr = sharp_thermo.mixratio(pres, dwpc)
+
+    # CIN below the LCL, in dp steps, with virtual temperature
+    pp = np.arange(pbot, pe2+dp, dp, dtype=type(pbot))
+    hh = sharp_interp.hght(prof, pp)
+    tv_env = sharp_thermo.virtemp(pp, sharp_thermo.theta(pp, sharp_interp.temp(prof, pp), 1000.), sharp_interp.dwpt(prof, pp))
+    tdef = (sharp_thermo.virtemp(pp, theta_parcel, sharp_thermo.temp_at_mixrat(mixr, pp)) - tv_env) / sharp_thermo.ctok(tv_env)
+    lyre = G * (tdef[:-1]+tdef[1:]) / 2 * (hh[1:]-hh[:-1])
+    totn = lyre[lyre < 0].sum()
+    if not totn:
+        totn = 0.
+    if pbot > pe2:
+        pbot = pe2
+    if pbot < prof.pres[-1]:
+        # the LCL is above the top of the data
+        return np.nan, np.nan, np.nan
+    lptr = ma.where(pbot >= prof.pres)[0].min()
+    uptr = ma.where(ptop <= prof.pres)[0].max()
+
+    # moist ascent from the LCL, one data level at a time
+    totp = 0.
+    bplus = bminus = b3km = None
+    pe1 = pbot
+    h1 = sharp_interp.hght(prof, pe1)
+    te1 = sharp_interp.vtmp(prof, pe1)
+    tp1 = sharp_thermo.wetlift(pe2, tp2, pe1)
+    lyre = 0
+    h3km = sharp_interp.to_msl(prof, 3000.)
+    for i in range(lptr, prof.pres.shape[0]):
+        if not QC(prof.tmpc[i]):
+            continue
+        pe2 = prof.pres[i]
+        h2 = prof.hght[i]
+        te2 = prof.vtmp[i]
+        tp2 = sharp_thermo.wetlift(pe1, tp1, pe2)
+        tdef1 = (sharp_thermo.virtemp(pe1, tp1, tp1) - te1) / sharp_thermo.ctok(te1)
+        tdef2 = (sharp_thermo.virtemp(pe2, tp2, tp2) - te2) / sharp_thermo.ctok(te2)
+        lyre = G * (tdef1 + tdef2) / 2. * (h2 - h1)
+        if lyre > 0:
+            totp += lyre
+        elif pe2 > 500.:
+            totn += lyre  # CIN counts negative layers below 500 hPa
+        pelast = pe1
+        pe1, te1, tp1 = pe2, te2, tp2
+
+        # top of the data
+        if i >= uptr and bplus is None:
+            pe3, h3, te3, tp3 = pe1, h2, te1, tp1
+            if lyre > 0:
+                bplus = totp - lyre
+                bminus = totn
+            else:
+                bplus = totp
+                bminus = totn + lyre if pe2 > 500. else totn
+            pe2 = ptop
+            h2 = sharp_interp.hght(prof, pe2)
+            te2 = sharp_interp.vtmp(prof, pe2)
+            tp2 = sharp_thermo.wetlift(pe3, tp3, pe2)
+            tdef3 = (sharp_thermo.virtemp(pe3, tp3, tp3) - te3) / sharp_thermo.ctok(te3)
+            tdef2 = (sharp_thermo.virtemp(pe2, tp2, tp2) - te2) / sharp_thermo.ctok(te2)
+            lyrf = G * (tdef3 + tdef2) / 2. * (h2 - h3)
+            if lyrf > 0:
+                bplus += lyrf
+            elif pe2 > 500.:
+                bminus += lyrf
+            if bplus == 0:
+                bminus = 0.
+
+        # CAPE up to 3 km AGL
+        if lcl_hght < 3000.:
+            if sharp_interp.to_agl(prof, h1) <= 3000. and sharp_interp.to_agl(prof, h2) >= 3000. and b3km is None:
+                pe3 = pelast
+                h3 = sharp_interp.hght(prof, pe3)
+                te3 = sharp_interp.vtmp(prof, pe3)
+                tp3 = sharp_thermo.wetlift(pe1, tp1, pe3)
+                b3km = totp - lyre if lyre > 0 else totp
+                pe4 = sharp_interp.pres(prof, h3km)
+                if QC(pe2):
+                    te2 = sharp_interp.vtmp(prof, pe4)
+                    tp2 = sharp_thermo.wetlift(pe3, tp3, pe4)
+                    tdef3 = (sharp_thermo.virtemp(pe3, tp3, tp3) - te3) / sharp_thermo.ctok(te3)
+                    tdef2 = (sharp_thermo.virtemp(pe4, tp2, tp2) - te2) / sharp_thermo.ctok(te2)
+                    lyrf = G * (tdef3 + tdef2) / 2. * (h3km - h3)
+                    if lyrf > 0:
+                        b3km += lyrf
+        else:
+            b3km = 0.
+        h1 = h2
+
+    if bplus is None:
+        bplus = totp
+    if np.floor(bplus) == 0:
+        bminus = 0.  # no CIN without CAPE
+    return bplus, bminus, (np.nan if b3km is None else b3km)
+
+
+
 class sounding_params:
 
 
@@ -359,7 +504,7 @@ class sounding_params:
 
 
         general['sfc_pressure']  = (p[0].m*(1-(0.0065*(general['elevation']))/(T[0].m+(0.0065*(general['elevation']))+273.15))**-5.257)*units.hPa
-        general['wet_bulb']      = mpcalc.wet_bulb_temperature(p, T, Td)
+        general['wet_bulb']      = wet_bulb_profile(p, T, Td)
         general['rel_humidity']  = mpcalc.relative_humidity_from_dewpoint(T, Td)*100
         general['spec_humidity'] = (mpcalc.specific_humidity_from_dewpoint(p, Td)*1000)*units.g/units.kg
         general['mix_ratio']     = mpcalc.mixing_ratio_from_specific_humidity(general['spec_humidity'])
@@ -572,10 +717,10 @@ class sounding_params:
                 above_depth = np.nonzero((z.m - z.m[0]) >= self.parcel_depth)[0]
                 if above_depth.size > 0:
                     n_parcels = min(above_depth[0] + 2, len(p))
-            parcels = [parcelx(prof, pres=p[i].m, tmpc=T[i].m, dwpc=Td[i].m) for i in range(n_parcels)]
-            for key, attr in (('cape_profile', 'bplus'), ('cin_profile', 'bminus'), ('3cape_profile', 'b3km')):
+            parcels = np.array([stepwise_parcel(prof, p[i].m, T[i].m, Td[i].m) for i in range(n_parcels)], dtype=float).reshape(-1, 3)
+            for col, key in enumerate(('cape_profile', 'cin_profile', '3cape_profile')):
                 thermo[key] = np.full(len(p), np.nan)
-                thermo[key][:n_parcels] = np.array([getattr(pcl, attr) for pcl in parcels])
+                thermo[key][:n_parcels] = parcels[:, col]
             # Interpolate
             intrp['cape_profileINTRP'] = interpolate(thermo['cape_profile'], zINTRP, resolution)
             intrp['cin_profileINTRP'] = interpolate(thermo['cin_profile'], zINTRP, resolution)
@@ -685,8 +830,8 @@ class sounding_params:
 
         #--- STORM MOTION ---#
         # ---------------------------------------------------------------   
-        sm_rm = bunkers_storm_motion(prof)[0:2] 
-        sm_lm = bunkers_storm_motion(prof)[2:4] 
+        bunkers = bunkers_storm_motion(prof)
+        sm_rm, sm_lm = bunkers[0:2], bunkers[2:4]
         sm_mw = mean_wind(prof, pbot=850, ptop=250)
 
         if ma.is_masked(sm_rm[0]) == True:
@@ -969,26 +1114,18 @@ class sounding_params:
 
         #--- SIMPLE ENTRAINING CAPE ---#
         # ---------------------------------------------------------------
-        try: 
-            thermo['mu_ecape'] = calc_ecape(z, p, T, general['spec_humidity'], u, v, 'most_unstable', storm_motion='user_defined', u_sm=kinem['sm_u']*units.kts, v_sm=kinem['sm_v']*units.kts).m
-        except: 
-            thermo['mu_ecape'] = ma.masked
-            warnings.warn("MU-ECAPE could not be computed for this sounding (calculation error)", Warning)
-            pass
-        
-        try:
-            thermo['ml_ecape'] = calc_ecape(z, p, T, general['spec_humidity'], u, v, 'mixed_layer', storm_motion='user_defined', u_sm=kinem['sm_u']*units.kts, v_sm=kinem['sm_v']*units.kts).m
-        except: 
-            thermo['ml_ecape'] = ma.masked
-            warnings.warn("ML-ECAPE could not be computed for this sounding (calculation error)", Warning)
-            pass
-        
-        try:
-            thermo['sb_ecape'] = calc_ecape(z, p, T, general['spec_humidity'], u, v, 'surface_based', storm_motion='user_defined', u_sm=kinem['sm_u']*units.kts, v_sm=kinem['sm_v']*units.kts).m
-        except:
-            thermo['sb_ecape'] = ma.masked
-            warnings.warn("SB-ECAPE could not be computed for this sounding (calculation error)", Warning)
-            pass
+        # ECAPE uses the LFC and EL of the SHARPpy parcels above (as heights MSL), and is masked when the parcel has no CAPE
+        for pcl_name, cape_type in (('mu', 'most_unstable'), ('ml', 'mixed_layer'), ('sb', 'surface_based')):
+            try:
+                cape, lfc, el = (thermo[f'{pcl_name}cape'], thermo[f'{pcl_name}_lfc_z'], thermo[f'{pcl_name}_el_z'])
+                if any(ma.is_masked(x) or not np.isfinite(float(x)) for x in (cape, lfc, el)) or float(cape) <= 0:
+                    raise ValueError('no CAPE')
+                thermo[f'{pcl_name}_ecape'] = calc_ecape(z, p, T, general['spec_humidity'], u, v, cape_type,
+                                                       lfc=z[0] + float(lfc)*units.m, el=z[0] + float(el)*units.m,
+                                                       storm_motion='user_defined', u_sm=kinem['sm_u']*units.kts, v_sm=kinem['sm_v']*units.kts).m
+            except Exception:
+                thermo[f'{pcl_name}_ecape'] = ma.masked
+                warnings.warn(f"{pcl_name.upper()}-ECAPE could not be computed for this sounding (calculation error)", Warning)
         
         
         

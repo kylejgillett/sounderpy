@@ -31,6 +31,9 @@ import matplotlib as mpl
 import metpy.calc as mpcalc
 from metpy.units import units
 
+from .calc import wet_bulb_profile
+from .plot.components import FIGURE_MARGIN_GID
+
 
 # the readout JSON's format version; the browser script checks it
 READOUT_FORMAT = "sounderpy-readout"
@@ -73,12 +76,17 @@ def _plain(values, unit=None):
 
 
 def save_bbox(fig, pad_inches=None):
-    """The region of the figure that ``savefig(bbox_inches='tight')`` keeps, in inches.
+    """The region of the figure a SounderPy figure is saved with, in inches: its margin rectangle (see
+    ``_add_figure_margin``) plus ``pad_inches``, or the 'tight' region for a figure without one.
 
-    Saving with this bbox gives the same image as 'tight', and tells the readout where the image starts.
+    Saving with this bbox gives the same image as ``bbox_inches='tight'``, from one render instead of two,
+    and tells the readout where the image starts.
     """
     if pad_inches is None:
         pad_inches = mpl.rcParams["savefig.pad_inches"]
+    margins = [artist for artist in fig.artists if artist.get_gid() == FIGURE_MARGIN_GID]
+    if margins:
+        return margins[0].get_window_extent().transformed(fig.dpi_scale_trans.inverted()).padded(pad_inches)
     fig.draw_without_rendering()
     return fig.get_tightbbox(fig.canvas.get_renderer()).padded(pad_inches)
 
@@ -174,7 +182,7 @@ def _profile(data, snd_params):
         "v": _plain(v, "kt"),
         "wdir": _plain(mpcalc.wind_direction(u, v), "degree"),
         "wspd": _plain(mpcalc.wind_speed(u, v), "kt"),
-        "Tw": _plain(level_values("wet_bulb", lambda: mpcalc.wet_bulb_temperature(p, T, Td)), "degC"),
+        "Tw": _plain(level_values("wet_bulb", lambda: wet_bulb_profile(p, T, Td)), "degC"),
         "Tv": _plain(level_values("virt_temp", lambda: mpcalc.virtual_temperature_from_dewpoint(p, T, Td)), "degC"),
         "rh": _plain(rh.to("dimensionless").m if rh is not None else None),
         "mr": _plain(level_values("mix_ratio", lambda: mpcalc.mixing_ratio_from_relative_humidity(p, T, rh / 100)), "g/kg"),

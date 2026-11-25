@@ -72,7 +72,7 @@ Building Soundings
 
 While this function may appear complicated at first glance, there is actually only *one* required argument for this function (your sounding data: `clean_data`). The other arguments are simply optional settings for the plot!
 
-.. py:function:: spy.build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion='right_moving', special_parcels=None, radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None, show_theta=False, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_sounding', max_levels=250, ylim=None, theme=None, sr_hodo=False, mode='severe', show_obs=False, map_layers=None, map_label=None, return_fig=False, readout=False)
+.. py:function:: spy.build_sounding(clean_data, color_blind=False, dark_mode=False, storm_motion='right_moving', special_parcels=None, radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None, show_theta=False, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_sounding', max_levels=250, ylim=None, theme=None, sr_hodo=False, mode='severe', show_obs=False, map_layers=None, map_label=None, return_fig=False, readout=False, map_background='map')
 
 
    Build a full sounding figure of SounderPy data
@@ -117,10 +117,12 @@ While this function may appear complicated at first glance, there is actually on
    :type mode: str, ``"severe"``, ``"winter"``, or ``"auto"``, optional, Default is ``"severe"``.
    :param show_obs: winter sounding only: draw a station model of the latest surface observation (METAR) near the profile, valid within an hour of the profile's time, from the Iowa Environmental Mesonet. Needs internet access. Values missing from the report read "NA".
    :type show_obs: bool, optional, Default is ``False``.
-   :param map_layers: your own data for the map inset: a function, or a list of functions, that each take the map's axes (a cartopy ``PlateCarree`` axes) and draw on it, such as ``lambda ax: ax.contourf(lon, lat, values, transform=ccrs.PlateCarree(), zorder=3)``. They're drawn after the radar and before the profile's location marker; ``zorder=3`` puts filled data above the satellite image and below the radar and the county and state lines. Use ``radar=None`` to show only your data. See :ref:`custom_map_data`.
+   :param map_layers: your own data for the map inset: a function, or a list of functions, that each take the map's axes (a cartopy ``PlateCarree`` axes) and draw on it, such as ``lambda ax: ax.contourf(lon, lat, values, transform=ccrs.PlateCarree(), zorder=3)``. They're drawn after the radar and before the profile's location marker; ``zorder=3`` puts filled data above the map background and below the radar and the county and state lines. Use ``radar=None`` to show only your data. See :ref:`custom_map_data`.
    :type map_layers: function or list of functions, optional, Default is ``None``.
    :param map_label: a label for the map, such as ``"HRRR MLCAPE (J/kg)"``, shown in a box at the top of the map.
    :type map_label: str, optional, Default is ``None``.
+   :param map_background: what the map inset shows under the borders and radar: ``'map'``, a land and water map with city areas, lakes, rivers, major highways, and the largest cities' names, or ``'satellite'``, satellite imagery (slower; downloaded for each figure). See :ref:`plot_settings_map`.
+   :type map_background: str, optional, Default is ``'map'``.
    :param return_fig: return the figure instead of showing it, so you can draw on it or save it yourself. A figure that's saved and not returned is closed.
    :type return_fig: bool, optional, Default is ``False``.
    :param readout: EXPERIMENTAL: with ``save=True``, also write a readout file next to the figure (``kokc.png`` -> ``kokc.readout.json``) for hover readouts and profile editing on a web page. See :doc:`/developers/interactive_figures`.
@@ -209,7 +211,7 @@ Building Hodographs
 
 Very similarly to soundings, we can use the simple ``spy.build_hodograph()`` function:
 
-.. py:function:: spy.build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr_hodo=False, modify_sfc=None, radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_hodograph', max_levels=250, theme=None, map_layers=None, map_label=None, return_fig=False, readout=False)
+.. py:function:: spy.build_hodograph(clean_data, dark_mode=False, storm_motion='right_moving', sr_hodo=False, modify_sfc=None, radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, save=False, filename='sounderpy_hodograph', max_levels=250, theme=None, map_layers=None, map_label=None, return_fig=False, readout=False, map_background='map')
 
 
    Build a hodograph figure of SounderPy data
@@ -242,10 +244,12 @@ Very similarly to soundings, we can use the simple ``spy.build_hodograph()`` fun
    :type max_levels: int or None, optional, Default is ``250``.
    :param theme: changes to the figure's colors, such as ``{'border': 'k', 'temperature': 'navy', 'parcel': {'mu': 'black'}}``. See :ref:`plot_themes` for every setting.
    :type theme: dict, optional, Default is ``None``.
-   :param map_layers: your own data for the map inset: a function, or a list of functions, that each take the map's axes (a cartopy ``PlateCarree`` axes) and draw on it, such as ``lambda ax: ax.contourf(lon, lat, values, transform=ccrs.PlateCarree(), zorder=3)``. They're drawn after the radar and before the profile's location marker; ``zorder=3`` puts filled data above the satellite image and below the radar and the county and state lines. Use ``radar=None`` to show only your data. See :ref:`custom_map_data`.
+   :param map_layers: your own data for the map inset: a function, or a list of functions, that each take the map's axes (a cartopy ``PlateCarree`` axes) and draw on it, such as ``lambda ax: ax.contourf(lon, lat, values, transform=ccrs.PlateCarree(), zorder=3)``. They're drawn after the radar and before the profile's location marker; ``zorder=3`` puts filled data above the map background and below the radar and the county and state lines. Use ``radar=None`` to show only your data. See :ref:`custom_map_data`.
    :type map_layers: function or list of functions, optional, Default is ``None``.
    :param map_label: a label for the map, such as ``"HRRR MLCAPE (J/kg)"``, shown in a box at the top of the map.
    :type map_label: str, optional, Default is ``None``.
+   :param map_background: what the map inset shows under the borders and radar: ``'map'``, a land and water map with city areas, lakes, rivers, major highways, and the largest cities' names, or ``'satellite'``, satellite imagery (slower; downloaded for each figure). See :ref:`plot_settings_map`.
+   :type map_background: str, optional, Default is ``'map'``.
    :param return_fig: return the figure instead of showing it, so you can draw on it or save it yourself. A figure that's saved and not returned is closed.
    :type return_fig: bool, optional, Default is ``False``.
    :param readout: EXPERIMENTAL: with ``save=True``, also write a readout file next to the figure (``kokc.png`` -> ``kokc.readout.json``) for hover readouts and profile editing on a web page. See :doc:`/developers/interactive_figures`.
@@ -397,7 +401,7 @@ Building VAD Hodographs
 
 SounderPy now offers the ability to plot NEXRAD radar VAD data on a hodograph using the ``spy.build_vad_hodograph()`` function:
 
-.. py:function:: spy.build_vad_hodograph(vad_data, save=False, dark_mode=False, storm_motion='right_moving', sr_hodo=False, filename='vad_hodograph', radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, theme=None, map_layers=None, map_label=None, return_fig=False)
+.. py:function:: spy.build_vad_hodograph(vad_data, save=False, dark_mode=False, storm_motion='right_moving', sr_hodo=False, filename='vad_hodograph', radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, theme=None, map_layers=None, map_label=None, return_fig=False, map_background='map')
 
    Build a hodograph figure of SounderPy VAD data
 
@@ -425,10 +429,12 @@ SounderPy now offers the ability to plot NEXRAD radar VAD data on a hodograph us
    :type dpi: int, optional, Default is 100.
    :param theme: changes to the figure's colors, such as ``{'border': 'k', 'temperature': 'navy', 'parcel': {'mu': 'black'}}``. See :ref:`plot_themes` for every setting.
    :type theme: dict, optional, Default is ``None``.
-   :param map_layers: your own data for the map inset: a function, or a list of functions, that each take the map's axes (a cartopy ``PlateCarree`` axes) and draw on it, such as ``lambda ax: ax.contourf(lon, lat, values, transform=ccrs.PlateCarree(), zorder=3)``. They're drawn after the radar and before the profile's location marker; ``zorder=3`` puts filled data above the satellite image and below the radar and the county and state lines. Use ``radar=None`` to show only your data. See :ref:`custom_map_data`.
+   :param map_layers: your own data for the map inset: a function, or a list of functions, that each take the map's axes (a cartopy ``PlateCarree`` axes) and draw on it, such as ``lambda ax: ax.contourf(lon, lat, values, transform=ccrs.PlateCarree(), zorder=3)``. They're drawn after the radar and before the profile's location marker; ``zorder=3`` puts filled data above the map background and below the radar and the county and state lines. Use ``radar=None`` to show only your data. See :ref:`custom_map_data`.
    :type map_layers: function or list of functions, optional, Default is ``None``.
    :param map_label: a label for the map, such as ``"HRRR MLCAPE (J/kg)"``, shown in a box at the top of the map.
    :type map_label: str, optional, Default is ``None``.
+   :param map_background: what the map inset shows under the borders and radar: ``'map'``, a land and water map with city areas, lakes, rivers, major highways, and the largest cities' names, or ``'satellite'``, satellite imagery (slower; downloaded for each figure). See :ref:`plot_settings_map`.
+   :type map_background: str, optional, Default is ``'map'``.
    :param return_fig: return the figure instead of showing it, so you can draw on it or save it yourself. A figure that's saved and not returned is closed.
    :type return_fig: bool, optional, Default is ``False``.
    :return: ``None``, or with ``return_fig=True``, ``(fig, axes)``: the Matplotlib figure, and a dict of its panels: ``'hodograph'`` (a MetPy ``Hodograph``) and ``'map'`` (a cartopy ``GeoAxes``, when the map is drawn).

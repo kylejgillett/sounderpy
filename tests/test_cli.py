@@ -834,6 +834,16 @@ def test_plot_defaults_are_filled_in(monkeypatch, clean_profile, tmp_path):
 
     assert cli.main(OBS + ["--plot", "sounding", "--plot-file", str(tmp_path / "s.png"), "--mode", "auto", "--obs"]) == 0
     assert (calls[0]["map_zoom"], calls[0]["dpi"], calls[0]["mode"], calls[0]["show_obs"]) == (2, 100, "auto", True)
+    assert calls[0]["map_background"] == "map"
+
+
+def test_map_background_reaches_the_plot(monkeypatch, clean_profile, tmp_path):
+    calls = []
+    monkeypatch.setattr(cli, "get_obs_data", lambda *args, **kwargs: clean_profile)
+    monkeypatch.setattr(cli, "build_hodograph", lambda data, **kwargs: calls.append(kwargs))
+
+    assert cli.main(OBS + ["--plot", "hodograph", "--plot-file", str(tmp_path / "h.png"), "--map-background", "satellite"]) == 0
+    assert calls[0]["map_background"] == "satellite"
 
 
 # ---------------------------------------------------------------------------
@@ -903,6 +913,7 @@ def test_summary_formats_lat_lon_and_hides_placeholders(monkeypatch, clean_profi
         (["--plot", "sounding", "--plot-file", "s.png", "--parcels", "xx_ps_cape"], "--parcels doesn't know xx_ps_cape"),
         (["--plot", "sounding", "--plot-file", "s.png", "--parcels", "simple", "--background-parcels", "mu_ia_cape"], "can't be combined"),
         (["--plot", "sounding", "--plot-file", "s.png", "--map-zoom", "0", "--radar", "single"], "--radar needs the map"),
+        (["--plot", "sounding", "--plot-file", "s.png", "--map-zoom", "0", "--map-background", "satellite"], "--map-background needs the map"),
     ],
 )
 def test_bad_calculation_and_plot_options_fail_before_retrieval(monkeypatch, capsys, tmp_path, options, message):

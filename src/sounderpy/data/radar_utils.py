@@ -28,6 +28,7 @@ from pyproj import Geod
 import numpy as np
 from matplotlib.colors import ListedColormap
 from datetime import datetime, timedelta, timezone
+import io
 import sys
 import importlib.resources as resources
 import warnings
@@ -182,6 +183,26 @@ def find_nearest_station(site_ids, lats, lons, target_lat, target_lon, max_dista
 #########################
 # LOAD NEXRAD DATA FROM AWS
 #########################################################################
+# The lowest scan of a NEXRAD Level II file. It comes first in the file, so the file is downloaded in pieces
+# only until the next scan starts (often 1-2 MB of a 3-12 MB file), which is much faster than reading it all
+def _read_lowest_scan(fs, path, chunk_bytes=1024 * 1024):
+    pyart = import_pyart()
+    size = fs.size(path)
+    data = b""
+    while len(data) < size:
+        data += fs.cat_file(path, start=len(data), end=min(len(data) + chunk_bytes, size))
+        if len(data) >= size:
+            break
+        try:
+            radar = pyart.io.read_nexrad_archive(io.BytesIO(data), include_fields=["reflectivity"])
+        except Exception:
+            continue  # the piece ends partway through a record; get more
+        if radar.nsweeps >= 2:
+            # the second scan has started, so the first is complete
+            return radar.extract_sweeps([0])
+    return pyart.io.read_nexrad_archive(io.BytesIO(data), scans=[0], include_fields=["reflectivity"])
+
+
 def get_radar_data(nexrad_site, clean_data, radar_time):
 
     # unload and reload fsspec each time this function is called
@@ -216,8 +237,7 @@ def get_radar_data(nexrad_site, clean_data, radar_time):
         raise FileNotFoundError("    > RADAR ERROR: No single-site radar scan found")
 
     # only the lowest scan of reflectivity gets plotted
-    pyart = import_pyart()
-    radar = pyart.io.read_nexrad_archive("s3://" + file, scans=[0], include_fields=["reflectivity"])
+    radar = _read_lowest_scan(fs, file)
 
     # extract timestamp from filename
     scan_time = str(file[51:53] + ':' + file[53:55])
@@ -233,12 +253,14 @@ def get_radar_data(nexrad_site, clean_data, radar_time):
 #########################
 # LOAD RADAR MOSAIC DATA
 #########################################################################
-def get_radar_mosaic(clean_data, map_zoom, radar_time):
+def get_radar_mosaic(clean_data, map_zoom, radar_time, extent=None):
     '''
     GET RADAR MOSAIC DATA FOR SOUNDING PLOT
 
     - gets data from Unidata's THREDDS server for 'sounding time' or now
     - data only goes back 1 month from current time
+    - extent: the map's (west, east, south, north) in degrees; only that area (plus a little) is downloaded.
+      Without it, an area around the profile big enough for a map of `map_zoom` is downloaded
     '''
 
     # search the THREDDS catalog for the file closest to
@@ -294,10 +316,15 @@ def get_radar_mosaic(clean_data, map_zoom, radar_time):
     # if data is found, parse it for plotting.
     filename = composite_catalog[closest].subset()
     composite_query = filename.query()
-    composite_query.lonlat_box(north=data_lat + (map_zoom * 1.6 + 1),
-                               south=data_lat - (map_zoom + 1),
-                               east=data_lon + (map_zoom + 1),
-                               west=data_lon - (map_zoom + 1))
+    if extent is not None:
+        west, east, south, north = extent
+        pad = 0.15  # covers the small shift the radar is drawn with
+        composite_query.lonlat_box(north=north + pad, south=south - pad, east=east + pad, west=west - pad)
+    else:
+        composite_query.lonlat_box(north=data_lat + (map_zoom * 1.6 + 1),
+                                   south=data_lat - (map_zoom + 1),
+                                   east=data_lon + (map_zoom + 1),
+                                   west=data_lon - (map_zoom + 1))
     composite_query.add_lonlat(value=True)
     composite_query.accept('netcdf4')
     composite_query.variables('Reflectivity')

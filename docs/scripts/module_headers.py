@@ -93,7 +93,7 @@ all experience levels and for reliability in all use cases.
 This module holds the public functions: get_obs_data(), get_bufkit_data(), get_model_data(),
 build_sounding(), build_hodograph(), build_composite(), build_vad_hodograph(), and print_variables().
 
-Version: 3.3.0 | November 2026
+Version: 3.3.1 | November 2026
 Code: https://github.com/kylejgillett/sounderpy
 PyPI: https://pypi.org/project/sounderpy/
 Operational site: https://sounderpy.app/""",

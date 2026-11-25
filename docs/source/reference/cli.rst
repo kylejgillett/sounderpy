@@ -478,6 +478,18 @@ disables the map/radar inset:
 Disabling the map inset can be useful when working offline or when a map/radar
 inset is not needed.
 
+**Map Background**
+
+``--map-background`` chooses what the map inset shows under the borders and radar: ``map`` (the default; land
+and water with cities, rivers, and highways) or ``satellite`` (satellite imagery, slower):
+
+.. code-block:: bash
+
+   sounderpy obs DTX 2024-05-21 00 \
+       --plot sounding \
+       --map-background satellite \
+       --plot-file dtx_sounding.png
+
 **Plot Resolution**
 
 The output resolution can be changed with ``--dpi``:

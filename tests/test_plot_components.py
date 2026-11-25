@@ -479,6 +479,104 @@ def test_thin_sounding_keeps_the_lowest_wind_when_the_surface_has_none(clean_pro
 
 
 # -----------------------------------------------------------------------------
+# MAP INSET: map_background
+# -----------------------------------------------------------------------------
+
+@pytest.mark.parametrize("background", ["map", "satellite"])
+def test_validate_map_background_accepts(background):
+    assert c._validate_map_background(background) == background
+
+
+@pytest.mark.parametrize("background", ["terrain", None, ""])
+def test_validate_map_background_rejects(background):
+    with pytest.raises(ValueError, match="map_background"):
+        c._validate_map_background(background)
+
+
+@pytest.mark.parametrize("dark", [False, True])
+def test_both_themes_have_map_colors(dark):
+    theme = _get_plot_theme(dark_mode=dark)
+    for key in ("map_land", "map_water", "map_urban", "map_river", "map_road", "map_city"):
+        assert key in theme
+
+
+def fake_natural_earth(cities=()):
+    """Stand-ins for the Natural Earth layers and the states, so the land and water map draws offline."""
+    import shapely.geometry as sgeom
+
+    def read(category, name, bounds, keep=None):
+        if name == "populated_places":
+            return [(sgeom.Point(lon, lat), {"NAME": city, "POP_MAX": pop}) for city, lon, lat, pop in cities]
+        if name == "roads":
+            return [(sgeom.LineString([(-98, 41), (-95, 41.5)]), {"type": "Major Highway"})]
+        return []
+
+    def shapes(name, bounds):
+        import cartopy.crs as ccrs
+        return [sgeom.box(-99, 39, -94, 44)], ccrs.PlateCarree()
+    return read, shapes
+
+
+def map_with_background(monkeypatch, cities=(), latlon=(41.32, -96.37), theme=THEME):
+    # the map spans about -98.4 to -94.4 E and 40.3 to 44.3 N (it's centered north of the profile)
+    import cartopy.crs as ccrs
+    read, shapes = fake_natural_earth(cities)
+    monkeypatch.setattr(c, "_read_natural_earth", read)
+    monkeypatch.setattr(c, "_get_map_shapes", shapes)
+    fig = plt.figure(figsize=(3, 3), dpi=100)
+    ax = fig.add_axes((0.1, 0.1, 0.8, 0.8), projection=ccrs.PlateCarree())
+    c._setup_map_inset(ax, latlon, theme, map_zoom=2, background="map", show_counties=False)
+    return fig, ax
+
+
+def test_map_background_draws_land_on_water(monkeypatch):
+    import matplotlib.colors as mcolors
+    fig, ax = map_with_background(monkeypatch)
+    try:
+        assert mcolors.same_color(ax.get_facecolor(), THEME["map_water"])
+        faces = [a.get_facecolor() for a in ax.artists + ax.collections if hasattr(a, "get_facecolor")]
+        edges = [a.get_edgecolor() for a in ax.artists + ax.collections if hasattr(a, "get_edgecolor")]
+        assert any(len(f) and mcolors.same_color(f[0], THEME["map_land"]) for f in faces)
+        assert any(len(e) and mcolors.same_color(e[0], THEME["map_road"]) for e in edges)
+    finally:
+        plt.close(fig)
+
+
+def test_map_names_the_largest_cities_up_to_five(monkeypatch):
+    cities = [(f"City{i}", (-97.8, -95.2)[i % 2], (40.9, 42.2, 43.0, 43.8)[i // 2], 1000 - i) for i in range(8)]
+    fig, ax = map_with_background(monkeypatch, cities)
+    try:
+        names = [t.get_text() for t in ax.texts]
+        assert names == ["City0", "City1", "City2", "City3", "City4"]
+    finally:
+        plt.close(fig)
+
+
+def test_map_names_the_city_at_the_marker_beside_it(monkeypatch):
+    # the biggest city sits under the profile's marker: it's named, without a dot of its own
+    cities = [("Home", -96.37, 41.32, 1000), ("Away", -97.8, 43.5, 10)]
+    fig, ax = map_with_background(monkeypatch, cities)
+    try:
+        assert [t.get_text() for t in ax.texts] == ["Home", "Away"]
+        home = ax.texts[0]
+        assert home.xy == (-96.37, 41.32) and home.xyann != (0, 0)
+        dots = [line for line in ax.lines if line.get_marker() == "o"]
+        assert len(dots) == 1
+    finally:
+        plt.close(fig)
+
+
+def test_map_skips_cities_whose_names_would_overlap(monkeypatch):
+    # two cities a few pixels apart: the smaller one has no room
+    cities = [("Big", -97.5, 43.0, 1000), ("Near", -97.49, 43.01, 10)]
+    fig, ax = map_with_background(monkeypatch, cities)
+    try:
+        assert [t.get_text() for t in ax.texts] == ["Big"]
+    finally:
+        plt.close(fig)
+
+
+# -----------------------------------------------------------------------------
 # MAP INSET: map_layers AND map_label
 # -----------------------------------------------------------------------------
 
@@ -487,7 +585,7 @@ def bare_map(latlon=(41.32, -96.37), map_zoom=2):
     import cartopy.crs as ccrs
     fig = plt.figure(figsize=(3, 3))
     ax = fig.add_axes((0.1, 0.1, 0.8, 0.8), projection=ccrs.PlateCarree())
-    c._setup_map_inset(ax, latlon, THEME, map_zoom=map_zoom, show_satellite=False, show_states=False, show_counties=False)
+    c._setup_map_inset(ax, latlon, THEME, map_zoom=map_zoom, background=None, show_states=False, show_counties=False)
     return fig, ax
 
 

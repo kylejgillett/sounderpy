@@ -110,7 +110,15 @@ LIGHT_THEME = {**BASE_THEME,
                "marker": "black",
                "barb": "black",
                "skew_line": "black",
-               "shade_alpha": 0.02}
+               "shade_alpha": 0.02,
+
+               # map inset (map_background='map')
+               "map_land": "#ece8de",
+               "map_water": "#a9cbe8",
+               "map_urban": "#c9c0b0",
+               "map_river": "#5f9fdc",
+               "map_road": "#c98a4b",
+               "map_city": "#222222"}
 
 DARK_THEME = {**BASE_THEME,
               "text": "white",
@@ -123,7 +131,15 @@ DARK_THEME = {**BASE_THEME,
 
               # the browns in BASE_THEME are too dark for this background
               "ncape": "#e08a6a",
-              "lapse": "#d9a066"}
+              "lapse": "#d9a066",
+
+              # map inset (map_background='map')
+              "map_land": "#2b2b2b",
+              "map_water": "#1c3651",
+              "map_urban": "#4d4840",
+              "map_river": "#3f86c9",
+              "map_road": "#a8763f",
+              "map_city": "#ececec"}
 
 
 def _get_plot_theme(dark_mode=False, colorblind=False, overrides=None):
@@ -184,14 +200,15 @@ FONT_SIZES = {"fine": 7,
 ################################ UNITS ##################################
 #########################################################################
 
-UNIT_JKG = r"$\mathrm{\mathbf{Jkg^{-1}}}$"
-UNIT_M = r"$\mathrm{\mathbf{m}}$"
-UNIT_KT = r"$\mathrm{\mathbf{kt}}$"
-UNIT_M2S2 = r"$\mathrm{\mathbf{m^2s^{-2}}}$"
-UNIT_PER_S = r"$\mathrm{\mathbf{s^{-1}}}$"
-UNIT_GKG = r"$\mathrm{\mathbf{gkg^{-1}}}$"
-UNIT_DEGC = r"$\mathrm{\mathbf{^{\circ}C}}$"
-UNIT_LAPSE = r"$\mathrm{\mathbf{^{\circ}C}}$"
+# plain text with Unicode superscripts, which draw much faster than mathtext
+UNIT_JKG = "Jkg⁻¹"
+UNIT_M = "m"
+UNIT_KT = "kt"
+UNIT_M2S2 = "m²s⁻²"
+UNIT_PER_S = "s⁻¹"
+UNIT_GKG = "gkg⁻¹"
+UNIT_DEGC = "°C"
+UNIT_LAPSE = "°C"
 
 
 
@@ -430,8 +447,8 @@ TIMESERIES_PARAMS = {"sbcape": ("SBCAPE", "parcel.sb", "-"),
 
 # axis labels for the table's units
 TIMESERIES_UNITS = {"J/kg": UNIT_JKG, "m2/s2": UNIT_M2S2, "kt": UNIT_KT, "1/s": UNIT_PER_S, "g/kg": UNIT_GKG,
-                    "degC": UNIT_DEGC, "degC/km": r"$\mathrm{\mathbf{^{\circ}C\,km^{-1}}}$", "m": UNIT_M,
-                    "hPa": r"$\mathrm{\mathbf{hPa}}$", "in": r"$\mathrm{\mathbf{in}}$", "%": "%", "deg": r"$\mathrm{\mathbf{^{\circ}}}$"}
+                    "degC": UNIT_DEGC, "degC/km": "°C km⁻¹", "m": UNIT_M,
+                    "hPa": "hPa", "in": "in", "%": "%", "deg": "°"}
 
 
 

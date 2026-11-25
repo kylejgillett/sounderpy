@@ -41,6 +41,7 @@ from metpy.plots import SkewT, Hodograph, USCOUNTIES
 import matplotlib.lines as mlines
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
+from matplotlib.transforms import Affine2D
 
 # NUMPY OPERATIONS
 import numpy as np
@@ -59,6 +60,8 @@ from PIL import Image
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from cartopy.io import img_tiles
+import cartopy.io.shapereader as shpreader
+import matplotlib.patheffects as patheffects
 import shapely.geometry as sgeom
 
 # STYLE
@@ -102,25 +105,6 @@ PARCEL_DETAILS = {"term1": {"sb": "surface_based", "ml": "mixed_layer", "mu": "m
 
 # the stepwise CAPE/CIN panel shows up to this height (m AGL), so parcels above it aren't needed
 STABILITY_PANEL_DEPTH = 3000
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 VALID_PARCEL_CODES = ("mu_ps_cape", "mu_ia_cape", "mu_ps_ecape", "mu_ia_ecape",
@@ -212,11 +196,11 @@ def _format_special_parcel_name(parcel):
 
 
 
+
+
 ##################################################################################
 ############################ SOUNDING PLOT UTILS #################################
 ################################################################################## 
-
-
 
 def _style_axis(ax, theme):
     """Apply the theme's background and border colors to an axis."""
@@ -411,6 +395,28 @@ def _describe_surface_modification(clean_data, modify_sfc):
     return " · ".join([", ".join(parts), how]) if parts else how
 
 
+class _inside_axes_point:
+    """Annotation coordinates for a data point (x, y), moved sideways just enough that a centered label
+    `offset` points to its right stays inside the axes, e.g. a surface dewpoint at the edge of a zoomed skew-t."""
+
+    def __init__(self, ax, x, y, offset):
+        self.ax, self.x, self.y, self.offset = ax, x, y, offset
+        self.annotation = None
+
+    def __call__(self, renderer):
+        x, y = (np.ma.filled(np.ma.asarray(v, dtype=float), np.nan) for v in (self.ax.convert_xunits(self.x), self.ax.convert_yunits(self.y)))
+        px, py = self.ax.transData.transform((float(x), float(y)))
+        if self.annotation is not None and np.isfinite(px):
+            text = self.annotation
+            width = renderer.get_text_width_height_descent(text.get_text(), text.get_fontproperties(), ismath=False)[0]
+            pts = renderer.points_to_pixels(1)
+            half = width / 2 + (text.get_bbox_patch().get_boxstyle().pad if text.get_bbox_patch() else 0) * text.get_fontsize() * pts
+            center = px + self.offset * pts
+            center = min(max(center, self.ax.bbox.x0 + half), self.ax.bbox.x1 - half)
+            px = center - self.offset * pts
+        return Affine2D().translate(px, py)
+
+
 def _plot_skewt_surface_annotations(skew, data, theme, modify_sfc=None, original=None, temperature_unit="degF"):
     """Label the surface temperature and dewpoint, and describe any surface modification."""
     p = data["p"]
@@ -428,9 +434,11 @@ def _plot_skewt_surface_annotations(skew, data, theme, modify_sfc=None, original
             continue
         # nearest whole degree, with halves rounded up (72.5 -> 73)
         label = f"{int(np.floor(value + 0.5))}{unit_label}{'*' if key in modify_sfc else ''}"
-        skew.ax.annotate(label, (values[0], p[0]), textcoords="offset points", xytext=(offset, -15),
-                          fontsize=FONT_SIZES["annotation_large"], color=color, weight="bold", alpha=0.9, ha="center", zorder=10,
-                          bbox=dict(facecolor=theme["background"], edgecolor="none", alpha=0.6, pad=1.5))
+        annotation = skew.ax.annotate(label, (0, 0), xycoords=_inside_axes_point(skew.ax, values[0], p[0], offset),
+                                      textcoords="offset points", xytext=(offset, -15),
+                                      fontsize=FONT_SIZES["annotation_large"], color=color, weight="bold", alpha=0.9, ha="center", zorder=10,
+                                      bbox=dict(facecolor=theme["background"], edgecolor="none", alpha=0.6, pad=1.5))
+        annotation.xycoords.annotation = annotation
     # what the user changed, in a box at the top middle of the skew-t
     notes = []
     if modify_sfc:
@@ -559,8 +567,7 @@ def _plot_skewt_layer_annotations(skew, data, snd_params, theme, layers=("lapse_
         """Draw short horizontal ticks at a layer's bottom and top."""
         for bound in bounds:
             if not ma.is_masked(bound):
-                skew.ax.add_artist(mlines.Line2D([x - 0.01, x + 0.01], [bound, bound], color=color, alpha=alpha,
-                                                 linewidth=linewidth, transform=transform))
+                skew.ax.add_artist(mlines.Line2D([x - 0.01, x + 0.01], [bound, bound], color=color, alpha=alpha,linewidth=linewidth, transform=transform))
 
     def _plot_labeled_layer(x, bounds, label, color, label_alpha, line_alpha, linewidth=3, ticks=False):
         """Draw a layer's vertical line with a label above it, and optional ticks."""
@@ -591,8 +598,7 @@ def _plot_skewt_layer_annotations(skew, data, snd_params, theme, layers=("lapse_
             if bound < skew.ax.get_ylim()[1]:
                 continue
             height = np.interp(np.log(bound), np.log(intrp["pINTRP"][::-1]), intrp["zINTRP"][::-1])
-            skew.ax.text(eil_x + 0.015, bound, "SFC" if height < 50 else f"{height / 1000:.1f} km", weight="bold",
-                         color=theme["eil"], ha="left", va="center", fontsize=FONT_SIZES["small"], transform=transform, clip_on=True)
+            skew.ax.text(eil_x + 0.015, bound, "SFC" if height < 50 else f"{height / 1000:.1f} km", weight="bold", color=theme["eil"], ha="left", va="center", fontsize=FONT_SIZES["small"], transform=transform, clip_on=True)
 
     if "growth_zone" in layers:
         if T[0].m < 5:
@@ -611,7 +617,7 @@ def _plot_skewt_cape_annotations(skew, snd_params, theme):
 
     def _plot_cape_label(value, temperature, pressure):
         """Label a CAPE value at a point on the parcel trace."""
-        label = f"← {mag(value)} " + r"$\mathrm{Jkg^{-1}}$"
+        label = f"← {mag(value)} Jkg⁻¹"
         skew.ax.annotate(label, xy=(temperature, pressure), xytext=(8, 0), textcoords="offset points",
                          color=color, alpha=0.7, fontsize=FONT_SIZES["annotation"], ha="left", va="center")
 
@@ -1069,18 +1075,28 @@ def _plot_hodograph_boundary(hodo, hodo_boundary, snd_params, theme,
 ############################## MAP INSET UTILS ##################################
 ################################################################################# 
 
-@lru_cache(maxsize=None)
-def _load_map_shapes(name):
-    """Read a map's shapes and CRS once per process."""
-    feature = {"states": cfeature.STATES.with_scale("10m"), "counties": USCOUNTIES}[name]
-    return tuple(feature.geometries()), feature.crs
+def _map_shapes_path(name):
+    """The shapefile for the map's states or counties (downloaded the first time it's used)."""
+    if name == "states":
+        return shpreader.natural_earth("10m", "cultural", "admin_1_states_provinces_lakes")
+    from metpy.cbook import get_test_data
+    stem = f"{USCOUNTIES.name}_{USCOUNTIES.scaler.scale}"
+    for extension in (".cpg", ".dbf", ".prj", ".shx"):
+        get_test_data(stem + extension, as_file_obj=False)
+    return get_test_data(stem + ".shp", as_file_obj=False)
 
 
 def _get_map_shapes(name, bounds):
-    """Get the map shapes within a (west, south, east, north) box."""
-    shapes, crs = _load_map_shapes(name)
+    """Get the map's states or counties within a (west, south, east, north) box. Only that box is read from the
+    file, which is much faster than loading every state and county in the world."""
+    import shapefile
     box = sgeom.box(*bounds)
-    return [shape for shape in shapes if shape.intersects(box)], crs
+    reader = shapefile.Reader(_map_shapes_path(name))
+    try:
+        shapes = [sgeom.shape(shape.__geo_interface__) for shape in reader.iterShapes(bbox=bounds)]
+    finally:
+        reader.close()
+    return [shape for shape in shapes if shape.intersects(box)], ccrs.PlateCarree()
 
 
 def _get_satellite_zoom(map_ax, map_zoom, oversample=2, tile_size=256):
@@ -1090,8 +1106,126 @@ def _get_satellite_zoom(map_ax, map_zoom, oversample=2, tile_size=256):
     return int(np.clip(np.ceil(np.log2(pixels * 360 / (tile_size * lon_span))), 1, 18))
 
 
-def _setup_map_inset(map_ax, latlon, theme, map_zoom=2, show_satellite=True, satellite_zoom="auto", show_states=True, show_counties=True):
-    """Set up a map inset centered on a lat/lon, with states, counties, and satellite imagery."""
+def _get_satellite_regrid_shape(map_ax, oversample=1.75, most=750):
+    """The grid size (pixels) the satellite image is reprojected onto: a little finer than the map axis,
+    and no finer than cartopy's default (750), since the reprojection is most of the time to draw the map."""
+    pixels = min(map_ax.bbox.width, map_ax.bbox.height) * oversample
+    return int(np.clip(np.ceil(pixels), 100, most))
+
+
+# what the map inset can show under the borders and radar
+MAP_BACKGROUNDS = ("map", "satellite")
+
+
+def _validate_map_background(map_background):
+    """Check a map_background setting."""
+    if map_background not in MAP_BACKGROUNDS:
+        raise ValueError(f"'map_background' must be one of {list(MAP_BACKGROUNDS)}. Got: {map_background!r}")
+    return map_background
+
+
+def _read_natural_earth(category, name, bounds, keep=None):
+    """The shapes (and their attributes) of a 10m Natural Earth layer inside a (west, south, east, north) box. Only
+    that box is read from the file, which is much faster than loading the whole world. Cartopy downloads the file
+    the first time it's used."""
+    import shapefile
+    reader = shapefile.Reader(shpreader.natural_earth("10m", category, name))
+    try:
+        shapes = []
+        for record in reader.iterShapeRecords(bbox=bounds):
+            attributes = record.record.as_dict()
+            if keep is None or keep(attributes):
+                shapes.append((sgeom.shape(record.shape.__geo_interface__), attributes))
+        return shapes
+    finally:
+        reader.close()
+
+
+def _plot_map_features(map_ax, theme, bounds):
+    """Draw a land and water map with city areas, lakes, rivers, and major highways."""
+    transform = ccrs.PlateCarree()
+    map_ax.set_facecolor(theme["map_water"])
+    states, crs = _get_map_shapes("states", bounds)
+    # the states layer covers the land everywhere, with the large lakes cut out
+    map_ax.add_geometries(states, crs, facecolor=theme["map_land"], edgecolor="none", zorder=1)
+    layers = ((("cultural", "urban_areas", None), dict(facecolor=theme["map_urban"], edgecolor="none", zorder=1.2)),
+              (("physical", "lakes", None), dict(facecolor=theme["map_water"], edgecolor="none", zorder=1.4)),
+              (("cultural", "roads", lambda a: a.get("type") == "Major Highway"),
+               dict(facecolor="none", edgecolor=theme["map_road"], linewidth=1.2, zorder=2.4)),
+              (("physical", "rivers_lake_centerlines", None),
+               dict(facecolor="none", edgecolor=theme["map_river"], linewidth=1.0, zorder=2.5)))
+    for (category, name, keep), style in layers:
+        try:
+            shapes = [shape for shape, _ in _read_natural_earth(category, name, bounds, keep)]
+        except Exception as exc:
+            warnings.warn(f"The map's {name.replace('_', ' ')} could not be drawn: {exc}", SounderPyWarning)
+            continue
+        if shapes:
+            map_ax.add_geometries(shapes, transform, **style)
+
+
+def _plot_map_cities(map_ax, theme, latlon, extent, bounds, n_cities=5, fontsize=9, weight="bold", outline=1.2):
+    """Name the largest cities on the map, skipping any whose name would cover the profile's marker, another
+    city, or the map's edge."""
+    try:
+        places = _read_natural_earth("cultural", "populated_places", bounds)
+    except Exception as exc:
+        warnings.warn(f"The map's city names could not be drawn: {exc}", SounderPyWarning)
+        return
+    west, east, south, north = extent
+    # work in pixels, from the square map's size
+    side = min(map_ax.bbox.width, map_ax.bbox.height)
+    to_px = lambda lon, lat: ((lon - west) / (east - west) * side, (lat - south) / (north - south) * side)
+    px_per_pt = map_ax.figure.dpi / 72
+    height = fontsize * 1.3 * px_per_pt
+    marker_lon, marker_lat = latlon[1], latlon[0]
+    mx, my = to_px(marker_lon, marker_lat)
+    taken = [(mx - 12, my - 12, mx + 12, my + 12)]
+    overlaps = lambda a, b: a[0] < b[2] and b[0] < a[2] and a[1] < b[3] and b[1] < a[3]
+    placed = 0
+    for shape, attributes in sorted(places, key=lambda place: -place[1].get("POP_MAX", 0)):
+        if placed >= n_cities:
+            break
+        x, y = to_px(shape.x, shape.y)
+        if not (4 < x < side - 4 and 4 < y < side - 4):
+            continue
+        dot = (x - 3, y - 3, x + 3, y + 3)
+        # a city under the profile's marker is named beside the marker, without its own dot
+        at_marker = overlaps(dot, taken[0])
+        if at_marker:
+            x, y, gap = mx, my, 13
+        elif any(overlaps(dot, box) for box in taken):
+            continue
+        else:
+            gap = 4
+        name = attributes.get("NAME", "")
+        width = len(name) * fontsize * (0.68 if weight != "normal" else 0.62) * px_per_pt
+        # above, below, right, or left of the dot (or marker)
+        options = (((x - width / 2, y + gap, x + width / 2, y + gap + height), dict(ha="center", va="bottom"), (0, gap)),
+                   ((x - width / 2, y - gap - height, x + width / 2, y - gap), dict(ha="center", va="top"), (0, -gap)),
+                   ((x + gap + 1, y - height / 2, x + gap + 1 + width, y + height / 2), dict(ha="left", va="center"), (gap + 1, 0)),
+                   ((x - gap - 1 - width, y - height / 2, x - gap - 1, y + height / 2), dict(ha="right", va="center"), (-gap - 1, 0)))
+        for box, align, offset in options:
+            inside = box[0] > 2 and box[1] > 2 and box[2] < side - 2 and box[3] < side - 2
+            if inside and not any(overlaps(box, other) for other in taken):
+                anchor = (marker_lon, marker_lat) if at_marker else (shape.x, shape.y)
+                if not at_marker:
+                    map_ax.plot(shape.x, shape.y, "o", markersize=3.5, color=theme["map_city"], markeredgecolor=theme["map_land"],
+                                markeredgewidth=0.6, transform=ccrs.PlateCarree(), zorder=7)
+                    taken.append(dot)
+                map_ax.annotate(name, anchor, xycoords=ccrs.PlateCarree()._as_mpl_transform(map_ax),
+                                xytext=(offset[0] / px_per_pt, offset[1] / px_per_pt), textcoords="offset points",
+                                fontsize=fontsize, weight=weight, color=theme["map_city"], zorder=7, annotation_clip=True,
+                                path_effects=[patheffects.withStroke(linewidth=outline, foreground=theme["map_land"])], **align)
+                taken.append(box)
+                placed += 1
+                break
+
+
+def _setup_map_inset(map_ax, latlon, theme, map_zoom=2, background="map", satellite_zoom="auto", show_states=True, show_counties=True,
+                     n_cities=5):
+    """Set up a map inset centered on a lat/lon, with states and counties over a background: 'map' (land and water,
+    city areas, lakes, rivers, major highways, and the largest cities' names), 'satellite' imagery, or None."""
     # map_ax needs a cartopy projection (e.g., fig.add_axes(rect, projection=ccrs.PlateCarree()))
     lat, lon = latlon
     west, east, south, north = lon - map_zoom, lon + map_zoom, lat - map_zoom / 1.6, lat + map_zoom * 1.6
@@ -1108,18 +1242,24 @@ def _setup_map_inset(map_ax, latlon, theme, map_zoom=2, show_satellite=True, sat
     map_ax.set_extent([west, east, south, north], crs=ccrs.PlateCarree())
     map_ax.set_box_aspect(1)
 
+    if background == "map":
+        _plot_map_features(map_ax, theme, bounds)
     if show_states:
         states, crs = _get_map_shapes("states", bounds)
-        map_ax.add_geometries(states, crs, color=theme["background"], alpha=0.4, zorder=2)
+        if background == "satellite":
+            # lightens the satellite image
+            map_ax.add_geometries(states, crs, color=theme["background"], alpha=0.4, zorder=2)
         map_ax.add_geometries(states, crs, edgecolor=theme["text"], facecolor="none", alpha=0.5, linestyle="-", linewidth=1, zorder=6)
     if show_counties:
         counties, crs = _get_map_shapes("counties", bounds)
         map_ax.add_geometries(counties, crs, facecolor="none", edgecolor=theme["text"], alpha=0.5, linestyle="-", linewidth=0.5, zorder=5)
-    if show_satellite:
+    if background == "satellite":
         if satellite_zoom == "auto":
             satellite_zoom = _get_satellite_zoom(map_ax, map_zoom)
         satellite = img_tiles.GoogleTiles(style="satellite")
-        map_ax.add_image(satellite, satellite_zoom, zorder=1)
+        map_ax.add_image(satellite, satellite_zoom, zorder=1, regrid_shape=_get_satellite_regrid_shape(map_ax))
+    elif background == "map" and n_cities:
+        _plot_map_cities(map_ax, theme, latlon, (west, east, south, north), bounds, n_cities=n_cities)
 
     return map_ax
 
@@ -1135,7 +1275,12 @@ def _plot_map_mosaic_radar(map_ax, sounding_data, map_zoom, radar_time, theme, r
                            alpha=1, lon_offset=0.05, lat_offset=0.05, show_timestamp=True, reflectivity_max=None):
     """Plot mosaic radar reflectivity on the map, returning whether it worked."""
     try:
-        radar_data = get_radar_mosaic(sounding_data, map_zoom, radar_time)
+        # download only the area the map shows
+        try:
+            extent = map_ax.get_extent(ccrs.PlateCarree())
+        except (AttributeError, TypeError):
+            extent = None
+        radar_data = get_radar_mosaic(sounding_data, map_zoom, radar_time, extent)
         reflectivity = np.ma.masked_less(np.asarray(radar_data["Reflectivity"])[0], reflectivity_min)
         if reflectivity_max is not None:
             reflectivity = np.ma.masked_greater(reflectivity, reflectivity_max)
@@ -2138,9 +2283,14 @@ def _plot_composite_table(ax, profiles, snd_params, colors, theme, style="full",
 ############################### FIGURE EXTRAS UTILS #############################
 #################################################################################
 
+# marks the rectangle that _add_figure_margin adds
+FIGURE_MARGIN_GID = "sounderpy-figure-margin"
+
+
 def _add_figure_margin(fig, bounds):
-    """Add an empty area that a tight save has to include, setting the whitespace around the figure."""
-    fig.add_artist(Rectangle(bounds[:2], bounds[2], bounds[3], transform=fig.transFigure, fill=False, linewidth=0, clip_on=False))
+    """Add an empty area that sets the saved image's extent, and so the whitespace around the figure."""
+    fig.add_artist(Rectangle(bounds[:2], bounds[2], bounds[3], transform=fig.transFigure, fill=False, linewidth=0, clip_on=False,
+                             gid=FIGURE_MARGIN_GID))
 
 
 def _plot_figure_titles(fig, titles, theme, left_x=0.1237, right_x=1.206, top_y=0.985, sub_y=0.959, top_fontsize=FONT_SIZES["title"], sub_fontsize=FONT_SIZES["subtitle"]):

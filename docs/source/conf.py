@@ -11,7 +11,7 @@ import os
 project = 'SounderPy'
 copyright = '2026, Kyle J Gillett'
 author = 'Kyle J Gillett'
-release = 'v3.3.0'
+release = 'v3.3.1'
 # No sidebar logo: the sounderpy.app header above every page already shows it (_templates/layout.html)
 html_favicon = 'https://raw.githubusercontent.com/kylejgillett/sounderpy/main/images/sounderpy_logo.png'
 

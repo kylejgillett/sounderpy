@@ -561,7 +561,7 @@ def _plot_publication_map(ax, profiles, colors, style, shape, zoom=1.5, show_cou
     # the map helper frames its point low, so draw it wider (loading the lines for the whole view), then center the
     # view in the panel's shape and take off the state fill (it's there to dim satellite images)
     across, up = zoom * max(1, 1 / shape), zoom * max(1, shape)
-    _setup_map_inset(ax, center, _map_colors(style), map_zoom=max(across, up) * 1.6, show_satellite=False,
+    _setup_map_inset(ax, center, _map_colors(style), map_zoom=max(across, up) * 1.6, background=None,
                      show_counties=show_counties)
     ax.set_box_aspect(shape)
     ax.set_extent([center[1] - across, center[1] + across, center[0] - up, center[0] + up], crs=ccrs.PlateCarree())

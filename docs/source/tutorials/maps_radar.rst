@@ -11,6 +11,7 @@ This tutorial covers:
 
 * disabling the map entirely;
 * displaying the map without radar;
+* choosing the map background (a map or satellite imagery);
 * changing the map extent;
 * displaying single-site WSR-88D reflectivity;
 * displaying recent CONUS mosaic reflectivity;
@@ -88,6 +89,21 @@ Set ``radar=None`` while keeping ``map_zoom`` greater than zero:
    :width: 85%
    :align: center
 
+
+***************************************************************
+ 
+Choose the Map Background
+=========================
+
+The map shows land and water with city areas, lakes, rivers, major highways, and the largest cities' names. For
+satellite imagery instead, set ``map_background='satellite'`` (slower, since it's downloaded for each figure):
+
+.. code-block:: python
+
+   spy.build_sounding(
+       data,
+       map_background="satellite",
+   )
 
 ***************************************************************
  

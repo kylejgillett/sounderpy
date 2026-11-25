@@ -311,7 +311,7 @@ def offline_map(monkeypatch):
     import functools
     setup = operational._setup_map_inset
     monkeypatch.setattr(operational, "_setup_map_inset",
-                        functools.partial(setup, show_satellite=False, show_states=False, show_counties=False))
+                        functools.partial(setup, background=None, show_states=False, show_counties=False))
 
 
 @pytest.mark.slow
@@ -339,6 +339,35 @@ def test_map_layers_draw_on_each_figures_map(name, offline_map, clean_profile, v
         assert "MY DATA" in [t.get_text() for t in seen[0].texts]
     finally:
         plt.close(fig)
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize("name", ["sounding", "winter", "hodograph", "vad"])
+def test_map_background_reaches_each_figures_map(name, monkeypatch, clean_profile, vad_profile):
+    import matplotlib.pyplot as plt
+    seen = []
+    setup = operational._setup_map_inset
+
+    def record(*args, background=None, **kwargs):
+        seen.append(background)
+        return setup(*args, background=None, show_states=False, show_counties=False, **kwargs)
+    monkeypatch.setattr(operational, "_setup_map_inset", record)
+    calls = {"sounding": (spy.build_sounding, clean_profile, {"special_parcels": "simple", "dpi": 50}),
+             "winter": (spy.build_sounding, make_winter_profile(next(iter(WINTER_CASES))), {"mode": "winter", "dpi": 50}),
+             "hodograph": (spy.build_hodograph, clean_profile, {"dpi": 50}),
+             "vad": (spy.build_vad_hodograph, vad_profile, {})}
+    function, data, kwargs = calls[name]
+    fig, _ = function(data, radar=None, map_background="satellite", return_fig=True, **kwargs)
+    plt.close(fig)
+    fig, _ = function(data, radar=None, return_fig=True, **kwargs)
+    plt.close(fig)
+    assert seen == ["satellite", "map"]
+
+
+@pytest.mark.parametrize("function", ["build_sounding", "build_hodograph", "build_vad_hodograph"])
+def test_bad_map_background_fails_before_plotting(function, clean_profile):
+    with pytest.raises(ValueError, match="map_background"):
+        getattr(spy, function)(clean_profile, map_background="terrain")
 
 
 @pytest.mark.slow

@@ -167,7 +167,7 @@ from .components_winter import (_plot_clouds,
 def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_parcels=None, 
                     radar='mosaic', radar_time='sounding', map_zoom=2, modify_sfc=None,
                     show_theta=False, hodo_boundary=None, dpi=100, max_levels=250, ylim=None, theme_overrides=None, sr_hodo=False,
-                    map_layers=None, map_label=None):
+                    map_layers=None, map_label=None, map_background="map"):
     
     # record process time 
     st = time.time()
@@ -339,7 +339,7 @@ def __full_sounding(clean_data, color_blind, dark_mode, storm_motion, special_pa
         print("    > BUILDING MAP INSET")
         latlon = clean_data["site_info"]["site-latlon"]
         map_ax = fig.add_axes(layout["map"], projection=ccrs.PlateCarree(), zorder=12)
-        _setup_map_inset(map_ax, latlon, theme, map_zoom=map_zoom)
+        _setup_map_inset(map_ax, latlon, theme, map_zoom=map_zoom, background=map_background)
         
         if radar == "mosaic":
             _plot_map_mosaic_radar(map_ax, sounding_data, map_zoom, radar_time, theme)
@@ -454,7 +454,7 @@ def _resolve_sounding_mode(mode, clean_data, modify_sfc=None, max_levels=250):
 
 def __winter_sounding(clean_data, color_blind, dark_mode, storm_motion='right_moving', radar='mosaic', radar_time='sounding',
                       map_zoom=2, modify_sfc=None, dpi=100, max_levels=250, ylim=None, theme_overrides=None, show_obs=False,
-                      map_layers=None, map_label=None):
+                      map_layers=None, map_label=None, map_background="map"):
 
     # record process time
     st = time.time()
@@ -576,7 +576,7 @@ def __winter_sounding(clean_data, color_blind, dark_mode, storm_motion='right_mo
         print('    > BUILDING MAP INSET')
         latlon = clean_data["site_info"]["site-latlon"]
         map_ax = fig.add_axes(layout["map"], projection=ccrs.PlateCarree(), zorder=12)
-        _setup_map_inset(map_ax, latlon, theme, map_zoom=map_zoom)
+        _setup_map_inset(map_ax, latlon, theme, map_zoom=map_zoom, background=map_background)
 
         if radar == "mosaic":
             _plot_map_mosaic_radar(map_ax, sounding_data, map_zoom, radar_time, theme,
@@ -648,7 +648,7 @@ def __winter_sounding(clean_data, color_blind, dark_mode, storm_motion='right_mo
 ############################ HODOGRAPH ##################################
 
 def _build_hodograph_figure(snd_params, site_data, titles, dark_mode, storm_motion, sr_hodo,
-                            radar, radar_time, map_zoom, hodo_boundary, dpi, theme_overrides=None, map_layers=None, map_label=None):
+                            radar, radar_time, map_zoom, hodo_boundary, dpi, theme_overrides=None, map_layers=None, map_label=None, map_background="map"):
     """Build a hodograph figure from calculated parameters, shared by sounding and VAD data.
 
     Data with thermodynamics gets the stepwise CAPE/CIN panel and parcel values. Wind-only data gets
@@ -714,7 +714,7 @@ def _build_hodograph_figure(snd_params, site_data, titles, dark_mode, storm_moti
         print("    > BUILDING MAP INSET")
         latlon = site_data["site_info"]["site-latlon"]
         map_ax = fig.add_axes(layout["map"], projection=ccrs.PlateCarree(), zorder=12)
-        _setup_map_inset(map_ax, latlon, theme, map_zoom=map_zoom)
+        _setup_map_inset(map_ax, latlon, theme, map_zoom=map_zoom, background=map_background)
 
         if radar == "mosaic":
             _plot_map_mosaic_radar(map_ax, site_data, map_zoom, radar_time, theme)
@@ -775,7 +775,7 @@ def _build_hodograph_figure(snd_params, site_data, titles, dark_mode, storm_moti
 
 def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc,
                      radar, radar_time, map_zoom, hodo_boundary, dpi, max_levels=250, theme_overrides=None,
-                     map_layers=None, map_label=None):
+                     map_layers=None, map_label=None, map_background="map"):
 
     print(f'    > PREPARING DATA')
     sounding_data = _prepare_sounding_data(clean_data, modify_sfc, max_levels)
@@ -784,7 +784,8 @@ def __full_hodograph(clean_data, dark_mode, storm_motion, sr_hodo, modify_sfc,
     snd_params = sounding_params(sounding_data, storm_motion, include_all_parcels=True, parcel_depth=STABILITY_PANEL_DEPTH).calc()
 
     fig, axes, hodo_offset = _build_hodograph_figure(snd_params, sounding_data, clean_data["titles"], dark_mode, storm_motion, sr_hodo,
-                                                     radar, radar_time, map_zoom, hodo_boundary, dpi, theme_overrides, map_layers, map_label)
+                                                     radar, radar_time, map_zoom, hodo_boundary, dpi, theme_overrides, map_layers, map_label,
+                                                     map_background)
     # what was plotted, for a readout file
     source = {"kind": "hodograph", "data": sounding_data, "params": snd_params, "hodo_offset": hodo_offset}
     return fig, axes, source
@@ -952,7 +953,7 @@ def __composite_sounding(data_list, shade_between, cmap, colors, linestyles, alp
 ########################### VAD HODOGRAPH ###############################
 
 def __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo, radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, theme_overrides=None,
-                    map_layers=None, map_label=None):
+                    map_layers=None, map_label=None, map_background="map"):
 
     print(f'    > PREPARING DATA')
     vad_result = vad_params(vad_data, storm_motion).calc()
@@ -965,5 +966,6 @@ def __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo, radar='mosaic', 
               "right_title": f"{site['site-id']} - {site['site-name']} | {site['site-latlon'][0]}, {site['site-latlon'][1]}"}
 
     fig, axes, _ = _build_hodograph_figure({"kinem": kinem, "intrp": intrp}, vad_data, titles, dark_mode, storm_motion, sr_hodo,
-                                           radar, radar_time, map_zoom, hodo_boundary, dpi, theme_overrides, map_layers, map_label)
+                                           radar, radar_time, map_zoom, hodo_boundary, dpi, theme_overrides, map_layers, map_label,
+                                                     map_background)
     return fig, axes

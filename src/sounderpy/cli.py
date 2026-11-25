@@ -133,14 +133,14 @@ def _nonnegative_int(value: str) -> int:
 
 
 # plotting options, and the defaults of those left as None in the parser so the CLI can tell whether they were given
-PLOT_OPTIONS = ("plot_file", "dark_mode", "map_zoom", "dpi", "color_blind", "show_theta", "storm_relative", "obs",
+PLOT_OPTIONS = ("plot_file", "dark_mode", "map_zoom", "map_background", "dpi", "color_blind", "show_theta", "storm_relative", "obs",
                 "radar", "radar_time", "parcels", "background_parcels", "readout")
 SOUNDING_ONLY_OPTIONS = ("color_blind", "show_theta", "obs", "parcels", "background_parcels")
 # severe sounding options the winter sounding doesn't use
 SEVERE_ONLY_OPTIONS = ("show_theta", "storm_relative", "parcels", "background_parcels")
 # options that change the calculation, used by both --plot and --params
 CALC_OPTIONS = ("mode", "storm_motion", "modify_sfc")
-PLOT_DEFAULTS = {"map_zoom": 2, "dpi": 100, "mode": "severe", "radar": "mosaic", "radar_time": "sounding"}
+PLOT_DEFAULTS = {"map_zoom": 2, "map_background": "map", "dpi": 100, "mode": "severe", "radar": "mosaic", "radar_time": "sounding"}
 
 STORM_MOTIONS = ("right_moving", "left_moving", "mean_wind")
 MODIFY_SFC_KEYS = {"T": float, "Td": float, "ws": float, "wd": float, "method": str, "depth": float}
@@ -291,8 +291,10 @@ def _validate_options(args: argparse.Namespace) -> None:
                 raise CLIError(f"{_flag(given[0])} doesn't apply to winter soundings")
         if args.obs and args.mode not in ("winter", "auto"):
             raise CLIError("--obs only applies to winter soundings; add --mode winter or --mode auto")
-        if args.map_zoom == 0 and (_given(args, "radar") or _given(args, "radar_time")):
-            raise CLIError(f"{_flag('radar' if _given(args, 'radar') else 'radar_time')} needs the map, which --map-zoom 0 hides")
+        if args.map_zoom == 0:
+            given = [name for name in ("radar", "radar_time", "map_background") if _given(args, name)]
+            if given:
+                raise CLIError(f"{_flag(given[0])} needs the map, which --map-zoom 0 hides")
         if args.readout and not args.plot_file:
             raise CLIError("--readout writes its file next to the saved plot; add --plot-file")
         if args.plot_file:
@@ -524,6 +526,7 @@ def _plot_profile(data: dict[str, Any], args: argparse.Namespace) -> None:
     common = {
         "dark_mode": args.dark_mode,
         "map_zoom": args.map_zoom,
+        "map_background": args.map_background,
         "dpi": args.dpi,
         "save": save,
         "storm_motion": args.storm_motion,
@@ -711,6 +714,12 @@ def _add_profile_output_options(parser: argparse.ArgumentParser) -> None:
         type=_nonnegative_int,
         metavar="N",
         help="Map inset zoom level; use 0 to disable the map/radar inset. Default: 2.",
+    )
+    plot.add_argument(
+        "--map-background",
+        choices=("map", "satellite"),
+        help="Map inset background: a land and water map with cities, rivers, and highways, or satellite imagery "
+             "(slower, downloaded for each plot). Default: map.",
     )
     plot.add_argument(
         "--dpi",

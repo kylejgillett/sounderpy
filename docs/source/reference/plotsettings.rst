@@ -277,13 +277,26 @@ Map & Radar
 -----------
 Knowing the location of a vertical profile relative to nearby meteorological phenomenon is vital in understanding what that vertical profile means for the atmosphere at a given time. To help with this, SounderPy employs the use of mapping & radar data to provide this information to a reader.
 
+.. _plot_settings_map:
+
 Using the Map
 ^^^^^^^^^^^^^
 
-The map inset is controlled with ``map_zoom``.
+The map inset is controlled with ``map_zoom`` and ``map_background``.
 
 - ``map_zoom=0`` disables the map.
 - Larger positive values display a broader geographic area.
+- ``map_background='map'`` (the default) draws land and water with city areas, lakes, rivers, major highways, and
+  the names of up to five of the largest cities. It's drawn from `Natural Earth <https://www.naturalearthdata.com/>`_
+  data, which cartopy downloads the first time it's used.
+- ``map_background='satellite'`` draws satellite imagery instead. It's downloaded for each figure, so it's slower.
+
+The map's colors can be changed with ``theme``: ``map_land``, ``map_water``, ``map_urban``, ``map_river``,
+``map_road``, and ``map_city``.
+
+.. code-block:: python
+
+   spy.build_sounding(clean_data, map_background='satellite')
 
 
 Using Radar
@@ -344,18 +357,20 @@ kwargs for it (from Python only, not the command line tool):
 Pass ``transform=ccrs.PlateCarree()`` so your data's x and y are read as longitude and latitude, and use
 ``zorder`` to stack it with the map. Your layers are drawn after the radar and before the profile's location marker:
 
-======================  ==========
-Map part                zorder
-======================  ==========
-Satellite image         1
-State shading           2
-Radar                   4
-County lines            5
-State lines             6
-Location marker         9.9 - 11
-======================  ==========
+==========================================  ==========
+Map part                                    zorder
+==========================================  ==========
+Land, or the satellite image                1
+City areas and lakes                        1.2 - 1.4
+Highways and rivers; satellite shading      2 - 2.5
+Radar                                       4
+County lines                                5
+State lines                                 6
+City names                                  7
+Location marker                             9.9 - 11
+==========================================  ==========
 
-``zorder=3`` puts a filled field above the satellite image and under the radar and borders; ``zorder=7`` or ``8``
+``zorder=3`` puts a filled field above the map background and under the radar and borders; ``zorder=7`` or ``8``
 puts lines, points, and text on top of the borders. Use ``radar=None`` to show only your data. ``map_layers`` and
 ``map_label`` need the map, so leave ``map_zoom`` above ``0``.
 
