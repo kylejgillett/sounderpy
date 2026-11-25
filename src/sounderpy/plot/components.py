@@ -1164,9 +1164,12 @@ def _plot_map_features(map_ax, theme, bounds):
             map_ax.add_geometries(shapes, transform, **style)
 
 
-def _plot_map_cities(map_ax, theme, latlon, extent, bounds, n_cities=5, fontsize=9, weight="bold", outline=1.2):
-    """Name the largest cities on the map, skipping any whose name would cover the profile's marker, another
-    city, or the map's edge."""
+def _plot_map_cities(map_ax, theme, latlon, extent, bounds, n_cities=5, fontsize=11.5, weight="bold", outline=1.2,
+                     min_visible=0.8, min_city_gap=0.17, label_gap=5):
+    """Name the largest cities on the map. A name may run off the map's left or right edge (clipped to the map) as long
+    as min_visible of it shows. A city within min_city_gap (a fraction of the map's width) of a larger named city is
+    skipped, except the largest city at the profile's marker, which is named beside the marker. Names keep label_gap
+    pixels from each other and stay out of the strip along the bottom where the radar's time label goes."""
     try:
         places = _read_natural_earth("cultural", "populated_places", bounds)
     except Exception as exc:
@@ -1180,45 +1183,55 @@ def _plot_map_cities(map_ax, theme, latlon, extent, bounds, n_cities=5, fontsize
     height = fontsize * 1.3 * px_per_pt
     marker_lon, marker_lat = latlon[1], latlon[0]
     mx, my = to_px(marker_lon, marker_lat)
-    taken = [(mx - 12, my - 12, mx + 12, my + 12)]
+    marker = (mx - 12, my - 12, mx + 12, my + 12)
+    taken = [marker, (-side, -side, 2 * side, 0.11 * side)]
     overlaps = lambda a, b: a[0] < b[2] and b[0] < a[2] and a[1] < b[3] and b[1] < a[3]
-    placed = 0
+    padded = lambda box: (box[0] - label_gap, box[1] - label_gap, box[2] + label_gap, box[3] + label_gap)
+    named = []
+    named_at_marker = False
     for shape, attributes in sorted(places, key=lambda place: -place[1].get("POP_MAX", 0)):
-        if placed >= n_cities:
+        if len(named) >= n_cities:
             break
         x, y = to_px(shape.x, shape.y)
-        if not (4 < x < side - 4 and 4 < y < side - 4):
+        if not (3 < x < side - 3 and 3 < y < side - 3):
             continue
         dot = (x - 3, y - 3, x + 3, y + 3)
-        # a city under the profile's marker is named beside the marker, without its own dot
-        at_marker = overlaps(dot, taken[0])
+        at_marker = overlaps(dot, marker)
+        if not (at_marker and not named_at_marker) and any(np.hypot(x - nx, y - ny) < min_city_gap * side for nx, ny in named):
+            continue
         if at_marker:
-            x, y, gap = mx, my, 13
+            # named beside the marker, without its own dot
+            ax_x, ax_y, gap = mx, my, 13 + label_gap
         elif any(overlaps(dot, box) for box in taken):
             continue
         else:
-            gap = 4
+            ax_x, ax_y, gap = x, y, 4
         name = attributes.get("NAME", "")
         width = len(name) * fontsize * (0.68 if weight != "normal" else 0.62) * px_per_pt
         # above, below, right, or left of the dot (or marker)
-        options = (((x - width / 2, y + gap, x + width / 2, y + gap + height), dict(ha="center", va="bottom"), (0, gap)),
-                   ((x - width / 2, y - gap - height, x + width / 2, y - gap), dict(ha="center", va="top"), (0, -gap)),
-                   ((x + gap + 1, y - height / 2, x + gap + 1 + width, y + height / 2), dict(ha="left", va="center"), (gap + 1, 0)),
-                   ((x - gap - 1 - width, y - height / 2, x - gap - 1, y + height / 2), dict(ha="right", va="center"), (-gap - 1, 0)))
+        options = (((ax_x - width / 2, ax_y + gap, ax_x + width / 2, ax_y + gap + height), dict(ha="center", va="bottom"), (0, gap)),
+                   ((ax_x - width / 2, ax_y - gap - height, ax_x + width / 2, ax_y - gap), dict(ha="center", va="top"), (0, -gap)),
+                   ((ax_x + gap + 1, ax_y - height / 2, ax_x + gap + 1 + width, ax_y + height / 2), dict(ha="left", va="center"), (gap + 1, 0)),
+                   ((ax_x - gap - 1 - width, ax_y - height / 2, ax_x - gap - 1, ax_y + height / 2), dict(ha="right", va="center"), (-gap - 1, 0)))
         for box, align, offset in options:
-            inside = box[0] > 2 and box[1] > 2 and box[2] < side - 2 and box[3] < side - 2
-            if inside and not any(overlaps(box, other) for other in taken):
-                anchor = (marker_lon, marker_lat) if at_marker else (shape.x, shape.y)
+            visible = (min(box[2], side) - max(box[0], 0)) / width
+            fits = visible >= min_visible and box[1] > 1 and box[3] < side - 1
+            if fits and not any(overlaps(padded(box), other) for other in taken):
                 if not at_marker:
                     map_ax.plot(shape.x, shape.y, "o", markersize=3.5, color=theme["map_city"], markeredgecolor=theme["map_land"],
                                 markeredgewidth=0.6, transform=ccrs.PlateCarree(), zorder=7)
                     taken.append(dot)
-                map_ax.annotate(name, anchor, xycoords=ccrs.PlateCarree()._as_mpl_transform(map_ax),
-                                xytext=(offset[0] / px_per_pt, offset[1] / px_per_pt), textcoords="offset points",
-                                fontsize=fontsize, weight=weight, color=theme["map_city"], zorder=7, annotation_clip=True,
-                                path_effects=[patheffects.withStroke(linewidth=outline, foreground=theme["map_land"])], **align)
+                label = map_ax.annotate(name, (marker_lon, marker_lat) if at_marker else (shape.x, shape.y),
+                                        xycoords=ccrs.PlateCarree()._as_mpl_transform(map_ax),
+                                        xytext=(offset[0] / px_per_pt, offset[1] / px_per_pt), textcoords="offset points",
+                                        fontsize=fontsize, weight=weight, color=theme["map_city"], zorder=7, annotation_clip=False,
+                                        path_effects=[patheffects.withStroke(linewidth=outline, foreground=theme["map_land"])], **align)
+                # a name running off the edge is cut at the map's border
+                label.set_clip_on(True)
+                label.set_clip_path(map_ax.patch)
                 taken.append(box)
-                placed += 1
+                named.append((x, y))
+                named_at_marker = named_at_marker or at_marker
                 break
 
 

@@ -566,6 +566,48 @@ def test_map_names_the_city_at_the_marker_beside_it(monkeypatch):
         plt.close(fig)
 
 
+def test_map_names_are_clipped_to_the_map(monkeypatch):
+    # "Ab" sits 8 px from the right edge: its name runs a little off the map, so it's clipped there
+    cities = [("Ab", -94.5, 43.0, 1000)]
+    fig, ax = map_with_background(monkeypatch, cities)
+    try:
+        label, = ax.texts
+        assert label.get_text() == "Ab" and label.get_clip_on() and label.get_clip_path() is not None
+        fig.canvas.draw()
+        assert label.get_window_extent().x1 > ax.get_window_extent().x1
+    finally:
+        plt.close(fig)
+
+
+def test_map_skips_a_city_too_close_to_a_larger_named_one(monkeypatch):
+    # within 17% of the map's width (~41 px of 240) of Big: skipped; ~48 px away: named
+    cities = [("Big", -97.5, 43.0, 1000), ("Close", -97.1, 42.6, 500), ("Apart", -96.7, 43.0, 100)]
+    fig, ax = map_with_background(monkeypatch, cities)
+    try:
+        assert [t.get_text() for t in ax.texts] == ["Big", "Apart"]
+    finally:
+        plt.close(fig)
+
+
+def test_map_names_only_the_largest_city_at_the_marker(monkeypatch):
+    cities = [("Home", -96.37, 41.32, 1000), ("Suburb", -96.36, 41.33, 900)]
+    fig, ax = map_with_background(monkeypatch, cities)
+    try:
+        assert [t.get_text() for t in ax.texts] == ["Home"]
+    finally:
+        plt.close(fig)
+
+
+def test_map_names_stay_out_of_the_radar_label_strip(monkeypatch):
+    # "Low" is 12 px above the bottom edge: any name beside it would be in the strip the radar's time label uses
+    cities = [("Low", -97.5, 40.5, 1000)]
+    fig, ax = map_with_background(monkeypatch, cities)
+    try:
+        assert len(ax.texts) == 0
+    finally:
+        plt.close(fig)
+
+
 def test_map_skips_cities_whose_names_would_overlap(monkeypatch):
     # two cities a few pixels apart: the smaller one has no room
     cities = [("Big", -97.5, 43.0, 1000), ("Near", -97.49, 43.01, 10)]
