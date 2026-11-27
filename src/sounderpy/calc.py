@@ -1248,15 +1248,18 @@ class vad_params:
 
         resolution=100
         
-        uINTRP  = u[np.isnan(z)==False]
-        vINTRP  = v[np.isnan(z)==False]
-        zINTRP  = z[np.isnan(z)==False]
-        zINTRP  = zINTRP-zINTRP[0]
-        
-        # Interpolation, add to intrp dict
-        intrp['uINTRP'] = interpolate(uINTRP,zINTRP,resolution)
-        intrp['vINTRP'] = interpolate(vINTRP,zINTRP,resolution)
-        intrp['zINTRP'] = interpolate(zINTRP,zINTRP,resolution)
+        # heights are m AGL, interpolated every 100 m from the ground; a profile that starts above the
+        # ground (a VAD without a surface wind) has no winds (NaN) below its lowest height
+        z = np.asarray(z, dtype=float)
+        u = np.asarray(u, dtype=float)
+        v = np.asarray(v, dtype=float)
+        has_data = np.isfinite(z) & np.isfinite(u) & np.isfinite(v)
+        intrp['uINTRP'] = interpolate(u[has_data], z[has_data], resolution)
+        intrp['vINTRP'] = interpolate(v[has_data], z[has_data], resolution)
+        intrp['zINTRP'] = np.arange(len(intrp['uINTRP'])) * float(resolution)
+        below = intrp['zINTRP'] < np.min(z[has_data]) - 0.5
+        intrp['uINTRP'][below] = np.nan
+        intrp['vINTRP'][below] = np.nan
 
         hgt_lvls = {}
         hgt_var_list = ['h0', 'h05', 'h1', 'h15', 'h2', 'h25', 
@@ -1279,9 +1282,12 @@ class vad_params:
         if intrp['zINTRP'][-1] < 9000:
             warnings.warn(f"This VAD profile only reaches {intrp['zINTRP'][-1]:.0f} m AGL, so parameters for layers above it could not be computed (not enough data)", Warning)
 
-        # whether the profile reaches a given height
-        def has_hgt(hgt):
-            return hgt in intrp['zINTRP']
+        # whether the profile has winds at a given height (it may start above the ground or end below it)
+        def has_hgt(hgt, u_layer=None, z=None):
+            u_layer = intrp['uINTRP'] if u_layer is None else u_layer
+            z = intrp['zINTRP'] if z is None else z
+            idx = np.where(z == hgt)[0]
+            return len(idx) > 0 and bool(np.isfinite(u_layer[idx[0]]))
         
 
         ####################################################################
@@ -1300,7 +1306,7 @@ class vad_params:
             
         # CALC LAYER SHEAR
         def calc_shear(u_layer, v_layer, bottom, top, z):
-              if not has_hgt(top):
+              if not has_hgt(top) or not has_hgt(bottom):
                   return ma.masked
               layer_top = np.where(z == (top))[0][0]
               layer_bot = np.where(z == (bottom))[0][0]
@@ -1312,7 +1318,7 @@ class vad_params:
         
         # CALC MEAN_WIND COMPONENTS 
         def calc_meanwind(u_layer, v_layer, z, top):
-              if not has_hgt(top):
+              if not has_hgt(top, u_layer, z) or not has_hgt(0, u_layer, z):
                   return ma.masked, ma.masked
               layer_top = np.where(z == (top))[0][0]
               mean_u = np.nanmean(u_layer[:layer_top])
@@ -1322,7 +1328,7 @@ class vad_params:
         
         # CALC BUNKERS STORM MOTION
         def calc_bunkers(u_layer, v_layer, z):
-              if not has_hgt(6000):
+              if not has_hgt(6000, u_layer, z) or not has_hgt(0, u_layer, z):
                   return ma.masked, ma.masked, ma.masked, ma.masked
               layer_top = np.where(z == (6000))[0][0]
               mean_u = np.nanmean(u_layer[:layer_top])
@@ -1351,12 +1357,9 @@ class vad_params:
               llj_u = u_layer[:llj_top]
               llj_v = v_layer[:llj_top]
 
+              # the low-level jet: the strongest wind in the lowest 1.5 km
               mag, dir = calc_vector(llj_u, llj_v)
-              max=0
-              i=0
-              for a in mag:
-                if mag[i] >= mag[i-1]:
-                  max = i
+              i = np.nanargmax(mag)
 
               u_max = llj_u[i]
               v_max = llj_v[i]
@@ -1372,7 +1375,7 @@ class vad_params:
         
         # CALC STORM RELATIVE HELICITY
         def calc_srh(u_comp, v_comp, z, depth, bottom, storm_u, storm_v):
-            if not has_hgt((0 if bottom is None else bottom.m) + depth.m):
+            if not has_hgt((0 if bottom is None else bottom.m) + depth.m) or not has_hgt(0 if bottom is None else bottom.m):
                 return ma.masked
             srh = mpcalc.storm_relative_helicity(height=z, u=u_comp, v=v_comp, depth=depth,
                                            bottom=bottom, storm_u=storm_u, storm_v=storm_v)[0]
@@ -1381,30 +1384,36 @@ class vad_params:
             
         # CALC STORM RELATIVE WIND 
         def calc_srw_layer(u, v, bottom, top, z):
-            if not has_hgt(top):
+            if not has_hgt(top) or not has_hgt(bottom):
                 return ma.masked
             layer_top = np.where(z == (top))[0][0]
             layer_bot = np.where(z == (bottom))[0][0]
             
-            top_sru = u[layer_top] - kinem['sm_u']
-            top_srv = v[layer_top] - kinem['sm_v']
-            
-            bot_sru = u[layer_bot] - kinem['sm_u']
-            bot_srv = v[layer_bot] - kinem['sm_v']
-            
-            mean_srw = (mpcalc.wind_speed(top_sru*units.kts, top_srv*units.kts) + mpcalc.wind_speed(bot_sru*units.kts, bot_srv*units.kts))/2
-            
-            return mean_srw.m
+            # the mean storm-relative wind speed over every level in the layer
+            sru = u[layer_bot:layer_top + 1] - kinem['sm_u']
+            srv = v[layer_bot:layer_top + 1] - kinem['sm_v']
+            return float(np.mean(np.hypot(sru, srv)))
         
                 
         
             
         #--- BUNKERS STORM MOTION ---#
         # --------------------------------------------------------------- 
-        if has_hgt(6000):
+        # from the VAD when it has winds from the ground to 6 km, otherwise from a model profile when the
+        # data has one (get_vad_data() adds it as 'sm_profile'), named in kinem['sm_source']
+        sm_profile = self.vad_data.get('sm_profile') if isinstance(self.vad_data, dict) else None
+        if has_hgt(6000) and has_hgt(0):
             kinem['sm_rm'] = calc_bunkers(intrp['uINTRP'], intrp['vINTRP'], intrp['zINTRP'])[0:2]
             kinem['sm_lm'] = calc_bunkers(intrp['uINTRP'], intrp['vINTRP'], intrp['zINTRP'])[2:4]
             kinem['sm_mw'] = calc_meanwind(intrp['uINTRP'], intrp['vINTRP'], intrp['zINTRP'], 6000)
+        elif sm_profile is not None and np.nanmax(sm_profile['z']) >= 6000:
+            sm_u = interpolate(sm_profile['u'], sm_profile['z'], resolution)
+            sm_v = interpolate(sm_profile['v'], sm_profile['z'], resolution)
+            sm_z = np.arange(len(sm_u)) * float(resolution)
+            kinem['sm_rm'] = calc_bunkers(sm_u, sm_v, sm_z)[0:2]
+            kinem['sm_lm'] = calc_bunkers(sm_u, sm_v, sm_z)[2:4]
+            kinem['sm_mw'] = calc_meanwind(sm_u, sm_v, sm_z, 6000)
+            kinem['sm_source'] = sm_profile.get('source', 'MODEL')
         else:
             kinem['sm_rm'], kinem['sm_lm'], kinem['sm_mw'] = ma.masked, ma.masked, ma.masked
             warnings.warn("Bunkers Storm Motion could not be computed for this sounding (not enough data)", Warning)
@@ -1430,8 +1439,8 @@ class vad_params:
                 
         #--- DEVIANT TORNADO MOTION ---#
         # --------------------------------------------------------------- 
-        if ma.is_masked(kinem['sm_u']) == False:
-            mw_u_300, mw_v_300 = calc_meanwind(intrp['uINTRP'],intrp['vINTRP'],intrp['zINTRP'], 300)
+        mw_u_300, mw_v_300 = calc_meanwind(intrp['uINTRP'],intrp['vINTRP'],intrp['zINTRP'], 300)
+        if ma.is_masked(kinem['sm_u']) == False and ma.is_masked(mw_u_300) == False:
             kinem['dtm'] = ((kinem['sm_u']+mw_u_300)/2, (kinem['sm_v']+mw_v_300)/2)
         else:
             kinem['dtm'] = ma.masked
@@ -1463,10 +1472,10 @@ class vad_params:
                                               bottom=None, depth=500*units.m,  
                                               storm_u=kinem['sm_u']*units.kts, storm_v=kinem['sm_v']*units.kts)
             kinem['srh_0_to_1000'] = calc_srh(u_comp=intrp['uINTRP']*units.kts, v_comp=intrp['vINTRP']*units.kts, z=intrp['zINTRP']*units.m, 
-                                              bottom=1000*units.m, depth=2000*units.m, 
+                                              bottom=None, depth=1000*units.m, 
                                               storm_u=kinem['sm_u']*units.kts, storm_v=kinem['sm_v']*units.kts)
             kinem['srh_1_to_3000'] = calc_srh(u_comp=intrp['uINTRP']*units.kts, v_comp=intrp['vINTRP']*units.kts, z=intrp['zINTRP']*units.m, 
-                                              bottom=1000*units.m, depth=3000*units.m, 
+                                              bottom=1000*units.m, depth=2000*units.m, 
                                               storm_u=kinem['sm_u']*units.kts, storm_v=kinem['sm_v']*units.kts)
             kinem['srh_3_to_6000'] = calc_srh(u_comp=intrp['uINTRP']*units.kts, v_comp=intrp['vINTRP']*units.kts, z=intrp['zINTRP']*units.m, 
                                               bottom=3000*units.m, depth=3000*units.m, 
@@ -1516,10 +1525,9 @@ class vad_params:
             # calc example = change in u over change in z
             dudz = (u_ms[2::]-u_ms[0:-2]) / (intrp['zINTRP'][2::]-intrp['zINTRP'][0:-2])
             dvdz = (v_ms[2::]-v_ms[0:-2]) / (intrp['zINTRP'][2::]-intrp['zINTRP'][0:-2])
-            dudz = np.insert(dudz,0,dudz[0])
-            dudz = np.insert(dudz,-1,dudz[-1])
-            dvdz = np.insert(dvdz,0,dvdz[0])
-            dvdz = np.insert(dvdz,-1,dvdz[-1])
+            # one-sided at the ends, so the shear stays lined up with the heights
+            dudz = np.concatenate(([dudz[0]], dudz, [dudz[-1]]))
+            dvdz = np.concatenate(([dvdz[0]], dvdz, [dvdz[-1]]))
             # Shear magnitude, 
             shear=(np.sqrt(dudz**2+dvdz**2)+0.0000001)
             # Vorticity components
@@ -1539,7 +1547,7 @@ class vad_params:
             # layer average streamwiseness and total streamwise vorticity
             # layer means at 100 m resolution; masked when the profile doesn't reach the layer top
             def layer_mean(values, bottom, top):
-                return np.mean(values[bottom // 100:top // 100]) if has_hgt(top) else ma.masked
+                return np.mean(values[bottom // 100:top // 100]) if has_hgt(top) and has_hgt(bottom) else ma.masked
 
             kinem['swv_perc_0_to_500']  = layer_mean(kinem['swv_perc'], 0, 500)
             kinem['swv_perc_0_to_1000'] = layer_mean(kinem['swv_perc'], 0, 1000)

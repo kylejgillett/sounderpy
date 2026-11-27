@@ -8,6 +8,7 @@
 from .sounderpy import get_model_data 
 from .sounderpy import get_obs_data 
 from .sounderpy import get_bufkit_data 
+from .sounderpy import get_vad_data
 from .sounderpy import acars_data
 from .sounderpy import build_sounding
 from .sounderpy import build_hodograph

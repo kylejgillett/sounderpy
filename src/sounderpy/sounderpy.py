@@ -44,6 +44,7 @@ from .readout import readout_data, save_bbox, save_readout, saved_image_size
 from .calc import sounding_params
 from .data.model_data import fetch_model
 from .data.bufkit_data import fetch_bufkit
+from .data.vad_data import fetch_vad
 from .data.obs_data import fetch_obs
 from .data.acars_data import *
 from .data.wrf_utils import from_wrf, make_wrf_profile
@@ -216,6 +217,43 @@ def get_bufkit_data(model, station, fcst_hour, run_year=None, run_month=None, ru
                    hush, clean_it, all_fcst_hours)
 
     return data
+
+
+
+def get_vad_data(site, year=None, month=None, day=None, hour=None, minute=0, sfc_wind=True, model='rap', max_rms=None,
+                 max_offset_min=30, hush=False):
+
+    r"""Get NEXRAD VAD Wind Profile data
+       Return a ``dict`` of VAD wind profile data from a NEXRAD radar's VAD Wind Profile (VWP) product, the closest one to a given time, or the latest. Files come from the NOAA NEXRAD Level III archive on AWS, available from March 31, 2020 on.
+
+       :param site: a NEXRAD site identifier, such as 'KDMX'
+       :type site: str, required
+       :param year: year of the VAD. Leave the date as ``None`` for the latest VAD.
+       :type year: str, optional, default is `None`
+       :param month: month of the VAD
+       :type month: str, optional, default is `None`
+       :param day: day of the VAD
+       :type day: str, optional, default is `None`
+       :param hour: hour of the VAD, UTC
+       :type hour: str, optional, default is `None`
+       :param minute: minute of the VAD, UTC
+       :type minute: str, optional, default is `0`
+       :param sfc_wind: the surface (0 m AGL) wind, since the VAD starts a few hundred feet above the radar. ``True`` uses the nearest METAR (within 50 km and 60 minutes), then the lowest level of the ``model`` profile; ``[direction, speed]`` (degrees, kts) uses your own; ``False`` leaves it out, and the profile starts at the lowest VAD height, so layers from the ground are left out.
+       :type sfc_wind: bool or list, optional, default is `True`
+       :param model: the BUFKIT model ('rap', 'hrrr', 'gfs', ...) at the nearest BUFKIT site, run closest to the VAD's time, used for the surface wind when there's no METAR, and for Bunkers storm motion when the VAD doesn't reach 6 km. ``None`` turns both off. A storm motion given to ``build_vad_hodograph()`` or ``vad_params()`` (such as ``storm_motion=[240, 30]``) is used instead of Bunkers.
+       :type model: str, optional, default is `'rap'`
+       :param max_rms: leave out VAD winds with an RMS error (kts) above this value. ``None`` keeps every wind in the product.
+       :type max_rms: float, optional, default is `None`
+       :param max_offset_min: the most minutes the closest VAD may be from the requested time
+       :type max_offset_min: int, optional, default is `30`
+       :param hush: whether to 'hush' the read-out when getting the data.
+       :type hush: bool, optional, default is `False`
+
+       :return: vad_data, a dict of 'z' (height, m AGL), 'u' and 'v' (wind components, kts), 'rms' (RMS error, kts; NaN for the surface wind), 'site_info', and, when the VAD doesn't reach 6 km, 'sm_profile' (the model winds for storm motion), ready for ``build_vad_hodograph()`` and ``vad_params()``
+       :rtype: dict
+    """
+
+    return fetch_vad(site, year, month, day, hour, minute, sfc_wind, model, max_rms, max_offset_min, hush)
 
 
 
@@ -480,7 +518,7 @@ def build_composite(data_list, shade_between=True, cmap='viridis', colors=None, 
 # VAD HODOGRAPH
 #########################################################################
 def build_vad_hodograph(vad_data, save=False, dark_mode=False, storm_motion='right_moving', sr_hodo=False,
-                        filename='vad_hodograph', radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, theme=None,
+                        filename='vad_hodograph', radar='single', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, theme=None,
                         map_layers=None, map_label=None, return_fig=False, map_background='map'):
     '''
        Build a VAD hodograph figure of SounderPy VAD data
@@ -497,7 +535,7 @@ def build_vad_hodograph(vad_data, save=False, dark_mode=False, storm_motion='rig
        :type storm_motion: str or list of floats, optional
        :param sr_hodo: transform the hodograph from ground relative to storm relative
        :type sr_hodo: bool, optional, default is ``False``
-       :param radar: the type of radar on the map: ``'mosaic'``, ``'single'`` (or ``'single-site'``), or ``None``. Default is ``'mosaic'``.
+       :param radar: the type of radar on the map: ``'mosaic'``, ``'single'`` (or ``'single-site'``), or ``None``. Default is ``'single'``, the VAD's own radar.
        :type radar: str or None, optional
        :param radar_time: the time of radar to show: ``'sounding'`` for the data's valid time, or ``'now'``. Default is ``'sounding'``.
        :type radar_time: str, optional

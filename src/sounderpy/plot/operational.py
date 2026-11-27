@@ -55,6 +55,7 @@ from ..data.sfc_obs import sounding_obs
 from .style import (FONT_SIZES,
                     COMPOSITE_LAYOUTS,
                     FULL_HODOGRAPH_LAYOUT,
+                    WIND_HODOGRAPH_LAYOUT,
                     FULL_SOUNDING_LAYOUT,
                     SKEWT_COLUMNS,
                     WINTER_LAYOUT,
@@ -70,6 +71,8 @@ from .components import (_clip_skewt_text,
                          _calculate_special_parcels,
                          _get_composite_titles,
                          _get_hodograph_bounds,
+                         _get_wind_hodograph_limits,
+                         _plot_wind_profile_readout,
                          _get_missing_storm_motions,
                          _get_profile_colors,
                          _get_profile_letter,
@@ -661,9 +664,11 @@ def _build_hodograph_figure(snd_params, site_data, titles, dark_mode, storm_moti
     ### SET UP PLOT THEME ###
     #################################################################
     theme = _get_plot_theme(dark_mode=dark_mode, overrides=theme_overrides)
-    layout = FULL_HODOGRAPH_LAYOUT
     has_thermo = "thermo" in snd_params
+    # wind-only (VAD) data moves the map to the right column, so the hodograph can zoom to the data
+    layout = FULL_HODOGRAPH_LAYOUT if has_thermo else WIND_HODOGRAPH_LAYOUT
     has_map = map_zoom > 0
+    map_on_hodograph = has_map and layout.get("map_on_hodograph", True)
 
 
     #################################################################
@@ -688,15 +693,25 @@ def _build_hodograph_figure(snd_params, site_data, titles, dark_mode, storm_moti
     print("    > BUILDING HODOGRAPH")
     fig = plt.figure(figsize=(16, 12), linewidth=1.5, edgecolor=theme["border"], facecolor=theme["background"], dpi=dpi)
 
-    hodo = _setup_hodograph(fig.add_axes(layout["hodograph"]), theme, (-90, 90), (-90, 90), component_range=180)
+    if has_thermo:
+        xlim, ylim = (-90, 90), (-90, 90)
+    else:
+        xlim, ylim = _get_wind_hodograph_limits(hodo_params)
+    hodo = _setup_hodograph(fig.add_axes(layout["hodograph"]), theme, xlim, ylim,
+                            component_range=max(180, 2 * max(map(abs, (*xlim, *ylim)))))
     _plot_hodograph_velocity_labels(hodo, theme, fontsize=FONT_SIZES["small"])
-    _plot_hodograph_height_markers(hodo, hodo_params, theme, marker_size=20, fontsize=FONT_SIZES["tiny"])
+    # wind-only (VAD) hodographs are zoomed in, so their height markers are larger
+    marker_size, marker_font = (20, FONT_SIZES["tiny"]) if has_thermo else (30, FONT_SIZES["note"])
+    _plot_hodograph_height_markers(hodo, hodo_params, theme, marker_size=marker_size, fontsize=marker_font)
     _plot_hodograph_trace(hodo, hodo_params, theme, linewidth=5)
 
     _plot_hodograph_motion_labels(hodo, hodo_params, storm_motion, theme)
     if not sr_hodo:
         _plot_hodograph_sm_vector(hodo, hodo_params, theme)
-    _plot_hodograph_motion_readout(hodo, snd_params, storm_motion, theme, x=0.015, y=0.985, fontsize=FONT_SIZES["note"])
+    if has_thermo:
+        _plot_hodograph_motion_readout(hodo, snd_params, storm_motion, theme, x=0.015, y=0.985, fontsize=FONT_SIZES["note"])
+    else:
+        _plot_wind_profile_readout(hodo, snd_params, site_data, storm_motion, theme)
     _plot_hodograph_srh(hodo, hodo_params, theme, layer="auto")
     # a profile edited in the browser says so
     edited = site_data.get("site_info", {}).get("edited")
@@ -714,7 +729,7 @@ def _build_hodograph_figure(snd_params, site_data, titles, dark_mode, storm_moti
         print("    > BUILDING MAP INSET")
         latlon = site_data["site_info"]["site-latlon"]
         map_ax = fig.add_axes(layout["map"], projection=ccrs.PlateCarree(), zorder=12)
-        _setup_map_inset(map_ax, latlon, theme, map_zoom=map_zoom, background=map_background)
+        _setup_map_inset(map_ax, latlon, theme, map_zoom=map_zoom, background=map_background, aspect=layout.get("map_aspect", 1))
 
         if radar == "mosaic":
             _plot_map_mosaic_radar(map_ax, site_data, map_zoom, radar_time, theme)
@@ -755,10 +770,10 @@ def _build_hodograph_figure(snd_params, site_data, titles, dark_mode, storm_moti
     titles = dict(titles, top_title=f"{top_title} {hodo_title}")
     _plot_figure_titles(fig, titles, theme, left_x=0.2262, right_x=1.1815, top_y=0.92, sub_y=0.89, top_fontsize=FONT_SIZES["title_small"], sub_fontsize=FONT_SIZES["table_large"])
     # the watermark sits beside the map, or at the edge of the axis without one
-    _plot_credits(hodo.ax, theme, x=0.298 if has_map else 0.0873, title_y=0.045, subtitle_y=0.017, style="compact", title_fontsize=FONT_SIZES["table_large"], subtitle_fontsize=FONT_SIZES["label"], max_x=0.99)
+    _plot_credits(hodo.ax, theme, x=0.298 if map_on_hodograph else 0.0873, title_y=0.045, subtitle_y=0.017, style="compact", title_fontsize=FONT_SIZES["table_large"], subtitle_fontsize=FONT_SIZES["label"], max_x=0.99)
     # the data source runs along the bottom margin, under the hodograph
     _plot_data_source(fig, site_data.get("site_info", {}), theme, x=0.2262, y=0.0985, max_x=0.80)
-    _plot_logo(fig.add_axes(layout["logo" if has_map else "logo_no_map"], anchor="SW"))
+    _plot_logo(fig.add_axes(layout["logo" if map_on_hodograph else "logo_no_map"], anchor="SW"))
     _add_figure_margin(fig, layout["margin"])
 
     print('    > COMPLETE --------')
@@ -952,7 +967,7 @@ def __composite_sounding(data_list, shade_between, cmap, colors, linestyles, alp
 #########################################################################
 ########################### VAD HODOGRAPH ###############################
 
-def __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo, radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, theme_overrides=None,
+def __vad_hodograph(vad_data, dark_mode, storm_motion, sr_hodo, radar='single', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, theme_overrides=None,
                     map_layers=None, map_label=None, map_background="map"):
 
     print(f'    > PREPARING DATA')

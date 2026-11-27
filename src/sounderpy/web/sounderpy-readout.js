@@ -194,6 +194,9 @@ export class SounderPyReadout {
    * @param {(drawings: object[]) => void} [options.onDraw] called when drawings are added, undone, or cleared
    * @param {boolean} [options.tapReadout=true] on touch screens, a tap shows the readout; false leaves taps to the
    *   page (e.g. a link around the image) unless editing
+   * @param {number} [options.touchOffset=0] on touch screens, read this many screen pixels above a dragging finger,
+   *   which would otherwise cover the point; the offset grows from zero as the finger moves, so a plain tap reads
+   *   where it lands. Not used while drawing or editing
    * @param {boolean} [options.cursor=true] add the temperature (skew-t) or wind (hodograph) under the pointer
    * @param {string[]} [options.parts] what responds to the pointer: "skewt", "hodograph", "panels" (the 0-3 km panels),
    *   and "params" (values in the tables). Default is all four
@@ -208,7 +211,7 @@ export class SounderPyReadout {
   constructor(img, readout, options = {}) {
     if (!(img instanceof HTMLImageElement)) throw new TypeError("SounderPyReadout needs an <img> element.");
     this.img = img;
-    this.options = { fields: DEFAULT_FIELDS, temperature: "both", height: "m", wind: "kt", theme: "auto", editable: false, tapReadout: true, cursor: true, clouds: false, keys: true, panelTip: true, tipFields: TIP_FIELDS, panelHint: "Hover the plot to read it here.", levels: LEVELS,
+    this.options = { fields: DEFAULT_FIELDS, temperature: "both", height: "m", wind: "kt", theme: "auto", editable: false, tapReadout: true, touchOffset: 0, cursor: true, clouds: false, keys: true, panelTip: true, tipFields: TIP_FIELDS, panelHint: "Hover the plot to read it here.", levels: LEVELS,
       parts: ["skewt", "hodograph", "panels", "params"], ...options };
     this.tool = "inspect";
     this.mark = null;
@@ -508,7 +511,13 @@ export class SounderPyReadout {
   _eventPx(e) {
     // works when the image (or a parent) is scaled with CSS, since the rect includes transforms
     const rect = this.img.getBoundingClientRect();
-    return [((e.clientX - rect.left) / rect.width) * this.ro.image.width, ((e.clientY - rect.top) / rect.height) * this.ro.image.height];
+    let y = e.clientY;
+    // a finger covers what it points at: once it drags, read a little above it (options.touchOffset)
+    const lift = this.options.touchOffset;
+    if (lift && e.pointerType === "touch" && this._touchStart && this.tool !== "draw" && this.tool !== "edit") {
+      y -= Math.min(lift, Math.hypot(e.clientX - this._touchStart[0], e.clientY - this._touchStart[1]));
+    }
+    return [((e.clientX - rect.left) / rect.width) * this.ro.image.width, ((y - rect.top) / rect.height) * this.ro.image.height];
   }
   _hodoLevels() {
     const H = this.ro.panels.hodograph, z = this.ro.profile.z_agl, out = [];
@@ -705,7 +714,10 @@ export class SounderPyReadout {
   }
 
   _onDown(e) {
-    if (e.pointerType === "touch") this._touches.add(e.pointerId);
+    if (e.pointerType === "touch") {
+      this._touches.add(e.pointerId);
+      if (this._touches.size === 1) this._touchStart = [e.clientX, e.clientY]; // where touchOffset measures the drag from
+    }
     if (this._touches.size > 1) { this.tip.style.display = "none"; return; }
     this._client = [e.clientX, e.clientY];
     this._touch = e.pointerType !== "mouse";

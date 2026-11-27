@@ -401,7 +401,7 @@ Building VAD Hodographs
 
 SounderPy now offers the ability to plot NEXRAD radar VAD data on a hodograph using the ``spy.build_vad_hodograph()`` function:
 
-.. py:function:: spy.build_vad_hodograph(vad_data, save=False, dark_mode=False, storm_motion='right_moving', sr_hodo=False, filename='vad_hodograph', radar='mosaic', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, theme=None, map_layers=None, map_label=None, return_fig=False, map_background='map')
+.. py:function:: spy.build_vad_hodograph(vad_data, save=False, dark_mode=False, storm_motion='right_moving', sr_hodo=False, filename='vad_hodograph', radar='single', radar_time='sounding', map_zoom=2, hodo_boundary=None, dpi=100, theme=None, map_layers=None, map_label=None, return_fig=False, map_background='map')
 
    Build a hodograph figure of SounderPy VAD data
 
@@ -418,7 +418,7 @@ SounderPy now offers the ability to plot NEXRAD radar VAD data on a hodograph us
    :param filename: the filename by which a file should be saved to if ``save = True``.
    :type filename: str, optional, Default is ``vad_hodograph``.
    :param radar: whether to display mosaic reflectivity, single-site reflectivity, or no radar in the map inset.
-   :type radar: str, ``"mosaic"``, ``"single"`` (or ``"single-site"``), or ``None``. Optional. Default is ``mosaic``.
+   :type radar: str, ``"mosaic"``, ``"single"`` (or ``"single-site"``), or ``None``. Optional. Default is ``single``, the VAD's own radar.
    :param radar_time: the time of radar to show: ``"sounding"`` for the data's valid time, or ``"now"``.
    :type radar_time: str, optional, Default is ``"sounding"``.
    :param map_zoom: a 'zoom' level for the map inset as an ``int``. **Note: Setting** ``map_zoom=0`` **will hide the map**

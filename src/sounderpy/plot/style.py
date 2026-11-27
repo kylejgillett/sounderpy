@@ -248,6 +248,21 @@ FULL_HODOGRAPH_LAYOUT = {"hodograph": (0.13, 0.11, 0.77, 0.77),
                          "logo_no_map": (0.2303, 0.115, 0.042, 0.048),
                          "margin": (0.215, 0.095, 0.97, 0.865)}
 
+# the hodograph figure for wind-only data (VAD): the map sits in the right column, between the
+# kinematics table and the low-level panels, so the hodograph can be zoomed to the data
+WIND_HODOGRAPH_LAYOUT = {"hodograph": (0.13, 0.11, 0.77, 0.77),
+                         "map": (0.8015, 0.32, 0.38, 0.32),
+                         "map_aspect": 0.32 * 12 / (0.38 * 16),
+                         "streamwiseness": (0.8015, 0.11, 0.095, 0.21),
+                         "vorticity": (0.8965, 0.11, 0.095, 0.21),
+                         "sr_wind": (0.9915, 0.11, 0.095, 0.21),
+                         "stability": (1.0865, 0.11, 0.095, 0.21),
+                         "parameter_box": (0.8015, 0.64, 0.38, 0.24),
+                         "logo": (0.2303, 0.115, 0.042, 0.048),
+                         "logo_no_map": (0.2303, 0.115, 0.042, 0.048),
+                         "map_on_hodograph": False,
+                         "margin": (0.215, 0.095, 0.97, 0.865)}
+
 # positions for each style of composite figure, as figure fractions. the table and everything below it
 # grow down from table_top with the number of profiles, and "logo" is its (left, width)
 COMPOSITE_LAYOUTS = {"full": {"figsize": (22, 13),
@@ -322,6 +337,11 @@ HODOGRAPH_KINEMATICS_LAYOUT = {"label_x": 0.036,
                                "header_columns": [0.200, 0.370, 0.540, 0.670, 0.825],
                                "header_y": 0.911,
                                "rows_y": [0.844, 0.778, 0.711, 0.644, 0.578, 0.511]}
+
+# the kinematics table in the wind-only hodograph figure's shorter box
+WIND_KINEMATICS_LAYOUT = {**HODOGRAPH_KINEMATICS_LAYOUT,
+                          "header_y": 0.85,
+                          "rows_y": [0.70, 0.56, 0.42, 0.28, 0.14]}
 
 # the first four columns of the parcel table
 HODOGRAPH_PARCEL_LAYOUT = {"label_x": 0.036,

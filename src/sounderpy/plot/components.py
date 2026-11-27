@@ -72,6 +72,7 @@ from .style import (FONT_SIZES,
                     COMPOSITE_VIRIDIS_RANGES,
                     HODOGRAPH_KINEMATICS_LAYOUT,
                     HODOGRAPH_PARCEL_LAYOUT,
+                    WIND_KINEMATICS_LAYOUT,
                     KINEMATICS_TABLE_LAYOUT,
                     MISSING_VALUE,
                     MOISTURE_TABLE_LAYOUT,
@@ -953,6 +954,113 @@ def _plot_hodograph_motion_readout(hodo, snd_params, storm_motion, theme, show_r
         hodo.ax.text(x, y, "\n".join(motions), **style)
 
 
+def _wind_from(u, v):
+    """'240°/30 kt': the direction a wind or motion comes from, and its speed."""
+    if not np.isfinite([u, v]).all():
+        return "---"
+    direction = (np.degrees(np.arctan2(-u, -v)) + 360) % 360
+    return f"{int(round(direction)) % 360:03d}°/{int(round(np.hypot(u, v)))} {UNIT_KT}"
+
+
+def _plot_wind_profile_readout(hodo, snd_params, site_data, storm_motion, theme, x=0.015, y=0.985):
+    """For wind-only (VAD) hodographs: the surface wind and storm motion, each with where it came from,
+    above the list of storm motions."""
+    kinem = snd_params["kinem"]
+    site = site_data.get("site_info", {})
+
+    # SURFACE: a METAR, a model's lowest level, the user's own, or none
+    sfc = site.get("sfc-wind")
+    if sfc is None:
+        z = np.asarray(snd_params["intrp"]["zINTRP"])
+        u = np.asarray(snd_params["intrp"]["uINTRP"])
+        lowest = z[np.isfinite(u)][0] if np.isfinite(u).any() else np.nan
+        sfc_line = f"SURFACE OBS: NONE · PROFILE STARTS AT {lowest:.0f} m"
+    else:
+        rad = np.radians(float(sfc["drct"]))
+        value = _wind_from(-sfc["sknt"] * np.sin(rad), -sfc["sknt"] * np.cos(rad))
+        if sfc["source"] == "METAR":
+            sfc_line = f"SURFACE OBS: {sfc['station']} · {sfc['time']:%H%M}Z · {value}"
+        elif sfc["source"] == "CUSTOM":
+            sfc_line = f"SURFACE OBS: USER DEFINED · {value}"
+        else:
+            sfc_line = (f"SURFACE OBS: {sfc['station']} · {sfc['model']} {sfc['run']:%H}Z F{sfc['fcst_hour']:02d} · "
+                        f"VALID {sfc['time']:%H}Z · {value}")
+
+    # STORM MOTION: the user's own, Bunkers from the VAD, or Bunkers from a model profile
+    valid_sm = not ma.is_masked(kinem["sm_u"]) and not ma.is_masked(kinem["sm_v"])
+    sm_type = storm_motion_type(storm_motion)
+    if not valid_sm:
+        sm_line = "STORM MOTION: NONE · VAD BELOW 6 km · GIVE A STORM MOTION"
+    elif sm_type == "custom":
+        sm_line = f"STORM MOTION: USER DEFINED · {_wind_from(kinem['sm_u'], kinem['sm_v'])}"
+    else:
+        name = {"rm": "RM", "lm": "LM", "mw": "MW"}[sm_type]
+        value = _wind_from(kinem['sm_u'], kinem['sm_v'])
+        sm_profile = site_data.get("sm_profile")
+        if kinem.get("sm_source") and sm_profile is not None and "run" in sm_profile:
+            sm_line = (f"STORM MOTION: {name} · {sm_profile['station']} · {sm_profile['model']} {sm_profile['run']:%H}Z "
+                       f"F{sm_profile['fcst_hour']:02d} · VALID {sm_profile['valid']:%H}Z · {value}")
+        elif kinem.get("sm_source"):
+            sm_line = f"STORM MOTION: {name} · {kinem['sm_source']} · {value}"
+        else:
+            valid = site.get("valid-time", ["", "", "", ""])
+            sm_line = f"STORM MOTION: {name} · {site.get('site-id', '')} VAD · {str(valid[3]).replace(':', '')}Z · {value}"
+
+    box = dict(facecolor=theme["background"], alpha=0.85, edgecolor="none", pad=4)
+    header = hodo.ax.text(x, y, f"{sfc_line}\n{sm_line}", transform=hodo.ax.transAxes, ha="left", va="top", weight="bold",
+                          color=theme["text"], fontsize=FONT_SIZES["annotation_large"], linespacing=1.45, zorder=9, bbox=box)
+
+    # the other storm motions, below
+    motions = []
+    if not ma.is_masked(kinem["sm_rm"]):
+        for key, label in (("sm_rm", "RM"), ("sm_lm", "LM"), ("sm_mw", "MW")):
+            motions.append(f"{label}: {_wind_from(kinem[key][0], kinem[key][1])}")
+    if not ma.is_masked(kinem["mcs"]):
+        motions.append(f"UP: {_wind_from(kinem['mcs'][0], kinem['mcs'][1])}")
+        motions.append(f"DN: {_wind_from(kinem['mcs'][2], kinem['mcs'][3])}")
+    if not ma.is_masked(kinem["dtm"]):
+        motions.append(f"DTM: {_wind_from(kinem['dtm'][0], kinem['dtm'][1])}")
+    if motions:
+        hodo.ax.annotate("\n".join(motions), xy=(0, 0), xycoords=header, xytext=(0, -8), textcoords="offset points",
+                         ha="left", va="top", color=theme["text"], fontsize=FONT_SIZES["note"], linespacing=1.35,
+                         alpha=0.8, zorder=9, bbox=dict(box, alpha=0.7))
+
+
+def _get_wind_hodograph_limits(snd_params, header_room=0.20, padding=8, minimum=30):
+    """Square hodograph limits that fit the winds, the storm motions, and the origin, rounded to 10 kt, with
+    room at the top for the readout in the upper left."""
+    kinem = snd_params["kinem"]
+    u = list(np.asarray(snd_params["intrp"]["uINTRP"], dtype=float)) + [0.0]
+    v = list(np.asarray(snd_params["intrp"]["vINTRP"], dtype=float)) + [0.0]
+    for key in ("sm_rm", "sm_lm", "sm_mw", "dtm"):
+        if not ma.is_masked(kinem.get(key, ma.masked)):
+            u.append(float(kinem[key][0]))
+            v.append(float(kinem[key][1]))
+    if not ma.is_masked(kinem.get("sm_u", ma.masked)):
+        u.append(float(kinem["sm_u"]))
+        v.append(float(kinem["sm_v"]))
+    u, v = np.asarray(u), np.asarray(v)
+    keep = np.isfinite(u) & np.isfinite(v)
+    u, v = u[keep], v[keep]
+
+    x_min, x_max = u.min() - padding, u.max() + padding
+    y_min, y_max = v.min() - padding, v.max() + padding
+    # leave the top of the axis for the readout
+    y_max += header_room * max(x_max - x_min, y_max - y_min)
+    span = max(x_max - x_min, y_max - y_min, minimum)
+    # center the shorter side, and round outward to 10 kt
+    x_mid, y_mid = (x_min + x_max) / 2, (y_min + y_max) / 2
+    xlim = (np.floor((x_mid - span / 2) / 10) * 10, np.ceil((x_mid + span / 2) / 10) * 10)
+    ylim = (np.floor((y_mid - span / 2) / 10) * 10, np.ceil((y_mid + span / 2) / 10) * 10)
+    # rounding can leave the sides unequal; widen the shorter one to keep the grid square
+    width, height = xlim[1] - xlim[0], ylim[1] - ylim[0]
+    if width < height:
+        xlim = (xlim[0] - (height - width) / 2, xlim[1] + (height - width) / 2)
+    elif height < width:
+        ylim = (ylim[0] - (width - height) / 2, ylim[1] + (width - height) / 2)
+    return xlim, ylim
+
+
 def _make_storm_relative(snd_params):
     """Shift a sounding's winds and storm motions to be relative to the selected storm motion."""
     kinem = dict(snd_params["kinem"])
@@ -1236,16 +1344,21 @@ def _plot_map_cities(map_ax, theme, latlon, extent, bounds, n_cities=5, fontsize
 
 
 def _setup_map_inset(map_ax, latlon, theme, map_zoom=2, background="map", satellite_zoom="auto", show_states=True, show_counties=True,
-                     n_cities=5):
+                     n_cities=5, aspect=1):
     """Set up a map inset centered on a lat/lon, with states and counties over a background: 'map' (land and water,
     city areas, lakes, rivers, major highways, and the largest cities' names), 'satellite' imagery, or None."""
     # map_ax needs a cartopy projection (e.g., fig.add_axes(rect, projection=ccrs.PlateCarree()))
     lat, lon = latlon
     west, east, south, north = lon - map_zoom, lon + map_zoom, lat - map_zoom / 1.6, lat + map_zoom * 1.6
-    # trim the top and bottom to a square now, as the square box (set_box_aspect) would when drawn, so
-    # map_ax.get_extent() gives the extent that's shown (e.g. in a map_layers function)
-    trim = ((north - south) - (east - west)) / 2
-    south, north = south + trim, north - trim
+    # trim the top and bottom to the box's shape (height / width = aspect) now, as set_box_aspect would when
+    # drawn, so map_ax.get_extent() gives the extent that's shown (e.g. in a map_layers function)
+    if aspect == 1:
+        trim = ((north - south) - (east - west) * aspect) / 2
+        south, north = south + trim, north - trim
+    else:
+        # a wide map puts the profile a little below the middle, above the radar label at the bottom
+        lat_span = (east - west) * aspect
+        south, north = lat - 0.42 * lat_span, lat + 0.58 * lat_span
     bounds = (west - 0.5, south - 0.5, east + 0.5, north + 0.5)
 
     # map border
@@ -1253,7 +1366,7 @@ def _setup_map_inset(map_ax, latlon, theme, map_zoom=2, background="map", satell
 
     # map extent
     map_ax.set_extent([west, east, south, north], crs=ccrs.PlateCarree())
-    map_ax.set_box_aspect(1)
+    map_ax.set_box_aspect(aspect)
 
     if background == "map":
         _plot_map_features(map_ax, theme, bounds)
@@ -1939,7 +2052,7 @@ def _plot_wind_parameter_box(ax, snd_params, theme):
     """Draw the kinematics table on its own, for wind-only data."""
 
     _setup_text_box(ax, theme)
-    _draw_table(ax, _get_kinematics_table(snd_params, theme, include_eil=False, layer_colors=True), HODOGRAPH_KINEMATICS_LAYOUT, theme)
+    _draw_table(ax, _get_kinematics_table(snd_params, theme, include_eil=False, layer_colors=True), WIND_KINEMATICS_LAYOUT, theme)
 
     return ax
 
