@@ -29,7 +29,6 @@ import numpy as np
 from matplotlib.colors import ListedColormap
 from datetime import datetime, timedelta, timezone
 import io
-import sys
 import importlib.resources as resources
 import warnings
 from siphon.catalog import TDSCatalog
@@ -205,10 +204,6 @@ def _read_lowest_scan(fs, path, chunk_bytes=1024 * 1024):
 
 def get_radar_data(nexrad_site, clean_data, radar_time):
 
-    # unload and reload fsspec each time this function is called
-    # to ensure the most up-to-date connection with s3 is achived
-    if 'fsspec' in sys.modules:
-        del sys.modules['fsspec']
     import fsspec
 
     # define time, date objs
@@ -222,7 +217,9 @@ def get_radar_data(nexrad_site, clean_data, radar_time):
     files = []
     for day in {start.date(), end.date()}:
         try:
-            listing = fs.ls(day.strftime(f"unidata-nexrad-level2/%Y/%m/%d/{nexrad_site}/"), detail=False)
+            # refresh=True: the S3 filesystem is shared and keeps listings for the life of the process, so
+            # without it a long-running app (a web server, a notebook) never sees scans newer than its first listing
+            listing = fs.ls(day.strftime(f"unidata-nexrad-level2/%Y/%m/%d/{nexrad_site}/"), detail=False, refresh=True)
         except FileNotFoundError:
             continue
         for scan in listing:
